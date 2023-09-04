@@ -47,8 +47,20 @@
 		<docker.image.tag>${revision}</docker.image.tag>
 		<docker.host.port>8081</docker.host.port>
 		<docker.container.port>8081</docker.container.port>
-		<aas4j-version>1.0.0-milestone-03.1</aas4j-version>
+		<aas4j-version>1.0.0-OPFORK1</aas4j-version>
 	</properties>
+	<distributionManagement>
+		<repository>
+			<id>op.releases</id>
+			<name>Internal Releases</name>
+			<url>https://nexus.internal.objective-partner.net/repository/maven-releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>op.snapshots</id>
+			<name>Internal Snapshots</name>
+			<url>https://nexus.internal.objective-partner.net/repository/maven-snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
 	<build>
 		<plugins>
 			<plugin>

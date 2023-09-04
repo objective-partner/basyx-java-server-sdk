@@ -51,11 +51,11 @@
 		<module>basyx.submodelregistry-service-release-log-mem</module>
 		<module>basyx.submodelregistry-client-native</module>
 		<module>basyx.submodelregistry-service-mongodb-storage</module>
-		<module>basyx.submodelregistry-service-kafka-events</module>
+<!--		<module>basyx.submodelregistry-service-kafka-events</module>-->
 		<module>basyx.submodelregistry-service-basetests</module>
-		<module>basyx.submodelregistry-service-release-kafka-mem</module>
+<!--		<module>basyx.submodelregistry-service-release-kafka-mem</module>-->
 		<module>basyx.submodelregistry-service-release-log-mongodb</module>
-		<module>basyx.submodelregistry-service-release-kafka-mongodb</module>
+<!--		<module>basyx.submodelregistry-service-release-kafka-mongodb</module>-->
 	</modules>
 
 	<developers>
