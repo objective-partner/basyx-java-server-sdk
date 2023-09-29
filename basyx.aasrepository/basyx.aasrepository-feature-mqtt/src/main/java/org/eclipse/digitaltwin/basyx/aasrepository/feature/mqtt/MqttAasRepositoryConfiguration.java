@@ -23,12 +23,14 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-package org.eclipse.digitaltwin.basyx.submodelrepository.feature.mqtt;
+
+package org.eclipse.digitaltwin.basyx.aasrepository.feature.mqtt;
 
 import org.eclipse.paho.client.mqttv3.IMqttClient;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -36,18 +38,14 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * MQTT configuration to allow for the automatic enablement of the feature using
- * the config file.
- */
-@ConditionalOnExpression("#{${" + MqttSubmodelRepositoryFeature.FEATURENAME + ".enabled:false} or ${basyx.feature.mqtt.enabled:false}}")
+@ConditionalOnExpression("#{${" + MqttAasRepositoryFeature.FEATURENAME + ".enabled:false} or ${basyx.feature.mqtt.enabled:false}}")
 @Configuration
-public class MqttConfiguration {
+public class MqttAasRepositoryConfiguration {
 
 	@ConditionalOnMissingBean
 	@Bean
 	public IMqttClient mqttClient(@Value("${mqtt.clientId}") String clientId, @Value("${mqtt.hostname}") String hostname, @Value("${mqtt.port}") int port) throws MqttException {
-		IMqttClient mqttClient = new MqttClient("tcp://" + hostname + ":" + port, clientId);
+		IMqttClient mqttClient = new MqttClient("tcp://" + hostname + ":" + port, clientId, new MemoryPersistence());
 
 		mqttClient.connect(mqttConnectOptions());
 
