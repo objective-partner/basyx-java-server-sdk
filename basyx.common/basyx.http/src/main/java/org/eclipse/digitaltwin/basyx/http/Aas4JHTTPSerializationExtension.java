@@ -34,6 +34,8 @@ import org.eclipse.digitaltwin.aas4j.v3.dataformat.core.deserialization.EnumDese
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.core.serialization.EnumSerializer;
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.core.util.ReflectionHelper;
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.json.internal.ReflectionAnnotationIntrospector;
+import org.eclipse.digitaltwin.basyx.core.StandardizedLiteralEnum;
+import org.eclipse.digitaltwin.basyx.http.description.Profile;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Component;
 
@@ -70,8 +72,10 @@ public class Aas4JHTTPSerializationExtension implements SerializationExtension {
   }
 
   protected SimpleModule buildEnumModule() {
-    SimpleModule module = new SimpleModule();
-    module.addSerializer(Enum.class, new EnumSerializer());
+    SimpleModule module = new SimpleModule("AAS4JEnumDeSerialization");
+    module.addSerializer(StandardizedLiteralEnum.class, new StandardizedLiteralEnumSerializer<>());
+    module.addDeserializer(Profile.class, new StandardizedLiteralEnumDeserializer<>(Profile.class));
+    ReflectionHelper.ENUMS.forEach(x -> module.addSerializer(x, new EnumSerializer()));
     ReflectionHelper.ENUMS.forEach(x -> module.addDeserializer(x, new EnumDeserializer<>(x)));
     return module;
   }
