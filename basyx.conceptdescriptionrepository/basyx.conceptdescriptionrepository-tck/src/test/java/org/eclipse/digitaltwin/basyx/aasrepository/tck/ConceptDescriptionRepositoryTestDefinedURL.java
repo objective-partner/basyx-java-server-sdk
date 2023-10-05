@@ -38,7 +38,6 @@ import org.eclipse.digitaltwin.aas4j.v3.dataformat.json.JsonDeserializer;
 import org.eclipse.digitaltwin.aas4j.v3.model.ConceptDescription;
 import org.eclipse.digitaltwin.basyx.conceptdescriptionrepository.core.DummyConceptDescriptionFactory;
 import org.eclipse.digitaltwin.basyx.conceptdescriptionrepository.http.ConceptDescriptionRepositoryHTTPSuite;
-
 import com.google.gson.Gson;
 
 /**

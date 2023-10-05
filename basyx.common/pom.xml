@@ -8,6 +8,7 @@
 		<version>${revision}</version>
 	</parent>
 
+	<groupId>org.eclipse.digitaltwin.basyx.common</groupId>
 	<artifactId>basyx.common</artifactId>
 	<packaging>pom</packaging>
 

@@ -53,7 +53,7 @@ public class BasyxControllerAdvice {
 
 	@ExceptionHandler(ResponseStatusException.class)
 	public ResponseEntity<Result> handleExceptions(ResponseStatusException ex) {
-		return newResultEntity(ex, ex.getStatus());
+		return newResultEntity(ex, HttpStatus.valueOf(ex.getStatusCode().value()));
 	}
 	
 	@ExceptionHandler(Exception.class)

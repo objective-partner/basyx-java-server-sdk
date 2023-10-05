@@ -63,6 +63,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.MockBeans;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.test.annotation.DirtiesContext;
@@ -233,7 +234,7 @@ public class BasyxRegistryApiDelegateTest {
 	@Test
 	public void whenPostSubmodelDescriptorDescriptorById_thenNoContent() throws IOException {
 		AssetAdministrationShellDescriptor descr = new AssetAdministrationShellDescriptor(ID_2);
-		assertThat(aasController.putAssetAdministrationShellDescriptorById(encode(ID_2), descr).getStatusCode()).isEqualByComparingTo(HttpStatus.NO_CONTENT);
+		assertThat(aasController.putAssetAdministrationShellDescriptorById(encode(ID_2), descr).getStatusCode()).isEqualTo(HttpStatusCode.valueOf(HttpStatus.NO_CONTENT.value()));
 		SubmodelDescriptor input = new SubmodelDescriptor(ID_2_3, List.of());
 		ResponseEntity<?> response = aasController.postSubmodelDescriptorThroughSuperpath(encode(ID_2), input);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);

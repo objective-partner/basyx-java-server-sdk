@@ -8,10 +8,10 @@
  * distribute, sublicense, and/or sell copies of the Software, and to
  * permit persons to whom the Software is furnished to do so, subject to
  * the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,203 +24,205 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.http.model;
 
-import java.util.Objects;
-
-import org.springframework.validation.annotation.Validated;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
+import org.springframework.validation.annotation.Validated;
+
+import java.util.Objects;
 
 /**
  * Message
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2023-04-24T09:29:02.769762272Z[GMT]")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen",
+    date = "2023-04-24T09:29:02.769762272Z[GMT]")
 
 public class Message {
-	@JsonProperty("code")
-	private String code = null;
+  @JsonProperty("code")
+  private String code = null;
 
-	@JsonProperty("correlationId")
-	private String correlationId = null;
+  @JsonProperty("correlationId")
+  private String correlationId = null;
 
-	/**
-	 * Gets or Sets messageType
-	 */
-	public enum MessageTypeEnum {
-		UNDEFINED("Undefined"),
 
-		INFO("Info"),
+  /**
+   * Gets or Sets messageType
+   */
+  public enum MessageTypeEnum {
+    UNDEFINED("Undefined"),
 
-		WARNING("Warning"),
+    INFO("Info"),
 
-		ERROR("Error"),
+    WARNING("Warning"),
 
-		EXCEPTION("Exception");
+    ERROR("Error"),
 
-		private String value;
+    EXCEPTION("Exception");
 
-		MessageTypeEnum(String value) {
-			this.value = value;
-		}
+    private String value;
 
-		@Override
-		@JsonValue
-		public String toString() {
-			return String.valueOf(value);
-		}
+    MessageTypeEnum(String value) {
+      this.value = value;
+    }
 
-		@JsonCreator
-		public static MessageTypeEnum fromValue(String text) {
-			for (MessageTypeEnum b : MessageTypeEnum.values()) {
-				if (String.valueOf(b.value).equals(text)) {
-					return b;
-				}
-			}
-			return null;
-		}
-	}
+    @Override
+    @JsonValue
+    public String toString() {
+      return String.valueOf(value);
+    }
 
-	@JsonProperty("messageType")
-	private MessageTypeEnum messageType = null;
+    @JsonCreator
+    public static MessageTypeEnum fromValue(String text) {
+      for (MessageTypeEnum b : MessageTypeEnum.values()) {
+        if (String.valueOf(b.value).equals(text)) {
+          return b;
+        }
+      }
+      return null;
+    }
+  }
 
-	@JsonProperty("text")
-	private String text = null;
 
-	@JsonProperty("timestamp")
-	private String timestamp = null;
+  @JsonProperty("messageType")
+  private MessageTypeEnum messageType = null;
 
-	public Message code(String code) {
-		this.code = code;
-		return this;
-	}
+  @JsonProperty("text")
+  private String text = null;
 
-	/**
-	 * Get code
-	 * 
-	 * @return code
-	 **/
-	public String getCode() {
-		return code;
-	}
+  @JsonProperty("timestamp")
+  private String timestamp = null;
 
-	public void setCode(String code) {
-		this.code = code;
-	}
+  public Message code(String code) {
+    this.code = code;
+    return this;
+  }
 
-	public Message correlationId(String correlationId) {
-		this.correlationId = correlationId;
-		return this;
-	}
+  /**
+   * Get code
+   *
+   * @return code
+   **/
+  public String getCode() {
+    return code;
+  }
 
-	/**
-	 * Get correlationId
-	 * 
-	 * @return correlationId
-	 **/
-	public String getCorrelationId() {
-		return correlationId;
-	}
+  public void setCode(String code) {
+    this.code = code;
+  }
 
-	public void setCorrelationId(String correlationId) {
-		this.correlationId = correlationId;
-	}
+  public Message correlationId(String correlationId) {
+    this.correlationId = correlationId;
+    return this;
+  }
 
-	public Message messageType(MessageTypeEnum messageType) {
-		this.messageType = messageType;
-		return this;
-	}
+  /**
+   * Get correlationId
+   *
+   * @return correlationId
+   **/
+  public String getCorrelationId() {
+    return correlationId;
+  }
 
-	/**
-	 * Get messageType
-	 * 
-	 * @return messageType
-	 **/
-	public MessageTypeEnum getMessageType() {
-		return messageType;
-	}
+  public void setCorrelationId(String correlationId) {
+    this.correlationId = correlationId;
+  }
 
-	public void setMessageType(MessageTypeEnum messageType) {
-		this.messageType = messageType;
-	}
+  public Message messageType(MessageTypeEnum messageType) {
+    this.messageType = messageType;
+    return this;
+  }
 
-	public Message text(String text) {
-		this.text = text;
-		return this;
-	}
+  /**
+   * Get messageType
+   *
+   * @return messageType
+   **/
+  public MessageTypeEnum getMessageType() {
+    return messageType;
+  }
 
-	/**
-	 * Get text
-	 * 
-	 * @return text
-	 **/
-	public String getText() {
-		return text;
-	}
+  public void setMessageType(MessageTypeEnum messageType) {
+    this.messageType = messageType;
+  }
 
-	public void setText(String text) {
-		this.text = text;
-	}
+  public Message text(String text) {
+    this.text = text;
+    return this;
+  }
 
-	public Message timestamp(String timestamp) {
-		this.timestamp = timestamp;
-		return this;
-	}
+  /**
+   * Get text
+   *
+   * @return text
+   **/
+  public String getText() {
+    return text;
+  }
 
-	/**
-	 * Get timestamp
-	 * 
-	 * @return timestamp
-	 **/
-	public String getTimestamp() {
-		return timestamp;
-	}
+  public void setText(String text) {
+    this.text = text;
+  }
 
-	public void setTimestamp(String timestamp) {
-		this.timestamp = timestamp;
-	}
+  public Message timestamp(String timestamp) {
+    this.timestamp = timestamp;
+    return this;
+  }
 
-	@Override
-	public boolean equals(java.lang.Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		Message message = (Message) o;
-		return Objects.equals(this.code, message.code) && Objects.equals(this.correlationId, message.correlationId) && Objects.equals(this.messageType, message.messageType) && Objects.equals(this.text, message.text)
-				&& Objects.equals(this.timestamp, message.timestamp);
-	}
+  /**
+   * Get timestamp
+   *
+   * @return timestamp
+   **/
+  public String getTimestamp() {
+    return timestamp;
+  }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(code, correlationId, messageType, text, timestamp);
-	}
+  public void setTimestamp(String timestamp) {
+    this.timestamp = timestamp;
+  }
 
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("class Message {\n");
+  @Override
+  public boolean equals(java.lang.Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Message message = (Message) o;
+    return Objects.equals(this.code, message.code) && Objects.equals(this.correlationId,
+        message.correlationId) && Objects.equals(this.messageType, message.messageType) && Objects.equals(this.text,
+        message.text) && Objects.equals(this.timestamp, message.timestamp);
+  }
 
-		sb.append("    code: ").append(toIndentedString(code)).append("\n");
-		sb.append("    correlationId: ").append(toIndentedString(correlationId)).append("\n");
-		sb.append("    messageType: ").append(toIndentedString(messageType)).append("\n");
-		sb.append("    text: ").append(toIndentedString(text)).append("\n");
-		sb.append("    timestamp: ").append(toIndentedString(timestamp)).append("\n");
-		sb.append("}");
-		return sb.toString();
-	}
+  @Override
+  public int hashCode() {
+    return Objects.hash(code, correlationId, messageType, text, timestamp);
+  }
 
-	/**
-	 * Convert the given object to string with each line indented by 4 spaces
-	 * (except the first line).
-	 */
-	private String toIndentedString(java.lang.Object o) {
-		if (o == null) {
-			return "null";
-		}
-		return o.toString().replace("\n", "\n    ");
-	}
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("class Message {\n");
+
+    sb.append("    code: ").append(toIndentedString(code)).append("\n");
+    sb.append("    correlationId: ").append(toIndentedString(correlationId)).append("\n");
+    sb.append("    messageType: ").append(toIndentedString(messageType)).append("\n");
+    sb.append("    text: ").append(toIndentedString(text)).append("\n");
+    sb.append("    timestamp: ").append(toIndentedString(timestamp)).append("\n");
+    sb.append("}");
+    return sb.toString();
+  }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces (except the first line).
+   */
+  private String toIndentedString(java.lang.Object o) {
+    if (o == null) {
+      return "null";
+    }
+    return o.toString().replace("\n", "\n    ");
+  }
 }
