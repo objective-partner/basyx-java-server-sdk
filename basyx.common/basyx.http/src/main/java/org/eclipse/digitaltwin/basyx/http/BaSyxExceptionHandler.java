@@ -38,12 +38,12 @@ import org.eclipse.digitaltwin.basyx.core.exceptions.NotInvokableException;
 import org.eclipse.digitaltwin.basyx.http.model.Message;
 import org.eclipse.digitaltwin.basyx.http.model.Message.MessageTypeEnum;
 import org.eclipse.digitaltwin.basyx.http.model.Result;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -57,13 +57,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @ControllerAdvice
 public class BaSyxExceptionHandler extends ResponseEntityExceptionHandler {
 
-    private ObjectMapper objectMapper = new ObjectMapper();
-
+  private final ObjectMapper objectMapper = new ObjectMapper();
 
 	@ExceptionHandler(ElementDoesNotExistException.class)
 	public ResponseEntity<String> handleElementNotFoundException(ElementDoesNotExistException exception, WebRequest request) {
 		String resultJson = deriveResultFromException(exception, HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(resultJson, HttpStatus.NOT_FOUND);
+    return new ResponseEntity<>(resultJson, HttpStatus.NOT_FOUND);
 	}
 
 	@ExceptionHandler(AssetLinkDoesNotExistException.class)
@@ -73,7 +72,7 @@ public class BaSyxExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(CollidingIdentifierException.class)
 	public ResponseEntity<String> handleCollidingIdentifierException(CollidingIdentifierException exception, WebRequest request) {
-	    String resultJson = deriveResultFromException(exception, HttpStatus.CONFLICT);
+    String resultJson = deriveResultFromException(exception, HttpStatus.CONFLICT);
 		return new ResponseEntity<>(resultJson, HttpStatus.CONFLICT);
 	}
 
@@ -85,43 +84,50 @@ public class BaSyxExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(IllegalArgumentException.class)
 	public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException exception) {
 		String resultJson = deriveResultFromException(exception, HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(resultJson, HttpStatus.BAD_REQUEST);
+    return new ResponseEntity<>(resultJson, HttpStatus.BAD_REQUEST);
 	}
-	
+
 	@ExceptionHandler(IdentificationMismatchException.class)
 	public ResponseEntity<String> handleIdMismatchException(IdentificationMismatchException exception) {
 	  String resultJson = deriveResultFromException(exception, HttpStatus.BAD_REQUEST);
-      return new ResponseEntity<>(resultJson, HttpStatus.BAD_REQUEST);
+    return new ResponseEntity<>(resultJson, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(FeatureNotSupportedException.class)
 	public ResponseEntity<String> handleFeatureNotSupportedException(FeatureNotSupportedException exception) {
 		String resultJson = deriveResultFromException(exception, HttpStatus.NOT_IMPLEMENTED);
-        return new ResponseEntity<>(resultJson, HttpStatus.NOT_IMPLEMENTED);
+    return new ResponseEntity<>(resultJson, HttpStatus.NOT_IMPLEMENTED);
 	}
 
 	@ExceptionHandler(NotInvokableException.class)
 	public ResponseEntity<String> handleNotInvokableException(NotInvokableException exception) {
 		String resultJson = deriveResultFromException(exception, HttpStatus.METHOD_NOT_ALLOWED);
-        return new ResponseEntity<>(resultJson, HttpStatus.METHOD_NOT_ALLOWED);
+    return new ResponseEntity<>(resultJson, HttpStatus.METHOD_NOT_ALLOWED);
+	}
+	@ExceptionHandler(ResponseStatusException.class)
+	public ResponseEntity<String> handleResponseStatusException(ResponseStatusException exception) {
+    HttpStatus httpStatus = HttpStatus.valueOf(exception.getStatusCode().value());
+		String resultJson = deriveResultFromException(exception, httpStatus);
+    return new ResponseEntity<>(resultJson, httpStatus);
 	}
 
-	  private String deriveResultFromException(Exception exception, HttpStatus statusCode) {
-	    Message message = new Message();
-	      message.code(String.valueOf(statusCode.value()));
-	      message.correlationId(UUID.randomUUID().toString());
-	      message.messageType(MessageTypeEnum.EXCEPTION);
-	      message.setText(exception.getMessage());
-	      message.setTimestamp(OffsetDateTime.now().toString());
-	        Result result = new Result();
-	        result.addMessagesItem(message);
-	        String resultJson;
+  private String deriveResultFromException(Exception exception, HttpStatus statusCode) {
+    Message message = new Message();
+    message.code(String.valueOf(statusCode.value()));
+    message.correlationId(UUID.randomUUID().toString());
+    message.messageType(MessageTypeEnum.EXCEPTION);
+    message.setText(exception.getMessage());
+    message.setTimestamp(OffsetDateTime.now().toString());
 
-	      try {
-	        resultJson = objectMapper.writeValueAsString(result);
-	      } catch (JsonProcessingException e) {
-	        throw new RuntimeException("Failed to marshal result object, while handling exception in cause", exception);
-	      }
-	    return resultJson;
-	  }
+    Result result = new Result();
+    result.addMessagesItem(message);
+    String resultJson;
+
+    try {
+      resultJson = objectMapper.writeValueAsString(result);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException("Failed to marshal result object, while handling exception in cause", exception);
+    }
+    return resultJson;
+  }
 }
