@@ -55,12 +55,12 @@ public enum Profile implements StandardizedLiteralEnum {
   SUBMODELREPOSITORYSERVICESPECIFICATION_SSP_004(
       "https://admin-shell.io/aas/API/3/0/SubmodelRepositoryServiceSpecification/SSP-004"),
 
-  CONCEPTDESCRIPTIONREPOSITORYSERVICESPECIFICATION_SSP_001(
-      "https://admin-shell.io/aas/API/3/0/ConceptDescriptionRepositoryServiceSpecification/SSP-001");
+  CONCEPTDESCRIPTIONSERVICESPECIFICATION_SSP_001(
+      "https://admin-shell.io/aas/API/3/0/ConceptDescriptionServiceSpecification/SSP-001");
 
   private String value;
 
-  private Profile(String value) {
+  Profile(String value) {
     this.value = value;
   }
 

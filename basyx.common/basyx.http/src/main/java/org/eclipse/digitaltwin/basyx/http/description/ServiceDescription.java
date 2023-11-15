@@ -6,6 +6,10 @@ import jakarta.annotation.Generated;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 
+
+import javax.annotation.Generated;
+import javax.validation.Valid;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

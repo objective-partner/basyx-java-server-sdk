@@ -28,6 +28,8 @@ package org.eclipse.digitaltwin.basyx.http;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
+import org.eclipse.digitaltwin.basyx.core.exceptions.AssetLinkDoesNotExistException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingAssetLinkException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.FeatureNotSupportedException;
@@ -54,9 +56,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @ControllerAdvice
 public class BaSyxExceptionHandler extends ResponseEntityExceptionHandler {
-  
+
     private ObjectMapper objectMapper = new ObjectMapper();
-  
+
 
 	@ExceptionHandler(ElementDoesNotExistException.class)
 	public ResponseEntity<String> handleElementNotFoundException(ElementDoesNotExistException exception, WebRequest request) {
@@ -64,10 +66,20 @@ public class BaSyxExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(resultJson, HttpStatus.NOT_FOUND);
 	}
 
+	@ExceptionHandler(AssetLinkDoesNotExistException.class)
+	public <T> ResponseEntity<T> handleElementNotFoundException(AssetLinkDoesNotExistException exception, WebRequest request) {
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
+
 	@ExceptionHandler(CollidingIdentifierException.class)
 	public ResponseEntity<String> handleCollidingIdentifierException(CollidingIdentifierException exception, WebRequest request) {
 	    String resultJson = deriveResultFromException(exception, HttpStatus.CONFLICT);
 		return new ResponseEntity<>(resultJson, HttpStatus.CONFLICT);
+	}
+
+	@ExceptionHandler(CollidingAssetLinkException.class)
+	public <T> ResponseEntity<T> handleCollidingIdentifierException(CollidingAssetLinkException exception, WebRequest request) {
+		return new ResponseEntity<>(HttpStatus.CONFLICT);
 	}
 
 	@ExceptionHandler(IllegalArgumentException.class)
@@ -104,7 +116,7 @@ public class BaSyxExceptionHandler extends ResponseEntityExceptionHandler {
 	        Result result = new Result();
 	        result.addMessagesItem(message);
 	        String resultJson;
-	        
+
 	      try {
 	        resultJson = objectMapper.writeValueAsString(result);
 	      } catch (JsonProcessingException e) {
