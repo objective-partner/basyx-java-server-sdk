@@ -26,6 +26,14 @@ package org.eclipse.digitaltwin.basyx.aasregistry.service.storage.mongodb;
 
 import com.mongodb.ClientSessionOptions;
 import jakarta.validation.Valid;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.eclipse.digitaltwin.basyx.aasregistry.model.AssetAdministrationShellDescriptor;
@@ -55,27 +63,12 @@ import org.springframework.data.mongodb.core.aggregation.AggregationUpdate;
 import org.springframework.data.mongodb.core.aggregation.ArrayOperators;
 import org.springframework.data.mongodb.core.aggregation.ComparisonOperators;
 import org.springframework.data.mongodb.core.aggregation.MatchOperation;
-import org.springframework.data.mongodb.core.aggregation.SetOperation;
 import org.springframework.data.mongodb.core.aggregation.SortOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.mongodb.core.query.UpdateDefinition;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import com.mongodb.ClientSessionOptions;
-import com.mongodb.internal.operation.UpdateOperation;
-
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class MongoDbAasRegistryStorage implements AasRegistryStorage {
@@ -93,14 +86,14 @@ public class MongoDbAasRegistryStorage implements AasRegistryStorage {
 
   @Override
   public CursorResult<List<AssetAdministrationShellDescriptor>> getAllAasDescriptors(@NonNull PaginationInfo pRequest,
-      @NonNull DescriptorFilter filter) {
+    @NonNull DescriptorFilter filter) {
     List<AggregationOperation> allAggregations = new LinkedList<>();
     applyFilter(filter, allAggregations);
     applySorting(allAggregations);
     applyPagination(pRequest, allAggregations);
     AggregationResults<AssetAdministrationShellDescriptor> results =
-        template.aggregate(Aggregation.newAggregation(allAggregations), AssetAdministrationShellDescriptor.class,
-            AssetAdministrationShellDescriptor.class);
+      template.aggregate(Aggregation.newAggregation(allAggregations), AssetAdministrationShellDescriptor.class,
+        AssetAdministrationShellDescriptor.class);
     List<AssetAdministrationShellDescriptor> foundDescriptors = results.getMappedResults();
     String cursor = resolveCursor(pRequest, foundDescriptors, AssetAdministrationShellDescriptor::getId);
     return new CursorResult<>(cursor, foundDescriptors);
@@ -112,7 +105,7 @@ public class MongoDbAasRegistryStorage implements AasRegistryStorage {
   }
 
   private <T> String resolveCursor(@NonNull PaginationInfo pRequest, List<T> foundDescriptors,
-      Function<T, String> idResolver) {
+    Function<T, String> idResolver) {
     if (foundDescriptors.isEmpty() || !pRequest.isPaged()) {
       return null;
     }
@@ -158,9 +151,9 @@ public class MongoDbAasRegistryStorage implements AasRegistryStorage {
 
   @Override
   public AssetAdministrationShellDescriptor getAasDescriptor(@NonNull String aasDescriptorId)
-      throws AasDescriptorNotFoundException {
+    throws AasDescriptorNotFoundException {
     AssetAdministrationShellDescriptor descriptor =
-        template.findById(aasDescriptorId, AssetAdministrationShellDescriptor.class);
+      template.findById(aasDescriptorId, AssetAdministrationShellDescriptor.class);
     if (descriptor == null) {
       throw new AasDescriptorNotFoundException(aasDescriptorId);
     }
@@ -169,7 +162,7 @@ public class MongoDbAasRegistryStorage implements AasRegistryStorage {
 
   @Override
   public void insertAasDescriptor(@Valid AssetAdministrationShellDescriptor descr)
-      throws AasDescriptorAlreadyExistsException {
+    throws AasDescriptorAlreadyExistsException {
     try {
       template.insert(descr);
     } catch (org.springframework.dao.DuplicateKeyException ex) {
@@ -179,7 +172,7 @@ public class MongoDbAasRegistryStorage implements AasRegistryStorage {
 
   @Override
   public void replaceAasDescriptor(@NonNull String aasDescriptorId,
-      @NonNull AssetAdministrationShellDescriptor descriptor) throws AasDescriptorNotFoundException {
+    @NonNull AssetAdministrationShellDescriptor descriptor) throws AasDescriptorNotFoundException {
     if (!Objects.equals(aasDescriptorId, descriptor.getId())) {
       // we can not update the _id element -> delete and save
       moveInTransaction(aasDescriptorId, descriptor);
@@ -193,7 +186,7 @@ public class MongoDbAasRegistryStorage implements AasRegistryStorage {
   }
 
   private void moveInTransaction(@NonNull String aasDescriptorId,
-      @NonNull AssetAdministrationShellDescriptor descriptor) {
+    @NonNull AssetAdministrationShellDescriptor descriptor) {
     SessionScoped scoped = template.withSession(ClientSessionOptions.builder().build());
     boolean removed = scoped.execute(operations -> {
       Query query = Query.query(Criteria.where(ID).is(aasDescriptorId));
@@ -218,9 +211,9 @@ public class MongoDbAasRegistryStorage implements AasRegistryStorage {
 
   @Override
   public CursorResult<List<SubmodelDescriptor>> getAllSubmodels(@NonNull String aasDescriptorId,
-      @NonNull PaginationInfo pRequest) throws AasDescriptorNotFoundException {
+    @NonNull PaginationInfo pRequest) throws AasDescriptorNotFoundException {
     if (!template.exists(Query.query(Criteria.where(ID).is(aasDescriptorId)),
-        AssetAdministrationShellDescriptor.class)) {
+      AssetAdministrationShellDescriptor.class)) {
       throw new AasDescriptorNotFoundException(aasDescriptorId);
     }
     List<AggregationOperation> allAggregations = new LinkedList<>();
@@ -230,8 +223,8 @@ public class MongoDbAasRegistryStorage implements AasRegistryStorage {
     this.applySorting(allAggregations);
     this.applyPagination(pRequest, allAggregations);
     AggregationResults<SubmodelDescriptor> results =
-        template.aggregate(Aggregation.newAggregation(allAggregations), AssetAdministrationShellDescriptor.class,
-            SubmodelDescriptor.class);
+      template.aggregate(Aggregation.newAggregation(allAggregations), AssetAdministrationShellDescriptor.class,
+        SubmodelDescriptor.class);
     List<SubmodelDescriptor> submodels = results.getMappedResults();
     String cursor = resolveCursor(pRequest, submodels, SubmodelDescriptor::getId);
     return new CursorResult<>(cursor, submodels);
@@ -239,15 +232,15 @@ public class MongoDbAasRegistryStorage implements AasRegistryStorage {
 
   @Override
   public SubmodelDescriptor getSubmodel(@NonNull String aasDescriptorId, @NonNull String submodelId)
-      throws AasDescriptorNotFoundException, SubmodelNotFoundException {
+    throws AasDescriptorNotFoundException, SubmodelNotFoundException {
     List<AggregationOperation> all = new ArrayList<>();
     all.add(Aggregation.match(Criteria.where(ID).is(aasDescriptorId)));
     ArrayOperators.Filter filter = ArrayOperators.arrayOf(SUBMODEL_DESCRIPTORS).filter().as(SUBMODEL_DESCRIPTORS)
-        .by(ComparisonOperators.valueOf(SUBMODEL_DESCRIPTORS_ID).equalToValue(submodelId));
+      .by(ComparisonOperators.valueOf(SUBMODEL_DESCRIPTORS_ID).equalToValue(submodelId));
     all.add(Aggregation.project().and(filter).as(SUBMODEL_DESCRIPTORS));
     AggregationResults<AssetAdministrationShellDescriptor> results =
-        template.aggregate(Aggregation.newAggregation(all), AssetAdministrationShellDescriptor.class,
-            AssetAdministrationShellDescriptor.class);
+      template.aggregate(Aggregation.newAggregation(all), AssetAdministrationShellDescriptor.class,
+        AssetAdministrationShellDescriptor.class);
     List<AssetAdministrationShellDescriptor> aasDescriptors = results.getMappedResults();
     if (aasDescriptors.isEmpty()) {
       throw new AasDescriptorNotFoundException(aasDescriptorId);
@@ -261,29 +254,29 @@ public class MongoDbAasRegistryStorage implements AasRegistryStorage {
 
   @Override
   public void insertSubmodel(@NonNull String aasDescriptorId, @NonNull SubmodelDescriptor submodel)
-      throws AasDescriptorNotFoundException, SubmodelAlreadyExistsException {
+    throws AasDescriptorNotFoundException, SubmodelAlreadyExistsException {
     Criteria criteria = Criteria.where(ID).is(aasDescriptorId).and(SUBMODEL_DESCRIPTORS_ID).ne(submodel.getId());
     Query query = Query.query(criteria);
     UpdateDefinition def = new Update().push(SUBMODEL_DESCRIPTORS, submodel);
     AssetAdministrationShellDescriptor descr =
-        template.findAndModify(query, def, AssetAdministrationShellDescriptor.class);
+      template.findAndModify(query, def, AssetAdministrationShellDescriptor.class);
     assertInsertPerformed(descr, aasDescriptorId, submodel.getId());
   }
 
   @Override
   public void replaceSubmodel(@NonNull String aasDescriptorId, @NonNull String submodelId,
-      @NonNull SubmodelDescriptor submodel) throws AasDescriptorNotFoundException, SubmodelNotFoundException {
+    @NonNull SubmodelDescriptor submodel) throws AasDescriptorNotFoundException, SubmodelNotFoundException {
     Criteria criteria =
-        Criteria.where(ID).is(aasDescriptorId).and(SUBMODEL_DESCRIPTORS).elemMatch(Criteria.where(ID).is(submodelId));
+      Criteria.where(ID).is(aasDescriptorId).and(SUBMODEL_DESCRIPTORS).elemMatch(Criteria.where(ID).is(submodelId));
     Query query = Query.query(criteria);
     UpdateDefinition def = Update.update(MATCHING_SUBMODEL_DESCRIPTORS, submodel);
     AssetAdministrationShellDescriptor descr =
-        template.findAndModify(query, def, AssetAdministrationShellDescriptor.class);
+      template.findAndModify(query, def, AssetAdministrationShellDescriptor.class);
     assertReplacePerformed(descr, aasDescriptorId, submodelId);
   }
 
   private void assertInsertPerformed(AssetAdministrationShellDescriptor descr, String aasDescriptorId,
-      String submodelId) {
+    String submodelId) {
     if (descr == null) {
       getAasDescriptor(aasDescriptorId);
       throw new SubmodelAlreadyExistsException(aasDescriptorId, submodelId);
@@ -291,7 +284,7 @@ public class MongoDbAasRegistryStorage implements AasRegistryStorage {
   }
 
   private void assertReplacePerformed(AssetAdministrationShellDescriptor descr, String aasDescriptorId,
-      String submodelId) {
+    String submodelId) {
     if (descr == null) {
       getAasDescriptor(aasDescriptorId);
       throw new SubmodelNotFoundException(aasDescriptorId, submodelId);
@@ -300,11 +293,13 @@ public class MongoDbAasRegistryStorage implements AasRegistryStorage {
 
   @Override
   public void removeSubmodel(@NonNull String aasDescriptorId, @NonNull String submodelId)
-      throws AasDescriptorNotFoundException, SubmodelNotFoundException {
+    throws AasDescriptorNotFoundException, SubmodelNotFoundException {
     AggregationExpression notEquals = ComparisonOperators.valueOf(SUBMODEL_DESCRIPTORS_ID).notEqualToValue(submodelId);
-		AggregationExpression filterArray = ArrayOperators.arrayOf(SUBMODEL_DESCRIPTORS).filter().as(SUBMODEL_DESCRIPTORS).by(notEquals);
-		AggregationUpdate update =  AggregationUpdate.update().set(SUBMODEL_DESCRIPTORS).toValue(filterArray);
-		AssetAdministrationShellDescriptor old = template.findAndModify(Query.query(Criteria.where(ID).is(aasDescriptorId)), update, AssetAdministrationShellDescriptor.class);
+    AggregationExpression filterArray = ArrayOperators.arrayOf(SUBMODEL_DESCRIPTORS).filter().as(SUBMODEL_DESCRIPTORS)
+      .by(notEquals);
+    AggregationUpdate update = AggregationUpdate.update().set(SUBMODEL_DESCRIPTORS).toValue(filterArray);
+    AssetAdministrationShellDescriptor old = template.findAndModify(Query.query(Criteria.where(ID).is(aasDescriptorId)),
+      update, AssetAdministrationShellDescriptor.class);
     if (old == null) {
       throw new AasDescriptorNotFoundException(submodelId);
     }
@@ -332,7 +327,7 @@ public class MongoDbAasRegistryStorage implements AasRegistryStorage {
     Query query = Query.query(Criteria.where(ID).exists(true));
     query.fields().include(ID);
     List<AssetAdministrationShellDescriptor> list =
-        template.findAllAndRemove(query, AssetAdministrationShellDescriptor.class);
+      template.findAllAndRemove(query, AssetAdministrationShellDescriptor.class);
     return list.stream().map(AssetAdministrationShellDescriptor::getId).collect(Collectors.toSet());
   }
 
@@ -354,8 +349,8 @@ public class MongoDbAasRegistryStorage implements AasRegistryStorage {
 
     Aggregation aggregation = Aggregation.newAggregation(aggregationOps);
     AggregationResults<AssetAdministrationShellDescriptor> results =
-        template.aggregate(aggregation, AssetAdministrationShellDescriptor.class,
-            AssetAdministrationShellDescriptor.class);
+      template.aggregate(aggregation, AssetAdministrationShellDescriptor.class,
+        AssetAdministrationShellDescriptor.class);
 
     List<AssetAdministrationShellDescriptor> descriptors = results.getMappedResults();
     return new ShellDescriptorSearchResponse(total, descriptors);

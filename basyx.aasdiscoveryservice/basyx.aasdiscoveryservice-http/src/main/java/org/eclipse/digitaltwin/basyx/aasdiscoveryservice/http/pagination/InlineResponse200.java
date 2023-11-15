@@ -25,21 +25,21 @@
 
 package org.eclipse.digitaltwin.basyx.aasdiscoveryservice.http.pagination;
 
-import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Objects;
 import org.eclipse.digitaltwin.basyx.http.pagination.PagedResult;
 import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.annotation.Generated;
+import jakarta.validation.Valid;
 
 /**
  * InlineResponse200
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2023-10-10T10:16:17.046754509Z[GMT]")
+@Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2023-10-10T10:16:17.046754509Z[GMT]")
 
 public class InlineResponse200 extends PagedResult {
 	@JsonProperty("result")

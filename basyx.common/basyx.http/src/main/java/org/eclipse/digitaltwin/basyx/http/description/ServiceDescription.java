@@ -1,19 +1,14 @@
 package org.eclipse.digitaltwin.basyx.http.description;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.Generated;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
-
-
-import javax.annotation.Generated;
-import javax.validation.Valid;
-import javax.validation.constraints.Size;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * The Description object enables servers to present their capabilities to the clients, in particular which profiles

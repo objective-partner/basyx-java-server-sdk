@@ -19,7 +19,7 @@
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>basyx.aasrepository-core</artifactId>
 		</dependency>
-		<dependency>
+		<dependency> 
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>basyx.aasrepository-backend</artifactId>
 		</dependency>
