@@ -12,7 +12,7 @@
 
 	<dependencies>	
 	    <dependency>
-			<groupId>org.eclipse.digitaltwin.basyx</groupId>
+			<groupId>org.eclipse.digitaltwin.basyx.common</groupId>
 			<artifactId>basyx.core</artifactId>
 		</dependency>	
 		<dependency>
@@ -25,7 +25,7 @@
 			<artifactId>jackson-databind</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.digitaltwin.basyx</groupId>
+			<groupId>org.eclipse.digitaltwin.basyx.common</groupId>
 			<artifactId>basyx.http</artifactId>
 		</dependency>
 	</dependencies>

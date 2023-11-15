@@ -13,11 +13,11 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.eclipse.digitaltwin.basyx</groupId>
+			<groupId>org.eclipse.digitaltwin.basyx.common</groupId>
 			<artifactId>basyx.http</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.digitaltwin.basyx</groupId>
+			<groupId>org.eclipse.digitaltwin.basyx.common</groupId>
 			<artifactId>basyx.http</artifactId>
 			<scope>test</scope>
 			<classifier>tests</classifier>
@@ -45,9 +45,9 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-ui</artifactId>
-		</dependency>
+	      <groupId>org.springdoc</groupId>
+	      <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+	    </dependency>
 		<dependency>
 			<groupId>jakarta.validation</groupId>
     		<artifactId>jakarta.validation-api</artifactId>

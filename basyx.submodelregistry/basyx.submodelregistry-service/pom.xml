@@ -162,7 +162,7 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.digitaltwin.basyx</groupId>
+			<groupId>org.eclipse.digitaltwin.basyx.common</groupId>
 			<artifactId>basyx.core</artifactId>
 		</dependency>
 		<dependency>

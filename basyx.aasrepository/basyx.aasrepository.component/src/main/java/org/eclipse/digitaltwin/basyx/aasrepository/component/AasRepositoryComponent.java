@@ -37,7 +37,7 @@ import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
  *
  */
 @SpringBootApplication(
-		scanBasePackages = "org.eclipse.digitaltwin.basyx", 
+		scanBasePackages = {"org.eclipse.digitaltwin.basyx", "org.eclipse.digitaltwin.basyx.aasrepository.backend"}, 
 		exclude = { MongoAutoConfiguration.class, MongoDataAutoConfiguration.class })
 public class AasRepositoryComponent {
 

@@ -30,7 +30,7 @@
 			<artifactId>basyx.submodelservice-backend-inmemory</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.digitaltwin.basyx</groupId>
+			<groupId>org.eclipse.digitaltwin.basyx.common</groupId>
 			<artifactId>basyx.mongodbcore</artifactId>
 		</dependency>
 		<dependency>
