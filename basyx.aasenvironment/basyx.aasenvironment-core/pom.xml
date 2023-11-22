@@ -23,7 +23,7 @@
 			<artifactId>basyx.conceptdescriptionrepository.component</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.digitaltwin.basyx.common</groupId>
+			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>basyx.core</artifactId>
 		</dependency>
 		<dependency>

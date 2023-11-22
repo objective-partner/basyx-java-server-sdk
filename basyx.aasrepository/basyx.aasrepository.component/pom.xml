@@ -52,7 +52,7 @@
 			<artifactId>basyx.aasrepository-feature-mqtt</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.digitaltwin.basyx.common</groupId>
+			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>basyx.http</artifactId>
 			<classifier>tests</classifier>
 			<scope>test</scope>

@@ -14,7 +14,7 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.eclipse.digitaltwin.basyx.common</groupId>
+			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>basyx.mongodbcore</artifactId>
 		</dependency>
 		<dependency>

@@ -269,29 +269,29 @@
       </dependency>
       <!-- basyx.common -->
       <dependency>
-        <groupId>org.eclipse.digitaltwin.basyx.common</groupId>
+        <groupId>org.eclipse.digitaltwin.basyx</groupId>
         <artifactId>basyx.core</artifactId>
         <version>${revision}</version>
       </dependency>
       <dependency>
-        <groupId>org.eclipse.digitaltwin.basyx.common</groupId>
+        <groupId>org.eclipse.digitaltwin.basyx</groupId>
         <artifactId>basyx.http</artifactId>
         <version>${revision}</version>
       </dependency>
       <dependency>
-		<groupId>org.eclipse.digitaltwin.basyx.common</groupId>
+		<groupId>org.eclipse.digitaltwin.basyx</groupId>
 		<artifactId>basyx.http</artifactId>
 		<version>${revision}</version>
 		<scope>test</scope>
 		<classifier>tests</classifier>
 	  </dependency>
       <dependency>
-        <groupId>org.eclipse.digitaltwin.basyx.common</groupId>
+        <groupId>org.eclipse.digitaltwin.basyx</groupId>
         <artifactId>basyx.mqttcore</artifactId>
         <version>${revision}</version>
       </dependency>
       <dependency>
-        <groupId>org.eclipse.digitaltwin.basyx.common</groupId>
+        <groupId>org.eclipse.digitaltwin.basyx</groupId>
         <artifactId>basyx.mongodbcore</artifactId>
         <version>${revision}</version>
       </dependency>

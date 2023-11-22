@@ -10,11 +10,11 @@
 	<artifactId>basyx.submodelservice-http</artifactId>
 	<dependencies>
 		<dependency>
-			<groupId>org.eclipse.digitaltwin.basyx.common</groupId>
+			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>basyx.http</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.digitaltwin.basyx.common</groupId>
+			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>basyx.http</artifactId>
 			<classifier>tests</classifier>
 		</dependency>

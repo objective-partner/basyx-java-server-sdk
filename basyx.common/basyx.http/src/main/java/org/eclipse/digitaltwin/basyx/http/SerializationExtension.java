@@ -25,7 +25,11 @@
 
 package org.eclipse.digitaltwin.basyx.http;
 
+import com.fasterxml.jackson.databind.Module;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Base interface for extending the default serialization with further
@@ -41,4 +45,8 @@ public interface SerializationExtension {
 	 * @param builder
 	 */
 	void extend(Jackson2ObjectMapperBuilder builder);
+
+  default List<Module> getModulesToInstall() {
+    return new ArrayList<>(0);
+  }
 }

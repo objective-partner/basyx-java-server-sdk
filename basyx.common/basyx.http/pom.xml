@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.eclipse.digitaltwin.basyx.common</groupId>
+    <groupId>org.eclipse.digitaltwin.basyx</groupId>
     <artifactId>basyx.common</artifactId>
     <version>${revision}</version>
   </parent>
@@ -13,7 +13,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.eclipse.digitaltwin.basyx.common</groupId>
+      <groupId>org.eclipse.digitaltwin.basyx</groupId>
       <artifactId>basyx.core</artifactId>
     </dependency>
     <dependency>
