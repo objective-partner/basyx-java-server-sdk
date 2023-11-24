@@ -30,8 +30,15 @@
  */
 package org.eclipse.digitaltwin.basyx.aasdiscoveryservice.http;
 
-import java.util.List;
-import org.eclipse.digitaltwin.aas4j.v3.model.SpecificAssetID;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import org.eclipse.digitaltwin.aas4j.v3.model.SpecificAssetId;
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.http.pagination.InlineResponse200;
 import org.eclipse.digitaltwin.basyx.http.Base64UrlEncodedIdentifier;
 import org.eclipse.digitaltwin.basyx.http.model.Result;
@@ -86,7 +93,7 @@ public interface LookupApi {
 
     @Operation(summary = "Returns a list of specific Asset identifiers based on an Asset Administration Shell id to edit discoverable content", description = "", tags={ "Asset Administration Shell Basic Discovery API" })
     @ApiResponses(value = { 
-        @ApiResponse(responseCode = "200", description = "Requested specific Asset identifiers", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = SpecificAssetID.class)))),
+        @ApiResponse(responseCode = "200", description = "Requested specific Asset identifiers", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = SpecificAssetId.class)))),
         
         @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
         
@@ -94,12 +101,12 @@ public interface LookupApi {
     @RequestMapping(value = "/lookup/shells/{aasIdentifier}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<SpecificAssetID>> getAllAssetLinksById(@Parameter(in = ParameterIn.PATH, description = "The Asset Administration Shell’s unique id (UTF8-BASE64-URL-encoded)", required=true, schema=@Schema()) @PathVariable("aasIdentifier") Base64UrlEncodedIdentifier aasIdentifier);
+    ResponseEntity<List<SpecificAssetId>> getAllAssetLinksById(@Parameter(in = ParameterIn.PATH, description = "The Asset Administration Shell’s unique id (UTF8-BASE64-URL-encoded)", required=true, schema=@Schema()) @PathVariable("aasIdentifier") Base64UrlEncodedIdentifier aasIdentifier);
 
 
     @Operation(summary = "Creates specific Asset identifiers linked to an Asset Administration Shell to edit discoverable content", description = "", tags={ "Asset Administration Shell Basic Discovery API" })
     @ApiResponses(value = { 
-        @ApiResponse(responseCode = "201", description = "Specific Asset identifiers created successfully", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = SpecificAssetID.class)))),
+        @ApiResponse(responseCode = "201", description = "Specific Asset identifiers created successfully", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = SpecificAssetId.class)))),
         
         @ApiResponse(responseCode = "400", description = "Bad Request, e.g. the request parameters of the format of the request body is wrong.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
         
@@ -112,7 +119,7 @@ public interface LookupApi {
         produces = { "application/json" }, 
         consumes = { "application/json" }, 
         method = RequestMethod.POST)
-    ResponseEntity<List<SpecificAssetID>> postAllAssetLinksById(@Parameter(in = ParameterIn.PATH, description = "The Asset Administration Shell’s unique id (UTF8-BASE64-URL-encoded)", required=true, schema=@Schema()) @PathVariable("aasIdentifier") Base64UrlEncodedIdentifier aasIdentifier, @Parameter(in = ParameterIn.DEFAULT, description = "A list of specific Asset identifiers", required=true, schema=@Schema()) @Valid @RequestBody List<SpecificAssetID> body);
+    ResponseEntity<List<SpecificAssetId>> postAllAssetLinksById(@Parameter(in = ParameterIn.PATH, description = "The Asset Administration Shell’s unique id (UTF8-BASE64-URL-encoded)", required=true, schema=@Schema()) @PathVariable("aasIdentifier") Base64UrlEncodedIdentifier aasIdentifier, @Parameter(in = ParameterIn.DEFAULT, description = "A list of specific Asset identifiers", required=true, schema=@Schema()) @Valid @RequestBody List<SpecificAssetId> body);
 
 }
 

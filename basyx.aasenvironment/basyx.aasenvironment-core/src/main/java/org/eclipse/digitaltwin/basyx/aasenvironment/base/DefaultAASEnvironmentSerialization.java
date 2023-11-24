@@ -57,23 +57,22 @@ import java.util.stream.Collectors;
  * @author zhangzai, danish
  */
 public class DefaultAASEnvironmentSerialization implements AasEnvironmentSerialization {
-
-  private static Logger logger = LoggerFactory.getLogger(DefaultAASEnvironmentSerialization.class);
-
-  private AasRepository aasRepository;
-  private SubmodelRepository submodelRepository;
-  private ConceptDescriptionRepository conceptDescriptionRepository;
-  private JsonSerializer jsonSerializer = new JsonSerializer();
-  private XmlSerializer xmlSerializer = new XmlSerializer();
-  private AASXSerializer aasxSerializer = new AASXSerializer();
-  private MetamodelCloneCreator cloneCreator = new MetamodelCloneCreator();
-
-  public DefaultAASEnvironmentSerialization(AasRepository aasRepository, SubmodelRepository submodelRepository,
-      ConceptDescriptionRepository conceptDescriptionRepository) {
-    this.aasRepository = aasRepository;
-    this.submodelRepository = submodelRepository;
-    this.conceptDescriptionRepository = conceptDescriptionRepository;
-  }
+	
+	private static Logger logger = LoggerFactory.getLogger(DefaultAASEnvironmentSerialization.class);
+	
+	private AasRepository aasRepository;
+	private SubmodelRepository submodelRepository;
+	private ConceptDescriptionRepository conceptDescriptionRepository;
+	private JsonSerializer jsonSerializer = new JsonSerializer();
+	private XmlSerializer xmlSerializer = new XmlSerializer();
+	private AASXSerializer aasxSerializer = new AASXSerializer();
+	private MetamodelCloneCreator cloneCreator = new MetamodelCloneCreator();
+	
+	public DefaultAASEnvironmentSerialization(AasRepository aasRepository, SubmodelRepository submodelRepository, ConceptDescriptionRepository conceptDescriptionRepository) {
+		this.aasRepository = aasRepository;
+		this.submodelRepository = submodelRepository;
+		this.conceptDescriptionRepository = conceptDescriptionRepository;
+	}
 
   @Override
   public String createJSONAASEnvironmentSerialization(@Valid List<String> aasIds, @Valid List<String> submodelIds,

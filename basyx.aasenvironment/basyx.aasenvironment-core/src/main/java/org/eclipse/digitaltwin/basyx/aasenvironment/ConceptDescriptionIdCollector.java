@@ -25,6 +25,11 @@
 
 package org.eclipse.digitaltwin.basyx.aasenvironment;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.core.internal.visitor.AssetAdministrationShellElementWalkerVisitor;
 import org.eclipse.digitaltwin.aas4j.v3.model.AnnotatedRelationshipElement;
 import org.eclipse.digitaltwin.aas4j.v3.model.BasicEventElement;
@@ -45,7 +50,7 @@ import org.eclipse.digitaltwin.aas4j.v3.model.Qualifier;
 import org.eclipse.digitaltwin.aas4j.v3.model.Referable;
 import org.eclipse.digitaltwin.aas4j.v3.model.ReferenceElement;
 import org.eclipse.digitaltwin.aas4j.v3.model.RelationshipElement;
-import org.eclipse.digitaltwin.aas4j.v3.model.SpecificAssetID;
+import org.eclipse.digitaltwin.aas4j.v3.model.SpecificAssetId;
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
 import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElementCollection;
 
@@ -87,12 +92,12 @@ public class ConceptDescriptionIdCollector implements AssetAdministrationShellEl
 
     hasSemantics.getSupplementalSemanticIds().forEach(this::visit);
 
-    if (hasSemantics.getSemanticID() == null)
-      return;
+		if (hasSemantics.getSemanticId() == null)
+			return;
 
-    visit(hasSemantics.getSemanticID());
-    conceptDescriptionIds.addAll(getConceptDescriptionIds(hasSemantics.getSemanticID().getKeys()));
-  }
+		visit(hasSemantics.getSemanticId());
+		conceptDescriptionIds.addAll(getConceptDescriptionIds(hasSemantics.getSemanticId().getKeys()));
+	}
 
   @Override
   public void visit(AnnotatedRelationshipElement annotatedRelationshipElement) {
@@ -140,11 +145,11 @@ public class ConceptDescriptionIdCollector implements AssetAdministrationShellEl
     AssetAdministrationShellElementWalkerVisitor.super.visit(identifiable);
   }
 
-  @Override
-  public void visit(SpecificAssetID specificAssetId) {
-    if (specificAssetId == null) {
-      return;
-    }
+	@Override
+	public void visit(SpecificAssetId specificAssetId) {
+		if (specificAssetId == null) {
+			return;
+		}
 
     visit((HasSemantics) specificAssetId);
 

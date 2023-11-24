@@ -82,21 +82,17 @@ public class TestAASEnvironmentSerialization {
     return submodels;
   }
 
-  private static Collection<AssetAdministrationShell> createDummyShells() {
-    AssetAdministrationShell shell1 =
-        new DefaultAssetAdministrationShell.Builder().id(AAS_TECHNICAL_DATA_ID).idShort(AAS_TECHNICAL_DATA_ID)
-            .assetInformation(new DefaultAssetInformation.Builder().assetKind(AssetKind.INSTANCE)
-                .globalAssetID(SUBMODEL_TECHNICAL_DATA_ID).build()).build();
+	private static Collection<AssetAdministrationShell> createDummyShells() {
+		AssetAdministrationShell shell1 = new DefaultAssetAdministrationShell.Builder().id(AAS_TECHNICAL_DATA_ID).idShort(AAS_TECHNICAL_DATA_ID)
+				.assetInformation(new DefaultAssetInformation.Builder().assetKind(AssetKind.INSTANCE).globalAssetId(SUBMODEL_TECHNICAL_DATA_ID).build()).build();
 
-    AssetAdministrationShell shell2 =
-        new DefaultAssetAdministrationShell.Builder().id(AAS_OPERATIONAL_DATA_ID).idShort(AAS_OPERATIONAL_DATA_ID)
-            .assetInformation(new DefaultAssetInformation.Builder().assetKind(AssetKind.INSTANCE)
-                .globalAssetID(SUBMODEL_TECHNICAL_DATA_ID).build()).build();
-    Collection<AssetAdministrationShell> shells = new ArrayList<>();
-    shells.add(shell1);
-    shells.add(shell2);
-    return shells;
-  }
+		AssetAdministrationShell shell2 = new DefaultAssetAdministrationShell.Builder().id(AAS_OPERATIONAL_DATA_ID).idShort(AAS_OPERATIONAL_DATA_ID)
+				.assetInformation(new DefaultAssetInformation.Builder().assetKind(AssetKind.INSTANCE).globalAssetId(SUBMODEL_TECHNICAL_DATA_ID).build()).build();
+		Collection<AssetAdministrationShell> shells = new ArrayList<>();
+		shells.add(shell1);
+		shells.add(shell2);
+		return shells;
+	}
 
   @Test
   public void testAASEnviromentSerializationWithJSON()
@@ -147,15 +143,15 @@ public class TestAASEnvironmentSerialization {
     validateRepositoriesState();
   }
 
-  public static void validateJSON(String actual, boolean includeConceptDescription) throws DeserializationException {
-    JsonDeserializer jsonDeserializer = new JsonDeserializer();
-    Environment aasEnvironment = jsonDeserializer.read(actual);
-    checkAASEnvironment(aasEnvironment, includeConceptDescription);
-  }
+	public static void validateJSON(String actual, boolean includeConceptDescription) throws DeserializationException {
+		JsonDeserializer jsonDeserializer = new JsonDeserializer();
+		Environment aasEnvironment = jsonDeserializer.read(actual);
+		checkAASEnvironment(aasEnvironment, includeConceptDescription);
+	}
 
-  public static void validateXml(String actual, boolean includeConceptDescription) throws DeserializationException {
-    XmlDeserializer xmlDeserializer = new XmlDeserializer();
-    Environment aasEnvironment = xmlDeserializer.read(actual);
+	public static void validateXml(String actual, boolean includeConceptDescription) throws DeserializationException {
+		XmlDeserializer xmlDeserializer = new XmlDeserializer();
+		Environment aasEnvironment = xmlDeserializer.read(actual);
 
     checkAASEnvironment(aasEnvironment, includeConceptDescription);
   }
