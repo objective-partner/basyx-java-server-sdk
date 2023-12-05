@@ -26,7 +26,7 @@ package org.eclipse.digitaltwin.basyx.aasregistry.service.errors;
 
 import java.time.OffsetDateTime;
 
-import org.eclipse.digitaltwin.basyx.aasregistry.model.Message;
+import java.util.UUID;import org.eclipse.digitaltwin.basyx.aasregistry.model.Message;
 import org.eclipse.digitaltwin.basyx.aasregistry.model.Message.MessageTypeEnum;
 import org.eclipse.digitaltwin.basyx.aasregistry.model.Result;
 import org.springframework.http.HttpStatus;
@@ -74,6 +74,7 @@ public class BasyxControllerAdvice {
 		message.setMessageType(MessageTypeEnum.EXCEPTION);
 		message.setTimestamp(OffsetDateTime.now());
 		message.setText(msg);
+    message.setCorrelationId(UUID.randomUUID().toString());
 		return message;
 	}
 }
