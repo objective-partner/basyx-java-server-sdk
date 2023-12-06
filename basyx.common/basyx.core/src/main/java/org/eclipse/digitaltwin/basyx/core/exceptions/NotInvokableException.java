@@ -26,14 +26,23 @@
 
 package org.eclipse.digitaltwin.basyx.core.exceptions;
 
+import java.util.UUID;
+import org.springframework.http.HttpStatus;
+
 @SuppressWarnings("serial")
-public class NotInvokableException extends RuntimeException {
+public class NotInvokableException extends BaSyxResponseException {
+
 	public NotInvokableException() {
+		super(HttpStatus.METHOD_NOT_ALLOWED, getMessage(""), UUID.randomUUID().toString());
 	}
 
 	public NotInvokableException(String idShortPath) {
-		super(getMessage(idShortPath));
+		super(HttpStatus.METHOD_NOT_ALLOWED, getMessage(idShortPath), UUID.randomUUID().toString());
 	}
+
+	public NotInvokableException(String idShortPath, String correlationId) {
+    super(HttpStatus.METHOD_NOT_ALLOWED, getMessage(idShortPath), correlationId);
+  }
 
 	private static String getMessage(String idShortPath) {
 		return "Element " + idShortPath + " is not invokable";

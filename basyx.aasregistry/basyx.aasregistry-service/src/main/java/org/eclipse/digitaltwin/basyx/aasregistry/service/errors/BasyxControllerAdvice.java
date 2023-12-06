@@ -71,10 +71,10 @@ public class BasyxControllerAdvice {
 	private Message newExceptionMessage(String msg, HttpStatus status) {
 		Message message = new Message();
 		message.setCode("" + status.value());
+    message.setCorrelationId(UUID.randomUUID().toString());
 		message.setMessageType(MessageTypeEnum.EXCEPTION);
 		message.setTimestamp(OffsetDateTime.now());
 		message.setText(msg);
-    message.setCorrelationId(UUID.randomUUID().toString());
 		return message;
 	}
 }

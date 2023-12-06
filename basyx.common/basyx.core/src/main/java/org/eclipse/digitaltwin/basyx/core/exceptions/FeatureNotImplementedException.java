@@ -25,6 +25,9 @@
 
 package org.eclipse.digitaltwin.basyx.core.exceptions;
 
+import java.util.UUID;
+import org.springframework.http.HttpStatus;
+
 /**
  * This exception is used for features where certain functionalities are not implemented yet.
  *  
@@ -32,14 +35,18 @@ package org.eclipse.digitaltwin.basyx.core.exceptions;
  *
  */
 @SuppressWarnings("serial")
-public class FeatureNotImplementedException extends RuntimeException {
+public class FeatureNotImplementedException extends BaSyxResponseException {
 	
-	public FeatureNotImplementedException() {
-		super();
-	}
-	
+  public FeatureNotImplementedException(){
+		super(HttpStatus.NOT_IMPLEMENTED, getMessage(""), UUID.randomUUID().toString());
+  }
+
 	public FeatureNotImplementedException(String featureName) {
-		super(getMessage(featureName));
+		super(HttpStatus.NOT_IMPLEMENTED, getMessage(featureName), UUID.randomUUID().toString());
+	}
+
+	public FeatureNotImplementedException(String featureName, String correlationId) {
+		super(HttpStatus.NOT_IMPLEMENTED, getMessage(featureName), correlationId);
 	}
 
 	private static String getMessage(String featureName) {

@@ -25,21 +25,25 @@
 
 package org.eclipse.digitaltwin.basyx.core.exceptions;
 
-/**
+import java.util.UUID;import org.springframework.http.HttpStatus; /**
  * Indicates that the provided file could not be handled
  *  
  * @author zhangzai
  *
  */
 @SuppressWarnings("serial")
-public class FileHandlingException extends RuntimeException {
-	
+public class FileHandlingException extends BaSyxResponseException {
+
 	public FileHandlingException() {
-		super();
+		super(HttpStatus.INTERNAL_SERVER_ERROR, "File could not be handled", UUID.randomUUID().toString());
 	}
-	
+
 	public FileHandlingException(String fileName) {
-		super(getMessage(fileName));
+		super(HttpStatus.INTERNAL_SERVER_ERROR, getMessage(fileName), UUID.randomUUID().toString());
+	}
+
+  public FileHandlingException(String fileName, String correlationId) {
+		super(HttpStatus.INTERNAL_SERVER_ERROR, getMessage(fileName), correlationId);
 	}
 
 	private static String getMessage(String fileName) {

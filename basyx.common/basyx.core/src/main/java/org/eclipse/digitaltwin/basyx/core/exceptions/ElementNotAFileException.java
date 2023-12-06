@@ -25,6 +25,9 @@
 
 package org.eclipse.digitaltwin.basyx.core.exceptions;
 
+import java.util.UUID;
+import org.springframework.http.HttpStatus;
+
 /**
  * Indicates that the requested submodel element is not a File SubmodelElement
  * 
@@ -32,12 +35,18 @@ package org.eclipse.digitaltwin.basyx.core.exceptions;
  *
  */
 @SuppressWarnings("serial")
-public class ElementNotAFileException extends RuntimeException {
+public class ElementNotAFileException extends BaSyxResponseException {
+
 	public ElementNotAFileException() {
+    super(HttpStatus.METHOD_NOT_ALLOWED, "Element is not a File.", UUID.randomUUID().toString());
 	}
 
 	public ElementNotAFileException(String elementId) {
-		super(getMsg(elementId));
+    super(HttpStatus.METHOD_NOT_ALLOWED, getMsg(elementId), UUID.randomUUID().toString());
+	}
+
+	public ElementNotAFileException(String elementId, String correlationId) {
+    super(HttpStatus.METHOD_NOT_ALLOWED, getMsg(elementId), correlationId);
 	}
 
 	private static String getMsg(String elementId) {

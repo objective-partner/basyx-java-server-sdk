@@ -25,6 +25,9 @@
 
 package org.eclipse.digitaltwin.basyx.core.exceptions;
 
+import java.util.UUID;
+import org.springframework.http.HttpStatus;
+
 /**
  * Indicates that the requested element does not exist
  * 
@@ -32,14 +35,19 @@ package org.eclipse.digitaltwin.basyx.core.exceptions;
  *
  */
 @SuppressWarnings("serial")
-public class ElementDoesNotExistException extends RuntimeException {
+public class ElementDoesNotExistException extends BaSyxResponseException {
+
 	public ElementDoesNotExistException() {
+    super(HttpStatus.NOT_FOUND, "Element does not exist", UUID.randomUUID().toString());
 	}
 
 	public ElementDoesNotExistException(String elementId) {
-		super(getMessage(elementId));
+    super(HttpStatus.NOT_FOUND, getMessage(elementId), UUID.randomUUID().toString());
 	}
 
+	public ElementDoesNotExistException(String elementId, String correlationId) {
+    super(HttpStatus.NOT_FOUND, getMessage(elementId), correlationId);
+  }
 	private static String getMessage(String elementId) {
 		return "Element with Id " + elementId + " does not exist";
 	}

@@ -25,23 +25,28 @@
 
 package org.eclipse.digitaltwin.basyx.core.exceptions;
 
-/**
+import java.util.UUID;import org.springframework.http.HttpStatus; /**
  * Indicates an update request is made on an element and the element that is
  * passed for the update has different identifier or idShort than the existing element.
  * 
  * @author danish
  *
  */
-public class IdentificationMismatchException extends RuntimeException {
+public class IdentificationMismatchException extends BaSyxResponseException {
 
 	private static final long serialVersionUID = 1L;
 
 	public IdentificationMismatchException() {
+		super(HttpStatus.NOT_ACCEPTABLE, getMessage(""), UUID.randomUUID().toString());
 	}
 
 	public IdentificationMismatchException(String elementId) {
-		super(getMessage(elementId));
+    super(HttpStatus.NOT_ACCEPTABLE, getMessage(elementId), UUID.randomUUID().toString());
 	}
+
+	public IdentificationMismatchException(String elementId, String correlationId) {
+    super(HttpStatus.NOT_ACCEPTABLE, getMessage(elementId), correlationId);
+  }
 
 	private static String getMessage(String elementId) {
 		return "The provided element " + elementId
