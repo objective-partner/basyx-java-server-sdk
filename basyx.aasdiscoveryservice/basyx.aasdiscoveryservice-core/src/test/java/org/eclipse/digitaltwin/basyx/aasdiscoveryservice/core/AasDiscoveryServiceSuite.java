@@ -67,11 +67,12 @@ public abstract class AasDiscoveryServiceSuite {
 		assetLinks.stream()
 				.forEach(assetLink -> createAssetLink(assetLink, discoveryService));
 
-		List<String> expectedResult = new ArrayList<>(List.of("TestAasID1", "TestAasID2"));
+		List<String> expectedResult = new ArrayList<>(List.of("TestAasID1"));
 
+		// AssetLinks are AND connected...
 		List<AssetLink> assetIds = new ArrayList<>(List.of(
 				new AssetLink("DummyAssetName1", "DummyAsset_1_Value"),
-				new AssetLink("DummyAssetName3",  "DummyAsset_3_Value")
+				new AssetLink("DummyAssetName2",  "DummyAsset_2_Value")
 		));
 
 		List<String> actualResult = discoveryService.getAllAssetAdministrationShellIdsByAssetLink(noLimitPaginationInfo, assetIds)

@@ -41,6 +41,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.index.Index;
+import org.bson.Document;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
@@ -50,12 +51,10 @@ import com.mongodb.client.result.DeleteResult;
  * MongoDB implementation of the {@link AasDiscoveryService}
  *
  * @author danish
- *
  */
 public class MongoDBAasDiscoveryService implements AasDiscoveryService {
 	private static final String SHELL_IDENTIFIER = "shellIdentifier";
 	private static final String ASSET_LINKS = "assetLinks";
-
 	private final MongoTemplate mongoTemplate;
 	private final String collectionName;
 	private String aasDiscoveryServiceName;
@@ -79,9 +78,10 @@ public class MongoDBAasDiscoveryService implements AasDiscoveryService {
 
 		Aggregation aggregation = Aggregation.newAggregation(matchOperation, projectionOperation, groupOperation);
 
-		AggregationResults<String> results = mongoTemplate.aggregate(aggregation, collectionName, String.class);
+		AggregationResults<Document> results = mongoTemplate.aggregate(aggregation, collectionName, Document.class);
+		List<String> shellIds = results.getMappedResults().stream().map(doc -> doc.get("_id").toString()).collect(Collectors.toList());
 
-		return paginateList(pInfo, results.getMappedResults());
+		return paginateList(pInfo, shellIds);
 	}
 
 	@Override
