@@ -23,61 +23,31 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-package org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.model;
 
-import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
-import org.eclipse.digitaltwin.aas4j.v3.model.SpecificAssetId;
+package org.eclipse.digitaltwin.basyx.http;
 
-import java.util.Objects;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Represents the link between {@link AssetAdministrationShell} and
- * {@link SpecificAssetId}
+ * Handles conversion from a string representing a Base64Url encoded value to
+ * {@link Base64UrlEncodedIdentifier}
  * 
- * @author danish
+ * @author gordt, schnicke
  *
  */
-public class AssetLink {
-
-	private String name;
-	private String value;
-
-	public AssetLink() {
-	}
-
-	public AssetLink(String name, String value) {
-		this.name = name;
-		this.value = value;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getValue() {
-		return value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
-	}
+@Component
+public class String2Base64UrlEncodedIdentifierArray implements Converter<List<String>, List<Base64UrlEncodedIdentifier>> {
 
 	@Override
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (o == null || getClass() != o.getClass())
-			return false;
-		AssetLink assetLink = (AssetLink) o;
-		return Objects.equals(name, assetLink.name) && Objects.equals(value, assetLink.value);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(name, value);
+	public List<Base64UrlEncodedIdentifier> convert(List<String> source) {
+		List<Base64UrlEncodedIdentifier> result = new ArrayList<>();
+		for (String s : source) {
+			result.add(Base64UrlEncodedIdentifier.fromEncodedValue(s));
+		}
+		return result;
 	}
 }

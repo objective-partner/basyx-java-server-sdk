@@ -24,15 +24,13 @@
 
 package org.eclipse.digitaltwin.basyx.aasdiscoveryservice.backend.mongodb;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.SpecificAssetId;
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.AasDiscoveryService;
+import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.AasDiscoveryUtils;
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.model.AssetLink;
 import org.eclipse.digitaltwin.basyx.core.exceptions.AssetLinkDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingAssetLinkException;
@@ -41,6 +39,7 @@ import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationSupport;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -55,9 +54,10 @@ import com.mongodb.client.result.DeleteResult;
  */
 public class MongoDBAasDiscoveryService implements AasDiscoveryService {
 	private static final String SHELL_IDENTIFIER = "shellIdentifier";
+	private static final String ASSET_LINKS = "assetLinks";
 
-	private MongoTemplate mongoTemplate;
-	private String collectionName;
+	private final MongoTemplate mongoTemplate;
+	private final String collectionName;
 	private String aasDiscoveryServiceName;
 
 	public MongoDBAasDiscoveryService(MongoTemplate mongoTemplate, String collectionName) {
@@ -72,47 +72,51 @@ public class MongoDBAasDiscoveryService implements AasDiscoveryService {
 	}
 
 	@Override
-	public CursorResult<List<String>> getAllAssetAdministrationShellIdsByAssetLink(PaginationInfo pInfo, List<String> assetIds) {
-		List<AssetLink> assetLinks = mongoTemplate.findAll(AssetLink.class, collectionName);
+	public CursorResult<List<String>> getAllAssetAdministrationShellIdsByAssetLink(PaginationInfo pInfo, List<AssetLink> assetIds) {
+		MatchOperation matchOperation = Aggregation.match(Criteria.where(ASSET_LINKS).all(assetIds));
+		ProjectionOperation projectionOperation = Aggregation.project(SHELL_IDENTIFIER);
+		GroupOperation groupOperation = Aggregation.group(SHELL_IDENTIFIER);
 
-		Set<String> shellIdentifiers = assetLinks.stream()
-				.filter(link -> containsMatchingAssetId(link.getSpecificAssetIds(), assetIds))
-				.map(AssetLink::getShellIdentifier)
-				.collect(Collectors.toSet());
+		Aggregation aggregation = Aggregation.newAggregation(matchOperation, projectionOperation, groupOperation);
 
-		return paginateList(pInfo, new ArrayList<>(shellIdentifiers));
+		AggregationResults<String> results = mongoTemplate.aggregate(aggregation, collectionName, String.class);
+
+		return paginateList(pInfo, results.getMappedResults());
 	}
 
 	@Override
 	public List<SpecificAssetId> getAllAssetLinksById(String shellIdentifier) {
-		AssetLink assetLink = mongoTemplate.findOne(new Query().addCriteria(Criteria.where(SHELL_IDENTIFIER)
-				.is(shellIdentifier)), AssetLink.class, collectionName);
+		AasDiscoveryDocument document = mongoTemplate.findOne(getSingleObjectQuery(shellIdentifier), AasDiscoveryDocument.class, collectionName);
 
-		if (assetLink == null)
+		if (document == null)
 			throw new AssetLinkDoesNotExistException(shellIdentifier);
 
-		return assetLink.getSpecificAssetIds();
+		return document.getSpecificAssetIds();
 	}
 
 	@Override
 	public List<SpecificAssetId> createAllAssetLinksById(String shellIdentifier, List<SpecificAssetId> assetIds) {
-		Query query = new Query().addCriteria(Criteria.where(SHELL_IDENTIFIER)
-				.is(shellIdentifier));
+		Query query = getSingleObjectQuery(shellIdentifier);
 
-		if (mongoTemplate.exists(query, AssetLink.class, collectionName))
+		if (mongoTemplate.exists(query, AasDiscoveryDocument.class, collectionName))
 			throw new CollidingAssetLinkException(shellIdentifier);
 
-		AssetLink link = new AssetLink(shellIdentifier, assetIds);
+		Set<AssetLink> assetLinks = new HashSet<>(AasDiscoveryUtils.deriveAssetLinksFromSpecificAssetIds(assetIds));
 
-		mongoTemplate.save(link, collectionName);
+		AasDiscoveryDocument document = new AasDiscoveryDocument(shellIdentifier, assetLinks, assetIds);
+
+		mongoTemplate.save(document, collectionName);
 
 		return assetIds;
 	}
 
+	private static Query getSingleObjectQuery(String shellIdentifier) {
+		return new Query().addCriteria(Criteria.where(SHELL_IDENTIFIER).is(shellIdentifier));
+	}
+
 	@Override
 	public void deleteAllAssetLinksById(String shellIdentifier) {
-		Query query = new Query().addCriteria(Criteria.where(SHELL_IDENTIFIER)
-				.is(shellIdentifier));
+		Query query = getSingleObjectQuery(shellIdentifier);
 
 		DeleteResult result = mongoTemplate.remove(query, AssetLink.class, collectionName);
 

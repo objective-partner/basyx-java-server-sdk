@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (C) 2023 the Eclipse BaSyx Authors
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
  * "Software"), to deal in the Software without restriction, including
@@ -8,10 +8,10 @@
  * distribute, sublicense, and/or sell copies of the Software, and to
  * permit persons to whom the Software is furnished to do so, subject to
  * the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -19,25 +19,28 @@
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- * 
+ *
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
 package org.eclipse.digitaltwin.basyx.http;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 /**
  * Represents a Base64URL encoded identifier
- * 
- * @author gordt, schnicke, mateusmolina
  *
+ * @author gordt, schnicke, mateusmolina
  */
 public class Base64UrlEncodedIdentifier {
 
+	@JsonValue
 	private final String identifier;
 
 	/**
-	 * @param unencoded
-	 *            identifier
+	 * @param identifier
+	 * 		Unencoded identifier
 	 */
 	public Base64UrlEncodedIdentifier(String identifier) {
 		this.identifier = identifier;
@@ -46,10 +49,12 @@ public class Base64UrlEncodedIdentifier {
 	/**
 	 * @return encoded identifier
 	 */
+	@JsonIgnore
 	public String getIdentifier() {
 		return identifier;
 	}
 
+	@JsonIgnore
 	public String getEncodedIdentifier() {
 		return encodeIdentifier(identifier);
 	}
