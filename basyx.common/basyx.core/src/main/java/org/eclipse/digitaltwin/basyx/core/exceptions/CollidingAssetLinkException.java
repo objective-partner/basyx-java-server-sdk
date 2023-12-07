@@ -25,26 +25,28 @@
 
 package org.eclipse.digitaltwin.basyx.core.exceptions;
 
-import java.util.UUID;import org.springframework.http.HttpStatus; /**
+import java.util.UUID;
+
+/**
  * Indicates that an Asset link corresponding to AAS already exists
  * 
- * @author danish
+ * @author danish, Al-Agtash
  *
  */
 @SuppressWarnings("serial")
 public class CollidingAssetLinkException extends BaSyxResponseException {
 
   public CollidingAssetLinkException() {
-		super(HttpStatus.CONFLICT, "Asset link already exist", UUID.randomUUID().toString());
+		super(409, "Asset link already exist", UUID.randomUUID().toString());
 
   }
 
 	public CollidingAssetLinkException(String shellIdentifier) {
-    super(HttpStatus.CONFLICT, getMessage(shellIdentifier), UUID.randomUUID().toString());
+    super(409, getMessage(shellIdentifier), UUID.randomUUID().toString());
 	}
 
 	public CollidingAssetLinkException(String shellIdentifier, String correlationId) {
-    super(HttpStatus.CONFLICT, getMessage(shellIdentifier), correlationId);
+    super(409, getMessage(shellIdentifier), correlationId);
   }
 
 

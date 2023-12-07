@@ -25,25 +25,27 @@
 
 package org.eclipse.digitaltwin.basyx.core.exceptions;
 
-import java.util.UUID;import org.springframework.http.HttpStatus; /**
+import java.util.UUID;
+
+/**
  * Indicates that an entity has a identifier that is already in use
  * 
- * @author schnicke
+ * @author schnicke, Al-Agtash
  *
  */
 @SuppressWarnings("serial")
 public class CollidingIdentifierException extends BaSyxResponseException {
 
 	public CollidingIdentifierException() {
-    super(HttpStatus.CONFLICT, "Duplicate element", UUID.randomUUID().toString());
+    super(409, "Duplicate element", UUID.randomUUID().toString());
 	}
 
 	public CollidingIdentifierException(String id) {
-    super(HttpStatus.CONFLICT, getMessage(id), UUID.randomUUID().toString());
+    super(409, getMessage(id), UUID.randomUUID().toString());
 	}
 
 	public CollidingIdentifierException(String id, String correlationId) {
-    super(HttpStatus.CONFLICT, getMessage(id), correlationId);
+    super(409, getMessage(id), correlationId);
   }
 
 	private static String getMessage(String id) {

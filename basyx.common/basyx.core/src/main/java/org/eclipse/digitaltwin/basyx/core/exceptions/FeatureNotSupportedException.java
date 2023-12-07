@@ -27,26 +27,25 @@
 package org.eclipse.digitaltwin.basyx.core.exceptions;
 
 import java.util.UUID;
-import org.springframework.http.HttpStatus;
 
 /**
  * Indicates that a requested feature is not supported
  * 
- * @author schnicke
+ * @author schnicke, Al-Agtash
  *
  */
 @SuppressWarnings("serial")
 public class FeatureNotSupportedException extends BaSyxResponseException {
 
   public FeatureNotSupportedException(){
-		super(HttpStatus.NOT_ACCEPTABLE, getMessage(""), UUID.randomUUID().toString());
+		super(406, getMessage(""), UUID.randomUUID().toString());
   }
 
 	public FeatureNotSupportedException(String featureName) {
-    super(HttpStatus.NOT_ACCEPTABLE, getMessage(featureName), UUID.randomUUID().toString());
+    super(406, getMessage(featureName), UUID.randomUUID().toString());
 	}
 	public FeatureNotSupportedException(String featureName, String correlationId) {
-    super(HttpStatus.NOT_ACCEPTABLE, getMessage(featureName), correlationId);
+    super(406, getMessage(featureName), correlationId);
   }
 
 	private static String getMessage(String featureName) {

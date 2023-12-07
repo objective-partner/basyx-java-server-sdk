@@ -25,24 +25,26 @@
 
 package org.eclipse.digitaltwin.basyx.core.exceptions;
 
-import java.util.UUID;import org.springframework.http.HttpStatus; /**
+import java.util.UUID;
+
+/**
  * Indicates that the requested file does not exist
  * 
- * @author danish
+ * @author danish, Al-Agtash
  *
  */
 @SuppressWarnings("serial")
 public class FileDoesNotExistException extends BaSyxResponseException {
 
 	public FileDoesNotExistException() {
-		super(HttpStatus.NOT_FOUND, "Requested File inside File Element does not exist", UUID.randomUUID().toString());
+		super(404, "Requested File inside File Element does not exist", UUID.randomUUID().toString());
 	}
 	public FileDoesNotExistException(String elementId) {
-		super(HttpStatus.NOT_FOUND, getMsg(elementId), UUID.randomUUID().toString());
+		super(404, getMsg(elementId), UUID.randomUUID().toString());
 	}
 
   public FileDoesNotExistException(String elementId, String correlationId) {
-		super(HttpStatus.NOT_FOUND, getMsg(elementId), correlationId);
+		super(404, getMsg(elementId), correlationId);
 	}
 
 	private static String getMsg(String elementId) {

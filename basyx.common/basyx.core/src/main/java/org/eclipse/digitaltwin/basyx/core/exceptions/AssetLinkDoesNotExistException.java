@@ -26,24 +26,25 @@
 package org.eclipse.digitaltwin.basyx.core.exceptions;
 
 import java.util.UUID;
-import org.springframework.http.HttpStatus; /**
+
+ /**
  * Indicates that the requested Asset link does not exist
  * 
- * @author danish
+ * @author danish, Al-Agtash
  *
  */
 @SuppressWarnings("serial")
 public class AssetLinkDoesNotExistException extends BaSyxResponseException {
 
   public AssetLinkDoesNotExistException() {
-		super(HttpStatus.NOT_FOUND, "Asset link does not exist", UUID.randomUUID().toString());
+		super(404, "Asset link does not exist", UUID.randomUUID().toString());
   }
 
 	public AssetLinkDoesNotExistException(String shellIdentifier) {
-		super(HttpStatus.NOT_FOUND, getMessage(shellIdentifier), UUID.randomUUID().toString());
+		super(404, getMessage(shellIdentifier), UUID.randomUUID().toString());
 	}
 	public AssetLinkDoesNotExistException(String shellIdentifier, String correlationId) {
-		super(HttpStatus.NOT_FOUND, getMessage(shellIdentifier), correlationId);
+		super(404, getMessage(shellIdentifier), correlationId);
 	}
 
 	private static String getMessage(String shellIdentifier) {

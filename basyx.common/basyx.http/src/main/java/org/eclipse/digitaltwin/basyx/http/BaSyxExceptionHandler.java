@@ -52,7 +52,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @ControllerAdvice
 public class BaSyxExceptionHandler extends ResponseEntityExceptionHandler {
 	private static final Logger logger = LoggerFactory.getLogger(BaSyxExceptionHandler.class);
-
   private final ObjectMapper objectMapper = new ObjectMapper();
 
 	@ExceptionHandler(IllegalArgumentException.class)
@@ -63,9 +62,9 @@ public class BaSyxExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 
 	@ExceptionHandler(BaSyxResponseException.class)
-	public ResponseEntity<String> handleResponseStatusException(BaSyxResponseException exception) {
-    logger.debug("{} - {}", exception.getCorrelationId(), exception.getReason() ,exception);
-    HttpStatus httpStatus = HttpStatus.valueOf(exception.getStatusCode().value());
+	public ResponseEntity<String> handleBaSyxResponseException(BaSyxResponseException exception) {
+    logger.debug("{} - {}", exception.getCorrelationId(), exception.getMessage() ,exception);
+    HttpStatus httpStatus = HttpStatus.valueOf(exception.getHttpStatusCode());
 		String resultJson = deriveResultFromException(exception);
     return new ResponseEntity<>(resultJson, httpStatus);
 	}
@@ -86,9 +85,9 @@ public class BaSyxExceptionHandler extends ResponseEntityExceptionHandler {
 
   private String deriveResultFromException(BaSyxResponseException exception) {
     Message message = new Message();
-    message.code(String.valueOf(exception.getStatusCode().value()));
+    message.code(String.valueOf(exception.getHttpStatusCode()));
     message.correlationId(exception.getCorrelationId());
-    message.setText(exception.getReason());
+    message.setText(exception.getMessage());
     message.setTimestamp(exception.getTimestamp());
     message.messageType(MessageTypeEnum.EXCEPTION);
 

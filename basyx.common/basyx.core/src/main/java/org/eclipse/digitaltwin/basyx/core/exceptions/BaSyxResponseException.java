@@ -1,25 +1,34 @@
 package org.eclipse.digitaltwin.basyx.core.exceptions;
 import java.time.OffsetDateTime;
-import java.util.UUID;import org.springframework.http.HttpStatus;
-import org.springframework.util.StringUtils;import org.springframework.web.server.ResponseStatusException;
+import java.util.UUID;
 
-public class BaSyxResponseException extends ResponseStatusException {
+/**
+ * General BaSyx exception to be extended by other specific exceptions.
+ * Indicates something went wrong in BaSyx Apps.
+ *
+ * @author Al-Agtash
+ *
+ */
+public class BaSyxResponseException extends RuntimeException {
 
 	private final String correlationId;
+	private final int httpStatusCode;
 	private final String timestamp;
 
-  public BaSyxResponseException(HttpStatus httpStatus, String reason, String correlationId) {
-    super(httpStatus, reason);
+  public BaSyxResponseException(int httpStatusCode, String reason, String correlationId) {
+    super(reason);
     if (correlationId == null || correlationId.isBlank()){
       correlationId = UUID.randomUUID().toString();
     }
     this.correlationId = correlationId;
+    this.httpStatusCode = httpStatusCode;
     this.timestamp = OffsetDateTime.now().toString();
   }
 
-  public BaSyxResponseException(HttpStatus httpStatus, String reason) {
-    super(httpStatus, reason);
+  public BaSyxResponseException(int httpStatusCode, String reason) {
+    super(reason);
     this.correlationId = UUID.randomUUID().toString();
+    this.httpStatusCode = httpStatusCode;
     this.timestamp = OffsetDateTime.now().toString();
   }
 
@@ -27,6 +36,9 @@ public class BaSyxResponseException extends ResponseStatusException {
     return correlationId;
   }
 
+  public int getHttpStatusCode() {
+    return httpStatusCode;
+  }
   public String getTimestamp() {
     return timestamp;
   }
