@@ -7,7 +7,6 @@
 		<groupId>org.eclipse.digitaltwin.basyx</groupId>
 		<artifactId>basyx.aasregistry</artifactId>
 		<version>${revision}</version>
-		<relativePath>..</relativePath>
 	</parent>
 
 	<artifactId>basyx.aasregistry-client-native</artifactId>
@@ -58,7 +57,7 @@
 					</execution>
 				</executions>
 			</plugin>
-		 	<plugin>
+			<plugin>
 				<groupId>org.openapitools</groupId>
 				<artifactId>openapi-generator-maven-plugin</artifactId>
 				<executions>
@@ -81,7 +80,9 @@
 							<generateApiDocumentation>false</generateApiDocumentation>
 							<generateSupportingFiles>true</generateSupportingFiles>
 							<templateDirectory>${project.basedir}/templates</templateDirectory>
-							<supportingFilesToGenerate>AbstractOpenApiSchema.java,ServerConfiguration.java,ServerVariable.java,Configuration.java,JSON.java,ApiException.java,ApiResponse.java,ApiClient.java,Pair.java,RFC3339DateFormat.java</supportingFilesToGenerate>
+							<supportingFilesToGenerate>
+								AbstractOpenApiSchema.java,ServerConfiguration.java,ServerVariable.java,Configuration.java,JSON.java,ApiException.java,ApiResponse.java,ApiClient.java,Pair.java,RFC3339DateFormat.java
+							</supportingFilesToGenerate>
 							<configOptions>
 								<java8>true</java8>
 								<dateLibrary>java8</dateLibrary>
@@ -93,7 +94,7 @@
 				</executions>
 			</plugin>
 		</plugins>
-			
+
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -116,7 +117,7 @@
 		</dependency>
 		<dependency>
 			<groupId>jakarta.validation</groupId>
-    		<artifactId>jakarta.validation-api</artifactId>
+			<artifactId>jakarta.validation-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>

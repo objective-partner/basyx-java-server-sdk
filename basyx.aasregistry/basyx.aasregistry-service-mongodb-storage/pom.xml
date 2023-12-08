@@ -16,7 +16,8 @@
 		<spring-cloud.version>2020.0.4</spring-cloud.version>
 		<openapi.folder>${project.basedir}/${openapi.folder.name}</openapi.folder>
 		<openapi.mongodb.file>${openapi.folder}/${openapi.mongodb.file.name}</openapi.mongodb.file>
-		<openapi.extensions.result.file>${openapi.folder}/temporary-extensions-result-file.yaml</openapi.extensions.result.file>
+		<openapi.extensions.result.file>${openapi.folder}/temporary-extensions-result-file.yaml
+		</openapi.extensions.result.file>
 		<openapi.result.file>${openapi.folder}/${openapi.name}</openapi.result.file>
 		<patch.mongo-extensions.name>patch-mongodb-annotations.yaml</patch.mongo-extensions.name>
 	</properties>
@@ -45,7 +46,7 @@
 					</filesets>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>de.dfki.cos.basys.common</groupId>
 				<artifactId>jsonpatch-maven-plugin</artifactId>
@@ -145,7 +146,7 @@
 		<!-- Bean Validation API support -->
 		<dependency>
 			<groupId>jakarta.validation</groupId>
-    		<artifactId>jakarta.validation-api</artifactId>
+			<artifactId>jakarta.validation-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -158,6 +159,10 @@
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>basyx.aasregistry-service</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.digitaltwin.basyx</groupId>
+			<artifactId>basyx.aasregistry-service-basemodel</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>

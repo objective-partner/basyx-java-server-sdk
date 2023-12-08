@@ -30,6 +30,9 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.SerializationException;
 import org.eclipse.digitaltwin.basyx.aasenvironment.AasEnvironmentSerialization;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
@@ -42,80 +45,67 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen",
-    date = "2023-05-08T12:36:05.278579031Z[GMT]")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2023-05-08T12:36:05.278579031Z[GMT]")
 @RestController
 public class SerializationApiController implements AASEnvironmentHTTPApi {
-  private static final String ACCEPT_JSON = "application/json";
-  private static final String ACCEPT_XML = "application/xml";
-  private static final String ACCEPT_AASX = "application/asset-administration-shell-package+xml";
 
-  private final HttpServletRequest request;
+	private static final String ACCEPT_JSON = "application/json";
+	private static final String ACCEPT_XML = "application/xml";
+	private static final String ACCEPT_AASX = "application/asset-administration-shell-package+xml";
 
-  private final AasEnvironmentSerialization aasEnvironment;
+	private final HttpServletRequest request;
 
-  @Autowired
-  public SerializationApiController(HttpServletRequest request, AasEnvironmentSerialization aasEnvironment) {
-    this.request = request;
-    this.aasEnvironment = aasEnvironment;
-  }
+	private final AasEnvironmentSerialization aasEnvironment;
 
-  @Override
-  public ResponseEntity<Resource> generateSerializationByIds(@Parameter(in = ParameterIn.QUERY,
-      description = "The Asset Administration Shells' unique ids (UTF8-BASE64-URL-encoded)", schema = @Schema()) @Valid
-  @RequestParam(value = "aasIds", required = false) List<String> aasIds,
-      @Parameter(in = ParameterIn.QUERY, description = "The Submodels' unique ids (UTF8-BASE64-URL-encoded)",
-          schema = @Schema()) @Valid @RequestParam(value = "submodelIds", required = false) List<String> submodelIds,
-      @Parameter(in = ParameterIn.QUERY, description = "Include Concept Descriptions?",
-          schema = @Schema(defaultValue = "true")) @Valid
-      @RequestParam(value = "includeConceptDescriptions", required = false, defaultValue = "true")
-      Boolean includeConceptDescriptions) {
-    String accept = request.getHeader("Accept");
+	@Autowired
+	public SerializationApiController(HttpServletRequest request, AasEnvironmentSerialization aasEnvironment) {
+		this.request = request;
+		this.aasEnvironment = aasEnvironment;
+	}
 
-    if (!areParametersValid(accept, aasIds, submodelIds))
-      return new ResponseEntity<Resource>(HttpStatus.BAD_REQUEST);
+	@Override
+	public ResponseEntity<Resource> generateSerializationByIds(
+			@Parameter(in = ParameterIn.QUERY, description = "The Asset Administration Shells' unique ids (UTF8-BASE64-URL-encoded)", schema = @Schema()) @Valid @RequestParam(value = "aasIds", required = false) List<String> aasIds,
+			@Parameter(in = ParameterIn.QUERY, description = "The Submodels' unique ids (UTF8-BASE64-URL-encoded)", schema = @Schema()) @Valid @RequestParam(value = "submodelIds", required = false) List<String> submodelIds,
+			@Parameter(in = ParameterIn.QUERY, description = "Include Concept Descriptions?", schema = @Schema(defaultValue = "true")) @Valid @RequestParam(value = "includeConceptDescriptions", required = false, defaultValue = "true") Boolean includeConceptDescriptions) {
+		String accept = request.getHeader("Accept");
 
-    try {
-      if (accept.equals(ACCEPT_AASX)) {
-        byte[] serialization =
-            aasEnvironment.createAASXAASEnvironmentSerialization(getOriginalIds(aasIds), getOriginalIds(submodelIds),
-                includeConceptDescriptions);
-        return new ResponseEntity<Resource>(new ByteArrayResource(serialization), HttpStatus.OK);
-      }
+		if (!areParametersValid(accept, aasIds, submodelIds)) {
+			return new ResponseEntity<Resource>(HttpStatus.BAD_REQUEST);
+		}
 
-      if (accept.equals(ACCEPT_XML)) {
-        String serialization =
-            aasEnvironment.createXMLAASEnvironmentSerialization(getOriginalIds(aasIds), getOriginalIds(submodelIds),
-                includeConceptDescriptions);
-        return new ResponseEntity<Resource>(new ByteArrayResource(serialization.getBytes()), HttpStatus.OK);
-      }
+		try {
+			if (accept.equals(ACCEPT_AASX)) {
+				byte[] serialization = aasEnvironment.createAASXAASEnvironmentSerialization(getOriginalIds(aasIds), getOriginalIds(submodelIds), includeConceptDescriptions);
+				return new ResponseEntity<Resource>(new ByteArrayResource(serialization), HttpStatus.OK);
+			}
 
-      String serialization =
-          aasEnvironment.createJSONAASEnvironmentSerialization(getOriginalIds(aasIds), getOriginalIds(submodelIds),
-              includeConceptDescriptions);
-      return new ResponseEntity<Resource>(new ByteArrayResource(serialization.getBytes()), HttpStatus.OK);
-    } catch (ElementDoesNotExistException e) {
-      return new ResponseEntity<Resource>(HttpStatus.NOT_FOUND);
-    } catch (SerializationException | IOException e) {
-      return new ResponseEntity<Resource>(HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
+			if (accept.equals(ACCEPT_XML)) {
+				String serialization = aasEnvironment.createXMLAASEnvironmentSerialization(getOriginalIds(aasIds), getOriginalIds(submodelIds), includeConceptDescriptions);
+				return new ResponseEntity<Resource>(new ByteArrayResource(serialization.getBytes()), HttpStatus.OK);
+			}
 
-  private List<String> getOriginalIds(List<String> ids) {
-    List<String> results = new ArrayList<>();
-    ids.forEach(id -> {
-      results.add(Base64UrlEncodedIdentifier.fromEncodedValue(id).getIdentifier());
-    });
-    return results;
-  }
+			String serialization = aasEnvironment.createJSONAASEnvironmentSerialization(getOriginalIds(aasIds), getOriginalIds(submodelIds), includeConceptDescriptions);
+			return new ResponseEntity<Resource>(new ByteArrayResource(serialization.getBytes()), HttpStatus.OK);
+		} catch (ElementDoesNotExistException e) {
+			return new ResponseEntity<Resource>(HttpStatus.NOT_FOUND);
+		} catch (SerializationException | IOException e) {
+			return new ResponseEntity<Resource>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
-  private boolean areParametersValid(String accept, @Valid List<String> aasIds, @Valid List<String> submodelIds) {
-    if (aasIds.isEmpty() || submodelIds.isEmpty())
-      return false;
-    return (accept.equals(ACCEPT_AASX) || accept.equals(ACCEPT_JSON) || accept.equals(ACCEPT_XML));
-  }
+	private List<String> getOriginalIds(List<String> ids) {
+		List<String> results = new ArrayList<>();
+		ids.forEach(id -> {
+			results.add(Base64UrlEncodedIdentifier.fromEncodedValue(id).getIdentifier());
+		});
+		return results;
+	}
+
+	private boolean areParametersValid(String accept, @Valid List<String> aasIds, @Valid List<String> submodelIds) {
+		if (aasIds.isEmpty() || submodelIds.isEmpty()) {
+			return false;
+		}
+		return (accept.equals(ACCEPT_AASX) || accept.equals(ACCEPT_JSON) || accept.equals(ACCEPT_XML));
+	}
 }

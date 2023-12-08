@@ -45,12 +45,12 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
-	      <groupId>org.springdoc</groupId>
-	      <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-	    </dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>jakarta.validation</groupId>
-    		<artifactId>jakarta.validation-api</artifactId>
+			<artifactId>jakarta.validation-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.aas4j</groupId>

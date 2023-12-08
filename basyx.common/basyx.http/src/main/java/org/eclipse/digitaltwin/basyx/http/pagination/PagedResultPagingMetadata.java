@@ -27,75 +27,75 @@ package org.eclipse.digitaltwin.basyx.http.pagination;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import org.springframework.validation.annotation.Validated;
-
 import java.util.Objects;
+import org.springframework.validation.annotation.Validated;
 
 /**
  * Paged result metadata
  */
 @Validated
-@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen",
-    date = "2023-05-22T07:02:56.105163402Z[GMT]")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2023-05-22T07:02:56.105163402Z[GMT]")
 
 public class PagedResultPagingMetadata {
-  @JsonProperty("cursor")
-  private String cursor = null;
 
-  public PagedResultPagingMetadata cursor(String cursor) {
-    this.cursor = cursor;
-    return this;
-  }
+	@JsonProperty("cursor")
+	private String cursor = null;
 
-  /**
-   * Get cursor
-   *
-   * @return cursor
-   **/
-  @Schema(example = "wJlCDLIl6KTWypN7T6vc6nWEmEYe99Hjf1XY1xmqV-M=#", description = "")
+	public PagedResultPagingMetadata cursor(String cursor) {
+		this.cursor = cursor;
+		return this;
+	}
 
-  public String getCursor() {
-    return cursor;
-  }
+	/**
+	 * Get cursor
+	 *
+	 * @return cursor
+	 **/
+	@Schema(example = "wJlCDLIl6KTWypN7T6vc6nWEmEYe99Hjf1XY1xmqV-M=#", description = "")
 
-  public void setCursor(String cursor) {
-    this.cursor = cursor;
-  }
+	public String getCursor() {
+		return cursor;
+	}
 
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    PagedResultPagingMetadata pagedResultPagingMetadata = (PagedResultPagingMetadata) o;
-    return Objects.equals(this.cursor, pagedResultPagingMetadata.cursor);
-  }
+	public void setCursor(String cursor) {
+		this.cursor = cursor;
+	}
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(cursor);
-  }
+	@Override
+	public boolean equals(java.lang.Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		PagedResultPagingMetadata pagedResultPagingMetadata = (PagedResultPagingMetadata) o;
+		return Objects.equals(this.cursor, pagedResultPagingMetadata.cursor);
+	}
 
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class PagedResultPagingMetadata {\n");
+	@Override
+	public int hashCode() {
+		return Objects.hash(cursor);
+	}
 
-    sb.append("    cursor: ").append(toIndentedString(cursor)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("class PagedResultPagingMetadata {\n");
 
-  /**
-   * Convert the given object to string with each line indented by 4 spaces (except the first line).
-   */
-  private String toIndentedString(java.lang.Object o) {
-    if (o == null) {
-      return "null";
-    }
-    return o.toString().replace("\n", "\n    ");
-  }
+		sb.append("    cursor: ").append(toIndentedString(cursor)).append("\n");
+		sb.append("}");
+		return sb.toString();
+	}
+
+	/**
+	 * Convert the given object to string with each line indented by 4 spaces
+	 * (except the first line).
+	 */
+	private String toIndentedString(java.lang.Object o) {
+		if (o == null) {
+			return "null";
+		}
+		return o.toString().replace("\n", "\n    ");
+	}
 }

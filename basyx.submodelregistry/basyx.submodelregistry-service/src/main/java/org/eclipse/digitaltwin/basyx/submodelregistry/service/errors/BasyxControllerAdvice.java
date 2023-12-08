@@ -24,7 +24,9 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.submodelregistry.service.errors;
 
+import java.time.OffsetDateTime;
 import java.util.UUID;
+
 import org.eclipse.digitaltwin.basyx.submodelregistry.model.Message;
 import org.eclipse.digitaltwin.basyx.submodelregistry.model.Message.MessageTypeEnum;
 import org.eclipse.digitaltwin.basyx.submodelregistry.model.Result;
@@ -35,8 +37,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.time.OffsetDateTime;
 
 @ControllerAdvice
 public class BasyxControllerAdvice {
@@ -53,15 +53,15 @@ public class BasyxControllerAdvice {
     return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
   }
 
-  @ExceptionHandler(ResponseStatusException.class)
-  public ResponseEntity<Result> handleExceptions(ResponseStatusException ex) {
-    return newResultEntity(ex, HttpStatus.resolve(ex.getStatusCode().value()));
-  }
+	@ExceptionHandler(ResponseStatusException.class)
+	public ResponseEntity<Result> handleExceptions(ResponseStatusException ex) {
+		return newResultEntity(ex, HttpStatus.resolve(ex.getStatusCode().value()));
+	}
 
-  @ExceptionHandler(Exception.class)
-  public ResponseEntity<Result> handleExceptions(Exception ex) {
-    return newResultEntity(ex, HttpStatus.INTERNAL_SERVER_ERROR);
-  }
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<Result> handleExceptions(Exception ex) {
+		return newResultEntity(ex, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
 
   private ResponseEntity<Result> newResultEntity(Exception ex, HttpStatus status) {
     Result result = new Result();

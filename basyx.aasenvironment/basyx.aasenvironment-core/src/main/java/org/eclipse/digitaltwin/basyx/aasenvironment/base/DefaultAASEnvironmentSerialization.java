@@ -25,6 +25,12 @@
 package org.eclipse.digitaltwin.basyx.aasenvironment.base;
 
 import jakarta.validation.Valid;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.SerializationException;
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.aasx.AASXSerializer;
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.json.JsonSerializer;
@@ -44,22 +50,15 @@ import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 /**
  * Default implementation of {@link AasEnvironmentSerialization}
  *
  * @author zhangzai, danish
  */
 public class DefaultAASEnvironmentSerialization implements AasEnvironmentSerialization {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(DefaultAASEnvironmentSerialization.class);
-	
+
 	private AasRepository aasRepository;
 	private SubmodelRepository submodelRepository;
 	private ConceptDescriptionRepository conceptDescriptionRepository;
@@ -67,77 +66,72 @@ public class DefaultAASEnvironmentSerialization implements AasEnvironmentSeriali
 	private XmlSerializer xmlSerializer = new XmlSerializer();
 	private AASXSerializer aasxSerializer = new AASXSerializer();
 	private MetamodelCloneCreator cloneCreator = new MetamodelCloneCreator();
-	
+
 	public DefaultAASEnvironmentSerialization(AasRepository aasRepository, SubmodelRepository submodelRepository, ConceptDescriptionRepository conceptDescriptionRepository) {
 		this.aasRepository = aasRepository;
 		this.submodelRepository = submodelRepository;
 		this.conceptDescriptionRepository = conceptDescriptionRepository;
 	}
 
-  @Override
-  public String createJSONAASEnvironmentSerialization(@Valid List<String> aasIds, @Valid List<String> submodelIds,
-      @Valid boolean includeConceptDescriptions) throws SerializationException {
-    Environment aasEnvironment = createEnvironment(aasIds, submodelIds, includeConceptDescriptions);
-    return jsonSerializer.write(aasEnvironment);
-  }
+	@Override
+	public String createJSONAASEnvironmentSerialization(@Valid List<String> aasIds, @Valid List<String> submodelIds, @Valid boolean includeConceptDescriptions) throws SerializationException {
+		Environment aasEnvironment = createEnvironment(aasIds, submodelIds, includeConceptDescriptions);
+		return jsonSerializer.write(aasEnvironment);
+	}
 
-  @Override
-  public String createXMLAASEnvironmentSerialization(@Valid List<String> aasIds, @Valid List<String> submodelIds,
-      @Valid boolean includeConceptDescriptions) throws SerializationException {
-    Environment aasEnvironment = createEnvironment(aasIds, submodelIds, includeConceptDescriptions);
+	@Override
+	public String createXMLAASEnvironmentSerialization(@Valid List<String> aasIds, @Valid List<String> submodelIds, @Valid boolean includeConceptDescriptions) throws SerializationException {
+		Environment aasEnvironment = createEnvironment(aasIds, submodelIds, includeConceptDescriptions);
 
-    return xmlSerializer.write(aasEnvironment);
-  }
+		return xmlSerializer.write(aasEnvironment);
+	}
 
-  @Override
-  public byte[] createAASXAASEnvironmentSerialization(@Valid List<String> aasIds, @Valid List<String> submodelIds,
-      @Valid boolean includeConceptDescriptions) throws SerializationException, IOException {
-    Environment aasEnvironment = createEnvironment(aasIds, submodelIds, includeConceptDescriptions);
+	@Override
+	public byte[] createAASXAASEnvironmentSerialization(@Valid List<String> aasIds, @Valid List<String> submodelIds, @Valid boolean includeConceptDescriptions) throws SerializationException, IOException {
+		Environment aasEnvironment = createEnvironment(aasIds, submodelIds, includeConceptDescriptions);
 
-    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    aasxSerializer.write(aasEnvironment, null, outputStream);
-    return outputStream.toByteArray();
-  }
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		aasxSerializer.write(aasEnvironment, null, outputStream);
+		return outputStream.toByteArray();
+	}
 
-  private Environment createEnvironment(List<String> aasIds, List<String> submodelIds,
-      boolean includeConceptDescriptions) {
-    List<AssetAdministrationShell> shells = aasIds.stream().map(aasRepository::getAas).collect(Collectors.toList());
-    List<Submodel> submodels = submodelIds.stream().map(submodelRepository::getSubmodel).collect(Collectors.toList());
+	private Environment createEnvironment(List<String> aasIds, List<String> submodelIds, boolean includeConceptDescriptions) {
+		List<AssetAdministrationShell> shells = aasIds.stream().map(aasRepository::getAas).collect(Collectors.toList());
+		List<Submodel> submodels = submodelIds.stream().map(submodelRepository::getSubmodel).collect(Collectors.toList());
 
-    Environment aasEnvironment = new DefaultEnvironment();
-    aasEnvironment.setAssetAdministrationShells(cloneCreator.cloneAssetAdministrationShells(shells));
-    aasEnvironment.setSubmodels(cloneCreator.cloneSubmodels(submodels));
+		Environment aasEnvironment = new DefaultEnvironment();
+		aasEnvironment.setAssetAdministrationShells(cloneCreator.cloneAssetAdministrationShells(shells));
+		aasEnvironment.setSubmodels(cloneCreator.cloneSubmodels(submodels));
 
-    if (includeConceptDescriptions)
-      includeConceptDescriptions(aasEnvironment);
+		if (includeConceptDescriptions) {
+			includeConceptDescriptions(aasEnvironment);
+		}
 
-    return aasEnvironment;
-  }
+		return aasEnvironment;
+	}
 
-  private void includeConceptDescriptions(Environment aasEnvironment) {
-    List<ConceptDescription> conceptDescriptions =
-        cloneCreator.cloneConceptDescriptions(getConceptDescriptions(aasEnvironment));
-    aasEnvironment.setConceptDescriptions(conceptDescriptions);
-  }
+	private void includeConceptDescriptions(Environment aasEnvironment) {
+		List<ConceptDescription> conceptDescriptions = cloneCreator.cloneConceptDescriptions(getConceptDescriptions(aasEnvironment));
+		aasEnvironment.setConceptDescriptions(conceptDescriptions);
+	}
 
-  private List<ConceptDescription> getConceptDescriptions(Environment env) {
-    if (conceptDescriptionRepository == null)
-      throw new NullPointerException(
-          "The parameter includeConceptDescriptions is set to true but ConceptDescriptionRepository is null");
+	private List<ConceptDescription> getConceptDescriptions(Environment env) {
+		if (conceptDescriptionRepository == null) {
+			throw new NullPointerException("The parameter includeConceptDescriptions is set to true but ConceptDescriptionRepository is null");
+		}
 
-    Set<String> cdIds = new ConceptDescriptionIdCollector(env).collect();
+		Set<String> cdIds = new ConceptDescriptionIdCollector(env).collect();
 
-    return cdIds.stream().map(this::fetchConceptDescriptionFromRepo).filter(Objects::nonNull)
-        .collect(Collectors.toList());
-  }
+		return cdIds.stream().map(this::fetchConceptDescriptionFromRepo).filter(Objects::nonNull).collect(Collectors.toList());
+	}
 
-  private ConceptDescription fetchConceptDescriptionFromRepo(String conceptDescriptionId) {
-    try {
-      return conceptDescriptionRepository.getConceptDescription(conceptDescriptionId);
-    } catch (ElementDoesNotExistException e) {
-      logger.error("Concept description with id {} could not be found in the repository", conceptDescriptionId);
-      return null;
-    }
-  }
+	private ConceptDescription fetchConceptDescriptionFromRepo(String conceptDescriptionId) {
+		try {
+			return conceptDescriptionRepository.getConceptDescription(conceptDescriptionId);
+		} catch (ElementDoesNotExistException e) {
+			logger.error("Concept description with id {} could not be found in the repository", conceptDescriptionId);
+			return null;
+		}
+	}
 
 }

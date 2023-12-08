@@ -28,89 +28,89 @@ package org.eclipse.digitaltwin.basyx.aasrepository.http.pagination;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
 import org.eclipse.digitaltwin.basyx.aasrepository.AasRepository;
 import org.eclipse.digitaltwin.basyx.http.pagination.PagedResult;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 /**
  * Paginated wrapper for {@link AasRepository#getAllAas()}
  */
 @Validated
-@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen",
-    date = "2023-05-22T07:02:56.105163402Z[GMT]")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2023-05-22T07:02:56.105163402Z[GMT]")
 
 public class GetAssetAdministrationShellsResult extends PagedResult {
-  @JsonProperty("result")
-  @Valid
-  private List<AssetAdministrationShell> result = null;
 
-  public GetAssetAdministrationShellsResult result(List<AssetAdministrationShell> result) {
-    this.result = result;
-    return this;
-  }
+	@JsonProperty("result")
+	@Valid
+	private List<AssetAdministrationShell> result = null;
 
-  public GetAssetAdministrationShellsResult addResultItem(AssetAdministrationShell resultItem) {
-    if (this.result == null) {
-      this.result = new ArrayList<AssetAdministrationShell>();
-    }
-    this.result.add(resultItem);
-    return this;
-  }
+	public GetAssetAdministrationShellsResult result(List<AssetAdministrationShell> result) {
+		this.result = result;
+		return this;
+	}
 
-  /**
-   * Get result
-   *
-   * @return result
-   **/
-  @Schema(description = "")
-  @Valid
-  public List<AssetAdministrationShell> getResult() {
-    return result;
-  }
+	public GetAssetAdministrationShellsResult addResultItem(AssetAdministrationShell resultItem) {
+		if (this.result == null) {
+			this.result = new ArrayList<AssetAdministrationShell>();
+		}
+		this.result.add(resultItem);
+		return this;
+	}
 
-  public void setResult(List<AssetAdministrationShell> result) {
-    this.result = result;
-  }
+	/**
+	 * Get result
+	 *
+	 * @return result
+	 **/
+	@Schema(description = "")
+	@Valid
+	public List<AssetAdministrationShell> getResult() {
+		return result;
+	}
 
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    GetAssetAdministrationShellsResult getAssetAdministrationShellsResult = (GetAssetAdministrationShellsResult) o;
-    return Objects.equals(this.result, getAssetAdministrationShellsResult.result) && super.equals(o);
-  }
+	public void setResult(List<AssetAdministrationShell> result) {
+		this.result = result;
+	}
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(result, super.hashCode());
-  }
+	@Override
+	public boolean equals(java.lang.Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		GetAssetAdministrationShellsResult getAssetAdministrationShellsResult = (GetAssetAdministrationShellsResult) o;
+		return Objects.equals(this.result, getAssetAdministrationShellsResult.result) && super.equals(o);
+	}
 
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class GetAssetAdministrationShellsResult {\n");
-    sb.append("    ").append(toIndentedString(super.toString())).append("\n");
-    sb.append("    result: ").append(toIndentedString(result)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
+	@Override
+	public int hashCode() {
+		return Objects.hash(result, super.hashCode());
+	}
 
-  /**
-   * Convert the given object to string with each line indented by 4 spaces (except the first line).
-   */
-  private String toIndentedString(java.lang.Object o) {
-    if (o == null) {
-      return "null";
-    }
-    return o.toString().replace("\n", "\n    ");
-  }
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("class GetAssetAdministrationShellsResult {\n");
+		sb.append("    ").append(toIndentedString(super.toString())).append("\n");
+		sb.append("    result: ").append(toIndentedString(result)).append("\n");
+		sb.append("}");
+		return sb.toString();
+	}
+
+	/**
+	 * Convert the given object to string with each line indented by 4 spaces
+	 * (except the first line).
+	 */
+	private String toIndentedString(java.lang.Object o) {
+		if (o == null) {
+			return "null";
+		}
+		return o.toString().replace("\n", "\n    ");
+	}
 }

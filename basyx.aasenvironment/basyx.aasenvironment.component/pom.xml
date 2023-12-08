@@ -116,7 +116,7 @@
 		</plugins>
 	</build>
 
-	<profiles>
+<profiles>
 		<profile>
 			<id>docker</id>
       <activation>
@@ -176,3 +176,4 @@
 		</profile>
 	</profiles>
 </project>
+

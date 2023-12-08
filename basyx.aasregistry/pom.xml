@@ -22,7 +22,8 @@
 		<swagger.codegen.version>3.0.42</swagger.codegen.version>
 		<spring.fox.version>3.0.0</spring.fox.version>
 		<openapi.folder.name>open-api</openapi.folder.name>
-		<openapi.base.name>Plattform_i40-AssetAdministrationShellRegistryServiceSpecification-V3.0.1_SSP-001-resolved.yaml</openapi.base.name>
+		<openapi.base.name>Plattform_i40-AssetAdministrationShellRegistryServiceSpecification-V3.0.1_SSP-001-resolved.yaml
+		</openapi.base.name>
 		<openapi.name>Plattform_i40-Registry-and-Discovery.yaml</openapi.name>
 		<guava.version>31.0.1-jre</guava.version>
 		<maven-plugin.version>3.6.0</maven-plugin.version>
@@ -51,7 +52,6 @@
 		<module>basyx.aasregistry-service-release-log-mongodb</module>
 <!--		<module>basyx.aasregistry-service-release-kafka-mem</module>-->
 <!--		<module>basyx.aasregistry-service-release-kafka-mongodb</module>-->
-
 	</modules>
 
 	<developers>
@@ -89,7 +89,8 @@
 					<version>${swagger.codegen.version}</version>
 				</plugin>
 				<plugin>
-					<!-- If you want to override templates you can copy these: https://github.com/OpenAPITools/openapi-generator/tree/v6.6.0/modules/openapi-generator/src/main/resources -->
+					<!-- If you want to override templates you can copy these:
+					https://github.com/OpenAPITools/openapi-generator/tree/v6.6.0/modules/openapi-generator/src/main/resources -->
 					<groupId>org.openapitools</groupId>
 					<artifactId>openapi-generator-maven-plugin</artifactId>
 					<version>${openapitools.version}</version>

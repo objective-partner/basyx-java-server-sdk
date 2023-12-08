@@ -48,7 +48,7 @@ public class FileDoesNotExistException extends BaSyxResponseException {
 	}
 
 	private static String getMsg(String elementId) {
-		return "Requested File inside File SubmodelElement with ID : " + elementId + " does not exist";
+		return "Requested File inside the Asset administration shell or File SubmodelElement with ID : " + elementId + " does not exist";
 	}
 
 }

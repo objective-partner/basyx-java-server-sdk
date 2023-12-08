@@ -25,11 +25,13 @@
 package org.eclipse.digitaltwin.basyx.submodelregistry.service.events;
 
 import jakarta.annotation.Nullable;
+
+import org.eclipse.digitaltwin.basyx.submodelregistry.model.SubmodelDescriptor;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.eclipse.digitaltwin.basyx.submodelregistry.model.SubmodelDescriptor;
 
 @Data
 @Builder
@@ -37,12 +39,11 @@ import org.eclipse.digitaltwin.basyx.submodelregistry.model.SubmodelDescriptor;
 @AllArgsConstructor
 public class RegistryEvent {
 
-  private String id;
-  private EventType type;
-  private @Nullable SubmodelDescriptor submodelDescriptor;
+	private String id;
+	private EventType type;
+	private @Nullable SubmodelDescriptor submodelDescriptor;
 
-
-  public enum EventType {
-    SUBMODEL_REGISTERED, SUBMODEL_UNREGISTERED
-  }
+	public enum EventType {
+		SUBMODEL_REGISTERED, SUBMODEL_UNREGISTERED
+	}
 }

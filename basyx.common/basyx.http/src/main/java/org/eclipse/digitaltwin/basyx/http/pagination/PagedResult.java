@@ -28,76 +28,76 @@ package org.eclipse.digitaltwin.basyx.http.pagination;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
-import org.springframework.validation.annotation.Validated;
-
 import java.util.Objects;
+import org.springframework.validation.annotation.Validated;
 
 /**
  * Base class for Paginated results
  */
 @Validated
-@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen",
-    date = "2023-05-22T07:02:56.105163402Z[GMT]")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2023-05-22T07:02:56.105163402Z[GMT]")
 
 public class PagedResult {
-  @JsonProperty("paging_metadata")
-  private PagedResultPagingMetadata pagingMetadata = null;
 
-  public PagedResult pagingMetadata(PagedResultPagingMetadata pagingMetadata) {
-    this.pagingMetadata = pagingMetadata;
-    return this;
-  }
+	@JsonProperty("paging_metadata")
+	private PagedResultPagingMetadata pagingMetadata = null;
 
-  /**
-   * Get pagingMetadata
-   *
-   * @return pagingMetadata
-   **/
-  @Schema(description = "")
+	public PagedResult pagingMetadata(PagedResultPagingMetadata pagingMetadata) {
+		this.pagingMetadata = pagingMetadata;
+		return this;
+	}
 
-  @Valid
-  public PagedResultPagingMetadata getPagingMetadata() {
-    return pagingMetadata;
-  }
+	/**
+	 * Get pagingMetadata
+	 *
+	 * @return pagingMetadata
+	 **/
+	@Schema(description = "")
 
-  public void setPagingMetadata(PagedResultPagingMetadata pagingMetadata) {
-    this.pagingMetadata = pagingMetadata;
-  }
+	@Valid
+	public PagedResultPagingMetadata getPagingMetadata() {
+		return pagingMetadata;
+	}
 
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    PagedResult pagedResult = (PagedResult) o;
-    return Objects.equals(this.pagingMetadata, pagedResult.pagingMetadata);
-  }
+	public void setPagingMetadata(PagedResultPagingMetadata pagingMetadata) {
+		this.pagingMetadata = pagingMetadata;
+	}
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(pagingMetadata);
-  }
+	@Override
+	public boolean equals(java.lang.Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		PagedResult pagedResult = (PagedResult) o;
+		return Objects.equals(this.pagingMetadata, pagedResult.pagingMetadata);
+	}
 
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class PagedResult {\n");
+	@Override
+	public int hashCode() {
+		return Objects.hash(pagingMetadata);
+	}
 
-    sb.append("    pagingMetadata: ").append(toIndentedString(pagingMetadata)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("class PagedResult {\n");
 
-  /**
-   * Convert the given object to string with each line indented by 4 spaces (except the first line).
-   */
-  private String toIndentedString(java.lang.Object o) {
-    if (o == null) {
-      return "null";
-    }
-    return o.toString().replace("\n", "\n    ");
-  }
+		sb.append("    pagingMetadata: ").append(toIndentedString(pagingMetadata)).append("\n");
+		sb.append("}");
+		return sb.toString();
+	}
+
+	/**
+	 * Convert the given object to string with each line indented by 4 spaces
+	 * (except the first line).
+	 */
+	private String toIndentedString(java.lang.Object o) {
+		if (o == null) {
+			return "null";
+		}
+		return o.toString().replace("\n", "\n    ");
+	}
 }
