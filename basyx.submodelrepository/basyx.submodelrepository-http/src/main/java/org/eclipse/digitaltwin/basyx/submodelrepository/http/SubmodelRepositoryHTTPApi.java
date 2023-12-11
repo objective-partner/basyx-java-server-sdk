@@ -83,7 +83,7 @@ public interface SubmodelRepositoryHTTPApi {
       @ApiResponse(responseCode = "500", description = "Internal Server Error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-      @ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes",
+      @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class)))})
   @RequestMapping(value = "/submodels", produces = {"application/json"}, method = RequestMethod.GET)
 	ResponseEntity<PagedResult> getAllSubmodels(
@@ -119,7 +119,7 @@ public interface SubmodelRepositoryHTTPApi {
       @ApiResponse(responseCode = "500", description = "Internal Server Error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-			@ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Submodel.class))) })
+	  @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Submodel.class))) })
 	@RequestMapping(value = "/submodels/{submodelIdentifier}", produces = { "application/json" }, method = RequestMethod.GET)
   ResponseEntity<Submodel> getSubmodelById(
       @Parameter(in = ParameterIn.PATH, description = "The Submodel’s unique id (UTF8-BASE64-URL-encoded)",
@@ -154,7 +154,7 @@ public interface SubmodelRepositoryHTTPApi {
       @ApiResponse(responseCode = "500", description = "Internal Server Error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-      @ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes",
+      @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class)))})
   @RequestMapping(value = "/submodels/{submodelIdentifier}/$value", produces = {"application/json"},
       method = RequestMethod.GET)
@@ -192,7 +192,7 @@ public interface SubmodelRepositoryHTTPApi {
       @ApiResponse(responseCode = "500", description = "Internal Server Error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-      @ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes",
+      @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class)))})
   @RequestMapping(value = "/submodels/{submodelIdentifier}/$metadata", produces = {"application/json"},
       method = RequestMethod.GET)
@@ -226,7 +226,7 @@ public interface SubmodelRepositoryHTTPApi {
       @ApiResponse(responseCode = "500", description = "Internal Server Error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-      @ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes",
+      @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class)))})
   @RequestMapping(value = "/submodels", produces = {"application/json"}, consumes = {"application/json"},
       method = RequestMethod.POST)
@@ -255,7 +255,7 @@ public interface SubmodelRepositoryHTTPApi {
       @ApiResponse(responseCode = "500", description = "Internal Server Error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-      @ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes",
+      @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class)))})
   @RequestMapping(value = "/submodels/{submodelIdentifier}", produces = {"application/json"},
       consumes = {"application/json"}, method = RequestMethod.PUT)
@@ -289,7 +289,7 @@ public interface SubmodelRepositoryHTTPApi {
       @ApiResponse(responseCode = "500", description = "Internal Server Error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-      @ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes",
+      @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class)))})
   @RequestMapping(value = "/submodels/{submodelIdentifier}", produces = {"application/json"},
       method = RequestMethod.DELETE)
@@ -320,7 +320,7 @@ public interface SubmodelRepositoryHTTPApi {
       @ApiResponse(responseCode = "500", description = "Internal Server Error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-      @ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes",
+      @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class)))})
   @RequestMapping(value = "/submodels/{submodelIdentifier}/submodel-elements", produces = {"application/json"},
       method = RequestMethod.GET)
@@ -356,7 +356,7 @@ public interface SubmodelRepositoryHTTPApi {
       @ApiResponse(responseCode = "500", description = "Internal Server Error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-      @ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes",
+      @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class)))})
   @RequestMapping(value = "/submodels/{submodelIdentifier}/submodel-elements/{idShortPath}",
       produces = {"application/json"}, method = RequestMethod.GET)
@@ -398,7 +398,7 @@ public interface SubmodelRepositoryHTTPApi {
       @ApiResponse(responseCode = "500", description = "Internal Server Error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-      @ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes",
+      @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class)))})
   @RequestMapping(value = "/submodels/{submodelIdentifier}/submodel-elements/{idShortPath}/$value",
       produces = {"application/json"}, method = RequestMethod.GET)
@@ -437,7 +437,7 @@ public interface SubmodelRepositoryHTTPApi {
       @ApiResponse(responseCode = "500", description = "Internal Server Error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-      @ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes",
+      @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class)))})
   @RequestMapping(value = "/submodels/{submodelIdentifier}/submodel-elements/{idShortPath}/$value",
       produces = {"application/json"}, consumes = {"application/json"}, method = RequestMethod.PATCH)
@@ -480,7 +480,7 @@ public interface SubmodelRepositoryHTTPApi {
       @ApiResponse(responseCode = "500", description = "Internal Server Error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-      @ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes",
+      @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class)))})
   @RequestMapping(value = "/submodels/{submodelIdentifier}/submodel-elements/{idShortPath}",
       produces = {"application/json"}, consumes = {"application/json"}, method = RequestMethod.POST)
@@ -525,7 +525,7 @@ public interface SubmodelRepositoryHTTPApi {
       @ApiResponse(responseCode = "500", description = "Internal Server Error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-      @ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes",
+      @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class)))})
   @RequestMapping(value = "/submodels/{submodelIdentifier}/submodel-elements", produces = {"application/json"},
       consumes = {"application/json"}, method = RequestMethod.POST)
@@ -558,7 +558,7 @@ public interface SubmodelRepositoryHTTPApi {
       @ApiResponse(responseCode = "500", description = "Internal Server Error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-      @ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes",
+      @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class)))})
   @RequestMapping(value = "/submodels/{submodelIdentifier}/submodel-elements/{idShortPath}",
       produces = {"application/json"}, method = RequestMethod.DELETE)
@@ -583,7 +583,7 @@ public interface SubmodelRepositoryHTTPApi {
 
         @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-        @ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))) })
+        @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))) })
     @RequestMapping(value = "/submodels/{submodelIdentifier}/submodel-elements/{idShortPath}/attachment",
         produces = { "application/octet-stream", "application/json" },
         method = RequestMethod.GET)
@@ -603,7 +603,7 @@ public interface SubmodelRepositoryHTTPApi {
 
 	        @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-	        @ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))) })
+	        @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))) })
 	    @RequestMapping(value = "/submodels/{submodelIdentifier}/submodel-elements/{idShortPath}/attachment",
 	        produces = { "application/json" },
 	        consumes = { "multipart/form-data" },
@@ -624,7 +624,7 @@ public interface SubmodelRepositoryHTTPApi {
 
         @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-        @ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))) })
+        @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))) })
     @RequestMapping(value = "/submodels/{submodelIdentifier}/submodel-elements/{idShortPath}/attachment",
         produces = { "application/json" },
         method = RequestMethod.DELETE)
@@ -655,7 +655,7 @@ public interface SubmodelRepositoryHTTPApi {
       @ApiResponse(responseCode = "500", description = "Internal Server Error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-      @ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes",
+      @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class)))})
   @RequestMapping(value = "/submodels/{submodelIdentifier}/submodel-elements/{idShortPath}/invoke",
       produces = {"application/json"}, consumes = {"application/json"}, method = RequestMethod.POST)

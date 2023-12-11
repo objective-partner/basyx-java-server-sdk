@@ -49,7 +49,7 @@ public interface ConceptDescriptionRepositoryHTTPApi {
       @ApiResponse(responseCode = "500", description = "Internal Server Error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-      @ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes",
+      @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class)))})
   @RequestMapping(value = "/concept-descriptions/{cdIdentifier}", produces = {"application/json"},
       method = RequestMethod.DELETE)
@@ -71,7 +71,7 @@ public interface ConceptDescriptionRepositoryHTTPApi {
       @ApiResponse(responseCode = "500", description = "Internal Server Error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-      @ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes",
+      @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class)))})
   @RequestMapping(value = "/concept-descriptions", produces = {"application/json"}, method = RequestMethod.GET)
   ResponseEntity<PagedResult> getAllConceptDescriptions(
@@ -101,7 +101,7 @@ public interface ConceptDescriptionRepositoryHTTPApi {
       @ApiResponse(responseCode = "500", description = "Internal Server Error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-      @ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes",
+      @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class)))})
   @RequestMapping(value = "/concept-descriptions/{cdIdentifier}", produces = {"application/json"},
       method = RequestMethod.GET)
@@ -129,7 +129,7 @@ public interface ConceptDescriptionRepositoryHTTPApi {
       @ApiResponse(responseCode = "500", description = "Internal Server Error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-      @ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes",
+      @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class)))})
   @RequestMapping(value = "/concept-descriptions", produces = {"application/json"}, consumes = {"application/json"},
       method = RequestMethod.POST)
@@ -155,7 +155,7 @@ public interface ConceptDescriptionRepositoryHTTPApi {
       @ApiResponse(responseCode = "500", description = "Internal Server Error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-      @ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes",
+      @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class)))})
   @RequestMapping(value = "/concept-descriptions/{cdIdentifier}", produces = {"application/json"},
       consumes = {"application/json"}, method = RequestMethod.PUT)

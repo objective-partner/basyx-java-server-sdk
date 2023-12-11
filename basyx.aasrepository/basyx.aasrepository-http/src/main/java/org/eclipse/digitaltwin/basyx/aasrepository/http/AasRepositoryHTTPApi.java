@@ -83,7 +83,7 @@ public interface AasRepositoryHTTPApi {
           @ApiResponse(responseCode = "500", description = "Internal Server Error",
               content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-          @ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes",
+          @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes",
               content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class)))})
   @RequestMapping(value = "/shells/{aasIdentifier}", produces = {"application/json"}, method = RequestMethod.DELETE)
   ResponseEntity<Void> deleteAssetAdministrationShellById(@Parameter(in = ParameterIn.PATH,
@@ -112,7 +112,7 @@ public interface AasRepositoryHTTPApi {
       @ApiResponse(responseCode = "500", description = "Internal Server Error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-      @ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes",
+      @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class)))})
   @RequestMapping(value = "/shells/{aasIdentifier}/submodel-refs/{submodelIdentifier}", produces = {"application/json"},
       method = RequestMethod.DELETE)
@@ -140,7 +140,7 @@ public interface AasRepositoryHTTPApi {
       @ApiResponse(responseCode = "500", description = "Internal Server Error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-			@ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PagedResult.class))) })
+			@ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PagedResult.class))) })
 	@RequestMapping(value = "/shells", produces = { "application/json" }, method = RequestMethod.GET)
 	ResponseEntity<PagedResult> getAllAssetAdministrationShells(
 			@Parameter(in = ParameterIn.QUERY, description = "A list of specific Asset identifiers", schema = @Schema()) @Valid @RequestParam(value = "assetIds", required = false) List<SpecificAssetId> assetIds,
@@ -169,7 +169,7 @@ public interface AasRepositoryHTTPApi {
       @ApiResponse(responseCode = "500", description = "Internal Server Error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-			@ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))) })
+			@ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))) })
 	@RequestMapping(value = "/shells/{aasIdentifier}/submodel-refs", produces = { "application/json" }, method = RequestMethod.GET)
 	ResponseEntity<PagedResult> getAllSubmodelReferencesAasRepository(
 			@Parameter(in = ParameterIn.PATH, description = "The Asset Administration Shell’s unique id (UTF8-BASE64-URL-encoded)", required = true, schema = @Schema()) @PathVariable("aasIdentifier") Base64UrlEncodedIdentifier aasIdentifier,
@@ -200,7 +200,7 @@ public interface AasRepositoryHTTPApi {
       @ApiResponse(responseCode = "500", description = "Internal Server Error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-      @ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes",
+      @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class)))})
   @RequestMapping(value = "/shells/{aasIdentifier}", produces = {"application/json"}, method = RequestMethod.GET)
   ResponseEntity<AssetAdministrationShell> getAssetAdministrationShellById(@Parameter(in = ParameterIn.PATH,
@@ -232,7 +232,7 @@ public interface AasRepositoryHTTPApi {
       @ApiResponse(responseCode = "500", description = "Internal Server Error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-      @ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes",
+      @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class)))})
   @RequestMapping(value = "/shells", produces = {"application/json"}, consumes = {"application/json"},
       method = RequestMethod.POST)
@@ -266,7 +266,7 @@ public interface AasRepositoryHTTPApi {
       @ApiResponse(responseCode = "500", description = "Internal Server Error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-      @ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes",
+      @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class)))})
   @RequestMapping(value = "/shells/{aasIdentifier}/submodel-refs", produces = {"application/json"},
       consumes = {"application/json"}, method = RequestMethod.POST)
@@ -298,7 +298,7 @@ public interface AasRepositoryHTTPApi {
           @ApiResponse(responseCode = "500", description = "Internal Server Error",
               content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-          @ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes",
+          @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes",
               content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class)))})
   @RequestMapping(value = "/shells/{aasIdentifier}", produces = {"application/json"}, consumes = {"application/json"},
       method = RequestMethod.PUT)
@@ -329,7 +329,7 @@ public interface AasRepositoryHTTPApi {
       @ApiResponse(responseCode = "500", description = "Internal Server Error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-      @ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes",
+      @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class)))})
   @RequestMapping(value = "/shells/{aasIdentifier}/asset-information", produces = {"application/json"},
       consumes = {"application/json"}, method = RequestMethod.PUT)
@@ -361,7 +361,7 @@ public interface AasRepositoryHTTPApi {
       @ApiResponse(responseCode = "500", description = "Internal Server Error",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-      @ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes",
+      @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class)))})
   @RequestMapping(value = "/shells/{aasIdentifier}/asset-information", produces = {"application/json"},
       method = RequestMethod.GET)
