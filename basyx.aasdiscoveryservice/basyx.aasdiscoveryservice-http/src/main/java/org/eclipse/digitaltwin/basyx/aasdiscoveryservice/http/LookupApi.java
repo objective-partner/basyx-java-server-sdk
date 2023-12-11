@@ -38,7 +38,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Max;
 import org.eclipse.digitaltwin.aas4j.v3.model.SpecificAssetId;
+import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.model.ElementCount;
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.http.pagination.InlineResponse200;
 import org.eclipse.digitaltwin.basyx.http.Base64UrlEncodedIdentifier;
 import org.eclipse.digitaltwin.basyx.http.model.Result;
@@ -54,7 +56,7 @@ import jakarta.annotation.Generated;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import java.util.List;
-
+import java.util.Map;
 
 @Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2023-10-10T10:16:17.046754509Z[GMT]")
 @Validated
@@ -66,7 +68,7 @@ public interface LookupApi {
         
         @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
         
-        @ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))) })
+        @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))) })
     @RequestMapping(value = "/lookup/shells/{aasIdentifier}",
         produces = { "application/json" }, 
         method = RequestMethod.DELETE)
@@ -77,7 +79,7 @@ public interface LookupApi {
     @ApiResponses(value = { 
         @ApiResponse(responseCode = "200", description = "Requested Asset Administration Shell ids", content = @Content(mediaType = "application/json", schema = @Schema(implementation = InlineResponse200.class))),
         
-        @ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))) })
+        @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))) })
     @RequestMapping(value = "/lookup/shells",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
@@ -91,7 +93,7 @@ public interface LookupApi {
         
         @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
         
-        @ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))) })
+        @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))) })
     @RequestMapping(value = "/lookup/shells/{aasIdentifier}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
@@ -108,12 +110,50 @@ public interface LookupApi {
         
         @ApiResponse(responseCode = "409", description = "Conflict, a resource which shall be created exists already. Might be thrown if a Submodel or SubmodelElement with the same ShortId is contained in a POST request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
         
-        @ApiResponse(responseCode = "200", description = "Default error handling for unmentioned status codes", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))) })
+        @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))) })
     @RequestMapping(value = "/lookup/shells/{aasIdentifier}",
         produces = { "application/json" }, 
         consumes = { "application/json" }, 
         method = RequestMethod.POST)
     ResponseEntity<List<SpecificAssetId>> postAllAssetLinksById(@Parameter(in = ParameterIn.PATH, description = "The Asset Administration Shell’s unique id (UTF8-BASE64-URL-encoded)", required=true, schema=@Schema()) @PathVariable("aasIdentifier") Base64UrlEncodedIdentifier aasIdentifier, @Parameter(in = ParameterIn.DEFAULT, description = "A list of specific Asset identifiers", required=true, schema=@Schema()) @Valid @RequestBody List<SpecificAssetId> body);
 
+    @Operation(summary = "Lists the AssetLink names with a minimum occurrence", description = "", tags={ "Asset Administration Shell Basic Discovery API" })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Specific Asset identifiers created successfully", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ElementCount.class)))),
+
+            @ApiResponse(responseCode = "400", description = "Bad Request, e.g. the request parameters of the format of the request body is wrong.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
+
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
+
+            @ApiResponse(responseCode = "409", description = "Conflict, a resource which shall be created exists already. Might be thrown if a Submodel or SubmodelElement with the same ShortId is contained in a POST request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
+
+            @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))) })
+    @RequestMapping(value = "/lookup/assetlinks/names",
+            produces = { "application/json" },
+            method = RequestMethod.GET)
+    ResponseEntity<List<ElementCount>> getAssetLinkNames(
+            @Parameter(in = ParameterIn.QUERY, description = "Prefix of AssetLink name") @Valid @RequestParam(value = "prefix", required = false) String prefix,
+            @Parameter(in = ParameterIn.QUERY, description = "Minimum count of AssetLinks with this name") @Valid @RequestParam(value = "minCount", required = false) Integer minCount
+    );
+
+    @Operation(summary = "Lists the AssetLink values with a minimum occurrence", description = "", tags={ "Asset Administration Shell Basic Discovery API" })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Specific Asset identifiers created successfully", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ElementCount.class)))),
+
+            @ApiResponse(responseCode = "400", description = "Bad Request, e.g. the request parameters of the format of the request body is wrong.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
+
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
+
+            @ApiResponse(responseCode = "409", description = "Conflict, a resource which shall be created exists already. Might be thrown if a Submodel or SubmodelElement with the same ShortId is contained in a POST request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
+
+            @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))) })
+    @RequestMapping(value = "/lookup/assetlinks/names/{assetLinkName}/value-counts",
+            produces = { "application/json" },
+            method = RequestMethod.GET)
+    ResponseEntity<List<ElementCount>> getAssetLinkValues(
+            @Parameter(in = ParameterIn.PATH, description = "AssetLink name", required=true, schema=@Schema()) @Valid @PathVariable("assetLinkName") Base64UrlEncodedIdentifier assetLinkName,
+            @Parameter(in = ParameterIn.QUERY, description = "Prefix of AssetLink value") @Valid @RequestParam(value = "prefix", required = false) String prefix,
+            @Parameter(in = ParameterIn.QUERY, description = "Minimum count of AssetLinks with this value") @Valid @RequestParam(value = "minCount", required = false) Integer minCount
+    );
 }
 

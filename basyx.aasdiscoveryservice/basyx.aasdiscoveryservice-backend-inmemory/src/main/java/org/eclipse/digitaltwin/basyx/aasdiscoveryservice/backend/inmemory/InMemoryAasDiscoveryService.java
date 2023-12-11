@@ -28,12 +28,14 @@ package org.eclipse.digitaltwin.basyx.aasdiscoveryservice.backend.inmemory;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
 import org.eclipse.digitaltwin.aas4j.v3.model.SpecificAssetId;
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.AasDiscoveryService;
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.AasDiscoveryUtils;
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.model.AssetLink;
+import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.model.ElementCount;
 import org.eclipse.digitaltwin.basyx.core.exceptions.AssetLinkDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingAssetLinkException;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
@@ -98,6 +100,30 @@ public class InMemoryAasDiscoveryService implements AasDiscoveryService {
 		}
 
 		return specificAssetIds;
+	}
+
+	@Override
+	public List<ElementCount> getAssetLinkNames(String prefix, Integer minCount) {
+		Stream<Map.Entry<String, Long>> assetNamesCounted = assetLinks.values().stream().flatMap(Set::stream).map(AssetLink::getName).collect(Collectors.groupingBy(Function.identity(), Collectors.counting())).entrySet().stream();
+		if (prefix != null && !prefix.isBlank()) {
+			assetNamesCounted = assetNamesCounted.filter(e -> e.getKey().startsWith(prefix));
+		}
+		if (minCount != null && minCount > 0) {
+			assetNamesCounted = assetNamesCounted.filter(e -> e.getValue() > minCount);
+		}
+		return assetNamesCounted.map(e -> new ElementCount(e.getKey(), e.getValue())).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<ElementCount> getAssetLinkValues(String assetLinkName, String prefix, Integer minCount) {
+		Stream<Map.Entry<String, Long>> assetNameValuesCounted = assetLinks.values().stream().flatMap(Set::stream).filter(e -> assetLinkName.equals(e.getName())).map(AssetLink::getValue).collect(Collectors.groupingBy(Function.identity(), Collectors.counting())).entrySet().stream();
+		if (prefix != null && !prefix.isBlank()) {
+			assetNameValuesCounted = assetNameValuesCounted.filter(e -> e.getKey().startsWith(prefix));
+		}
+		if (minCount != null && minCount > 0) {
+			assetNameValuesCounted = assetNameValuesCounted.filter(e -> e.getValue() > minCount);
+		}
+		return assetNameValuesCounted.map(e -> new ElementCount(e.getKey(), e.getValue())).collect(Collectors.toList());
 	}
 
 	@Override
