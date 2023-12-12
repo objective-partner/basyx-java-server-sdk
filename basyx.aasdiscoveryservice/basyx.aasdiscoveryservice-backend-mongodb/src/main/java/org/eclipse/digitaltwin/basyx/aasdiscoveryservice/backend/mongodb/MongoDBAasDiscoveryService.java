@@ -32,6 +32,7 @@ import org.eclipse.digitaltwin.aas4j.v3.model.SpecificAssetId;
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.AasDiscoveryService;
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.AasDiscoveryUtils;
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.model.AssetLink;
+import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.model.ElementCount;
 import org.eclipse.digitaltwin.basyx.core.exceptions.AssetLinkDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingAssetLinkException;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
@@ -108,6 +109,35 @@ public class MongoDBAasDiscoveryService implements AasDiscoveryService {
 		mongoTemplate.save(document, collectionName);
 
 		return assetIds;
+	}
+
+	@Override
+	public List<ElementCount> getAssetLinkNames(String prefix, Integer minCount) {
+		List<AggregationOperation> aggregationOperations = new ArrayList<>(4);
+		aggregationOperations.add(Aggregation.unwind("assetLinks"));
+		if (prefix != null && !prefix.isBlank()) {
+			aggregationOperations.add(Aggregation.match(Criteria.where("assetLinks.name").regex("^" + prefix)));
+		}
+		aggregationOperations.add(Aggregation.group("assetLinks.name").count().as("count"));
+		aggregationOperations.add( Aggregation.project().andExpression("_id").as("element").andInclude("count"));
+		Aggregation aggregation = Aggregation.newAggregation(aggregationOperations);
+		AggregationResults<ElementCount> results = mongoTemplate.aggregate(aggregation, collectionName, ElementCount.class);
+		return results.getMappedResults();
+	}
+
+	@Override
+	public List<ElementCount> getAssetLinkValues(String assetLinkName, String prefix, Integer minCount) {
+		List<AggregationOperation> aggregationOperations = new ArrayList<>(4);
+		aggregationOperations.add(Aggregation.unwind("assetLinks"));
+		aggregationOperations.add(Aggregation.match(Criteria.where("assetLinks.name").is(assetLinkName)));
+		if (prefix != null && !prefix.isBlank()) {
+			aggregationOperations.add(Aggregation.match(Criteria.where("assetLinks.value").regex("^" + prefix)));
+		}
+		aggregationOperations.add(Aggregation.group("assetLinks.value").count().as("count"));
+		aggregationOperations.add( Aggregation.project().andExpression("_id").as("element").andInclude("count"));
+		Aggregation aggregation = Aggregation.newAggregation(aggregationOperations);
+		AggregationResults<ElementCount> results = mongoTemplate.aggregate(aggregation, collectionName, ElementCount.class);
+		return results.getMappedResults();
 	}
 
 	private static Query getSingleObjectQuery(String shellIdentifier) {

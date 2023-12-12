@@ -26,9 +26,11 @@
 package org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core;
 
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.SpecificAssetId;
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.model.AssetLink;
+import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.model.ElementCount;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 
@@ -68,6 +70,10 @@ public interface AasDiscoveryService {
 	 * @return a list of asset identifiers
 	 */
 	public List<SpecificAssetId> createAllAssetLinksById(String shellIdentifier, List<SpecificAssetId> assetIds);
+
+	public List<ElementCount> getAssetLinkNames(String prefix, Integer minCount);
+
+	public List<ElementCount> getAssetLinkValues(String assetLinkName, String prefix, Integer minCount);
 
 	/**
 	 * Deletes all asset identifier key-value-pairs linked to an Asset

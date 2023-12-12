@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2023-03-21T12:35:49.719724407Z[GMT]")
 @Validated
 public interface ConceptDescriptionRepositoryHTTPApi {
-
 	@Operation(summary = "Deletes a Concept Description", description = "", tags = { "Concept Description Repository API" })
 	@ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Concept Description deleted successfully"),
 
@@ -42,14 +41,10 @@ public interface ConceptDescriptionRepositoryHTTPApi {
 
 			@ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-      @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes",
-          content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class)))})
-  @RequestMapping(value = "/concept-descriptions/{cdIdentifier}", produces = {"application/json"},
-      method = RequestMethod.DELETE)
-  ResponseEntity<Void> deleteConceptDescriptionById(
-      @Parameter(in = ParameterIn.PATH, description = "The Concept Description’s unique id (UTF8-BASE64-URL-encoded)",
-          required = true, schema = @Schema()) @PathVariable("cdIdentifier") Base64UrlEncodedIdentifier cdIdentifier);
-
+			@ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))) })
+	@RequestMapping(value = "/concept-descriptions/{cdIdentifier}", produces = { "application/json" }, method = RequestMethod.DELETE)
+	ResponseEntity<Void> deleteConceptDescriptionById(
+			@Parameter(in = ParameterIn.PATH, description = "The Concept Description’s unique id (UTF8-BASE64-URL-encoded)", required = true, schema = @Schema()) @PathVariable("cdIdentifier") Base64UrlEncodedIdentifier cdIdentifier);
 
 	@Operation(summary = "Returns all Concept Descriptions", description = "", tags = { "Concept Description Repository API" })
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Requested Concept Descriptions", content = @Content(mediaType = "application/json", schema = @Schema(implementation = GetConceptDescriptionsResult.class))),
@@ -82,9 +77,6 @@ public interface ConceptDescriptionRepositoryHTTPApi {
 
 			@ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-      @ApiResponse(responseCode = "500", description = "Internal Server Error",
-          content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
-
       @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes",
           content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class)))})
   @RequestMapping(value = "/concept-descriptions/{cdIdentifier}", produces = {"application/json"},
@@ -105,13 +97,9 @@ public interface ConceptDescriptionRepositoryHTTPApi {
 
 			@ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-      @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes",
-          content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class)))})
-  @RequestMapping(value = "/concept-descriptions", produces = {"application/json"}, consumes = {"application/json"},
-      method = RequestMethod.POST)
-  ResponseEntity<ConceptDescription> postConceptDescription(
-      @Parameter(in = ParameterIn.DEFAULT, description = "Concept Description object", required = true,
-          schema = @Schema()) @Valid @RequestBody ConceptDescription body);
+			@ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))) })
+	@RequestMapping(value = "/concept-descriptions", produces = { "application/json" }, consumes = { "application/json" }, method = RequestMethod.POST)
+	ResponseEntity<ConceptDescription> postConceptDescription(@Parameter(in = ParameterIn.DEFAULT, description = "Concept Description object", required = true, schema = @Schema()) @Valid @RequestBody ConceptDescription body);
 
 	@Operation(summary = "Updates an existing Concept Description", description = "", tags = { "Concept Description Repository API" })
 	@ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Concept Description updated successfully"),
@@ -124,13 +112,10 @@ public interface ConceptDescriptionRepositoryHTTPApi {
 
 			@ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-      @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes",
-          content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class)))})
-  @RequestMapping(value = "/concept-descriptions/{cdIdentifier}", produces = {"application/json"},
-      consumes = {"application/json"}, method = RequestMethod.PUT)
-  ResponseEntity<Void> putConceptDescriptionById(
-      @Parameter(in = ParameterIn.PATH, description = "The Concept Description’s unique id (UTF8-BASE64-URL-encoded)",
-          required = true, schema = @Schema()) @PathVariable("cdIdentifier") Base64UrlEncodedIdentifier cdIdentifier,
-      @Parameter(in = ParameterIn.DEFAULT, description = "Concept Description object", required = true,
-          schema = @Schema()) @Valid @RequestBody ConceptDescription body);
+			@ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))) })
+	@RequestMapping(value = "/concept-descriptions/{cdIdentifier}", produces = { "application/json" }, consumes = { "application/json" }, method = RequestMethod.PUT)
+	ResponseEntity<Void> putConceptDescriptionById(
+			@Parameter(in = ParameterIn.PATH, description = "The Concept Description’s unique id (UTF8-BASE64-URL-encoded)", required = true, schema = @Schema()) @PathVariable("cdIdentifier") Base64UrlEncodedIdentifier cdIdentifier,
+			@Parameter(in = ParameterIn.DEFAULT, description = "Concept Description object", required = true, schema = @Schema()) @Valid @RequestBody ConceptDescription body);
+
 }

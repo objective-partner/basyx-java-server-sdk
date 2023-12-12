@@ -27,10 +27,12 @@ package org.eclipse.digitaltwin.basyx.aasdiscoveryservice.http;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.SpecificAssetId;
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.AasDiscoveryService;
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.model.AssetLink;
+import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.model.ElementCount;
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.http.pagination.InlineResponse200;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
@@ -112,7 +114,17 @@ public class LookupApiController implements LookupApi {
         
         return new ResponseEntity<List<SpecificAssetId>>(assetIDs, HttpStatus.CREATED);
     }
-    
+
+	@Override
+	public ResponseEntity<List<ElementCount>> getAssetLinkNames(String prefix, Integer minCount) {
+		return new ResponseEntity<List<ElementCount>>(aasDiscoveryService.getAssetLinkNames(prefix, minCount), HttpStatus.OK);
+	}
+
+	@Override
+	public ResponseEntity<List<ElementCount>> getAssetLinkValues(Base64UrlEncodedIdentifier assetLinkName, String prefix, Integer minCount) {
+		return new ResponseEntity<List<ElementCount>>(aasDiscoveryService.getAssetLinkValues(assetLinkName.getIdentifier(), prefix, minCount), HttpStatus.OK);
+	}
+
 	private List<AssetLink> getDecodedAssetLinks(List<Base64UrlEncodedIdentifier> assetIds) throws JsonProcessingException {
 		List<AssetLink> result = new ArrayList<>();
 		
