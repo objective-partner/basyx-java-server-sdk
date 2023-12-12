@@ -371,7 +371,7 @@ public interface SubmodelRepositoryHTTPApi {
 			@Parameter(in = ParameterIn.PATH, description = "The Submodel’s unique id (UTF8-BASE64-URL-encoded)", required = true, schema = @Schema()) @PathVariable("submodelIdentifier") Base64UrlEncodedIdentifier submodelIdentifier,
 			@Parameter(in = ParameterIn.PATH, description = "IdShort path to the submodel element (dot-separated)", required = true, schema = @Schema()) @PathVariable("idShortPath") String idShortPath);
 
-	@Operation(summary = "Downloads file content from a specific submodel element from the Submodel at a specified path", description = "", tags = { "Asset Administration Shell API" })
+	@Operation(summary = "Downloads file content from a specific submodel element from the Submodel at a specified path", description = "", tags = { "Submodel Repository API" })
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Requested file", content = @Content(mediaType = "application/octet-stream", schema = @Schema(implementation = Resource.class))),
 
 			@ApiResponse(responseCode = "400", description = "Bad Request, e.g. the request parameters of the format of the request body is wrong.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
@@ -390,7 +390,7 @@ public interface SubmodelRepositoryHTTPApi {
 			@Parameter(in = ParameterIn.PATH, description = "The Submodel’s unique id (UTF8-BASE64-URL-encoded)", required = true, schema = @Schema()) @PathVariable("submodelIdentifier") Base64UrlEncodedIdentifier submodelIdentifier,
 			@Parameter(in = ParameterIn.PATH, description = "IdShort path to the submodel element (dot-separated)", required = true, schema = @Schema()) @PathVariable("idShortPath") String idShortPath);
 
-	@Operation(summary = "Uploads file content to an existing submodel element at a specified path within submodel elements hierarchy", description = "", tags = { "Asset Administration Shell API" })
+	@Operation(summary = "Uploads file content to an existing submodel element at a specified path within submodel elements hierarchy", description = "", tags = { "Submodel Repository API" })
 	@ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Submodel element updated successfully"),
 
 			@ApiResponse(responseCode = "400", description = "Bad Request, e.g. the request parameters of the format of the request body is wrong.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
@@ -411,7 +411,7 @@ public interface SubmodelRepositoryHTTPApi {
 			@Parameter(in = ParameterIn.DEFAULT, description = "", required = true, schema = @Schema()) @RequestParam(value = "fileName", required = true) String fileName,
 			@Parameter(description = "file detail") @Valid @RequestPart("file") MultipartFile file);
 
-	@Operation(summary = "Deletes file content of an existing submodel element at a specified path within submodel elements hierarchy", description = "", tags = { "Asset Administration Shell API" })
+	@Operation(summary = "Deletes file content of an existing submodel element at a specified path within submodel elements hierarchy", description = "", tags = { "Submodel Repository API" })
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Submodel element updated successfully"),
 
 			@ApiResponse(responseCode = "400", description = "Bad Request, e.g. the request parameters of the format of the request body is wrong.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
