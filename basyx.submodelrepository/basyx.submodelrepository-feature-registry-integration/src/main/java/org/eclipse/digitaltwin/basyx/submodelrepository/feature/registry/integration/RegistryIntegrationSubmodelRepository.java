@@ -73,6 +73,11 @@ public class RegistryIntegrationSubmodelRepository implements SubmodelRepository
 		return decorated.getAllSubmodels(paginationInfo);
 	}
 
+  @Override
+  public CursorResult<List<Submodel>> getAllSubmodelsMetadata(PaginationInfo pInfo) {
+    return decorated.getAllSubmodelsMetadata(pInfo);
+  }
+
 	@Override
 	public Submodel getSubmodel(String submodelId) throws ElementDoesNotExistException {
 		return decorated.getSubmodel(submodelId);

@@ -188,6 +188,17 @@ public class MongoDBSubmodelRepository implements SubmodelRepository {
 		return new CursorResult<List<Submodel>>(cursor, foundDescriptors);
 	}
 
+  @Override
+  public CursorResult<List<Submodel>> getAllSubmodelsMetadata(PaginationInfo pInfo) {
+		Query query = new Query();
+		applySorting(query, pInfo);
+		applyPagination(query, pInfo);
+		List<Submodel> foundSubmodels = mongoTemplate.find(query, Submodel.class, collectionName);
+    foundSubmodels.forEach(submodel -> submodel.setSubmodelElements(null));
+		String cursor = resolveCursor(pInfo, foundSubmodels, Submodel::getId);
+		return new CursorResult<List<Submodel>>(cursor, foundSubmodels);
+  }
+
 	@Override
 	public Submodel getSubmodel(String submodelId) throws ElementDoesNotExistException {
 		Submodel submodel = mongoTemplate.findOne(new Query().addCriteria(Criteria.where(ID_JSON_PATH).is(submodelId)), Submodel.class, collectionName);

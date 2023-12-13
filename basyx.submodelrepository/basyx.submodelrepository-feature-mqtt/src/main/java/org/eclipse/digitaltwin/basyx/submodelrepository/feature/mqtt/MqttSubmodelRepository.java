@@ -47,6 +47,11 @@ public class MqttSubmodelRepository implements SubmodelRepository {
 		return decorated.getAllSubmodels(pInfo);
 	}
 
+  @Override
+  public CursorResult<List<Submodel>> getAllSubmodelsMetadata(PaginationInfo pInfo) {
+		return decorated.getAllSubmodels(pInfo);
+  }
+
 	@Override
 	public Submodel getSubmodel(String submodelId) throws ElementDoesNotExistException {
 		return decorated.getSubmodel(submodelId);

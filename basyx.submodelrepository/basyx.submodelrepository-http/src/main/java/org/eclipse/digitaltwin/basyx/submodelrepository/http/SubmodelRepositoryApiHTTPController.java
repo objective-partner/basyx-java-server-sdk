@@ -125,6 +125,31 @@ public class SubmodelRepositoryApiHTTPController implements SubmodelRepositoryHT
 		return new ResponseEntity<PagedResult>(paginatedSubmodel, HttpStatus.OK);
 	}
 
+  @Override
+  public ResponseEntity<PagedResult> getAllSubmodelsMetadata(Base64UrlEncodedIdentifier semanticId, String idShort,
+      Integer limit, Base64UrlEncodedCursor cursor, String extent) {
+		if (limit == null) {
+			limit = 100;
+		}
+
+		String decodedCursor = "";
+		if (cursor != null) {
+			decodedCursor = cursor.getDecodedCursor();
+		}
+
+		PaginationInfo pInfo = new PaginationInfo(limit, decodedCursor);
+
+		CursorResult<List<Submodel>> cursorResult = repository.getAllSubmodelsMetadata(pInfo);
+
+		GetSubmodelsResult paginatedSubmodel = new GetSubmodelsResult();
+
+		String encodedCursor = getEncodedCursorFromCursorResult(cursorResult);
+
+		paginatedSubmodel.result(new ArrayList<>(cursorResult.getResult()));
+		paginatedSubmodel.setPagingMetadata(new PagedResultPagingMetadata().cursor(encodedCursor));
+
+		return new ResponseEntity<PagedResult>(paginatedSubmodel, HttpStatus.OK);  }
+
 	@Override
 	public ResponseEntity<Submodel> getSubmodelById(Base64UrlEncodedIdentifier submodelIdentifier, @Valid String level, @Valid String extent) {
 		return new ResponseEntity<Submodel>(repository.getSubmodel(submodelIdentifier.getIdentifier()), HttpStatus.OK);

@@ -55,6 +55,13 @@ public interface SubmodelRepository {
 	 */
 	public CursorResult<List<Submodel>> getAllSubmodels(PaginationInfo pInfo);
 
+  /**
+   * Retrieves the metadata attributes of all Submodels from the repository
+   *
+   * @return a list of all found Submodels
+   */
+  public CursorResult<List<Submodel>> getAllSubmodelsMetadata(PaginationInfo pInfo);
+
 	/**
 	 * Retrieves the Submodel with the specific id
 	 * 

@@ -164,6 +164,21 @@ public class InMemorySubmodelRepository implements SubmodelRepository {
 		return paginatedSubmodels;
 	}
 
+  @Override
+  public CursorResult<List<Submodel>> getAllSubmodelsMetadata(PaginationInfo pInfo) {
+    List<Submodel> allSubmodels = submodelServices.values().stream().map(service -> {
+      Submodel submodel = service.getSubmodel();
+      submodel.setSubmodelElements(null);
+      return submodel;
+    }).toList();
+
+    TreeMap<String, Submodel> submodelMap = allSubmodels.stream().collect(Collectors.toMap(Submodel::getId, aas -> aas, (a, b) -> a, TreeMap::new));
+
+    PaginationSupport<Submodel> paginationSupport = new PaginationSupport<>(submodelMap, Submodel::getId);
+    CursorResult<List<Submodel>> paginatedSubmodels = paginationSupport.getPaged(pInfo);
+    return paginatedSubmodels;
+  }
+
 	@Override
 	public Submodel getSubmodel(String id) throws ElementDoesNotExistException {
 		return getSubmodelService(id).getSubmodel();
