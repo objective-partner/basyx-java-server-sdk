@@ -23,7 +23,7 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-package org.eclipse.digitaltwin.basyx.http;
+package org.eclipse.digitaltwin.basyx.core;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -33,7 +33,6 @@ import java.util.Base64;
  * Basic logic for Base64Url encoding and decoding
  * 
  * @author gordt, schnicke, mateusmolina
- * @deprecated Use {@link org.eclipse.digitaltwin.basyx.core.Base64UrlEncoder} instead
  */
 public class Base64UrlEncoder {
 	public static String encode(String plainValue) {

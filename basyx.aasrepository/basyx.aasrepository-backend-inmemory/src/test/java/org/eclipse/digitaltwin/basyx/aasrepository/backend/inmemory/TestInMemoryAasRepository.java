@@ -59,7 +59,9 @@ public class TestInMemoryAasRepository extends AasRepositorySuite {
 
 	@Test
     public void getConfiguredInMemoryAasRepositoryName() {
-		AasRepository repo = new CrudAasRepository(backendProvider, new InMemoryAasServiceFactory(), CONFIGURED_AAS_REPO_NAME);
+		String projectRoot = System.getProperty("user.dir");
+		String thumbnailFolder = projectRoot + "/target/thumbnail_storage";
+		AasRepository repo = new CrudAasRepository(backendProvider, new InMemoryAasServiceFactory(), CONFIGURED_AAS_REPO_NAME, thumbnailFolder);
 		
 		assertEquals(CONFIGURED_AAS_REPO_NAME, repo.getName());
 	}

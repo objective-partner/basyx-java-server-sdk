@@ -25,6 +25,7 @@
 
 package org.eclipse.digitaltwin.basyx.aasrepository.backend;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,6 +38,7 @@ import org.eclipse.digitaltwin.aas4j.v3.model.AssetInformation;
 import org.eclipse.digitaltwin.aas4j.v3.model.Resource;
 import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultResource;
 import org.eclipse.digitaltwin.basyx.aasrepository.AasRepository;
+import org.eclipse.digitaltwin.basyx.core.Base64UrlEncoder;
 import org.eclipse.digitaltwin.basyx.core.exceptions.FileDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.FileHandlingException;
 import org.slf4j.Logger;
@@ -44,16 +46,32 @@ import org.slf4j.LoggerFactory;
 
 public class AASThumbnailHandler {
 
-	private static Logger logger = LoggerFactory.getLogger(AASThumbnailHandler.class);
+	private static final Logger logger = LoggerFactory.getLogger(AASThumbnailHandler.class);
+	private final String thumbnailStorageBaseFolder;
 
-	public static void updateThumbnail(AasRepository aasRepo, String aasId, String contentType, String filePath) {
+	public AASThumbnailHandler(String thumbnailStorageBaseFolder) {
+		this.thumbnailStorageBaseFolder = thumbnailStorageBaseFolder;
+		File baseFolder = new File(thumbnailStorageBaseFolder);
+		logger.debug("Initializing thumbnail storage under path: " + thumbnailStorageBaseFolder);
+		if (!baseFolder.exists()) {
+			try {
+				baseFolder.mkdirs();
+			} catch (Exception e) {
+				logger.error("Failed to initialize thumbnail storage under path: " + thumbnailStorageBaseFolder, e);
+				throw e;
+			}
+		}
+	}
+
+
+	public void updateThumbnail(AasRepository aasRepo, String aasId, String contentType, String filePath) {
 		AssetInformation assetInfor = aasRepo.getAssetInformation(aasId);
 		assetInfor.getDefaultThumbnail().setContentType(contentType);
 		assetInfor.getDefaultThumbnail().setPath(filePath);
 		aasRepo.setAssetInformation(aasId, assetInfor);
 	}
 
-	public static void setNewThumbnail(AasRepository aasRepo, String aasId, String contentType, String filePath) {
+	public void setNewThumbnail(AasRepository aasRepo, String aasId, String contentType, String filePath) {
 		Resource resource = new DefaultResource();
 		resource.setContentType(contentType);
 		resource.setPath(filePath);
@@ -62,7 +80,7 @@ public class AASThumbnailHandler {
 		aasRepo.setAssetInformation(aasId, assetInfor);
 	}
 
-	public static void throwIfFileDoesNotExist(String aasId, Resource resource) {
+	public void throwIfFileDoesNotExist(String aasId, Resource resource) {
 		if (resource == null)
 			throw new FileDoesNotExistException(aasId);
 
@@ -70,21 +88,24 @@ public class AASThumbnailHandler {
 		throwIfFilePathIsNotValid(aasId, filePath);
 	}
 
-	public static String createFilePath(String tmpDirectory, String aasId, String fileName) {
-		return tmpDirectory + "/" + aasId + "-" + "Thumbnail" + "-" + fileName;
+	public String createFilePath(String aasId, String fileName) {
+		String encodedShellId = Base64UrlEncoder.encode(aasId);
+		// Ignore the original filename - on update, the file should be overridden, otherwise we have a cadaver
+		return thumbnailStorageBaseFolder + "/" + encodedShellId + "-" + "thumbnail";
 	}
 
-	public static void createFileAtSpecifiedPath(String fileName, InputStream inputStream, String filePath) {
+	public void createFileAtSpecifiedPath(String fileName, InputStream inputStream, String filePath) {
 		java.io.File targetFile = new java.io.File(filePath);
 
 		try (FileOutputStream outStream = new FileOutputStream(targetFile)) {
 			IOUtils.copy(inputStream, outStream);
 		} catch (IOException e) {
+			logger.error("Unable to copy data", e);
 			throw new FileHandlingException(fileName);
 		}
 	}
 
-	public static void deleteExistingFile(String path) {
+	public void deleteExistingFile(String path) {
 		if (path == null || path.isEmpty())
 			return;
 
@@ -95,7 +116,7 @@ public class AASThumbnailHandler {
 		}
 	}
 
-	public static String getTemporaryDirectoryPath() {
+	public String getTemporaryDirectoryPath() {
 		String tempDirectoryPath = "";
 		try {
 			tempDirectoryPath = Files.createTempDirectory("basyx-temp-thumbnail").toAbsolutePath().toString();
@@ -105,7 +126,7 @@ public class AASThumbnailHandler {
 		return tempDirectoryPath;
 	}
 
-	private static void throwIfFilePathIsNotValid(String aasId, String filePath) {
+	private void throwIfFilePathIsNotValid(String aasId, String filePath) {
 		if (filePath.isEmpty())
 			throw new FileDoesNotExistException(aasId);
 		try {

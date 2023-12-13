@@ -48,23 +48,21 @@ public class SimpleAasRepositoryFactory implements AasRepositoryFactory {
 
 	private AasServiceFactory aasServiceFactory;
 
-	private String aasRepositoryName = null;
+	@Value("${basyx.aasrepo.name:aas-repo}")
+	private String aasRepositoryName;
 
-	@Autowired(required = false)
+	@Value("${basyx.aasrepo.thumbnails.storagepath:/application/thumbnail-storage}")
+	private String thumbnailStorageBaseFolder;
+
+	@Autowired
 	public SimpleAasRepositoryFactory(AasBackendProvider aasBackendProvider, AasServiceFactory aasServiceFactory) {
 		this.aasBackendProvider = aasBackendProvider;
 		this.aasServiceFactory = aasServiceFactory;
 	}
 
-	@Autowired(required = false)
-	public SimpleAasRepositoryFactory(AasBackendProvider aasBackendProvider, AasServiceFactory aasServiceFactory, @Value("${basyx.aasrepo.name:aas-repo}") String aasRepositoryName) {
-		this(aasBackendProvider, aasServiceFactory);
-		this.aasRepositoryName = aasRepositoryName;
-	}
-
 	@Override
 	public AasRepository create() {
-		return new CrudAasRepository(aasBackendProvider, aasServiceFactory, aasRepositoryName);
+		return new CrudAasRepository(aasBackendProvider, aasServiceFactory, aasRepositoryName, thumbnailStorageBaseFolder);
 	}
 
 }
