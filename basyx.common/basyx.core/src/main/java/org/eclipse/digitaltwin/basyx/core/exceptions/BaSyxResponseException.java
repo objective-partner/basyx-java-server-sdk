@@ -15,6 +15,12 @@ public class BaSyxResponseException extends RuntimeException {
 	private final int httpStatusCode;
 	private final String timestamp;
 
+  protected BaSyxResponseException() {
+    this.correlationId = UUID.randomUUID().toString();
+    this.httpStatusCode = 500;
+    this.timestamp = OffsetDateTime.now().toString();
+  }
+
   public BaSyxResponseException(int httpStatusCode, String reason, String correlationId) {
     super(reason);
     if (correlationId == null || correlationId.isBlank()){
