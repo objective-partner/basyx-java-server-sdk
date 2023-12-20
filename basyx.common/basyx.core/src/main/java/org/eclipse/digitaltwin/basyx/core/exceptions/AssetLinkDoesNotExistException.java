@@ -25,9 +25,15 @@
 
 package org.eclipse.digitaltwin.basyx.core.exceptions;
 
-import java.util.UUID;
+import org.eclipse.digitaltwin.aas4j.v3.model.KeyTypes;
+import org.eclipse.digitaltwin.aas4j.v3.model.ReferenceTypes;
+import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultKey;
+import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultReference;
+import org.springframework.stereotype.Component;
 
- /**
+import java.util.Arrays;
+
+/**
  * Indicates that the requested Asset link does not exist
  * 
  * @author danish, Al-Agtash
@@ -36,18 +42,34 @@ import java.util.UUID;
 @SuppressWarnings("serial")
 public class AssetLinkDoesNotExistException extends BaSyxResponseException {
 
-  public AssetLinkDoesNotExistException() {
-		super(404, "Asset link does not exist", UUID.randomUUID().toString());
-  }
-
-	public AssetLinkDoesNotExistException(String shellIdentifier) {
-		super(404, getMessage(shellIdentifier), UUID.randomUUID().toString());
-	}
-	public AssetLinkDoesNotExistException(String shellIdentifier, String correlationId) {
-		super(404, getMessage(shellIdentifier), correlationId);
+	public AssetLinkDoesNotExistException() {
 	}
 
-	private static String getMessage(String shellIdentifier) {
-		return "Asset link for shell Id " + shellIdentifier + " does not exist";
+	public AssetLinkDoesNotExistException(int httpStatusCode, String reason, String correlationId, String timestamp) {
+		super(httpStatusCode, reason, correlationId, timestamp);
 	}
+
+	@Component
+	public static class Builder extends BaSyxResponseException.Builder<Builder> {
+
+		public Builder(ITraceableMessageSerializer serializer) {
+			super(serializer);
+			messageTemplate(new DefaultReference.Builder().keys(Arrays.asList( //
+					new DefaultKey.Builder().type(KeyTypes.SUBMODEL).value("https://basyx.objective-partner.com/enterprise/errormessages/v1/r0").build(), //
+					new DefaultKey.Builder().type(KeyTypes.MULTI_LANGUAGE_PROPERTY).value("AssetLinkDoesNotExistException").build()) //
+			).type(ReferenceTypes.MODEL_REFERENCE).build());
+			returnCode(404);
+			technicalMessageTemplate("Object corresponding with identifer '{MissingIdentifier}' does not exist");
+		}
+
+		public Builder missingIdentifier(String identifier) {
+			param("MissingIdentifier", identifier);
+			return this;
+		}
+
+		public AssetLinkDoesNotExistException build() {
+			return new AssetLinkDoesNotExistException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
+		}
+	}
+
 }

@@ -37,6 +37,7 @@ import org.eclipse.digitaltwin.basyx.aasxfileserver.model.Package;
 import org.eclipse.digitaltwin.basyx.aasxfileserver.model.PackageDescription;
 import org.eclipse.digitaltwin.basyx.aasxfileserver.model.PackagesBody;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 
 /**
  * In-Memory implementation of the {@link AASXFileServer}
@@ -159,7 +160,7 @@ public class InMemoryAASXFileServer implements AASXFileServer {
 	private void throwIfAASXPackageIdDoesNotExist(String id) {
 
 		if (!packageMap.containsKey(id))
-			throw new ElementDoesNotExistException(id);
+			throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(id).build();
 	}
 	
 	private boolean containsShellId(PackageDescription packageDesc, String shellId) {

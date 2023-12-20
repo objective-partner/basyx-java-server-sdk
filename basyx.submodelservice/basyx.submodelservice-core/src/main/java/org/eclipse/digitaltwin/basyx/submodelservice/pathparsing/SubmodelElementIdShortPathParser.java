@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Stack;
 
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 
 /**
  * Class for parsing an idShortPath
@@ -50,7 +51,7 @@ public class SubmodelElementIdShortPathParser {
 			String splitted[] = splitIdShortPathAtDots(idShortPath);
 			return generateTokenStackFromSplittedArray(splitted);
 		} catch (ElementDoesNotExistException e) {
-			throw new ElementDoesNotExistException(idShortPath);
+			throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(idShortPath).build();
 		}
 	}
 	

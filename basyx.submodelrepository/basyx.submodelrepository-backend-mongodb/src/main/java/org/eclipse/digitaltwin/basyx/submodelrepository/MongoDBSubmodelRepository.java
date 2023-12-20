@@ -46,6 +46,7 @@ import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierExceptio
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.FeatureNotSupportedException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementNotAFileException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.exceptions.FileDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.IdentificationMismatchException;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
@@ -203,7 +204,7 @@ public class MongoDBSubmodelRepository implements SubmodelRepository {
 	public Submodel getSubmodel(String submodelId) throws ElementDoesNotExistException {
 		Submodel submodel = mongoTemplate.findOne(new Query().addCriteria(Criteria.where(ID_JSON_PATH).is(submodelId)), Submodel.class, collectionName);
 		if (submodel == null) {
-			throw new ElementDoesNotExistException(submodelId);
+			throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(submodelId).build();
 		}
 		return submodel;
 	}
@@ -221,7 +222,7 @@ public class MongoDBSubmodelRepository implements SubmodelRepository {
 
 	private void throwIfSubmodelDoesNotExist(Query query, String submodelId) {
 		if (!mongoTemplate.exists(query, Submodel.class, collectionName))
-			throw new ElementDoesNotExistException(submodelId);
+			throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(submodelId).build();
 
 	}
 
@@ -241,7 +242,7 @@ public class MongoDBSubmodelRepository implements SubmodelRepository {
 
 	private void throwIfCollidesWithRemoteId(Submodel submodel) {
 		if (mongoTemplate.exists(new Query().addCriteria(Criteria.where(ID_JSON_PATH).is(submodel.getId())), Submodel.class, collectionName)) {
-			throw new CollidingIdentifierException(submodel.getId());
+			throw ExceptionBuilderFactory.getInstance().collidingIdentifierException().collidingIdentifier(submodel.getId()).build();
 		}
 	}
 
@@ -277,7 +278,7 @@ public class MongoDBSubmodelRepository implements SubmodelRepository {
 		DeleteResult result = mongoTemplate.remove(new Query().addCriteria(Criteria.where(ID_JSON_PATH).is(submodelId)), Submodel.class, collectionName);
 
 		if (result.getDeletedCount() == 0) {
-			throw new ElementDoesNotExistException(submodelId);
+			throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(submodelId).build();
 		}
 
 	}
@@ -346,7 +347,7 @@ public class MongoDBSubmodelRepository implements SubmodelRepository {
 
 	@Override
 	public OperationVariable[] invokeOperation(String submodelId, String idShortPath, OperationVariable[] input) throws ElementDoesNotExistException {
-		throw new FeatureNotSupportedException("Operation Invocation");
+		throw ExceptionBuilderFactory.getInstance().featureNotSupportedException().featureName("Operation Invocation").build();
 	}
 
 	@Override
@@ -468,13 +469,13 @@ public class MongoDBSubmodelRepository implements SubmodelRepository {
 
 	private void throwIfFileDoesNotExist(File fileSmElement) {
 		if (fileSmElement.getValue().isBlank() || fileSmElement.getValue().indexOf(GRIDFS_ID_DELIMITER) == -1)
-			throw new FileDoesNotExistException(fileSmElement.getIdShort());
+			throw ExceptionBuilderFactory.getInstance().fileDoesNotExistException().elementPath(fileSmElement.getIdShort()).build();
 	}
 
 	private void throwIfSmElementIsNotAFile(SubmodelElement submodelElement) {
 
 		if (!(submodelElement instanceof File))
-			throw new ElementNotAFileException(submodelElement.getIdShort());
+			throw ExceptionBuilderFactory.getInstance().elementNotAFileException().sumodelElementId(submodelElement.getIdShort()).build();
 	}
 
 	private String getFilePath(String tmpDirectory, String idShortPath, String contentType) {

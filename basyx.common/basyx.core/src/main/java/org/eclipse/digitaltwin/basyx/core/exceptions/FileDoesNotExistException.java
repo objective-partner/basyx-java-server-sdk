@@ -25,7 +25,13 @@
 
 package org.eclipse.digitaltwin.basyx.core.exceptions;
 
-import java.util.UUID;
+import org.eclipse.digitaltwin.aas4j.v3.model.KeyTypes;
+import org.eclipse.digitaltwin.aas4j.v3.model.ReferenceTypes;
+import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultKey;
+import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultReference;
+import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
 
 /**
  * Indicates that the requested file does not exist
@@ -37,18 +43,37 @@ import java.util.UUID;
 public class FileDoesNotExistException extends BaSyxResponseException {
 
 	public FileDoesNotExistException() {
-		super(404, "Requested File inside File Element does not exist", UUID.randomUUID().toString());
-	}
-	public FileDoesNotExistException(String elementId) {
-		super(404, getMsg(elementId), UUID.randomUUID().toString());
 	}
 
-  public FileDoesNotExistException(String elementId, String correlationId) {
-		super(404, getMsg(elementId), correlationId);
+	public FileDoesNotExistException(int httpStatusCode, String reason, String correlationId, String timestamp) {
+		super(httpStatusCode, reason, correlationId, timestamp);
 	}
 
-	private static String getMsg(String elementId) {
-		return "Requested File inside the Asset administration shell or File SubmodelElement with ID : " + elementId + " does not exist";
-	}
+	@Component
+	public static class Builder extends BaSyxResponseException.Builder<Builder> {
 
+		public Builder(ITraceableMessageSerializer serializer) {
+			super(serializer);
+			messageTemplate(new DefaultReference.Builder().keys(Arrays.asList( //
+					new DefaultKey.Builder().type(KeyTypes.SUBMODEL).value("https://basyx.objective-partner.com/enterprise/errormessages/v1/r0").build(), //
+					new DefaultKey.Builder().type(KeyTypes.MULTI_LANGUAGE_PROPERTY).value("FileDoesNotExistException").build()) //
+			).type(ReferenceTypes.MODEL_REFERENCE).build());
+			returnCode(406);
+			technicalMessageTemplate("Requested File inside the Asset administration shell '{ShellIdentifier}' / element path '{ElementPath}' does not exist");
+		}
+
+		public Builder shellIdentifier(String value) {
+			param("ShellIdentifier", value);
+			return this;
+		}
+		
+		public Builder elementPath(String value) {
+			param("ElementPath", value);
+			return this;
+		}
+
+		public FileDoesNotExistException build() {
+			return new FileDoesNotExistException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
+		}
+	}
 }

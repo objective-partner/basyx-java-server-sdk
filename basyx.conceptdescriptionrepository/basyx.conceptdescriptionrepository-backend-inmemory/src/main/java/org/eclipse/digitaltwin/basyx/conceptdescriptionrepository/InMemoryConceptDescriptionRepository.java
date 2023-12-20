@@ -40,6 +40,7 @@ import org.eclipse.digitaltwin.aas4j.v3.model.EmbeddedDataSpecification;
 import org.eclipse.digitaltwin.aas4j.v3.model.Reference;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.exceptions.IdentificationMismatchException;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
@@ -54,19 +55,21 @@ import org.eclipse.digitaltwin.basyx.core.pagination.PaginationSupport;
 public class InMemoryConceptDescriptionRepository implements ConceptDescriptionRepository {
 
 	private Map<String, ConceptDescription> conceptDescriptions = new LinkedHashMap<>();
-	
+
 	private String cdRepositoryName;
 
 	/**
 	 * Creates the InMemoryConceptDescriptionRepository
 	 * 
 	 */
-	public InMemoryConceptDescriptionRepository() { }
-	
+	public InMemoryConceptDescriptionRepository() {
+	}
+
 	/**
 	 * Creates the InMemoryConceptDescriptionRepository
 	 * 
-	 * @param cdRepositoryName Name of the CDRepository
+	 * @param cdRepositoryName
+	 *            Name of the CDRepository
 	 */
 	public InMemoryConceptDescriptionRepository(String cdRepositoryName) {
 		this.cdRepositoryName = cdRepositoryName;
@@ -83,13 +86,14 @@ public class InMemoryConceptDescriptionRepository implements ConceptDescriptionR
 
 		this.conceptDescriptions.putAll(mapConceptDescriptions(conceptDescriptions));
 	}
-	
+
 	/**
-	 * Creates the InMemoryConceptDescriptionRepository and preconfiguring
-	 * it with the passed ConceptDescriptions
+	 * Creates the InMemoryConceptDescriptionRepository and preconfiguring it with
+	 * the passed ConceptDescriptions
 	 * 
-	 * @param conceptDescriptions 
-	 * @param cdRepositoryName Name of the CDRepository
+	 * @param conceptDescriptions
+	 * @param cdRepositoryName
+	 *            Name of the CDRepository
 	 */
 	public InMemoryConceptDescriptionRepository(Collection<ConceptDescription> conceptDescriptions, String cdRepositoryName) {
 		this(conceptDescriptions);
@@ -98,9 +102,7 @@ public class InMemoryConceptDescriptionRepository implements ConceptDescriptionR
 
 	@Override
 	public CursorResult<List<ConceptDescription>> getAllConceptDescriptions(PaginationInfo pInfo) {
-		List<ConceptDescription> conceptDescriptionList = conceptDescriptions.values()
-				.stream()
-				.collect(Collectors.toList());
+		List<ConceptDescription> conceptDescriptionList = conceptDescriptions.values().stream().collect(Collectors.toList());
 
 		CursorResult<List<ConceptDescription>> paginatedCD = paginateList(pInfo, conceptDescriptionList);
 		return paginatedCD;
@@ -108,26 +110,17 @@ public class InMemoryConceptDescriptionRepository implements ConceptDescriptionR
 
 	@Override
 	public CursorResult<List<ConceptDescription>> getAllConceptDescriptionsByIdShort(String idShort, PaginationInfo pInfo) {
-		List<ConceptDescription> allDescriptions = conceptDescriptions.values()
-				.stream()
-				.collect(Collectors.toList());
+		List<ConceptDescription> allDescriptions = conceptDescriptions.values().stream().collect(Collectors.toList());
 
-		List<ConceptDescription> filtered = allDescriptions.stream()
-				.filter(conceptDescription -> conceptDescription.getIdShort()
-						.equals(idShort))
-				.collect(Collectors.toList());
+		List<ConceptDescription> filtered = allDescriptions.stream().filter(conceptDescription -> conceptDescription.getIdShort().equals(idShort)).collect(Collectors.toList());
 		CursorResult<List<ConceptDescription>> result = paginateList(pInfo, filtered);
 		return result;
 	}
 
 	@Override
 	public CursorResult<List<ConceptDescription>> getAllConceptDescriptionsByIsCaseOf(Reference reference, PaginationInfo pInfo) {
-		List<ConceptDescription> allDescriptions = conceptDescriptions.values()
-				.stream()
-				.collect(Collectors.toList());
-		List<ConceptDescription> filtered = allDescriptions.stream()
-				.filter(conceptDescription -> hasMatchingReference(conceptDescription, reference))
-				.collect(Collectors.toList());
+		List<ConceptDescription> allDescriptions = conceptDescriptions.values().stream().collect(Collectors.toList());
+		List<ConceptDescription> filtered = allDescriptions.stream().filter(conceptDescription -> hasMatchingReference(conceptDescription, reference)).collect(Collectors.toList());
 
 		CursorResult<List<ConceptDescription>> result = paginateList(pInfo, filtered);
 		return result;
@@ -135,13 +128,9 @@ public class InMemoryConceptDescriptionRepository implements ConceptDescriptionR
 
 	@Override
 	public CursorResult<List<ConceptDescription>> getAllConceptDescriptionsByDataSpecificationReference(Reference reference, PaginationInfo pInfo) {
-		List<ConceptDescription> allDescriptions = conceptDescriptions.values()
-				.stream()
-				.collect(Collectors.toList());
+		List<ConceptDescription> allDescriptions = conceptDescriptions.values().stream().collect(Collectors.toList());
 
-		List<ConceptDescription> filtered = allDescriptions.stream()
-				.filter(conceptDescription -> hasMatchingDataSpecificationReference(conceptDescription, reference))
-				.collect(Collectors.toList());
+		List<ConceptDescription> filtered = allDescriptions.stream().filter(conceptDescription -> hasMatchingDataSpecificationReference(conceptDescription, reference)).collect(Collectors.toList());
 
 		CursorResult<List<ConceptDescription>> result = paginateList(pInfo, filtered);
 		return result;
@@ -176,7 +165,7 @@ public class InMemoryConceptDescriptionRepository implements ConceptDescriptionR
 
 		conceptDescriptions.remove(conceptDescriptionId);
 	}
-	
+
 	@Override
 	public String getName() {
 		return cdRepositoryName == null ? ConceptDescriptionRepository.super.getName() : cdRepositoryName;
@@ -190,41 +179,33 @@ public class InMemoryConceptDescriptionRepository implements ConceptDescriptionR
 			boolean unique = ids.add(conceptDescriptionId);
 
 			if (!unique) {
-				throw new CollidingIdentifierException(conceptDescriptionId);
+				throw ExceptionBuilderFactory.getInstance().collidingIdentifierException().collidingIdentifier(conceptDescriptionId).build();
 			}
 		}
 	}
 
 	private Map<String, ConceptDescription> mapConceptDescriptions(Collection<ConceptDescription> conceptDescriptions) {
-		return conceptDescriptions.stream()
-				.collect(Collectors.toMap(ConceptDescription::getId, conceptDescription -> conceptDescription));
+		return conceptDescriptions.stream().collect(Collectors.toMap(ConceptDescription::getId, conceptDescription -> conceptDescription));
 	}
 
 	private void throwIfConceptDescriptionExists(String id) {
 		if (conceptDescriptions.containsKey(id))
-			throw new CollidingIdentifierException(id);
+			throw ExceptionBuilderFactory.getInstance().collidingIdentifierException().collidingIdentifier(id).build();
 	}
 
 	private void throwIfConceptDescriptionDoesNotExist(String id) {
 		if (!conceptDescriptions.containsKey(id))
-			throw new ElementDoesNotExistException(id);
+			throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(id).build();
 	}
 
 	private boolean hasMatchingReference(ConceptDescription cd, Reference reference) {
-		Optional<Reference> optionalReference = cd.getIsCaseOf()
-				.stream()
-				.filter(ref -> ref.equals(reference))
-				.findAny();
+		Optional<Reference> optionalReference = cd.getIsCaseOf().stream().filter(ref -> ref.equals(reference)).findAny();
 
 		return optionalReference.isPresent();
 	}
 
 	private boolean hasMatchingDataSpecificationReference(ConceptDescription cd, Reference reference) {
-		Optional<EmbeddedDataSpecification> optionalReference = cd.getEmbeddedDataSpecifications()
-				.stream()
-				.filter(eds -> eds.getDataSpecification()
-						.equals(reference))
-				.findAny();
+		Optional<EmbeddedDataSpecification> optionalReference = cd.getEmbeddedDataSpecifications().stream().filter(eds -> eds.getDataSpecification().equals(reference)).findAny();
 
 		return optionalReference.isPresent();
 	}
@@ -237,8 +218,7 @@ public class InMemoryConceptDescriptionRepository implements ConceptDescriptionR
 	}
 
 	private CursorResult<List<ConceptDescription>> paginateList(PaginationInfo pInfo, List<ConceptDescription> conceptDescriptionList) {
-		TreeMap<String, ConceptDescription> cdMap = conceptDescriptionList.stream()
-				.collect(Collectors.toMap(ConceptDescription::getId, cd -> cd, (a, b) -> a, TreeMap::new));
+		TreeMap<String, ConceptDescription> cdMap = conceptDescriptionList.stream().collect(Collectors.toMap(ConceptDescription::getId, cd -> cd, (a, b) -> a, TreeMap::new));
 
 		PaginationSupport<ConceptDescription> paginationSupport = new PaginationSupport<>(cdMap, ConceptDescription::getId);
 		CursorResult<List<ConceptDescription>> paginatedCD = paginationSupport.getPaged(pInfo);

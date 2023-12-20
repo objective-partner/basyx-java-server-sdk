@@ -39,6 +39,7 @@ import org.eclipse.digitaltwin.aas4j.v3.model.Resource;
 import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultResource;
 import org.eclipse.digitaltwin.basyx.aasrepository.AasRepository;
 import org.eclipse.digitaltwin.basyx.core.Base64UrlEncoder;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.exceptions.FileDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.FileHandlingException;
 import org.slf4j.Logger;
@@ -82,7 +83,7 @@ public class AASThumbnailHandler {
 
 	public void throwIfFileDoesNotExist(String aasId, Resource resource) {
 		if (resource == null)
-			throw new FileDoesNotExistException(aasId);
+			throw ExceptionBuilderFactory.getInstance().fileDoesNotExistException().shellIdentifier(aasId).elementPath("assetInformation.thumbnail").build();
 
 		String filePath = resource.getPath();
 		throwIfFilePathIsNotValid(aasId, filePath);
@@ -101,7 +102,7 @@ public class AASThumbnailHandler {
 			IOUtils.copy(inputStream, outStream);
 		} catch (IOException e) {
 			logger.error("Unable to copy data", e);
-			throw new FileHandlingException(fileName);
+			throw ExceptionBuilderFactory.getInstance().fileHandlingException().filename(fileName).build();
 		}
 	}
 
@@ -128,11 +129,11 @@ public class AASThumbnailHandler {
 
 	private void throwIfFilePathIsNotValid(String aasId, String filePath) {
 		if (filePath.isEmpty())
-			throw new FileDoesNotExistException(aasId);
+			throw ExceptionBuilderFactory.getInstance().fileDoesNotExistException().shellIdentifier(aasId).elementPath("assetInformation.thumbnail").build();
 		try {
 			Paths.get(filePath);
 		} catch (InvalidPathException | NullPointerException ex) {
-			throw new FileDoesNotExistException(aasId);
+			throw ExceptionBuilderFactory.getInstance().fileDoesNotExistException().shellIdentifier(aasId).elementPath("assetInformation.thumbnail").build();
 		}
 	}
 }

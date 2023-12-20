@@ -25,7 +25,7 @@
 
 package org.eclipse.digitaltwin.basyx.core.exceptions;
 
-import java.util.UUID;
+import org.springframework.stereotype.Component;
 
 /**
  * Indicates that the requested submodel element is not a File SubmodelElement
@@ -37,18 +37,28 @@ import java.util.UUID;
 public class ElementNotAFileException extends BaSyxResponseException {
 
 	public ElementNotAFileException() {
-    super(405, "Element is not a File.", UUID.randomUUID().toString());
 	}
 
-	public ElementNotAFileException(String elementId) {
-    super(405, getMsg(elementId), UUID.randomUUID().toString());
+	public ElementNotAFileException(int httpStatusCode, String reason, String correlationId, String timestamp) {
+		super(httpStatusCode, reason, correlationId, timestamp);
 	}
 
-	public ElementNotAFileException(String elementId, String correlationId) {
-    super(405, getMsg(elementId), correlationId);
-	}
+	@Component
+	public static class Builder extends BaSyxResponseException.Builder<Builder> {
 
-	private static String getMsg(String elementId) {
-		return "SubmodelElement with Id " + elementId + " is not a File";
+		public Builder(ITraceableMessageSerializer serializer) {
+			super(serializer);
+			returnCode(404);
+			technicalMessageTemplate("SubmodelElement with Id '{SumodelElementId}' is not a File");
+		}
+
+		public Builder sumodelElementId(String value) {
+			param("SumodelElementId", value);
+			return this;
+		}
+
+		public ElementNotAFileException build() {
+			return new ElementNotAFileException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
+		}
 	}
 }

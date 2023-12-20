@@ -31,7 +31,7 @@ import org.eclipse.digitaltwin.aas4j.v3.model.AssetInformation;
 import org.eclipse.digitaltwin.aas4j.v3.model.Key;
 import org.eclipse.digitaltwin.aas4j.v3.model.Reference;
 import org.eclipse.digitaltwin.basyx.aasservice.AasService;
-import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 import org.eclipse.paho.client.mqttv3.IMqttClient;
@@ -157,7 +157,9 @@ public class MqttAasService implements AasService {
 		return submodelsReferences.stream()
 				.filter(reference -> containsSubmodelId(reference, submodelId))
 				.findFirst()
-				.orElseThrow(() -> new ElementDoesNotExistException(submodelId));
+				.orElseThrow(() -> {
+					throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(submodelId).build();
+				});
 	}
 
 	private boolean containsSubmodelId(Reference reference, String submodelId) {

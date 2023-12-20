@@ -41,21 +41,19 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.tika.utils.StringUtils;
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.DeserializationException;
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.SerializationException;
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.json.JsonDeserializer;
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.json.JsonSerializer;
-import org.eclipse.digitaltwin.aas4j.v3.model.OperationVariable;
-import org.apache.commons.io.IOUtils;
-import org.apache.tika.utils.StringUtils;
 import org.eclipse.digitaltwin.aas4j.v3.model.File;
+import org.eclipse.digitaltwin.aas4j.v3.model.OperationVariable;
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
 import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElement;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
-import org.eclipse.digitaltwin.basyx.core.exceptions.ElementNotAFileException;
-import org.eclipse.digitaltwin.basyx.core.exceptions.FileDoesNotExistException;
-import org.eclipse.digitaltwin.basyx.core.exceptions.FileHandlingException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.exceptions.IdentificationMismatchException;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
@@ -142,7 +140,7 @@ public class InMemorySubmodelRepository implements SubmodelRepository {
 		Set<String> ids = new HashSet<>();
 
 		submodelsToCheck.stream().map(submodel -> submodel.getId()).filter(id -> !ids.add(id)).findAny().ifPresent(id -> {
-			throw new CollidingIdentifierException(id);
+			throw ExceptionBuilderFactory.getInstance().collidingIdentifierException().collidingIdentifier(id).build();
 		});
 	}
 
@@ -334,7 +332,7 @@ public class InMemorySubmodelRepository implements SubmodelRepository {
 
 	private void throwIfSmElementIsNotAFile(SubmodelElement submodelElement) {
 		if (!(submodelElement instanceof File))
-			throw new ElementNotAFileException(submodelElement.getIdShort());
+			throw ExceptionBuilderFactory.getInstance().elementNotAFileException().sumodelElementId(submodelElement.getIdShort()).build();
 	}
 
 	private void throwIfMismatchingIds(String smId, Submodel newSubmodel) {
@@ -352,17 +350,17 @@ public class InMemorySubmodelRepository implements SubmodelRepository {
 
 	private void throwIfSubmodelExists(String id) {
 		if (submodelServices.containsKey(id))
-			throw new CollidingIdentifierException(id);
+			throw ExceptionBuilderFactory.getInstance().collidingIdentifierException().collidingIdentifier(id).build();
 	}
 
 	private void throwIfSubmodelDoesNotExist(String id) {
 		if (!submodelServices.containsKey(id))
-			throw new ElementDoesNotExistException(id);
+			throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(id).build();
 	}
 
 	private void throwIfFileDoesNotExist(File fileSmElement, String filePath) {
 		if (fileSmElement.getValue().isBlank() || !isFilePathValid(filePath))
-			throw new FileDoesNotExistException(fileSmElement.getIdShort());
+			throw ExceptionBuilderFactory.getInstance().fileDoesNotExistException().elementPath(fileSmElement.getIdShort()).build();
 	}
 
 	private boolean isFilePathValid(String filePath) {
@@ -423,7 +421,7 @@ public class InMemorySubmodelRepository implements SubmodelRepository {
 		try (FileOutputStream outStream = new FileOutputStream(targetFile)) {
 			IOUtils.copy(inputStream, outStream);
 		} catch (IOException e) {
-			throw new FileHandlingException(fileName);
+			throw ExceptionBuilderFactory.getInstance().fileHandlingException().filename(fileName).build();
 		}
 	}
 

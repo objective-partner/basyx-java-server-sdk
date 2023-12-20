@@ -37,6 +37,7 @@ import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElementList;
 import org.eclipse.digitaltwin.basyx.InvokableOperation;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.exceptions.NotInvokableException;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
@@ -122,7 +123,7 @@ public class InMemorySubmodelService implements SubmodelService {
 	private void throwIfSubmodelElementExists(String submodelElementId) {
 		try {
 			getSubmodelElement(submodelElementId);
-			throw new CollidingIdentifierException(submodelElementId); 
+			throw ExceptionBuilderFactory.getInstance().collidingIdentifierException().collidingIdentifier(submodelElementId).build();
 		}catch(ElementDoesNotExistException e) {
 			return;
 		}
@@ -203,7 +204,7 @@ public class InMemorySubmodelService implements SubmodelService {
 		SubmodelElement sme = getSubmodelElement(idShortPath);
 		
 		if (!(sme instanceof InvokableOperation))
-			throw new NotInvokableException(idShortPath);
+			throw ExceptionBuilderFactory.getInstance().notInvokableException().idShortPath(idShortPath).build();
 		
 		InvokableOperation operation = (InvokableOperation) sme;
 		return operation.invoke(input);

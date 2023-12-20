@@ -23,27 +23,46 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.core.exceptions;
 
-import java.util.UUID;
+import org.eclipse.digitaltwin.aas4j.v3.model.KeyTypes;
+import org.eclipse.digitaltwin.aas4j.v3.model.ReferenceTypes;
+import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultKey;
+import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultReference;
+import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
 
 @SuppressWarnings("serial")
 public class NotInvokableException extends BaSyxResponseException {
 
 	public NotInvokableException() {
-		super(405, getMessage(""), UUID.randomUUID().toString());
 	}
 
-	public NotInvokableException(String idShortPath) {
-		super(405, getMessage(idShortPath), UUID.randomUUID().toString());
+	public NotInvokableException(int httpStatusCode, String reason, String correlationId, String timestamp) {
+		super(httpStatusCode, reason, correlationId, timestamp);
 	}
 
-	public NotInvokableException(String idShortPath, String correlationId) {
-    super(405, getMessage(idShortPath), correlationId);
-  }
+	@Component
+	public static class Builder extends BaSyxResponseException.Builder<Builder> {
 
-	private static String getMessage(String idShortPath) {
-		return "Element " + idShortPath + " is not invokable";
+		public Builder(ITraceableMessageSerializer serializer) {
+			super(serializer);
+			messageTemplate(new DefaultReference.Builder().keys(Arrays.asList( //
+					new DefaultKey.Builder().type(KeyTypes.SUBMODEL).value("https://basyx.objective-partner.com/enterprise/errormessages/v1/r0").build(), //
+					new DefaultKey.Builder().type(KeyTypes.MULTI_LANGUAGE_PROPERTY).value("NotInvokableException").build()) //
+			).type(ReferenceTypes.MODEL_REFERENCE).build());
+			returnCode(405);
+			technicalMessageTemplate("Element '{IdShortPath}' is not invokable");
+		}
+
+		public Builder idShortPath(String value) {
+			param("IdShortPath", value);
+			return this;
+		}
+
+		public NotInvokableException build() {
+			return new NotInvokableException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
+		}
 	}
 }

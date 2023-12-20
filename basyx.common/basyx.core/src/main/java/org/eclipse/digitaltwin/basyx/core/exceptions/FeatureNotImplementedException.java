@@ -25,30 +25,51 @@
 
 package org.eclipse.digitaltwin.basyx.core.exceptions;
 
-import java.util.UUID;
+import org.eclipse.digitaltwin.aas4j.v3.model.KeyTypes;
+import org.eclipse.digitaltwin.aas4j.v3.model.ReferenceTypes;
+import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultKey;
+import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultReference;
+import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
 
 /**
- * This exception is used for features where certain functionalities are not implemented yet.
- *  
+ * This exception is used for features where certain functionalities are not
+ * implemented yet.
+ * 
  * @author zhangzai, Al-Agtash
  *
  */
 @SuppressWarnings("serial")
 public class FeatureNotImplementedException extends BaSyxResponseException {
-	
-  public FeatureNotImplementedException(){
-		super(501, getMessage(""), UUID.randomUUID().toString());
-  }
 
-	public FeatureNotImplementedException(String featureName) {
-		super(501, getMessage(featureName), UUID.randomUUID().toString());
+	public FeatureNotImplementedException() {
 	}
 
-	public FeatureNotImplementedException(String featureName, String correlationId) {
-		super(501, getMessage(featureName), correlationId);
+	public FeatureNotImplementedException(int httpStatusCode, String reason, String correlationId, String timestamp) {
+		super(httpStatusCode, reason, correlationId, timestamp);
 	}
 
-	private static String getMessage(String featureName) {
-		return "Feature " + featureName + " is not implemented yet";
+	@Component
+	public static class Builder extends BaSyxResponseException.Builder<Builder> {
+
+		public Builder(ITraceableMessageSerializer serializer) {
+			super(serializer);
+			messageTemplate(new DefaultReference.Builder().keys(Arrays.asList( //
+					new DefaultKey.Builder().type(KeyTypes.SUBMODEL).value("https://basyx.objective-partner.com/enterprise/errormessages/v1/r0").build(), //
+					new DefaultKey.Builder().type(KeyTypes.MULTI_LANGUAGE_PROPERTY).value("FeatureNotImplementedException").build()) //
+			).type(ReferenceTypes.MODEL_REFERENCE).build());
+			returnCode(501);
+			technicalMessageTemplate("Feature '{FeatureName}' is not implemented yet");
+		}
+
+		public Builder featureName(String value) {
+			param("FeatureName", value);
+			return this;
+		}
+
+		public FeatureNotImplementedException build() {
+			return new FeatureNotImplementedException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
+		}
 	}
 }

@@ -25,7 +25,14 @@
 
 package org.eclipse.digitaltwin.basyx.core.exceptions;
 
-import java.util.UUID;
+import org.eclipse.digitaltwin.aas4j.v3.model.Key;
+import org.eclipse.digitaltwin.aas4j.v3.model.KeyTypes;
+import org.eclipse.digitaltwin.aas4j.v3.model.ReferenceTypes;
+import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultKey;
+import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultReference;
+import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
 
 /**
  * Indicates that the requested element does not exist
@@ -36,18 +43,40 @@ import java.util.UUID;
 @SuppressWarnings("serial")
 public class ElementDoesNotExistException extends BaSyxResponseException {
 
+	
 	public ElementDoesNotExistException() {
-    super(404, "Element does not exist", UUID.randomUUID().toString());
 	}
 
-	public ElementDoesNotExistException(String elementId) {
-    super(404, getMessage(elementId), UUID.randomUUID().toString());
+	public ElementDoesNotExistException(int httpStatusCode, String reason, String correlationId, String timestamp) {
+		super(httpStatusCode, reason, correlationId, timestamp);
 	}
 
-	public ElementDoesNotExistException(String elementId, String correlationId) {
-    super(404, getMessage(elementId), correlationId);
-  }
-	private static String getMessage(String elementId) {
-		return "Element with Id " + elementId + " does not exist";
+	@Component
+	public static class Builder extends BaSyxResponseException.Builder<Builder> {
+
+		public Builder(ITraceableMessageSerializer serializer) {
+			super(serializer);
+			messageTemplate(new DefaultReference.Builder().keys(Arrays.asList( //
+					new DefaultKey.Builder().type(KeyTypes.SUBMODEL).value("https://basyx.objective-partner.com/enterprise/errormessages/v1/r0").build(), //
+					new DefaultKey.Builder().type(KeyTypes.MULTI_LANGUAGE_PROPERTY).value("ElementDoesNotExistException").build()) //
+			).type(ReferenceTypes.MODEL_REFERENCE).build());
+			returnCode(404);
+			param("ElementType", "Element");
+			technicalMessageTemplate("{ElementType} with id '{MissingElementId}' does not exist");
+		}
+
+		public Builder elementType(KeyTypes type) {
+			param("ElementType", type.name());
+			return this;
+		}
+		
+		public Builder missingElement(String value) {
+			param("MissingElementId", value);
+			return this;
+		}
+		
+		public ElementDoesNotExistException build() {
+			return new ElementDoesNotExistException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
+		}
 	}
 }

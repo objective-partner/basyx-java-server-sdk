@@ -25,7 +25,13 @@
 
 package org.eclipse.digitaltwin.basyx.core.exceptions;
 
-import java.util.UUID;
+import org.eclipse.digitaltwin.aas4j.v3.model.KeyTypes;
+import org.eclipse.digitaltwin.aas4j.v3.model.ReferenceTypes;
+import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultKey;
+import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultReference;
+import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
 
 /**
  * Indicates that the provided file could not be handled
@@ -37,19 +43,32 @@ import java.util.UUID;
 public class FileHandlingException extends BaSyxResponseException {
 
 	public FileHandlingException() {
-		super(500, "File could not be handled", UUID.randomUUID().toString());
 	}
 
-	public FileHandlingException(String fileName) {
-		super(500, getMessage(fileName), UUID.randomUUID().toString());
+	public FileHandlingException(int httpStatusCode, String reason, String correlationId, String timestamp) {
+		super(httpStatusCode, reason, correlationId, timestamp);
 	}
 
-  public FileHandlingException(String fileName, String correlationId) {
-		super(500, getMessage(fileName), correlationId);
-	}
+	@Component
+	public static class Builder extends BaSyxResponseException.Builder<Builder> {
 
-	private static String getMessage(String fileName) {
-		return "Exception occurred while handling the file: " + fileName;
+		public Builder(ITraceableMessageSerializer serializer) {
+			super(serializer);
+			messageTemplate(new DefaultReference.Builder().keys(Arrays.asList( //
+					new DefaultKey.Builder().type(KeyTypes.SUBMODEL).value("https://basyx.objective-partner.com/enterprise/errormessages/v1/r0").build(), //
+					new DefaultKey.Builder().type(KeyTypes.MULTI_LANGUAGE_PROPERTY).value("FileHandlingException").build()) //
+			).type(ReferenceTypes.MODEL_REFERENCE).build());
+			returnCode(500);
+			technicalMessageTemplate("Exception occurred while handling the file '{Filename}'");
+		}
+
+		public Builder filename(String value) {
+			param("Filename", value);
+			return this;
+		}
+		
+		public FileHandlingException build() {
+			return new FileHandlingException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
+		}
 	}
-	
 }

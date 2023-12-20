@@ -40,6 +40,7 @@ import org.eclipse.digitaltwin.basyx.aasservice.AasService;
 import org.eclipse.digitaltwin.basyx.aasservice.AasServiceFactory;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.exceptions.IdentificationMismatchException;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
@@ -69,7 +70,8 @@ public class CrudAasRepository implements AasRepository {
 		this.aasServiceFactory = aasServiceFactory;
 	}
 
-	public CrudAasRepository(AasBackendProvider aasBackendProvider, AasServiceFactory aasServiceFactory, @Value("${basyx.aasrepo.name:aas-repo}") String aasRepositoryName, @Value("${basyx.aasrepo.thumbnails.storagepath}") String thumbnailStorageBaseFolder) {
+	public CrudAasRepository(AasBackendProvider aasBackendProvider, AasServiceFactory aasServiceFactory, @Value("${basyx.aasrepo.name:aas-repo}") String aasRepositoryName,
+			@Value("${basyx.aasrepo.thumbnails.storagepath}") String thumbnailStorageBaseFolder) {
 		this(aasBackendProvider, aasServiceFactory);
 
 		this.aasRepositoryName = aasRepositoryName;
@@ -91,7 +93,9 @@ public class CrudAasRepository implements AasRepository {
 
 	@Override
 	public AssetAdministrationShell getAas(String aasId) throws ElementDoesNotExistException {
-		return aasBackend.findById(aasId).orElseThrow(() -> new ElementDoesNotExistException(aasId));
+		return aasBackend.findById(aasId).orElseThrow(() -> {
+			throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(aasId).build();
+		});
 	}
 
 	@Override
@@ -154,7 +158,6 @@ public class CrudAasRepository implements AasRepository {
 		return getAasServiceOrThrow(aasId).getAssetInformation();
 	}
 
-
 	@Override
 	public String getName() {
 		return aasRepositoryName == null ? AasRepository.super.getName() : aasRepositoryName;
@@ -193,7 +196,9 @@ public class CrudAasRepository implements AasRepository {
 	}
 
 	private AasService getAasServiceOrThrow(String aasId) {
-		AssetAdministrationShell aas = aasBackend.findById(aasId).orElseThrow(() -> new ElementDoesNotExistException(aasId));
+		AssetAdministrationShell aas = aasBackend.findById(aasId).orElseThrow(() -> {
+			throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(aasId).build();
+		});
 
 		return aasServiceFactory.create(aas);
 	}
@@ -212,7 +217,7 @@ public class CrudAasRepository implements AasRepository {
 
 	private void throwIfAasDoesNotExist(String aasId) {
 		if (!aasBackend.existsById(aasId))
-			throw new ElementDoesNotExistException(aasId);
+			throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(aasId).build();
 	}
 
 	private void updateThumbnailInAssetInformation(String aasId) {

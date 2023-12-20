@@ -25,7 +25,13 @@
 
 package org.eclipse.digitaltwin.basyx.core.exceptions;
 
-import java.util.UUID;
+import org.eclipse.digitaltwin.aas4j.v3.model.KeyTypes;
+import org.eclipse.digitaltwin.aas4j.v3.model.ReferenceTypes;
+import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultKey;
+import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultReference;
+import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
 
 /**
  * Indicates an update request is made on an element and the element that is
@@ -34,24 +40,36 @@ import java.util.UUID;
  * @author danish, Al-Agtash
  *
  */
+@SuppressWarnings("serial")
 public class IdentificationMismatchException extends BaSyxResponseException {
 
-	private static final long serialVersionUID = 1L;
-
 	public IdentificationMismatchException() {
-		super(406, getMessage(""), UUID.randomUUID().toString());
 	}
 
-	public IdentificationMismatchException(String elementId) {
-    super(406, getMessage(elementId), UUID.randomUUID().toString());
+	public IdentificationMismatchException(int httpStatusCode, String reason, String correlationId, String timestamp) {
+		super(httpStatusCode, reason, correlationId, timestamp);
 	}
 
-	public IdentificationMismatchException(String elementId, String correlationId) {
-    super(406, getMessage(elementId), correlationId);
-  }
+	@Component
+	public static class Builder extends BaSyxResponseException.Builder<Builder> {
 
-	private static String getMessage(String elementId) {
-		return "The provided element " + elementId
-				+ " has mismatched identifiers than the existing element that needs to be updated";
+		public Builder(ITraceableMessageSerializer serializer) {
+			super(serializer);
+			messageTemplate(new DefaultReference.Builder().keys(Arrays.asList( //
+					new DefaultKey.Builder().type(KeyTypes.SUBMODEL).value("https://basyx.objective-partner.com/enterprise/errormessages/v1/r0").build(), //
+					new DefaultKey.Builder().type(KeyTypes.MULTI_LANGUAGE_PROPERTY).value("IdentificationMismatchException").build()) //
+			).type(ReferenceTypes.MODEL_REFERENCE).build());
+			returnCode(404);
+			technicalMessageTemplate("The provided element '{MismatchingIdentifier}' has mismatched identifiers than the existing element that needs to be updated");
+		}
+		
+		public Builder mismatchingIdentifier(String value) {
+			param("MismatchingIdentifier", value);
+			return this;
+		}
+		
+		public IdentificationMismatchException build() {
+			return new IdentificationMismatchException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
+		}
 	}
 }
