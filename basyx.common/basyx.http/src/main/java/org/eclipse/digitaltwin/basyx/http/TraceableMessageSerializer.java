@@ -16,7 +16,7 @@ public class TraceableMessageSerializer implements ITraceableMessageSerializer {
 	private static final Logger log = LoggerFactory.getLogger(TraceableMessageSerializer.class);
 	private final ObjectMapper objectMapper;
 
-	private TraceableMessageSerializer(ObjectMapper objectMapper) {
+	public TraceableMessageSerializer(ObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;
 	}
 
@@ -25,7 +25,7 @@ public class TraceableMessageSerializer implements ITraceableMessageSerializer {
 		try {
 			return objectMapper.writeValueAsString(message);
 		} catch (JsonProcessingException e) {
-			log.error("Error happened while preparing TraceableMessage=DataSourceMissmatchException", e);
+			log.error("Error happened while preparing TraceableMessage={}",message, e);
 			throw ExceptionBuilderFactory.getInstance().baSyxResponseException().correlationId(correlationId).build();
 		}
 	}
