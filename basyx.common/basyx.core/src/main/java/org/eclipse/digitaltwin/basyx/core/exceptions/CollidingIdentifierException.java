@@ -35,17 +35,25 @@ import java.util.UUID;
  */
 @SuppressWarnings("serial")
 public class CollidingIdentifierException extends BaSyxResponseException {
+	private String id;
 
 	public CollidingIdentifierException() {
     super(409, "Duplicate element", UUID.randomUUID().toString());
-	}
+    this.id = id;
+  }
 
 	public CollidingIdentifierException(String id) {
     super(409, getMessage(id), UUID.randomUUID().toString());
-	}
+	  this.id = id;
+  }
 
 	public CollidingIdentifierException(String id, String correlationId) {
     super(409, getMessage(id), correlationId);
+	  this.id = id;
+  }
+
+  public String getId() {
+    return id;
   }
 
 	private static String getMessage(String id) {
