@@ -53,7 +53,12 @@ public class NotInvokableException extends BaSyxResponseException {
 					new DefaultKey.Builder().type(KeyTypes.MULTI_LANGUAGE_PROPERTY).value("NotInvokableException").build()) //
 			).type(ReferenceTypes.MODEL_REFERENCE).build());
 			returnCode(405);
-			technicalMessageTemplate("Element '{IdShortPath}' is not invokable");
+			technicalMessageTemplate("Element '{IdShortPath}' of '{SubmodelId}' is not invokable");
+		}
+
+		public Builder submodelId(String value) {
+			param("SubmodelId", value);
+			return this;
 		}
 
 		public Builder idShortPath(String value) {
