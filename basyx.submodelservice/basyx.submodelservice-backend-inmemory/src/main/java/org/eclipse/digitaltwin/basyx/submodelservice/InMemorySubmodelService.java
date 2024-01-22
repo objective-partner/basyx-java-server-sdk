@@ -203,7 +203,7 @@ public class InMemorySubmodelService implements SubmodelService {
 		SubmodelElement sme = getSubmodelElement(idShortPath);
 		
 		if (!(sme instanceof InvokableOperation))
-			throw new NotInvokableException(idShortPath);
+			throw new NotInvokableException(submodel.getId(), idShortPath);
 		
 		InvokableOperation operation = (InvokableOperation) sme;
 		return operation.invoke(input);
