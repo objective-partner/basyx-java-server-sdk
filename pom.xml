@@ -400,10 +400,15 @@
         <version>${revision}</version>
       </dependency>
       <dependency>
-				<groupId>org.eclipse.digitaltwin.basyx</groupId>
-				<artifactId>basyx.submodelrepository-feature-registry-integration</artifactId>
-				<version>${revision}</version>
-			</dependency>
+        <groupId>org.eclipse.digitaltwin.basyx</groupId>
+        <artifactId>basyx.submodelrepository-feature-registry-integration</artifactId>
+        <version>${revision}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.digitaltwin.basyx</groupId>
+        <artifactId>basyx.submodelrepository-feature-delegated-operation</artifactId>
+        <version>${revision}</version>
+      </dependency>
       <dependency>
         <groupId>org.eclipse.digitaltwin.basyx</groupId>
         <artifactId>basyx.submodelrepository.component</artifactId>
@@ -664,11 +669,11 @@
         <classifier>tests</classifier>
       </dependency>
       <dependency>
-				<groupId>org.eclipse.digitaltwin.basyx</groupId>
-				<artifactId>basyx.submodelrepository-feature-registry-integration</artifactId>
-				<version>${revision}</version>
-				<classifier>tests</classifier>
-			</dependency>
+        <groupId>org.eclipse.digitaltwin.basyx</groupId>
+        <artifactId>basyx.submodelrepository-feature-registry-integration</artifactId>
+        <version>${revision}</version>
+        <classifier>tests</classifier>
+      </dependency>
       <!-- basyx.aasservice -->
       <dependency>
         <groupId>org.eclipse.digitaltwin.basyx</groupId>
