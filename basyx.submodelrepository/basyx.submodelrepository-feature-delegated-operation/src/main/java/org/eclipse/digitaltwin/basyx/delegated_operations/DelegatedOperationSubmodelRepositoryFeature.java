@@ -75,7 +75,7 @@ public class DelegatedOperationSubmodelRepositoryFeature implements SubmodelRepo
 
 	@Override
 	public String getName() {
-		return "SubmodelRepository Registry Integration";
+		return "SubmodelRepository Delegated Operation";
 	}
 
 	@Override
