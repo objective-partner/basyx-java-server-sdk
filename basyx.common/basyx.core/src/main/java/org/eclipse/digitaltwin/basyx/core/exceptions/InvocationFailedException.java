@@ -32,18 +32,13 @@ import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultKey;
 import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultReference;
 import org.springframework.stereotype.Component;
 
-/**
- * Indicates that the requested Asset link does not exist
- *
- * @author danish, Al-Agtash
- */
 @SuppressWarnings("serial")
-public class AssetLinkDoesNotExistException extends BaSyxResponseException {
+public class InvocationFailedException extends BaSyxResponseException {
 
-  public AssetLinkDoesNotExistException() {
+  public InvocationFailedException() {
   }
 
-  public AssetLinkDoesNotExistException(int httpStatusCode, String reason, String correlationId, String timestamp) {
+  public InvocationFailedException(int httpStatusCode, String reason, String correlationId, String timestamp) {
     super(httpStatusCode, reason, correlationId, timestamp);
   }
 
@@ -55,21 +50,31 @@ public class AssetLinkDoesNotExistException extends BaSyxResponseException {
       messageTemplate(new DefaultReference.Builder().keys(Arrays.asList( //
           new DefaultKey.Builder().type(KeyTypes.SUBMODEL)
               .value("https://basyx.objective-partner.com/enterprise/errormessages/v1/r0").build(), //
-          new DefaultKey.Builder().type(KeyTypes.MULTI_LANGUAGE_PROPERTY).value("AssetLinkDoesNotExistException")
-              .build()) //
+          new DefaultKey.Builder().type(KeyTypes.MULTI_LANGUAGE_PROPERTY).value("InvocationFailedException").build()) //
       ).type(ReferenceTypes.MODEL_REFERENCE).build());
-      returnCode(404);
-      technicalMessageTemplate("Object corresponding with identifier '{MissingIdentifier}' does not exist");
+      returnCode(405);
+      technicalMessageTemplate(
+          "Failed to invoke operation on Element '{IdShortPath}' of '{SubmodelId}' due to: {Reason}");
     }
 
-    public Builder missingIdentifier(String identifier) {
-      param("MissingIdentifier", identifier);
+    public Builder submodelId(String value) {
+      param("SubmodelId", value);
       return this;
     }
 
-    public AssetLinkDoesNotExistException build() {
-      return new AssetLinkDoesNotExistException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
+    public Builder idShortPath(String value) {
+      param("IdShortPath", value);
+      return this;
+    }
+
+    public Builder reason(String value) {
+      param("Reason", value);
+      return this;
+    }
+
+    @Override
+    public InvocationFailedException build() {
+      return new InvocationFailedException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
     }
   }
-
 }
