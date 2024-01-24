@@ -76,6 +76,7 @@ public class BaSyxResponseException extends RuntimeException {
               .value("https://basyx.objective-partner.com/enterprise/errormessages/v1/r0").build(), //
           new DefaultKey.Builder().type(KeyTypes.MULTI_LANGUAGE_PROPERTY).value("BaSyxResponseException").build()) //
       ).type(ReferenceTypes.MODEL_REFERENCE).build());
+      technicalMessageTemplate("Something went wrong.");
     }
 
     public T causedBy(Exception e) {
