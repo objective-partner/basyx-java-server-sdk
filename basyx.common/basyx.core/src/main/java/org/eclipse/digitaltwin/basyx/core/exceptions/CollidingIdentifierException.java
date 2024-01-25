@@ -25,13 +25,7 @@
 
 package org.eclipse.digitaltwin.basyx.core.exceptions;
 
-import org.eclipse.digitaltwin.aas4j.v3.model.KeyTypes;
-import org.eclipse.digitaltwin.aas4j.v3.model.ReferenceTypes;
-import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultKey;
-import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultReference;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
 
 /**
  * Indicates that an Asset link corresponding to AAS already exists
@@ -41,33 +35,28 @@ import java.util.Arrays;
 @SuppressWarnings("serial")
 public class CollidingIdentifierException extends BaSyxResponseException {
 
-	public CollidingIdentifierException() {
-	}
+  private CollidingIdentifierException(int httpStatusCode, String reason, String correlationId, String timestamp) {
+    super(httpStatusCode, reason, correlationId, timestamp);
+  }
 
-	public CollidingIdentifierException(int httpStatusCode, String reason, String correlationId, String timestamp) {
-		super(httpStatusCode, reason, correlationId, timestamp);
-	}
+  @Component
+  public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
 
-	@Component
-	public static class Builder extends BaSyxResponseException.Builder<Builder> {
+    public Builder(ITraceableMessageSerializer serializer) {
+      super(serializer);
+      messageTemplate("CollidingIdentifierException");
+      returnCode(409);
+      technicalMessageTemplate("Object corresponding to identifer '{CollidingIdentifier}' already exists.");
+    }
 
-		public Builder(ITraceableMessageSerializer serializer) {
-			super(serializer);
-			messageTemplate(new DefaultReference.Builder().keys(Arrays.asList( //
-					new DefaultKey.Builder().type(KeyTypes.SUBMODEL).value("https://basyx.objective-partner.com/enterprise/errormessages/v1/r0").build(), //
-					new DefaultKey.Builder().type(KeyTypes.MULTI_LANGUAGE_PROPERTY).value("CollidingIdentifierException").build()) //
-			).type(ReferenceTypes.MODEL_REFERENCE).build());
-			returnCode(409);
-			technicalMessageTemplate("Object corresponding to identifer '{CollidingIdentifier}' already exists");
-		}
+    public Builder collidingIdentifier(String value) {
+      param("CollidingIdentifier", value);
+      return this;
+    }
 
-		public Builder collidingIdentifier(String value) {
-			param("CollidingIdentifier", value);
-			return this;
-		}
-
-		public CollidingIdentifierException build() {
-			return new CollidingIdentifierException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
-		}
-	}
+    @Override
+    public CollidingIdentifierException build() {
+      return new CollidingIdentifierException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
+    }
+  }
 }

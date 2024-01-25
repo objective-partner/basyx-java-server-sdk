@@ -25,36 +25,24 @@
 
 package org.eclipse.digitaltwin.basyx.core.exceptions;
 
-import java.util.Arrays;
-import org.eclipse.digitaltwin.aas4j.v3.model.KeyTypes;
-import org.eclipse.digitaltwin.aas4j.v3.model.ReferenceTypes;
-import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultKey;
-import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultReference;
 import org.springframework.stereotype.Component;
 
 @SuppressWarnings("serial")
 public class InvocationFailedException extends BaSyxResponseException {
 
-  public InvocationFailedException() {
-  }
-
-  public InvocationFailedException(int httpStatusCode, String reason, String correlationId, String timestamp) {
+  private InvocationFailedException(int httpStatusCode, String reason, String correlationId, String timestamp) {
     super(httpStatusCode, reason, correlationId, timestamp);
   }
 
   @Component
-  public static class Builder extends BaSyxResponseException.Builder<Builder> {
+  public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
 
     public Builder(ITraceableMessageSerializer serializer) {
       super(serializer);
-      messageTemplate(new DefaultReference.Builder().keys(Arrays.asList( //
-          new DefaultKey.Builder().type(KeyTypes.SUBMODEL)
-              .value("https://basyx.objective-partner.com/enterprise/errormessages/v1/r0").build(), //
-          new DefaultKey.Builder().type(KeyTypes.MULTI_LANGUAGE_PROPERTY).value("InvocationFailedException").build()) //
-      ).type(ReferenceTypes.MODEL_REFERENCE).build());
-      returnCode(405);
+      messageTemplate("InvocationFailedException");
+      returnCode(500);
       technicalMessageTemplate(
-          "Failed to invoke operation on Element '{IdShortPath}' of '{SubmodelId}' due to: {Reason}");
+          "Failed to invoke operation on Element '{IdShortPath}' of '{SubmodelId}' due to: {Reason}.");
     }
 
     public Builder submodelId(String value) {

@@ -488,7 +488,7 @@ public class MongoDBSubmodelRepository implements SubmodelRepository {
 
     if (!(submodelElement instanceof File)) {
       throw ExceptionBuilderFactory.getInstance().elementNotAFileException()
-          .sumodelElementId(submodelElement.getIdShort()).build();
+          .submodelElementId(submodelElement.getIdShort()).build();
     }
   }
 

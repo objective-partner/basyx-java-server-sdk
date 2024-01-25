@@ -12,7 +12,6 @@ import org.eclipse.digitaltwin.aas4j.v3.model.Reference;
 import org.eclipse.digitaltwin.aas4j.v3.model.ReferenceTypes;
 import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultKey;
 import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultReference;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 /**
@@ -23,18 +22,9 @@ import org.springframework.util.StringUtils;
 @SuppressWarnings("serial")
 public class BaSyxResponseException extends RuntimeException {
 
-  private String correlationId;
-  private int httpStatusCode;
-  private String timestamp;
-
-  private String technicalMessage;
-
-  protected BaSyxResponseException() {
-  }
-
-  public BaSyxResponseException(int httpStatusCode, String reason, String correlationId) {
-    this(httpStatusCode, reason, correlationId, null);
-  }
+  private final String correlationId;
+  private final int httpStatusCode;
+  private final String timestamp;
 
   protected BaSyxResponseException(int httpStatusCode, String reason, String correlationId, String timestamp) {
     super(reason);
@@ -55,8 +45,8 @@ public class BaSyxResponseException extends RuntimeException {
     return timestamp;
   }
 
-  @Component
-  public static class Builder<T extends Builder<T>> implements ITraceableExceptionBuilder {
+  public static class BaSyxResponseExceptionBuilder<T extends BaSyxResponseExceptionBuilder<T>> implements
+      ITraceableExceptionBuilder {
 
     private final ITraceableMessageSerializer serializer;
     private String correlationId;
@@ -68,25 +58,11 @@ public class BaSyxResponseException extends RuntimeException {
 
     private final Map<String, Object> params = new HashMap<>();
 
-    public Builder(ITraceableMessageSerializer serializer) {
+    public BaSyxResponseExceptionBuilder(ITraceableMessageSerializer serializer) {
       this.serializer = serializer;
       returnCode(500);
-      messageTemplate(new DefaultReference.Builder().keys(Arrays.asList( //
-          new DefaultKey.Builder().type(KeyTypes.SUBMODEL)
-              .value("https://basyx.objective-partner.com/enterprise/errormessages/v1/r0").build(), //
-          new DefaultKey.Builder().type(KeyTypes.MULTI_LANGUAGE_PROPERTY).value("BaSyxResponseException").build()) //
-      ).type(ReferenceTypes.MODEL_REFERENCE).build());
+      messageTemplate("BaSyxResponseException");
       technicalMessageTemplate("Something went wrong.");
-    }
-
-    public T causedBy(Exception e) {
-      // TODO: Parse message, extract correlationId
-      return (T) this;
-    }
-
-    public T causedBy(String errorMsg) {
-      // TODO: Parse message, extract correlationId
-      return (T) this;
     }
 
     @SuppressWarnings("unchecked")
@@ -106,6 +82,17 @@ public class BaSyxResponseException extends RuntimeException {
     @SuppressWarnings("unchecked")
     public T messageTemplate(Reference messageTemplate) {
       this.messageTemplate = messageTemplate;
+      this.composedTechnicalMessage = null;
+      return (T) this;
+    }
+
+    public T messageTemplate(String messageIdShort) {
+      this.messageTemplate = new DefaultReference.Builder().keys(Arrays.asList( //
+          new DefaultKey.Builder().type(KeyTypes.SUBMODEL)
+              .value("https://basyx.objective-partner.com/enterprise/errormessages/v1/r0").build(), //
+          new DefaultKey.Builder().type(KeyTypes.MULTI_LANGUAGE_PROPERTY).value(messageIdShort)
+              .build())
+      ).type(ReferenceTypes.MODEL_REFERENCE).build();
       this.composedTechnicalMessage = null;
       return (T) this;
     }

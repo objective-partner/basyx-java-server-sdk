@@ -1,5 +1,7 @@
 package org.eclipse.digitaltwin.basyx.core.exceptions;
 
+import org.eclipse.digitaltwin.basyx.core.exceptions.BaSyxResponseException.BaSyxResponseExceptionBuilder;
+
 public class ExceptionBuilderFactory {
 
   private static ITraceableMessageSerializer serializer;
@@ -22,8 +24,8 @@ public class ExceptionBuilderFactory {
     return new AssetLinkDoesNotExistException.Builder(serializer);
   }
 
-  public BaSyxResponseException.Builder<?> baSyxResponseException() {
-    return new BaSyxResponseException.Builder<>(serializer);
+  public BaSyxResponseExceptionBuilder<?> baSyxResponseException() {
+    return new BaSyxResponseExceptionBuilder<>(serializer);
   }
 
   public CollidingIdentifierException.Builder collidingIdentifierException() {

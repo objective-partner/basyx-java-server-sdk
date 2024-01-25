@@ -25,11 +25,6 @@
 
 package org.eclipse.digitaltwin.basyx.core.exceptions;
 
-import java.util.Arrays;
-import org.eclipse.digitaltwin.aas4j.v3.model.KeyTypes;
-import org.eclipse.digitaltwin.aas4j.v3.model.ReferenceTypes;
-import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultKey;
-import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultReference;
 import org.springframework.stereotype.Component;
 
 /**
@@ -40,26 +35,18 @@ import org.springframework.stereotype.Component;
 @SuppressWarnings("serial")
 public class AssetLinkDoesNotExistException extends BaSyxResponseException {
 
-  public AssetLinkDoesNotExistException() {
-  }
-
-  public AssetLinkDoesNotExistException(int httpStatusCode, String reason, String correlationId, String timestamp) {
+  private AssetLinkDoesNotExistException(int httpStatusCode, String reason, String correlationId, String timestamp) {
     super(httpStatusCode, reason, correlationId, timestamp);
   }
 
   @Component
-  public static class Builder extends BaSyxResponseException.Builder<Builder> {
+  public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
 
     public Builder(ITraceableMessageSerializer serializer) {
       super(serializer);
-      messageTemplate(new DefaultReference.Builder().keys(Arrays.asList( //
-          new DefaultKey.Builder().type(KeyTypes.SUBMODEL)
-              .value("https://basyx.objective-partner.com/enterprise/errormessages/v1/r0").build(), //
-          new DefaultKey.Builder().type(KeyTypes.MULTI_LANGUAGE_PROPERTY).value("AssetLinkDoesNotExistException")
-              .build()) //
-      ).type(ReferenceTypes.MODEL_REFERENCE).build());
+      messageTemplate("AssetLinkDoesNotExistException");
       returnCode(404);
-      technicalMessageTemplate("Object corresponding with identifier '{MissingIdentifier}' does not exist");
+      technicalMessageTemplate("Object corresponding with identifier '{MissingIdentifier}' does not exist.");
     }
 
     public Builder missingIdentifier(String identifier) {
@@ -67,6 +54,7 @@ public class AssetLinkDoesNotExistException extends BaSyxResponseException {
       return this;
     }
 
+    @Override
     public AssetLinkDoesNotExistException build() {
       return new AssetLinkDoesNotExistException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
     }

@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (C) 2023 the Eclipse BaSyx Authors
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
  * "Software"), to deal in the Software without restriction, including
@@ -8,10 +8,10 @@
  * distribute, sublicense, and/or sell copies of the Software, and to
  * permit persons to whom the Software is furnished to do so, subject to
  * the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -19,7 +19,7 @@
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- * 
+ *
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
@@ -40,7 +40,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.tika.utils.StringUtils;
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.DeserializationException;
@@ -71,96 +70,94 @@ import org.slf4j.LoggerFactory;
  * In-memory implementation of the SubmodelRepository
  *
  * @author schnicke, danish, kammognie, zhangzai
- *
  */
 public class InMemorySubmodelRepository implements SubmodelRepository {
 
-	private Logger logger = LoggerFactory.getLogger(InMemorySubmodelRepository.class);
+  private final Logger logger = LoggerFactory.getLogger(InMemorySubmodelRepository.class);
 
-	private static final PaginationInfo NO_LIMIT_PAGINATION_INFO = new PaginationInfo(0, null);
-	private Map<String, SubmodelService> submodelServices = new LinkedHashMap<>();
-	private SubmodelServiceFactory submodelServiceFactory;
-	private String smRepositoryName;
-	private String tmpDirectory = getTemporaryDirectoryPath();
+  private static final PaginationInfo NO_LIMIT_PAGINATION_INFO = new PaginationInfo(0, null);
+  private Map<String, SubmodelService> submodelServices = new LinkedHashMap<>();
+  private final SubmodelServiceFactory submodelServiceFactory;
+  private String smRepositoryName;
+  private final String tmpDirectory = getTemporaryDirectoryPath();
 
-	/**
-	 * Creates the InMemorySubmodelRepository utilizing the passed
-	 * SubmodelServiceFactory for creating new SubmodelServices
-	 * 
-	 * @param submodelServiceFactory
-	 */
-	public InMemorySubmodelRepository(SubmodelServiceFactory submodelServiceFactory) {
-		this.submodelServiceFactory = submodelServiceFactory;
-	}
+  /**
+   * Creates the InMemorySubmodelRepository utilizing the passed SubmodelServiceFactory for creating new
+   * SubmodelServices
+   *
+   * @param submodelServiceFactory
+   */
+  public InMemorySubmodelRepository(SubmodelServiceFactory submodelServiceFactory) {
+    this.submodelServiceFactory = submodelServiceFactory;
+  }
 
-	/**
-	 * Creates the InMemorySubmodelRepository utilizing the passed
-	 * SubmodelServiceFactory for creating new SubmodelServices
-	 * 
-	 * @param submodelServiceFactory
-	 * @param smRepositoryName
-	 *            Name of the SubmodelRepository
-	 */
-	public InMemorySubmodelRepository(SubmodelServiceFactory submodelServiceFactory, String smRepositoryName) {
-		this(submodelServiceFactory);
-		this.smRepositoryName = smRepositoryName;
-	}
+  /**
+   * Creates the InMemorySubmodelRepository utilizing the passed SubmodelServiceFactory for creating new
+   * SubmodelServices
+   *
+   * @param submodelServiceFactory
+   * @param smRepositoryName       Name of the SubmodelRepository
+   */
+  public InMemorySubmodelRepository(SubmodelServiceFactory submodelServiceFactory, String smRepositoryName) {
+    this(submodelServiceFactory);
+    this.smRepositoryName = smRepositoryName;
+  }
 
-	/**
-	 * Creates the InMemorySubmodelRepository utilizing the passed
-	 * SubmodelServiceFactory for creating new SubmodelServices and preconfiguring
-	 * it with the passed Submodels
-	 * 
-	 * @param submodelServiceFactory
-	 * @param submodels
-	 */
-	public InMemorySubmodelRepository(SubmodelServiceFactory submodelServiceFactory, Collection<Submodel> submodels) {
-		this(submodelServiceFactory);
-		throwIfHasCollidingIds(submodels);
+  /**
+   * Creates the InMemorySubmodelRepository utilizing the passed SubmodelServiceFactory for creating new
+   * SubmodelServices and preconfiguring it with the passed Submodels
+   *
+   * @param submodelServiceFactory
+   * @param submodels
+   */
+  public InMemorySubmodelRepository(SubmodelServiceFactory submodelServiceFactory, Collection<Submodel> submodels) {
+    this(submodelServiceFactory);
+    throwIfHasCollidingIds(submodels);
 
-		submodelServices = createServices(submodels);
-	}
+    submodelServices = createServices(submodels);
+  }
 
-	/**
-	 * Creates the InMemorySubmodelRepository utilizing the passed
-	 * SubmodelServiceFactory for creating new SubmodelServices and preconfiguring
-	 * it with the passed Submodels
-	 * 
-	 * @param submodelServiceFactory
-	 * @param submodels
-	 * @param smRepositoryName
-	 *            Name of the SubmodelRepository
-	 */
-	public InMemorySubmodelRepository(SubmodelServiceFactory submodelServiceFactory, Collection<Submodel> submodels, String smRepositoryName) {
-		this(submodelServiceFactory, submodels);
-		this.smRepositoryName = smRepositoryName;
-	}
+  /**
+   * Creates the InMemorySubmodelRepository utilizing the passed SubmodelServiceFactory for creating new
+   * SubmodelServices and preconfiguring it with the passed Submodels
+   *
+   * @param submodelServiceFactory
+   * @param submodels
+   * @param smRepositoryName       Name of the SubmodelRepository
+   */
+  public InMemorySubmodelRepository(SubmodelServiceFactory submodelServiceFactory, Collection<Submodel> submodels,
+      String smRepositoryName) {
+    this(submodelServiceFactory, submodels);
+    this.smRepositoryName = smRepositoryName;
+  }
 
-	private void throwIfHasCollidingIds(Collection<Submodel> submodelsToCheck) {
-		Set<String> ids = new HashSet<>();
+  private void throwIfHasCollidingIds(Collection<Submodel> submodelsToCheck) {
+    Set<String> ids = new HashSet<>();
 
-		submodelsToCheck.stream().map(submodel -> submodel.getId()).filter(id -> !ids.add(id)).findAny().ifPresent(id -> {
-			throw ExceptionBuilderFactory.getInstance().collidingIdentifierException().collidingIdentifier(id).build();
-		});
-	}
+    submodelsToCheck.stream().map(submodel -> submodel.getId()).filter(id -> !ids.add(id)).findAny().ifPresent(id -> {
+      throw ExceptionBuilderFactory.getInstance().collidingIdentifierException().collidingIdentifier(id).build();
+    });
+  }
 
-	private Map<String, SubmodelService> createServices(Collection<Submodel> submodels) {
-		Map<String, SubmodelService> map = new LinkedHashMap<>();
-		submodels.forEach(submodel -> map.put(submodel.getId(), submodelServiceFactory.create(submodel)));
+  private Map<String, SubmodelService> createServices(Collection<Submodel> submodels) {
+    Map<String, SubmodelService> map = new LinkedHashMap<>();
+    submodels.forEach(submodel -> map.put(submodel.getId(), submodelServiceFactory.create(submodel)));
 
-		return map;
-	}
+    return map;
+  }
 
-	@Override
-	public CursorResult<List<Submodel>> getAllSubmodels(PaginationInfo pInfo) {
-		List<Submodel> allSubmodels = submodelServices.values().stream().map(service -> service.getSubmodel()).collect(Collectors.toList());
+  @Override
+  public CursorResult<List<Submodel>> getAllSubmodels(PaginationInfo pInfo) {
+    List<Submodel> allSubmodels = submodelServices.values().stream().map(service -> service.getSubmodel())
+        .collect(Collectors.toList());
 
-		TreeMap<String, Submodel> submodelMap = allSubmodels.stream().collect(Collectors.toMap(Submodel::getId, aas -> aas, (a, b) -> a, TreeMap::new));
+    TreeMap<String, Submodel> submodelMap = allSubmodels.stream()
+        .collect(Collectors.toMap(Submodel::getId, aas -> aas, (a, b) -> a, TreeMap::new));
 
-		PaginationSupport<Submodel> paginationSupport = new PaginationSupport<>(submodelMap, Submodel::getId);
-		CursorResult<List<Submodel>> paginatedSubmodels = paginationSupport.getPaged(pInfo);
-		return paginatedSubmodels;
-	}
+    PaginationSupport<Submodel> paginationSupport = new PaginationSupport<>(submodelMap, Submodel::getId);
+    CursorResult<List<Submodel>> paginatedSubmodels = paginationSupport.getPaged(pInfo);
+    return paginatedSubmodels;
+  }
 
   @Override
   public CursorResult<List<Submodel>> getAllSubmodelsMetadata(PaginationInfo pInfo) {
@@ -170,259 +167,273 @@ public class InMemorySubmodelRepository implements SubmodelRepository {
       return submodel;
     }).toList();
 
-    TreeMap<String, Submodel> submodelMap = allSubmodels.stream().collect(Collectors.toMap(Submodel::getId, aas -> aas, (a, b) -> a, TreeMap::new));
+    TreeMap<String, Submodel> submodelMap = allSubmodels.stream()
+        .collect(Collectors.toMap(Submodel::getId, aas -> aas, (a, b) -> a, TreeMap::new));
 
     PaginationSupport<Submodel> paginationSupport = new PaginationSupport<>(submodelMap, Submodel::getId);
     CursorResult<List<Submodel>> paginatedSubmodels = paginationSupport.getPaged(pInfo);
     return paginatedSubmodels;
   }
 
-	@Override
-	public Submodel getSubmodel(String id) throws ElementDoesNotExistException {
-		return getSubmodelService(id).getSubmodel();
-	}
+  @Override
+  public Submodel getSubmodel(String id) throws ElementDoesNotExistException {
+    return getSubmodelService(id).getSubmodel();
+  }
 
-	@Override
-	public void updateSubmodel(String id, Submodel submodel) throws ElementDoesNotExistException {
-		throwIfSubmodelDoesNotExist(id);
+  @Override
+  public void updateSubmodel(String id, Submodel submodel) throws ElementDoesNotExistException {
+    throwIfSubmodelDoesNotExist(id);
 
-		throwIfMismatchingIds(id, submodel);
+    throwIfMismatchingIds(id, submodel);
 
-		submodelServices.put(id, submodelServiceFactory.create(submodel));
-	}
+    submodelServices.put(id, submodelServiceFactory.create(submodel));
+  }
 
-	@Override
-	public void createSubmodel(Submodel submodel) throws CollidingIdentifierException {
-		throwIfSubmodelExists(submodel.getId());
+  @Override
+  public void createSubmodel(Submodel submodel) throws CollidingIdentifierException {
+    throwIfSubmodelExists(submodel.getId());
 
-		submodelServices.put(submodel.getId(), submodelServiceFactory.create(submodel));
-	}
+    submodelServices.put(submodel.getId(), submodelServiceFactory.create(submodel));
+  }
 
-	@Override
-	public CursorResult<List<SubmodelElement>> getSubmodelElements(String submodelId, PaginationInfo pInfo) {
-		return getSubmodelService(submodelId).getSubmodelElements(pInfo);
-	}
+  @Override
+  public CursorResult<List<SubmodelElement>> getSubmodelElements(String submodelId, PaginationInfo pInfo) {
+    return getSubmodelService(submodelId).getSubmodelElements(pInfo);
+  }
 
-	@Override
-	public SubmodelElement getSubmodelElement(String submodelId, String smeIdShort) throws ElementDoesNotExistException {
-		return getSubmodelService(submodelId).getSubmodelElement(smeIdShort);
-	}
+  @Override
+  public SubmodelElement getSubmodelElement(String submodelId, String smeIdShort) throws ElementDoesNotExistException {
+    return getSubmodelService(submodelId).getSubmodelElement(smeIdShort);
+  }
 
-	@Override
-	public SubmodelElementValue getSubmodelElementValue(String submodelId, String smeIdShort) throws ElementDoesNotExistException {
-		return getSubmodelService(submodelId).getSubmodelElementValue(smeIdShort);
-	}
+  @Override
+  public SubmodelElementValue getSubmodelElementValue(String submodelId, String smeIdShort)
+      throws ElementDoesNotExistException {
+    return getSubmodelService(submodelId).getSubmodelElementValue(smeIdShort);
+  }
 
-	@Override
-	public void setSubmodelElementValue(String submodelId, String smeIdShort, SubmodelElementValue value) throws ElementDoesNotExistException {
-		getSubmodelService(submodelId).setSubmodelElementValue(smeIdShort, value);
-	}
+  @Override
+  public void setSubmodelElementValue(String submodelId, String smeIdShort, SubmodelElementValue value)
+      throws ElementDoesNotExistException {
+    getSubmodelService(submodelId).setSubmodelElementValue(smeIdShort, value);
+  }
 
-	@Override
-	public void deleteSubmodel(String submodelId) throws ElementDoesNotExistException {
-		throwIfSubmodelDoesNotExist(submodelId);
+  @Override
+  public void deleteSubmodel(String submodelId) throws ElementDoesNotExistException {
+    throwIfSubmodelDoesNotExist(submodelId);
 
-		submodelServices.remove(submodelId);
-	}
+    submodelServices.remove(submodelId);
+  }
 
-	@Override
-	public void createSubmodelElement(String submodelId, SubmodelElement smElement) {
-		throwIfSubmodelDoesNotExist(submodelId);
+  @Override
+  public void createSubmodelElement(String submodelId, SubmodelElement smElement) {
+    throwIfSubmodelDoesNotExist(submodelId);
 
-		submodelServices.get(submodelId).createSubmodelElement(smElement);
-	}
+    submodelServices.get(submodelId).createSubmodelElement(smElement);
+  }
 
-	@Override
-	public void createSubmodelElement(String submodelId, String idShortPath, SubmodelElement smElement) throws ElementDoesNotExistException {
-		getSubmodelService(submodelId).createSubmodelElement(idShortPath, smElement);
-	}
+  @Override
+  public void createSubmodelElement(String submodelId, String idShortPath, SubmodelElement smElement)
+      throws ElementDoesNotExistException {
+    getSubmodelService(submodelId).createSubmodelElement(idShortPath, smElement);
+  }
 
-	@Override
-	public void deleteSubmodelElement(String submodelId, String idShortPath) throws ElementDoesNotExistException {
-		getSubmodelService(submodelId).deleteSubmodelElement(idShortPath);
-	}
+  @Override
+  public void deleteSubmodelElement(String submodelId, String idShortPath) throws ElementDoesNotExistException {
+    getSubmodelService(submodelId).deleteSubmodelElement(idShortPath);
+  }
 
-	@Override
-	public SubmodelValueOnly getSubmodelByIdValueOnly(String submodelId) {
-		return new SubmodelValueOnly(getSubmodelElements(submodelId, NO_LIMIT_PAGINATION_INFO).getResult());
-	}
+  @Override
+  public SubmodelValueOnly getSubmodelByIdValueOnly(String submodelId) {
+    return new SubmodelValueOnly(getSubmodelElements(submodelId, NO_LIMIT_PAGINATION_INFO).getResult());
+  }
 
-	@Override
-	public Submodel getSubmodelByIdMetadata(String submodelId) {
-		Submodel submodel = getSubmodel(submodelId);
-		try {
-			String submodelAsJSON = new JsonSerializer().write(submodel);
-			Submodel submodelDeepCopy = new JsonDeserializer().readReferable(submodelAsJSON, Submodel.class);
-			submodelDeepCopy.setSubmodelElements(null);
-			return submodelDeepCopy;
-		} catch (DeserializationException e) {
-			throw new RuntimeException("Unable to deserialize the Submodel", e);
-		} catch (SerializationException e) {
-			throw new RuntimeException("Unable to serialize the Submodel", e);
-		}
-	}
+  @Override
+  public Submodel getSubmodelByIdMetadata(String submodelId) {
+    Submodel submodel = getSubmodel(submodelId);
+    try {
+      String submodelAsJSON = new JsonSerializer().write(submodel);
+      Submodel submodelDeepCopy = new JsonDeserializer().readReferable(submodelAsJSON, Submodel.class);
+      submodelDeepCopy.setSubmodelElements(null);
+      return submodelDeepCopy;
+    } catch (DeserializationException e) {
+      throw new RuntimeException("Unable to deserialize the Submodel", e);
+    } catch (SerializationException e) {
+      throw new RuntimeException("Unable to serialize the Submodel", e);
+    }
+  }
 
-	@Override
-	public String getName() {
-		return smRepositoryName == null ? SubmodelRepository.super.getName() : smRepositoryName;
-	}
+  @Override
+  public String getName() {
+    return smRepositoryName == null ? SubmodelRepository.super.getName() : smRepositoryName;
+  }
 
-	@Override
-	public OperationVariable[] invokeOperation(String submodelId, String idShortPath, OperationVariable[] input) throws ElementDoesNotExistException {
-		return getSubmodelService(submodelId).invokeOperation(idShortPath, input);
-	}
+  @Override
+  public OperationVariable[] invokeOperation(String submodelId, String idShortPath, OperationVariable[] input)
+      throws ElementDoesNotExistException {
+    return getSubmodelService(submodelId).invokeOperation(idShortPath, input);
+  }
 
-	@Override
-	public java.io.File getFileByPathSubmodel(String submodelId, String idShortPath) {
-		throwIfSubmodelDoesNotExist(submodelId);
+  @Override
+  public java.io.File getFileByPathSubmodel(String submodelId, String idShortPath) {
+    throwIfSubmodelDoesNotExist(submodelId);
 
-		SubmodelElement submodelElement = submodelServices.get(submodelId).getSubmodelElement(idShortPath);
+    SubmodelElement submodelElement = submodelServices.get(submodelId).getSubmodelElement(idShortPath);
 
-		throwIfSmElementIsNotAFile(submodelElement);
+    throwIfSmElementIsNotAFile(submodelElement);
 
-		String filePath = getFilePath(submodelElement);
+    String filePath = getFilePath(submodelElement);
 
-		throwIfFileDoesNotExist((File) submodelElement, filePath);
+    throwIfFileDoesNotExist((File) submodelElement, filePath);
 
-		return new java.io.File(filePath);
-	}
+    return new java.io.File(filePath);
+  }
 
-	@Override
-	public void setFileValue(String submodelId, String idShortPath, String fileName, InputStream inputStream) {
-		throwIfSubmodelDoesNotExist(submodelId);
+  @Override
+  public void setFileValue(String submodelId, String idShortPath, String fileName, InputStream inputStream) {
+    throwIfSubmodelDoesNotExist(submodelId);
 
-		SubmodelElement submodelElement = submodelServices.get(submodelId).getSubmodelElement(idShortPath);
-		throwIfSmElementIsNotAFile(submodelElement);
+    SubmodelElement submodelElement = submodelServices.get(submodelId).getSubmodelElement(idShortPath);
+    throwIfSmElementIsNotAFile(submodelElement);
 
-		File fileSmElement = (File) submodelElement;
-		deleteExistingFile(fileSmElement);
-		String filePath = createFilePath(submodelId, idShortPath, fileName);
+    File fileSmElement = (File) submodelElement;
+    deleteExistingFile(fileSmElement);
+    String filePath = createFilePath(submodelId, idShortPath, fileName);
 
-		createFileAtSpecifiedPath(fileName, inputStream, filePath);
+    createFileAtSpecifiedPath(fileName, inputStream, filePath);
 
-		FileBlobValue fileValue = new FileBlobValue(fileSmElement.getContentType(), filePath);
+    FileBlobValue fileValue = new FileBlobValue(fileSmElement.getContentType(), filePath);
 
-		setSubmodelElementValue(submodelId, idShortPath, fileValue);
-	}
+    setSubmodelElementValue(submodelId, idShortPath, fileValue);
+  }
 
-	@Override
-	public void deleteFileValue(String submodelId, String idShortPath) {
-		throwIfSubmodelDoesNotExist(submodelId);
+  @Override
+  public void deleteFileValue(String submodelId, String idShortPath) {
+    throwIfSubmodelDoesNotExist(submodelId);
 
-		SubmodelElement submodelElement = submodelServices.get(submodelId).getSubmodelElement(idShortPath);
+    SubmodelElement submodelElement = submodelServices.get(submodelId).getSubmodelElement(idShortPath);
 
-		throwIfSmElementIsNotAFile(submodelElement);
+    throwIfSmElementIsNotAFile(submodelElement);
 
-		File fileSubmodelElement = (File) submodelElement;
-		String filePath = fileSubmodelElement.getValue();
+    File fileSubmodelElement = (File) submodelElement;
+    String filePath = fileSubmodelElement.getValue();
 
-		throwIfFileDoesNotExist(fileSubmodelElement, filePath);
+    throwIfFileDoesNotExist(fileSubmodelElement, filePath);
 
-		java.io.File tmpFile = new java.io.File(filePath);
-		tmpFile.delete();
+    java.io.File tmpFile = new java.io.File(filePath);
+    tmpFile.delete();
 
-		FileBlobValue fileValue = new FileBlobValue(StringUtils.EMPTY, StringUtils.EMPTY);
+    FileBlobValue fileValue = new FileBlobValue(StringUtils.EMPTY, StringUtils.EMPTY);
 
-		setSubmodelElementValue(submodelId, idShortPath, fileValue);
-	}
+    setSubmodelElementValue(submodelId, idShortPath, fileValue);
+  }
 
-	private String createFilePath(String submodelId, String idShortPath, String fileName) {
-		return tmpDirectory + "/" + Base64UrlEncodedIdentifier.encodeIdentifier(submodelId) + "-" + idShortPath.replace("/", "-") + "-" + fileName;
-	}
+  private String createFilePath(String submodelId, String idShortPath, String fileName) {
+    return tmpDirectory + "/" + Base64UrlEncodedIdentifier.encodeIdentifier(submodelId) + "-" + idShortPath.replace("/",
+        "-") + "-" + fileName;
+  }
 
-	private void throwIfSmElementIsNotAFile(SubmodelElement submodelElement) {
-		if (!(submodelElement instanceof File))
-			throw ExceptionBuilderFactory.getInstance().elementNotAFileException().sumodelElementId(submodelElement.getIdShort()).build();
-	}
+  private void throwIfSmElementIsNotAFile(SubmodelElement submodelElement) {
+    if (!(submodelElement instanceof File)) {
+      throw ExceptionBuilderFactory.getInstance().elementNotAFileException()
+          .submodelElementId(submodelElement.getIdShort()).build();
+    }
+  }
 
-	private void throwIfMismatchingIds(String smId, Submodel newSubmodel) {
-		String newSubmodelId = newSubmodel.getId();
+  private void throwIfMismatchingIds(String smId, Submodel newSubmodel) {
+    String newSubmodelId = newSubmodel.getId();
 
-		if (!smId.equals(newSubmodelId))
-			throw new IdentificationMismatchException();
-	}
+    if (!smId.equals(newSubmodelId)) {
+      throw new IdentificationMismatchException();
+    }
+  }
 
-	private SubmodelService getSubmodelService(String submodelId) {
-		throwIfSubmodelDoesNotExist(submodelId);
+  private SubmodelService getSubmodelService(String submodelId) {
+    throwIfSubmodelDoesNotExist(submodelId);
 
-		return submodelServices.get(submodelId);
-	}
+    return submodelServices.get(submodelId);
+  }
 
-	private void throwIfSubmodelExists(String id) {
-		if (submodelServices.containsKey(id))
-			throw ExceptionBuilderFactory.getInstance().collidingIdentifierException().collidingIdentifier(id).build();
-	}
+  private void throwIfSubmodelExists(String id) {
+    if (submodelServices.containsKey(id)) {
+      throw ExceptionBuilderFactory.getInstance().collidingIdentifierException().collidingIdentifier(id).build();
+    }
+  }
 
-	private void throwIfSubmodelDoesNotExist(String id) {
-		if (!submodelServices.containsKey(id))
-			throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(id).build();
-	}
+  private void throwIfSubmodelDoesNotExist(String id) {
+    if (!submodelServices.containsKey(id)) {
+      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(id).build();
+    }
+  }
 
-	private void throwIfFileDoesNotExist(File fileSmElement, String filePath) {
-		if (fileSmElement.getValue().isBlank() || !isFilePathValid(filePath))
-			throw ExceptionBuilderFactory.getInstance().fileDoesNotExistException().elementPath(fileSmElement.getIdShort()).build();
-	}
+  private void throwIfFileDoesNotExist(File fileSmElement, String filePath) {
+    if (fileSmElement.getValue().isBlank() || !isFilePathValid(filePath)) {
+      throw ExceptionBuilderFactory.getInstance().fileDoesNotExistException().elementPath(fileSmElement.getIdShort())
+          .build();
+    }
+  }
 
-	private boolean isFilePathValid(String filePath) {
-		try {
-			Paths.get(filePath);
-		} catch (InvalidPathException | NullPointerException ex) {
-			return false;
-		}
-		return true;
-	}
+  private boolean isFilePathValid(String filePath) {
+    try {
+      Paths.get(filePath);
+    } catch (InvalidPathException | NullPointerException ex) {
+      return false;
+    }
+    return true;
+  }
 
-	private String getTemporaryDirectoryPath() {
-		String tempDirectoryPath = "";
-		try {
-			tempDirectoryPath = Files.createTempDirectory("basyx-temp").toAbsolutePath().toString();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return tempDirectoryPath;
-	}
+  private String getTemporaryDirectoryPath() {
+    String tempDirectoryPath = "";
+    try {
+      tempDirectoryPath = Files.createTempDirectory("basyx-temp").toAbsolutePath().toString();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return tempDirectoryPath;
+  }
 
-	private String getFilePath(SubmodelElement submodelElement) {
-		return ((File) submodelElement).getValue();
-	}
+  private String getFilePath(SubmodelElement submodelElement) {
+    return ((File) submodelElement).getValue();
+  }
 
-	private void deleteExistingFile(File fileSmElement) {
-		String filePath = fileSmElement.getValue();
-		
-		if (filePath.isEmpty())
-			return;
+  private void deleteExistingFile(File fileSmElement) {
+    String filePath = fileSmElement.getValue();
 
-		Path validatedFilePath = getValidatedFilePath(filePath);
-		
-		if (validatedFilePath == null) {
-			logger.error("Unable to delete the file due to invalid path '{}'", filePath);
-			
-			return;
-		}
+    if (filePath.isEmpty()) {
+      return;
+    }
 
-		try {
-			Files.deleteIfExists(validatedFilePath);
-		} catch (IOException e) {
-			logger.error("Unable to delete the file having path '{}'", filePath);
-		}
-	}
+    Path validatedFilePath = getValidatedFilePath(filePath);
 
-	private Path getValidatedFilePath(String filePath) {
-		try {
-			return Paths.get(filePath, "");
-		} catch (InvalidPathException e) {
-			return null;
-		}
-	}
+    if (validatedFilePath == null) {
+      logger.error("Unable to delete the file due to invalid path '{}'", filePath);
 
-	private void createFileAtSpecifiedPath(String fileName, InputStream inputStream, String filePath) {
-		java.io.File targetFile = new java.io.File(filePath);
+      return;
+    }
 
-		try (FileOutputStream outStream = new FileOutputStream(targetFile)) {
-			IOUtils.copy(inputStream, outStream);
-		} catch (IOException e) {
-			throw ExceptionBuilderFactory.getInstance().fileHandlingException().filename(fileName).build();
-		}
-	}
+    try {
+      Files.deleteIfExists(validatedFilePath);
+    } catch (IOException e) {
+      logger.error("Unable to delete the file having path '{}'", filePath);
+    }
+  }
+
+  private Path getValidatedFilePath(String filePath) {
+    try {
+      return Paths.get(filePath, "");
+    } catch (InvalidPathException e) {
+      return null;
+    }
+  }
+
+  private void createFileAtSpecifiedPath(String fileName, InputStream inputStream, String filePath) {
+    java.io.File targetFile = new java.io.File(filePath);
+
+    try (FileOutputStream outStream = new FileOutputStream(targetFile)) {
+      IOUtils.copy(inputStream, outStream);
+    } catch (IOException e) {
+      throw ExceptionBuilderFactory.getInstance().fileHandlingException().filename(fileName).build();
+    }
+  }
 
 }
