@@ -44,7 +44,7 @@ public class FileHandlingException extends BaSyxResponseException {
 
     public Builder(ITraceableMessageSerializer serializer) {
       super(serializer);
-      messageTemplate("FileHandlingException");
+      messageReference("FileHandlingException");
       returnCode(500);
       technicalMessageTemplate("Exception occurred while handling the file '{Filename}'.");
     }

@@ -39,7 +39,7 @@ public class NotInvokableException extends BaSyxResponseException {
 
     public Builder(ITraceableMessageSerializer serializer) {
       super(serializer);
-      messageTemplate("NotInvokableException");
+      messageReference("NotInvokableException");
       returnCode(405);
       technicalMessageTemplate("Element '{IdShortPath}' of '{SubmodelId}' is not invokable.");
     }

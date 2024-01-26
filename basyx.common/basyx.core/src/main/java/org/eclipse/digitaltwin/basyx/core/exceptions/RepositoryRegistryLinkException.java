@@ -44,7 +44,7 @@ public class RepositoryRegistryLinkException extends BaSyxResponseException {
 
     public Builder(ITraceableMessageSerializer serializer) {
       super(serializer);
-      messageTemplate("RepositoryRegistryLinkException");
+      messageReference("RepositoryRegistryLinkException");
       returnCode(500);
       technicalMessageTemplate("Unable to link the element '{ElementId}' with the Registry.");
     }

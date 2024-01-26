@@ -46,7 +46,7 @@ public class ElementDoesNotExistException extends BaSyxResponseException {
 
     public Builder(ITraceableMessageSerializer serializer) {
       super(serializer);
-      messageTemplate("ElementDoesNotExistException");
+      messageReference("ElementDoesNotExistException");
       returnCode(404);
       technicalMessageTemplate("{ElementType} with id '{MissingElementId}' does not exist.");
     }

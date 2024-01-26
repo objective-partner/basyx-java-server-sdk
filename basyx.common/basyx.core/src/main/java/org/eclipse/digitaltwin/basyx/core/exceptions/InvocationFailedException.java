@@ -39,7 +39,7 @@ public class InvocationFailedException extends BaSyxResponseException {
 
     public Builder(ITraceableMessageSerializer serializer) {
       super(serializer);
-      messageTemplate("InvocationFailedException");
+      messageReference("InvocationFailedException");
       returnCode(500);
       technicalMessageTemplate(
           "Failed to invoke operation on Element '{IdShortPath}' of '{SubmodelId}' due to: {Reason}.");

@@ -44,7 +44,7 @@ public class FeatureNotSupportedException extends BaSyxResponseException {
 
     public Builder(ITraceableMessageSerializer serializer) {
       super(serializer);
-      messageTemplate("FeatureNotSupportedException");
+      messageReference("FeatureNotSupportedException");
       returnCode(406);
       technicalMessageTemplate("Feature '{FeatureName}' is not supported by the current configuration.");
     }

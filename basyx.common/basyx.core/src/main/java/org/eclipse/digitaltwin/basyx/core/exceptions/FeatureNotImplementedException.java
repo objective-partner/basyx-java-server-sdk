@@ -44,7 +44,7 @@ public class FeatureNotImplementedException extends BaSyxResponseException {
 
     public Builder(ITraceableMessageSerializer serializer) {
       super(serializer);
-      messageTemplate("FeatureNotImplementedException");
+      messageReference("FeatureNotImplementedException");
       returnCode(501);
       technicalMessageTemplate("Feature '{FeatureName}' is not implemented yet.");
     }

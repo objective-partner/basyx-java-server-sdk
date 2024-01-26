@@ -45,7 +45,7 @@ public class InvalidIdShortPathElementsException extends BaSyxResponseException 
 
     public Builder(ITraceableMessageSerializer serializer) {
       super(serializer);
-      messageTemplate("InvalidIdShortPathElementsException");
+      messageReference("InvalidIdShortPathElementsException");
       returnCode(400);
       technicalMessageTemplate("List of SubmodelElements for creating IdShortPath should not be null or empty.");
     }

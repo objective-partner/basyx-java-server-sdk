@@ -44,7 +44,7 @@ public class RepositoryRegistryUnlinkException extends BaSyxResponseException {
 
     public Builder(ITraceableMessageSerializer serializer) {
       super(serializer);
-      messageTemplate("RepositoryRegistryUnlinkException");
+      messageReference("RepositoryRegistryUnlinkException");
       returnCode(500);
       technicalMessageTemplate("Unable to unlink the element '{ElementId}' from the Registry.");
     }

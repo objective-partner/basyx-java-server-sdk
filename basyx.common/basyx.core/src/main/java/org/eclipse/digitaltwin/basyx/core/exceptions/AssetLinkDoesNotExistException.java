@@ -44,7 +44,7 @@ public class AssetLinkDoesNotExistException extends BaSyxResponseException {
 
     public Builder(ITraceableMessageSerializer serializer) {
       super(serializer);
-      messageTemplate("AssetLinkDoesNotExistException");
+      messageReference("AssetLinkDoesNotExistException");
       returnCode(404);
       technicalMessageTemplate("Object corresponding with identifier '{MissingIdentifier}' does not exist.");
     }

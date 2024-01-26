@@ -51,7 +51,7 @@ public class BaSyxResponseException extends RuntimeException {
     private final ITraceableMessageSerializer serializer;
     private String correlationId;
     private String technicalMessageTemplate;
-    private Reference messageTemplate;
+    private Reference messageReference;
     private Integer returnCode;
     private String timestamp;
     private String composedTechnicalMessage = null;
@@ -61,7 +61,7 @@ public class BaSyxResponseException extends RuntimeException {
     public BaSyxResponseExceptionBuilder(ITraceableMessageSerializer serializer) {
       this.serializer = serializer;
       returnCode(500);
-      messageTemplate("BaSyxResponseException");
+      messageReference("BaSyxResponseException");
       technicalMessageTemplate("Something went wrong.");
     }
 
@@ -80,14 +80,14 @@ public class BaSyxResponseException extends RuntimeException {
     }
 
     @SuppressWarnings("unchecked")
-    public T messageTemplate(Reference messageTemplate) {
-      this.messageTemplate = messageTemplate;
+    public T messageReference(Reference messageReference) {
+      this.messageReference = messageReference;
       this.composedTechnicalMessage = null;
       return (T) this;
     }
 
-    public T messageTemplate(String messageIdShort) {
-      this.messageTemplate = new DefaultReference.Builder().keys(Arrays.asList( //
+    public T messageReference(String messageIdShort) {
+      this.messageReference = new DefaultReference.Builder().keys(Arrays.asList( //
           new DefaultKey.Builder().type(KeyTypes.SUBMODEL)
               .value("https://basyx.objective-partner.com/enterprise/errormessages/v1/r0").build(), //
           new DefaultKey.Builder().type(KeyTypes.MULTI_LANGUAGE_PROPERTY).value(messageIdShort)
@@ -107,6 +107,12 @@ public class BaSyxResponseException extends RuntimeException {
     @SuppressWarnings("unchecked")
     public T param(String key, Object value) {
       params.put(key, value);
+      this.composedTechnicalMessage = null;
+      return (T) this;
+    }
+
+    public T params(Map<String, Object> newParams) {
+      params.putAll(newParams);
       this.composedTechnicalMessage = null;
       return (T) this;
     }
@@ -155,7 +161,7 @@ public class BaSyxResponseException extends RuntimeException {
     }
 
     protected String composeMessage() {
-      return serializer.serialize(new TraceableMessage(composeTechnicalMessage(), messageTemplate, params),
+      return serializer.serialize(new TraceableMessage(composeTechnicalMessage(), messageReference, params),
           correlationId);
     }
 
@@ -169,15 +175,15 @@ public class BaSyxResponseException extends RuntimeException {
     }
 
     @Override
-    public Reference getMessageTemplate() {
-      if (messageTemplate == null) {
-        messageTemplate = new DefaultReference.Builder().keys(Arrays.asList( //
+    public Reference getMessageReference() {
+      if (messageReference == null) {
+        messageReference = new DefaultReference.Builder().keys(Arrays.asList( //
             new DefaultKey.Builder().type(KeyTypes.SUBMODEL)
                 .value("https://basyx.objective-partner.com/enterprise/errormessages/v1/r0").build(), //
             new DefaultKey.Builder().type(KeyTypes.MULTI_LANGUAGE_PROPERTY).value("BaSyxResponseException").build()) //
         ).type(ReferenceTypes.MODEL_REFERENCE).build();
       }
-      return messageTemplate;
+      return messageReference;
     }
   }
 }

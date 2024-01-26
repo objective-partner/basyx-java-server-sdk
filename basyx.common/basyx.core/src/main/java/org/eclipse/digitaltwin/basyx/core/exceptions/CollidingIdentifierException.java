@@ -44,7 +44,7 @@ public class CollidingIdentifierException extends BaSyxResponseException {
 
     public Builder(ITraceableMessageSerializer serializer) {
       super(serializer);
-      messageTemplate("CollidingIdentifierException");
+      messageReference("CollidingIdentifierException");
       returnCode(409);
       technicalMessageTemplate("Object corresponding to identifer '{CollidingIdentifier}' already exists.");
     }
