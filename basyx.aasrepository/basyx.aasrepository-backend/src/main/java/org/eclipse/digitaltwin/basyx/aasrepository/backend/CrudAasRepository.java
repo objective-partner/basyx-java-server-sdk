@@ -40,7 +40,6 @@ import org.eclipse.digitaltwin.basyx.aasservice.AasServiceFactory;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
-import org.eclipse.digitaltwin.basyx.core.exceptions.IdentificationMismatchException;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationSupport;
@@ -208,7 +207,8 @@ public class CrudAasRepository implements AasRepository {
     String newAasId = newAas.getId();
 
     if (!aasId.equals(newAasId)) {
-      throw new IdentificationMismatchException();
+      throw ExceptionBuilderFactory.getInstance().identificationMismatchException().mismatchingIdentifier(newAasId)
+          .build();
     }
   }
 

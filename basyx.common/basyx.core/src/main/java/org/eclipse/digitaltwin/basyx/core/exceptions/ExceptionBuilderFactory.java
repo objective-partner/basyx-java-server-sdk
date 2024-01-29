@@ -67,4 +67,16 @@ public class ExceptionBuilderFactory {
   public InvocationFailedException.Builder invocationFailedException() {
     return new InvocationFailedException.Builder(serializer);
   }
+
+  public InvalidIdShortPathElementsException.Builder invalidIdShortPathElementsException() {
+    return new InvalidIdShortPathElementsException.Builder(serializer);
+  }
+
+  public RepositoryRegistryLinkException.Builder repositoryRegistryLinkException() {
+    return new RepositoryRegistryLinkException.Builder(serializer);
+  }
+
+  public RepositoryRegistryUnlinkException.Builder repositoryRegistryUnlinkException() {
+    return new RepositoryRegistryUnlinkException.Builder(serializer);
+  }
 }

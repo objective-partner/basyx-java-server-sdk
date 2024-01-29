@@ -46,7 +46,6 @@ import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElement;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
-import org.eclipse.digitaltwin.basyx.core.exceptions.IdentificationMismatchException;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 import org.eclipse.digitaltwin.basyx.submodelservice.SubmodelService;
@@ -228,7 +227,8 @@ public class MongoDBSubmodelRepository implements SubmodelRepository {
     String newSubmodelId = submodel.getId();
 
     if (!submodelId.equals(newSubmodelId)) {
-      throw new IdentificationMismatchException();
+      throw ExceptionBuilderFactory.getInstance().identificationMismatchException().mismatchingIdentifier(newSubmodelId)
+          .build();
     }
 
   }

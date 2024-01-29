@@ -48,7 +48,7 @@ public class IdentificationMismatchException extends BaSyxResponseException {
       messageReference("IdentificationMismatchException");
       returnCode(404);
       technicalMessageTemplate(
-          "The provided element '{MismatchingIdentifier}' has mismatched identifiers than the existing element that needs to be updated.");
+          "The provided element '{MismatchingIdentifier}' has mismatched identifier than the existing element that needs to be updated.");
     }
 
     public Builder mismatchingIdentifier(String value) {
