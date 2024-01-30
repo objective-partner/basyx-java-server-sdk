@@ -23,27 +23,35 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
+package org.eclipse.digitaltwin.basyx.delegated_operations;
 
-package org.eclipse.digitaltwin.basyx.core.exceptions;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.eclipse.digitaltwin.basyx.delegated_operations.mapper.AttributeMapper;
+import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepository;
+import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepositoryFactory;
 
-import java.util.UUID;
+/**
+ * Factory for creating {@link DelegatedOperationSubmodelRepository}
+ * 
+ * @author danish
+ */
+public class DelegatedOperationSubmodelRepositoryFactory implements SubmodelRepositoryFactory {
 
-@SuppressWarnings("serial")
-public class NotInvokableException extends BaSyxResponseException {
+	private SubmodelRepositoryFactory decorated;
+	private SubmodelRepositoryRegistryLink submodelRepositoryRegistryLink;
+	private AttributeMapper attributeMapper;
+	private final ObjectMapper objectMapper;
 
-	public NotInvokableException() {
-		super(405, getMessage("",""), UUID.randomUUID().toString());
+	public DelegatedOperationSubmodelRepositoryFactory(SubmodelRepositoryFactory decorated, SubmodelRepositoryRegistryLink submodelRepositoryRegistryLink, AttributeMapper attributeMapper, ObjectMapper objectMapper) {
+		this.decorated = decorated;
+		this.submodelRepositoryRegistryLink = submodelRepositoryRegistryLink;
+		this.attributeMapper = attributeMapper;
+		this.objectMapper = objectMapper;
 	}
 
-	public NotInvokableException(String identifier, String idShortPath) {
-		super(405, getMessage(identifier, idShortPath), UUID.randomUUID().toString());
+	@Override
+	public SubmodelRepository create() {
+		return new DelegatedOperationSubmodelRepository(decorated.create(), submodelRepositoryRegistryLink, attributeMapper, objectMapper);
 	}
 
-	public NotInvokableException(String identifier, String idShortPath, String correlationId) {
-    super(405, getMessage(identifier, idShortPath), correlationId);
-  }
-
-	private static String getMessage(String identifier, String idShortPath) {
-		return "Element " + idShortPath + " of " + identifier + " is not invokable";
-	}
 }

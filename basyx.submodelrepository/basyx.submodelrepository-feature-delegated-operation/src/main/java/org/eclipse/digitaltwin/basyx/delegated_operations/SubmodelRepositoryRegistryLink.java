@@ -23,27 +23,33 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
+package org.eclipse.digitaltwin.basyx.delegated_operations;
 
-package org.eclipse.digitaltwin.basyx.core.exceptions;
+import org.eclipse.digitaltwin.basyx.submodelregistry.client.api.SubmodelRegistryApi;
+import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepository;
 
-import java.util.UUID;
-
-@SuppressWarnings("serial")
-public class NotInvokableException extends BaSyxResponseException {
-
-	public NotInvokableException() {
-		super(405, getMessage("",""), UUID.randomUUID().toString());
+/**
+ * Represents information for linking {@link SubmodelRepository} with SubmodelRegistry
+ * 
+ * @author danish
+ */
+public class SubmodelRepositoryRegistryLink {
+	
+	private SubmodelRegistryApi registryApi;
+	private String submodelRepositoryBaseURL;
+	
+	public SubmodelRepositoryRegistryLink(SubmodelRegistryApi registryApi, String submodelRepositoryBaseURL) {
+		super();
+		this.registryApi = registryApi;
+		this.submodelRepositoryBaseURL = submodelRepositoryBaseURL;
 	}
 
-	public NotInvokableException(String identifier, String idShortPath) {
-		super(405, getMessage(identifier, idShortPath), UUID.randomUUID().toString());
+	public SubmodelRegistryApi getRegistryApi() {
+		return registryApi;
 	}
 
-	public NotInvokableException(String identifier, String idShortPath, String correlationId) {
-    super(405, getMessage(identifier, idShortPath), correlationId);
-  }
-
-	private static String getMessage(String identifier, String idShortPath) {
-		return "Element " + idShortPath + " of " + identifier + " is not invokable";
+	public String getSubmodelRepositoryBaseURL() {
+		return submodelRepositoryBaseURL;
 	}
+
 }
