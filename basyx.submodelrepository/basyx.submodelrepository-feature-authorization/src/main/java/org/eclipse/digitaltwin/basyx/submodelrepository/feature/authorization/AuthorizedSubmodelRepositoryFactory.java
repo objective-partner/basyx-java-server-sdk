@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2023 DFKI GmbH (https://www.dfki.de/en/web)
+ * Copyright (C) 2023 the Eclipse BaSyx Authors
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -22,26 +22,31 @@
  * 
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
-package org.eclipse.digitaltwin.basyx.aasregistry.service.configuration;
 
-import org.eclipse.digitaltwin.basyx.aasregistry.model.AssetKind;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.format.FormatterRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+package org.eclipse.digitaltwin.basyx.submodelrepository.feature.authorization;
 
+import org.eclipse.digitaltwin.basyx.authorization.rbac.RbacPermissionResolver;
+import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepository;
+import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepositoryFactory;
 
-@Configuration
-public class WebConfig implements WebMvcConfigurer {
+/**
+ * Factory for creating {@link AuthorizedSubmodelRepository}
+ * 
+ * @author danish
+ */
+public class AuthorizedSubmodelRepositoryFactory implements SubmodelRepositoryFactory {
+
+	private SubmodelRepositoryFactory decorated;
+	private RbacPermissionResolver<SubmodelTargetInformation> permissionResolver;
+
+	public AuthorizedSubmodelRepositoryFactory(SubmodelRepositoryFactory decorated, RbacPermissionResolver<SubmodelTargetInformation> permissionResolver) {
+		this.decorated = decorated;
+		this.permissionResolver = permissionResolver;
+	}
+
 	@Override
-	public void addFormatters(FormatterRegistry registry) {
-		registry.addConverter(new StringToEnumConverter());
+	public SubmodelRepository create() {
+		return new AuthorizedSubmodelRepository(decorated.create(), permissionResolver);
 	}
 
-	public static class StringToEnumConverter implements Converter<String, AssetKind> {
-		@Override
-		public AssetKind convert(String source) {
-			return AssetKind.fromValue(source);
-		}
-	}
 }
