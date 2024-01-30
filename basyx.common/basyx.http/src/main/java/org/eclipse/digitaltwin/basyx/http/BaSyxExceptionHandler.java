@@ -56,8 +56,9 @@ public class BaSyxExceptionHandler extends ResponseEntityExceptionHandler {
 
   @ExceptionHandler(IllegalArgumentException.class)
   public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException exception) {
-    logger.debug(exception.getMessage(), exception);
-    String resultJson = deriveResultFromException(exception, HttpStatus.BAD_REQUEST);
+    String correlationId = UUID.randomUUID().toString();
+    logger.debug("[{}] {}", correlationId, exception.getMessage(), exception);
+    String resultJson = deriveResultFromException(exception, HttpStatus.BAD_REQUEST, correlationId);
     return new ResponseEntity<>(resultJson, HttpStatus.BAD_REQUEST);
   }
 
@@ -69,10 +70,10 @@ public class BaSyxExceptionHandler extends ResponseEntityExceptionHandler {
     return new ResponseEntity<>(resultJson, httpStatus);
   }
 
-  private String deriveResultFromException(Exception exception, HttpStatus statusCode) {
+  private String deriveResultFromException(Exception exception, HttpStatus statusCode, String correlationId) {
     Message message = new Message();
     message.code(String.valueOf(statusCode.value()));
-    message.correlationId(UUID.randomUUID().toString());
+    message.correlationId(correlationId);
     message.messageType(MessageTypeEnum.EXCEPTION);
     message.setText(exception.getMessage());
     message.setTimestamp(OffsetDateTime.now().toString());

@@ -1,7 +1,9 @@
 package org.eclipse.digitaltwin.basyx.core.exceptions;
 
 import org.eclipse.digitaltwin.basyx.core.exceptions.BaSyxResponseException.BaSyxResponseExceptionBuilder;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ExceptionBuilderFactory {
 
   private static ITraceableMessageSerializer serializer;
