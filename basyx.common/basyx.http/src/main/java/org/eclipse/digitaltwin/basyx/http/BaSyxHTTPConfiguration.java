@@ -30,11 +30,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ITraceableMessageSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -46,7 +46,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * @author schnicke
  */
 @Configuration
-@ComponentScan(basePackageClasses = {ExceptionBuilderFactory.class})
 public class BaSyxHTTPConfiguration {
 
   Logger logger = LoggerFactory.getLogger(BaSyxHTTPConfiguration.class);
@@ -100,4 +99,16 @@ public class BaSyxHTTPConfiguration {
       }
     };
   }
+
+  @Bean
+  public ITraceableMessageSerializer traceableMessageSerializer(
+      Jackson2ObjectMapperBuilder jackson2ObjectMapperBuilder) {
+    return new TraceableMessageSerializer(jackson2ObjectMapperBuilder.build());
+  }
+
+  @Bean
+  public ExceptionBuilderFactory exceptionBuilderFactory(ITraceableMessageSerializer traceableMessageSerializer) {
+    return new ExceptionBuilderFactory(traceableMessageSerializer);
+  }
+
 }
