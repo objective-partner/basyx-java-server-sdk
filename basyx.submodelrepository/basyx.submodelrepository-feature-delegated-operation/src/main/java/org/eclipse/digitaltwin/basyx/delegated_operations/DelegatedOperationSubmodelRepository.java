@@ -8,10 +8,10 @@
  * distribute, sublicense, and/or sell copies of the Software, and to
  * permit persons to whom the Software is furnished to do so, subject to
  * the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -27,20 +27,44 @@ package org.eclipse.digitaltwin.basyx.delegated_operations;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.regex.Pattern;
+import org.apache.hc.client5.http.HttpResponseException;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.impl.classic.BasicHttpClientResponseHandler;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
-import org.apache.hc.core5.http.ParseException;
-import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
-import org.eclipse.digitaltwin.aas4j.v3.model.*;
+import org.eclipse.digitaltwin.aas4j.v3.model.Extension;
+import org.eclipse.digitaltwin.aas4j.v3.model.Key;
+import org.eclipse.digitaltwin.aas4j.v3.model.KeyTypes;
+import org.eclipse.digitaltwin.aas4j.v3.model.Operation;
+import org.eclipse.digitaltwin.aas4j.v3.model.OperationVariable;
+import org.eclipse.digitaltwin.aas4j.v3.model.Reference;
+import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
+import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElement;
 import org.eclipse.digitaltwin.basyx.InvokableOperation;
-import org.eclipse.digitaltwin.basyx.core.exceptions.*;
+import org.eclipse.digitaltwin.basyx.core.exceptions.BaSyxResponseException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ElementNotAFileException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
+import org.eclipse.digitaltwin.basyx.core.exceptions.FileDoesNotExistException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.InvocationFailedException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.NotInvokableException;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 import org.eclipse.digitaltwin.basyx.delegated_operations.mapper.AttributeMapper;
+import org.eclipse.digitaltwin.basyx.http.model.Message;
 import org.eclipse.digitaltwin.basyx.http.model.OperationResult;
+import org.eclipse.digitaltwin.basyx.http.model.Result;
 import org.eclipse.digitaltwin.basyx.submodelregistry.client.ApiException;
 import org.eclipse.digitaltwin.basyx.submodelregistry.client.model.Endpoint;
 import org.eclipse.digitaltwin.basyx.submodelregistry.client.model.SubmodelDescriptor;
@@ -51,232 +75,294 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.regex.Pattern;
 
 /**
  * Decorator for linking {@link SubmodelRepository} with SubmodelRegistry
  *
  * @author danish
- *
  */
 public class DelegatedOperationSubmodelRepository implements SubmodelRepository {
-	public static final String DELEGATED_OPERATION = "DelegatedOperation";
-	private static Logger logger = LoggerFactory.getLogger(DelegatedOperationSubmodelRepository.class);
 
-	private SubmodelRepository decorated;
-	private SubmodelRepositoryRegistryLink submodelRepositoryRegistryLink;
-	private AttributeMapper attributeMapper;
-	private final ObjectMapper objectMapper;
+  public static final String DELEGATED_OPERATION = "DelegatedOperation";
+  private static final Logger logger = LoggerFactory.getLogger(DelegatedOperationSubmodelRepository.class);
 
-	public DelegatedOperationSubmodelRepository(SubmodelRepository decorated, SubmodelRepositoryRegistryLink submodelRepositoryRegistryLink, AttributeMapper attributeMapper, ObjectMapper objectMapper) {
-		this.decorated = decorated;
-		this.submodelRepositoryRegistryLink = submodelRepositoryRegistryLink;
-		this.attributeMapper = attributeMapper;
-		this.objectMapper = objectMapper;
-	}
+  private final SubmodelRepository decorated;
+  private final SubmodelRepositoryRegistryLink submodelRepositoryRegistryLink;
+  private final AttributeMapper attributeMapper;
+  private final ObjectMapper objectMapper;
 
-	@Override
-	public CursorResult<List<Submodel>> getAllSubmodels(PaginationInfo paginationInfo) {
-		return decorated.getAllSubmodels(paginationInfo);
-	}
+  public DelegatedOperationSubmodelRepository(SubmodelRepository decorated,
+      SubmodelRepositoryRegistryLink submodelRepositoryRegistryLink, AttributeMapper attributeMapper,
+      ObjectMapper objectMapper) {
+    this.decorated = decorated;
+    this.submodelRepositoryRegistryLink = submodelRepositoryRegistryLink;
+    this.attributeMapper = attributeMapper;
+    this.objectMapper = objectMapper;
+  }
+
+  @Override
+  public CursorResult<List<Submodel>> getAllSubmodels(PaginationInfo paginationInfo) {
+    return decorated.getAllSubmodels(paginationInfo);
+  }
 
   @Override
   public CursorResult<List<Submodel>> getAllSubmodelsMetadata(PaginationInfo pInfo) {
     return decorated.getAllSubmodelsMetadata(pInfo);
   }
 
-	@Override
-	public Submodel getSubmodel(String submodelId) throws ElementDoesNotExistException {
-		return decorated.getSubmodel(submodelId);
-	}
+  @Override
+  public Submodel getSubmodel(String submodelId) throws ElementDoesNotExistException {
+    return decorated.getSubmodel(submodelId);
+  }
 
-	@Override
-	public void updateSubmodel(String submodelId, Submodel submodel) throws ElementDoesNotExistException {
-		decorated.updateSubmodel(submodelId, submodel);
-	}
+  @Override
+  public void updateSubmodel(String submodelId, Submodel submodel) throws ElementDoesNotExistException {
+    decorated.updateSubmodel(submodelId, submodel);
+  }
 
-	@Override
-	public void createSubmodel(Submodel submodel) throws CollidingIdentifierException {
-		decorated.createSubmodel(submodel);
-	}
+  @Override
+  public void createSubmodel(Submodel submodel) throws CollidingIdentifierException {
+    decorated.createSubmodel(submodel);
+  }
 
-	@Override
-	public void deleteSubmodel(String submodelId) throws ElementDoesNotExistException {
-		decorated.deleteSubmodel(submodelId);
-	}
+  @Override
+  public void deleteSubmodel(String submodelId) throws ElementDoesNotExistException {
+    decorated.deleteSubmodel(submodelId);
+  }
 
-	@Override
-	public CursorResult<List<SubmodelElement>> getSubmodelElements(String submodelId, PaginationInfo paginationInfo) throws ElementDoesNotExistException {
-		return decorated.getSubmodelElements(submodelId, paginationInfo);
-	}
+  @Override
+  public CursorResult<List<SubmodelElement>> getSubmodelElements(String submodelId, PaginationInfo paginationInfo)
+      throws ElementDoesNotExistException {
+    return decorated.getSubmodelElements(submodelId, paginationInfo);
+  }
 
-	@Override
-	public SubmodelElement getSubmodelElement(String submodelId, String submodelElementIdShort) throws ElementDoesNotExistException {
-		return decorated.getSubmodelElement(submodelId, submodelElementIdShort);
-	}
+  @Override
+  public SubmodelElement getSubmodelElement(String submodelId, String submodelElementIdShort)
+      throws ElementDoesNotExistException {
+    return decorated.getSubmodelElement(submodelId, submodelElementIdShort);
+  }
 
-	@Override
-	public SubmodelElementValue getSubmodelElementValue(String submodelId, String submodelElementIdShort) throws ElementDoesNotExistException {
-		return decorated.getSubmodelElementValue(submodelId, submodelElementIdShort);
-	}
+  @Override
+  public SubmodelElementValue getSubmodelElementValue(String submodelId, String submodelElementIdShort)
+      throws ElementDoesNotExistException {
+    return decorated.getSubmodelElementValue(submodelId, submodelElementIdShort);
+  }
 
-	@Override
-	public void setSubmodelElementValue(String submodelId, String idShortPath, SubmodelElementValue value) throws ElementDoesNotExistException {
-		decorated.setSubmodelElementValue(submodelId, idShortPath, value);
-	}
+  @Override
+  public void setSubmodelElementValue(String submodelId, String idShortPath, SubmodelElementValue value)
+      throws ElementDoesNotExistException {
+    decorated.setSubmodelElementValue(submodelId, idShortPath, value);
+  }
 
-	@Override
-	public void createSubmodelElement(String submodelId, SubmodelElement submodelElement) {
-		decorated.createSubmodelElement(submodelId, submodelElement);
-	}
+  @Override
+  public void createSubmodelElement(String submodelId, SubmodelElement submodelElement) {
+    decorated.createSubmodelElement(submodelId, submodelElement);
+  }
 
-	@Override
-	public void createSubmodelElement(String submodelId, String idShortPath, SubmodelElement submodelElement) throws ElementDoesNotExistException {
-		decorated.createSubmodelElement(submodelId, submodelElement);
-	}
+  @Override
+  public void createSubmodelElement(String submodelId, String idShortPath, SubmodelElement submodelElement)
+      throws ElementDoesNotExistException {
+    decorated.createSubmodelElement(submodelId, submodelElement);
+  }
 
-	@Override
-	public void deleteSubmodelElement(String submodelId, String idShortPath) throws ElementDoesNotExistException {
-		decorated.deleteSubmodelElement(submodelId, idShortPath);
-	}
+  @Override
+  public void deleteSubmodelElement(String submodelId, String idShortPath) throws ElementDoesNotExistException {
+    decorated.deleteSubmodelElement(submodelId, idShortPath);
+  }
 
-	@Override
-	public OperationVariable[] invokeOperation(String submodelId, String idShortPath, OperationVariable[] input) throws ElementDoesNotExistException, NotInvokableException {
-		SubmodelElement submodelElement = decorated.getSubmodelElement(submodelId, idShortPath);
+  @Override
+  public OperationVariable[] invokeOperation(String submodelId, String idShortPath, OperationVariable[] input)
+      throws ElementDoesNotExistException, NotInvokableException {
+    SubmodelElement submodelElement = decorated.getSubmodelElement(submodelId, idShortPath);
 
-		if (submodelElement instanceof InvokableOperation operation) {
-			return operation.invoke(input);
-		}
+    if (submodelElement instanceof InvokableOperation operation) {
+      return operation.invoke(input);
+    }
 
-		String delegatedSubmodelId = getDelegatedSubmodelId(submodelId, idShortPath, submodelElement);
+    String delegatedSubmodelId = getDelegatedSubmodelId(submodelId, idShortPath, submodelElement);
 
-		SubmodelDescriptor delegatedSubmodelDescriptor = null;
-		try {
-			delegatedSubmodelDescriptor = submodelRepositoryRegistryLink.getRegistryApi().getSubmodelDescriptorById(delegatedSubmodelId);
-		} catch (ApiException e) {
-			throw new ElementDoesNotExistException(delegatedSubmodelId);
-		}
+    SubmodelDescriptor delegatedSubmodelDescriptor;
+    try {
+      delegatedSubmodelDescriptor = submodelRepositoryRegistryLink.getRegistryApi()
+          .getSubmodelDescriptorById(delegatedSubmodelId);
+    } catch (ApiException e) {
+      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(delegatedSubmodelId)
+          .elementType(KeyTypes.SUBMODEL).build();
+    }
 
-		Endpoint endpoint = selectSubmodelEndpoint(submodelId, idShortPath, delegatedSubmodelDescriptor);
+    Endpoint endpoint = selectSubmodelEndpoint(submodelId, idShortPath, delegatedSubmodelDescriptor);
 
-		HttpPost invokeOperationRequest = composeDelegatedOperationRequest(idShortPath, input, endpoint);
+    HttpPost invokeOperationRequest = composeDelegatedOperationRequest(idShortPath, input, endpoint);
 
-		try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-			CloseableHttpResponse response = httpClient.execute(invokeOperationRequest);
+    try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+      BasicHttpClientResponseHandler responseHandler = new BasicHttpClientResponseHandler();
+      String response = httpClient.execute(invokeOperationRequest, responseHandler);
+      OperationResult operationResult = objectMapper.readValue(response, OperationResult.class);
+      return operationResult.getOutputArguments().toArray(new OperationVariable[0]);
+    } catch (HttpResponseException e) {
+      throw handleUnsuccessfulResponse(e, submodelId, idShortPath, invokeOperationRequest);
+    } catch (JsonProcessingException e) {
+      throw handleParsingException(e, submodelId, idShortPath, invokeOperationRequest);
+    } catch (IOException e) {
+      throw handleFailedRequest(e, submodelId, idShortPath, invokeOperationRequest);
+    }
+  }
 
-			if(response.getCode() != 200) {
-				String correlationId = UUID.randomUUID().toString();
-				logger.warn("[{}] Failed to call Operation '{}' in Submodel '{}' on '{}'", correlationId, idShortPath, submodelId, invokeOperationRequest.getRequestUri());
-				throw new NotInvokableException(submodelId, idShortPath, correlationId);
-			}
-			OperationResult operationResult = objectMapper.readValue(EntityUtils.toString(response.getEntity()), OperationResult.class);
-			return operationResult.getOutputArguments().toArray(new OperationVariable[0]);
-		} catch (IOException | ParseException e) {
-			throw new RuntimeException(e);
-		}
-	}
+  private BaSyxResponseException handleFailedRequest(IOException e, String submodelId, String idShortPath,
+      HttpPost request) {
+    logger.warn("Failing calling endpoint {} for Element={} in Submodel={}.", request.getRequestUri(), idShortPath,
+        submodelId, e);
 
-	String getDelegatedSubmodelId(String submodelId, String idShortPath, SubmodelElement submodelElement) throws NotInvokableException {
-		if (!(submodelElement instanceof Operation operation)) {
-			String correlationId = UUID.randomUUID().toString();
-			logger.warn("[{}] SubmodelElement '{}' in Submodel '{}' is not an Operation.", correlationId, idShortPath, submodelId);
-			throw new NotInvokableException(submodelId, idShortPath, correlationId);
-		}
-		Optional<Extension> delegatedOperationExtension = operation.getExtensions().stream().filter(e -> DELEGATED_OPERATION.equalsIgnoreCase(e.getName())).findFirst();
-		if (delegatedOperationExtension.isEmpty()) {
-			String correlationId = UUID.randomUUID().toString();
-			logger.warn("[{}] Operation '{}' in Submodel '{}' has no 'DelegatedOperation' Extension.", correlationId, idShortPath, submodelId);
-			throw new NotInvokableException(submodelId, idShortPath, correlationId);
-		}
-		List<Reference> refersTo = delegatedOperationExtension.get().getRefersTo();
-		if (refersTo == null || refersTo.isEmpty()) {
-			String correlationId = UUID.randomUUID().toString();
-			logger.warn("[{}] Operation '{}' in Submodel '{}' has no reference in 'DelegatedOperation' Extension.", correlationId, idShortPath, submodelId);
-			throw new NotInvokableException(submodelId, idShortPath, correlationId);
-		}
+    String technicalMessageTemplate = "Failed to execute API request for invoking Element '{IdShortPath}' in '{SubmodelId}'.";
+    return ExceptionBuilderFactory.getInstance().baSyxResponseException()
+        .technicalMessageTemplate(technicalMessageTemplate).param("IdShortPath", idShortPath)
+        .param("SubmodelId", submodelId).build();
+  }
 
-		Optional<Key> submodelKey = refersTo.get(0).getKeys().stream().filter(k -> k.getType() == KeyTypes.SUBMODEL).findFirst();
-		if (submodelKey.isEmpty()) {
-			String correlationId = UUID.randomUUID().toString();
-			logger.warn("[{}] Operation '{}' in Submodel '{}' doesn't reference a Submodel in 'DelegatedOperation' Extension.", correlationId, idShortPath, submodelId);
-			throw new NotInvokableException(submodelId, idShortPath, correlationId);
-		}
-		return submodelKey.get().getValue();
-	}
+  private InvocationFailedException handleUnsuccessfulResponse(HttpResponseException e, String submodelId,
+      String idShortPath, HttpPost request) {
+    try {
+      Result errorResult = objectMapper.readValue(e.getReasonPhrase(), Result.class);
+      Optional<Message> firstMessage = errorResult.getMessages().stream().findFirst();
+      if (firstMessage.isEmpty()) {
+        throw ExceptionBuilderFactory.getInstance().invocationFailedException().submodelId(submodelId)
+            .idShortPath(idShortPath).build();
+      }
+      Message message = firstMessage.get();
+      String correlationId = message.getCorrelationId();
+      logger.warn("[{}] Failed to call Operation '{}' in Submodel '{}' on '{}'", correlationId, idShortPath, submodelId,
+          request.getRequestUri());
+      logger.warn("[{}] Received error response: \n {}", correlationId, message.getText());
+      return ExceptionBuilderFactory.getInstance().invocationFailedException().correlationId(correlationId)
+          .reason(message.getText()).submodelId(submodelId).idShortPath(idShortPath).build();
+    } catch (JsonProcessingException ex) {
+      throw handleParsingException(ex, submodelId, idShortPath, request);
+    }
+  }
 
-	Endpoint selectSubmodelEndpoint(String submodelId, String idShortPath, SubmodelDescriptor delegatedSubmodelDescriptor) {
-		Pattern p = Pattern.compile("^SUBMODEL(-REPOSITORY)?-3.*");
-		Optional<Endpoint> endpoint = delegatedSubmodelDescriptor.getEndpoints().stream()
-				// Search for Submodel endpoints...
-				.filter(ep -> p.matcher(ep.getInterface()).matches())
-				// Exclude endpoints that our base url
-				.filter(ep -> !ep.getProtocolInformation().getHref().startsWith(submodelRepositoryRegistryLink.getSubmodelRepositoryBaseURL())).findFirst();
-		if (endpoint.isEmpty()) {
-			String correlationId = UUID.randomUUID().toString();
-			logger.warn("[{}] Operation '{}' in Submodel '{}' delegates to Submodel '{}', but registry holds no SUBMODEL/SUBMODEL-REPOSITORY endpoint         ", correlationId, idShortPath, submodelId, delegatedSubmodelDescriptor.getId());
-			throw new NotInvokableException(submodelId, idShortPath, correlationId);
-		}
-		return endpoint.get();
-	}
+  private static BaSyxResponseException handleParsingException(JsonProcessingException e, String submodelId,
+      String idShortPath, HttpPost request) {
+    logger.error("Failed parsing Error Response after invoking endpoint {} of Element {} in {}.",
+        request.getRequestUri(), idShortPath, submodelId, e);
+    String technicalMessageTemplate = "Something went wrong while reading error response received after invoking Element '{IdShortPath}' in '{SubmodelId}'.";
+    return ExceptionBuilderFactory.getInstance().baSyxResponseException()
+        .technicalMessageTemplate(technicalMessageTemplate).param("IdShortPath", idShortPath)
+        .param("SubmodelId", submodelId).build();
+  }
 
-	HttpPost composeDelegatedOperationRequest(String idShortPath, OperationVariable[] input, Endpoint endpoint) {
-		HttpPost invokeOperationRequest = new HttpPost(endpoint.getProtocolInformation().getHref() + "/submodel-elements/" + idShortPath +"/invoke");
-		invokeOperationRequest.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-		invokeOperationRequest.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 
-		HttpServletRequest req = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-		String authorizationHeader = req.getHeader(HttpHeaders.AUTHORIZATION);
-		if (authorizationHeader != null) {
-			invokeOperationRequest.setHeader(HttpHeaders.AUTHORIZATION, authorizationHeader);
-		}
+  String getDelegatedSubmodelId(String submodelId, String idShortPath, SubmodelElement submodelElement)
+      throws NotInvokableException {
+    if (!(submodelElement instanceof Operation operation)) {
+      String correlationId = UUID.randomUUID().toString();
+      logger.warn("[{}] SubmodelElement '{}' in Submodel '{}' is not an Operation.", correlationId, idShortPath,
+          submodelId);
+      throw ExceptionBuilderFactory.getInstance().notInvokableException().submodelId(submodelId)
+          .idShortPath(idShortPath).correlationId(correlationId).build();
+    }
+    Optional<Extension> delegatedOperationExtension = operation.getExtensions().stream()
+        .filter(e -> DELEGATED_OPERATION.equalsIgnoreCase(e.getName())).findFirst();
+    if (delegatedOperationExtension.isEmpty()) {
+      String correlationId = UUID.randomUUID().toString();
+      logger.warn("[{}] Operation '{}' in Submodel '{}' has no 'DelegatedOperation' Extension.", correlationId,
+          idShortPath, submodelId);
+      throw ExceptionBuilderFactory.getInstance().notInvokableException().submodelId(submodelId)
+          .idShortPath(idShortPath).correlationId(correlationId).build();
+    }
+    List<Reference> refersTo = delegatedOperationExtension.get().getRefersTo();
+    if (refersTo == null || refersTo.isEmpty()) {
+      String correlationId = UUID.randomUUID().toString();
+      logger.warn("[{}] Operation '{}' in Submodel '{}' has no reference in 'DelegatedOperation' Extension.",
+          correlationId, idShortPath, submodelId);
+      throw ExceptionBuilderFactory.getInstance().notInvokableException().submodelId(submodelId)
+          .idShortPath(idShortPath).correlationId(correlationId).build();
+    }
 
-		String requestPayloadJson = null;
-		try {
-			requestPayloadJson = objectMapper.writeValueAsString(Arrays.asList(input));
-		} catch (JsonProcessingException e) {
-			// Internal Server Error or Bad Request?
-			// input comes directly from the user, so it is not possible that it is malformed?...
-			throw new RuntimeException(e);
-		}
-		StringEntity stringEntity = new StringEntity(requestPayloadJson, StandardCharsets.UTF_8);
-		invokeOperationRequest.setEntity(stringEntity);
-		return invokeOperationRequest;
-	}
+    Optional<Key> submodelKey = refersTo.get(0).getKeys().stream().filter(k -> k.getType() == KeyTypes.SUBMODEL)
+        .findFirst();
+    if (submodelKey.isEmpty()) {
+      String correlationId = UUID.randomUUID().toString();
+      logger.warn(
+          "[{}] Operation '{}' in Submodel '{}' doesn't reference a Submodel in 'DelegatedOperation' Extension.",
+          correlationId, idShortPath, submodelId);
+      throw ExceptionBuilderFactory.getInstance().notInvokableException().submodelId(submodelId)
+          .idShortPath(idShortPath).correlationId(correlationId).build();
+    }
+    return submodelKey.get().getValue();
+  }
 
-	@Override
-	public SubmodelValueOnly getSubmodelByIdValueOnly(String submodelId) throws ElementDoesNotExistException {
-		return decorated.getSubmodelByIdValueOnly(submodelId);
-	}
+  Endpoint selectSubmodelEndpoint(String submodelId, String idShortPath,
+      SubmodelDescriptor delegatedSubmodelDescriptor) {
+    Pattern p = Pattern.compile("^SUBMODEL(-REPOSITORY)?-3.*");
+    Optional<Endpoint> endpoint = delegatedSubmodelDescriptor.getEndpoints().stream()
+        // Search for Submodel endpoints...
+        .filter(ep -> p.matcher(ep.getInterface()).matches())
+        // Exclude endpoints that our base url
+        .filter(ep -> !ep.getProtocolInformation().getHref()
+            .startsWith(submodelRepositoryRegistryLink.getSubmodelRepositoryBaseURL())).findFirst();
+    if (endpoint.isEmpty()) {
+      String correlationId = UUID.randomUUID().toString();
+      logger.warn(
+          "[{}] Operation '{}' in Submodel '{}' delegates to Submodel '{}', but registry holds no SUBMODEL/SUBMODEL-REPOSITORY endpoint         ",
+          correlationId, idShortPath, submodelId, delegatedSubmodelDescriptor.getId());
+      throw ExceptionBuilderFactory.getInstance().notInvokableException().submodelId(submodelId)
+          .idShortPath(idShortPath).correlationId(correlationId).build();
+    }
+    return endpoint.get();
+  }
 
-	@Override
-	public Submodel getSubmodelByIdMetadata(String submodelId) throws ElementDoesNotExistException {
-		return decorated.getSubmodelByIdMetadata(submodelId);
-	}
+  HttpPost composeDelegatedOperationRequest(String idShortPath, OperationVariable[] input, Endpoint endpoint) {
+    HttpPost invokeOperationRequest = new HttpPost(
+        endpoint.getProtocolInformation().getHref() + "/submodel-elements/" + idShortPath + "/invoke");
+    invokeOperationRequest.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+    invokeOperationRequest.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 
-	@Override
-	public File getFileByPathSubmodel(String submodelId, String idShortPath) throws ElementDoesNotExistException, ElementNotAFileException, FileDoesNotExistException {
-		return decorated.getFileByPathSubmodel(submodelId, idShortPath);
-	}
+    HttpServletRequest req = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+    String authorizationHeader = req.getHeader(HttpHeaders.AUTHORIZATION);
+    if (authorizationHeader != null) {
+      invokeOperationRequest.setHeader(HttpHeaders.AUTHORIZATION, authorizationHeader);
+    }
 
-	@Override
-	public void setFileValue(String submodelId, String idShortPath, String fileName, InputStream inputStream) throws ElementDoesNotExistException, ElementNotAFileException {
-		decorated.setFileValue(submodelId, idShortPath, fileName, inputStream);
-	}
+    String requestPayloadJson = null;
+    try {
+      requestPayloadJson = objectMapper.writeValueAsString(Arrays.asList(input));
+    } catch (JsonProcessingException e) {
+      // Internal Server Error or Bad Request?
+      // input comes directly from the user, so it is not possible that it is malformed?...
+      throw new RuntimeException(e);
+    }
+    StringEntity stringEntity = new StringEntity(requestPayloadJson, StandardCharsets.UTF_8);
+    invokeOperationRequest.setEntity(stringEntity);
+    return invokeOperationRequest;
+  }
 
-	@Override
-	public void deleteFileValue(String submodelId, String idShortPath) throws ElementDoesNotExistException, ElementNotAFileException, FileDoesNotExistException {
-		decorated.deleteFileValue(submodelId, idShortPath);
-	}
+  @Override
+  public SubmodelValueOnly getSubmodelByIdValueOnly(String submodelId) throws ElementDoesNotExistException {
+    return decorated.getSubmodelByIdValueOnly(submodelId);
+  }
+
+  @Override
+  public Submodel getSubmodelByIdMetadata(String submodelId) throws ElementDoesNotExistException {
+    return decorated.getSubmodelByIdMetadata(submodelId);
+  }
+
+  @Override
+  public File getFileByPathSubmodel(String submodelId, String idShortPath)
+      throws ElementDoesNotExistException, ElementNotAFileException, FileDoesNotExistException {
+    return decorated.getFileByPathSubmodel(submodelId, idShortPath);
+  }
+
+  @Override
+  public void setFileValue(String submodelId, String idShortPath, String fileName, InputStream inputStream)
+      throws ElementDoesNotExistException, ElementNotAFileException {
+    decorated.setFileValue(submodelId, idShortPath, fileName, inputStream);
+  }
+
+  @Override
+  public void deleteFileValue(String submodelId, String idShortPath)
+      throws ElementDoesNotExistException, ElementNotAFileException, FileDoesNotExistException {
+    decorated.deleteFileValue(submodelId, idShortPath);
+  }
 }

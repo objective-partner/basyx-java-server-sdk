@@ -28,7 +28,8 @@ package org.eclipse.digitaltwin.basyx.http;
 
 import java.util.Arrays;
 import java.util.List;
-
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ITraceableMessageSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -103,4 +104,16 @@ public class BaSyxHTTPConfiguration {
 			}
 		};
 	}
+  @Bean
+  public ITraceableMessageSerializer traceableMessageSerializer(
+      Jackson2ObjectMapperBuilder jackson2ObjectMapperBuilder) {
+    return new TraceableMessageSerializer(jackson2ObjectMapperBuilder.build());
+  }
+
+  @Bean
+  public ExceptionBuilderFactory exceptionBuilderFactory(ITraceableMessageSerializer traceableMessageSerializer) {
+    return new ExceptionBuilderFactory(traceableMessageSerializer);
+  }
+
 }
+

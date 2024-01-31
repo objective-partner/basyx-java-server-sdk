@@ -36,8 +36,7 @@ import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.AasDiscoveryServic
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.AasDiscoveryUtils;
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.model.AssetLink;
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.model.ElementCount;
-import org.eclipse.digitaltwin.basyx.core.exceptions.AssetLinkDoesNotExistException;
-import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingAssetLinkException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationSupport;
@@ -156,12 +155,12 @@ public class InMemoryAasDiscoveryService implements AasDiscoveryService {
 
 	private void throwIfAssetLinkDoesNotExist(String shellIdentifier) {
 		if (!assetLinks.containsKey(shellIdentifier))
-			throw new AssetLinkDoesNotExistException(shellIdentifier);
+			throw ExceptionBuilderFactory.getInstance().assetLinkDoesNotExistException().missingIdentifier(shellIdentifier).build();
 	}
 
 	private void throwIfAssetLinkExists(String shellIdentifier) {
 		if (assetLinks.containsKey(shellIdentifier))
-			throw new CollidingAssetLinkException(shellIdentifier);
+			throw ExceptionBuilderFactory.getInstance().collidingIdentifierException().collidingIdentifier(shellIdentifier).build();
 	}
 
 }

@@ -25,7 +25,6 @@
 
 package org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core;
 
-import static org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.AasDiscoveryUtils.deriveAssetLinksFromShell;
 import static org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.AasDiscoveryUtils.deriveShellFromIdAndSpecificAssetIds;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -42,7 +41,7 @@ import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultAssetInformation;
 import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultSpecificAssetId;
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.model.AssetLink;
 import org.eclipse.digitaltwin.basyx.core.exceptions.AssetLinkDoesNotExistException;
-import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingAssetLinkException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 import org.junit.Test;
 
@@ -119,7 +118,7 @@ public abstract class AasDiscoveryServiceSuite {
 		assertEquals(expectedAssetIds, actualAssetIds);
 	}
 
-	@Test(expected = CollidingAssetLinkException.class)
+	@Test(expected = CollidingIdentifierException.class)
 	public void createExistingAllAssetLinksById() {
 		AasDiscoveryService discoveryService = getAasDiscoveryService();
 

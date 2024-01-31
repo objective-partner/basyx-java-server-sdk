@@ -27,6 +27,7 @@ package org.eclipse.digitaltwin.basyx.submodelservice.pathparsing;
 import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElement;
 import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElementList;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 
 /**
  * Implementation of {@link PathToken} for List Index Tokens
@@ -45,13 +46,13 @@ public class ListIndexPathToken implements PathToken {
 	@Override
 	public SubmodelElement getSubmodelElement(SubmodelElement rootElement) {
 		if (!(rootElement instanceof SubmodelElementList))
-			throw new ElementDoesNotExistException(token);
+			throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(token).build();
 
 		SubmodelElementList sml = (SubmodelElementList) rootElement;
 
 		int index = getIndexFromToken(token);
 		if (index > sml.getValue().size() - 1) {
-			throw new ElementDoesNotExistException(rootElement.getIdShort() + token);
+			throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(rootElement.getIdShort() + token).build();
 		}
 		
 		return sml.getValue().get(index);
