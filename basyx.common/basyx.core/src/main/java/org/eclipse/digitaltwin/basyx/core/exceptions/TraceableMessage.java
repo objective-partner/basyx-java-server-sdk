@@ -5,11 +5,15 @@ import org.eclipse.digitaltwin.aas4j.v3.model.Reference;
 
 public class TraceableMessage {
 
-  private final String technicalMessage;
+  private String technicalMessage;
 
-  private final Reference messageReference;
+  private Reference messageReference;
 
-  private final Map<String, Object> params;
+  private Map<String, Object> params;
+
+  public TraceableMessage() {
+    // for object mapper
+  }
 
   public TraceableMessage(String technicalMessage, Reference messageReference, Map<String, Object> params) {
     this.technicalMessage = technicalMessage;
