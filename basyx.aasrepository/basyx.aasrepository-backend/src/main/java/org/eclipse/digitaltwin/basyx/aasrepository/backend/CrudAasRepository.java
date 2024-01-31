@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetInformation;
+import org.eclipse.digitaltwin.aas4j.v3.model.KeyTypes;
 import org.eclipse.digitaltwin.aas4j.v3.model.Reference;
 import org.eclipse.digitaltwin.aas4j.v3.model.Resource;
 import org.eclipse.digitaltwin.basyx.aasrepository.AasRepository;
@@ -40,8 +41,6 @@ import org.eclipse.digitaltwin.basyx.aasservice.AasServiceFactory;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
-import org.eclipse.digitaltwin.basyx.core.exceptions.IdentificationMismatchException;
-import org.eclipse.digitaltwin.basyx.core.exceptions.MissingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationSupport;
@@ -96,12 +95,13 @@ public class CrudAasRepository implements AasRepository {
   @Override
   public AssetAdministrationShell getAas(String aasId) throws ElementDoesNotExistException {
     return aasBackend.findById(aasId).orElseThrow(() -> {
-      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(aasId).build();
+      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(aasId).elementType(
+          KeyTypes.ASSET_ADMINISTRATION_SHELL).build();
     });
   }
 
-	@Override
-	public void createAas(AssetAdministrationShell aas) throws CollidingIdentifierException {
+  @Override
+  public void createAas(AssetAdministrationShell aas) throws CollidingIdentifierException {
     throwIfAasIdEmptyOrNull(aas.getId());
 
     throwIfAasExists(aas);
@@ -201,7 +201,8 @@ public class CrudAasRepository implements AasRepository {
 
   private AasService getAasServiceOrThrow(String aasId) {
     AssetAdministrationShell aas = aasBackend.findById(aasId).orElseThrow(() -> {
-      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(aasId).build();
+      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(aasId).elementType(
+          KeyTypes.ASSET_ADMINISTRATION_SHELL).build();
     });
 
     return aasServiceFactory.create(aas);
@@ -223,13 +224,15 @@ public class CrudAasRepository implements AasRepository {
   }
 
   private void throwIfAasIdEmptyOrNull(String aasId) {
-    if(aasId == null || aasId.isBlank())
-      throw  MissingIdentifierException(aasId);
+    if (aasId == null || aasId.isBlank()) {
+      throw ExceptionBuilderFactory.getInstance().missingIdentifierException().elementId(aasId).build();
+    }
   }
 
   private void throwIfAasDoesNotExist(String aasId) {
     if (!aasBackend.existsById(aasId)) {
-      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(aasId).build();
+      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(aasId).elementType(
+          KeyTypes.ASSET_ADMINISTRATION_SHELL).build();
     }
   }
 

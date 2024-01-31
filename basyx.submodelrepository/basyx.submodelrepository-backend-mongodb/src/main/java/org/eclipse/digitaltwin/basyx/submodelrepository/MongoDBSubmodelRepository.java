@@ -45,10 +45,8 @@ import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
 import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElement;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
-import org.eclipse.digitaltwin.basyx.core.exceptions.FeatureNotSupportedException;
-import org.eclipse.digitaltwin.basyx.core.exceptions.ElementNotAFileException;
-import org.eclipse.digitaltwin.basyx.core.exceptions.FileDoesNotExistException;
-import org.eclipse.digitaltwin.basyx.core.exceptions.IdentificationMismatchException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
+import org.eclipse.digitaltwin.basyx.core.exceptions.MissingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 import org.eclipse.digitaltwin.basyx.submodelservice.SubmodelService;
@@ -63,9 +61,6 @@ import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
-
-import com.mongodb.client.gridfs.model.GridFSFile;
-import com.mongodb.client.result.DeleteResult;
 
 /**
  * MongoDB implementation of the SubmodelRepository
@@ -127,21 +122,21 @@ public class MongoDBSubmodelRepository implements SubmodelRepository {
     configureIndexForSubmodelId(mongoTemplate);
   }
 
-	/**
-	 * Creates the MongoDBSubmodelRepository utilizing the passed
-	 * SubmodelServiceFactory for creating new SubmodelServices and uses a
-	 * collectionName and a mongoTemplate for operating MongoDB. Additionally
-	 * initializes the MongoDB collection with a collection of submodels.
-	 * 
-	 * @param submodelServiceFactory
-	 * @param submodels
-	 */
-	public MongoDBSubmodelRepository(MongoTemplate mongoTemplate, String collectionName, SubmodelServiceFactory submodelServiceFactory, Collection<Submodel> submodels) {
-		this(mongoTemplate, collectionName, submodelServiceFactory);
+  /**
+   * Creates the MongoDBSubmodelRepository utilizing the passed SubmodelServiceFactory for creating new SubmodelServices
+   * and uses a collectionName and a mongoTemplate for operating MongoDB. Additionally initializes the MongoDB
+   * collection with a collection of submodels.
+   *
+   * @param submodelServiceFactory
+   * @param submodels
+   */
+  public MongoDBSubmodelRepository(MongoTemplate mongoTemplate, String collectionName,
+      SubmodelServiceFactory submodelServiceFactory, Collection<Submodel> submodels) {
+    this(mongoTemplate, collectionName, submodelServiceFactory);
 
-		throwIfMissingId(submodels);
+    throwIfMissingId(submodels);
 
-		initializeRemoteCollection(submodels);
+    initializeRemoteCollection(submodels);
 
     configureDefaultGridFsTemplate(this.mongoTemplate);
   }
@@ -242,14 +237,14 @@ public class MongoDBSubmodelRepository implements SubmodelRepository {
 
   }
 
-	@Override
-	public void createSubmodel(Submodel submodel) throws CollidingIdentifierException, MissingIdentifierException {
-		throwIfSubmodelIdEmptyOrNull(submodel.getId());
+  @Override
+  public void createSubmodel(Submodel submodel) throws CollidingIdentifierException, MissingIdentifierException {
+    throwIfSubmodelIdEmptyOrNull(submodel.getId());
 
-		throwIfCollidesWithRemoteId(submodel);
+    throwIfCollidesWithRemoteId(submodel);
 
-		mongoTemplate.save(submodel, collectionName);
-	}
+    mongoTemplate.save(submodel, collectionName);
+  }
 
   private void throwIfCollidesWithRemoteId(Submodel submodel) {
     if (mongoTemplate.exists(new Query().addCriteria(Criteria.where(ID_JSON_PATH).is(submodel.getId())), Submodel.class,
@@ -437,18 +432,19 @@ public class MongoDBSubmodelRepository implements SubmodelRepository {
     setSubmodelElementValue(submodelId, idShortPath, fileValue);
   }
 
-	private void throwIfMissingId(Collection<Submodel> submodels) {
-	    submodels.stream().map(Submodel::getId).forEach(this::throwIfSubmodelIdEmptyOrNull);
+  private void throwIfMissingId(Collection<Submodel> submodels) {
+    submodels.stream().map(Submodel::getId).forEach(this::throwIfSubmodelIdEmptyOrNull);
+  }
+
+  private void throwIfSubmodelIdEmptyOrNull(String id) {
+    if (id == null || id.isBlank()) {
+      throw ExceptionBuilderFactory.getInstance().missingIdentifierException().elementId(id).build();
     }
+  }
 
-	private void throwIfSubmodelIdEmptyOrNull(String id) {
-		if (id == null || id.isBlank())
-			throw new MissingIdentifierException(id);
-	}
-
-	private void configureDefaultGridFsTemplate(MongoTemplate mongoTemplate) {
-		this.gridFsTemplate = new GridFsTemplate(mongoTemplate.getMongoDatabaseFactory(), mongoTemplate.getConverter());
-	}
+  private void configureDefaultGridFsTemplate(MongoTemplate mongoTemplate) {
+    this.gridFsTemplate = new GridFsTemplate(mongoTemplate.getMongoDatabaseFactory(), mongoTemplate.getConverter());
+  }
 
   private String appendFsIdToFileValue(File fileSmElement, ObjectId id) {
     return id.toString() + GRIDFS_ID_DELIMITER + fileSmElement.getValue();

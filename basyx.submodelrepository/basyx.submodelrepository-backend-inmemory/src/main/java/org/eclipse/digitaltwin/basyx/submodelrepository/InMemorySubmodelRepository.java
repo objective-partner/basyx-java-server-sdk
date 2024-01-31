@@ -41,13 +41,10 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
-import org.apache.tika.utils.StringUtils;
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.DeserializationException;
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.SerializationException;
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.json.JsonDeserializer;
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.json.JsonSerializer;
-import org.eclipse.digitaltwin.aas4j.v3.model.OperationVariable;
-import org.apache.commons.io.IOUtils;
 import org.eclipse.digitaltwin.aas4j.v3.model.File;
 import org.eclipse.digitaltwin.aas4j.v3.model.OperationVariable;
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
@@ -443,13 +440,14 @@ public class InMemorySubmodelRepository implements SubmodelRepository {
     }
   }
 
-    private void throwIfMissingId(Collection<Submodel> submodels) {
-	    submodels.stream().map(Submodel::getId).forEach(this::throwIfSubmodelIdEmptyOrNull);
+  private void throwIfMissingId(Collection<Submodel> submodels) {
+    submodels.stream().map(Submodel::getId).forEach(this::throwIfSubmodelIdEmptyOrNull);
+  }
+
+  private void throwIfSubmodelIdEmptyOrNull(String id) {
+
+    if (id == null || id.isBlank()) {
+      throw ExceptionBuilderFactory.getInstance().missingIdentifierException().elementId(id).build();
     }
-
-    private void throwIfSubmodelIdEmptyOrNull(String id) {
-
-		if (id == null || id.isBlank())
-			throw new MissingIdentifierException(id);
-	}
+  }
 }

@@ -29,71 +29,76 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.digitaltwin.basyx.authorization.CommonAuthorizationProperties;
 import org.eclipse.digitaltwin.basyx.authorization.SubjectInformation;
 import org.eclipse.digitaltwin.basyx.authorization.SubjectInformationProvider;
-import org.eclipse.digitaltwin.basyx.core.exceptions.NullSubjectException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 /**
  * Implementation of the {@link RoleProvider} for Keycloak based identity providers
- * 
+ *
  * @author danish
  */
 @Service
-@ConditionalOnExpression(value = "${" + CommonAuthorizationProperties.ENABLED_PROPERTY_KEY + ":false} and ('${" + CommonAuthorizationProperties.JWT_BEARER_TOKEN_PROVIDER_PROPERTY_KEY + "}'.equals('keycloak') or '${" + CommonAuthorizationProperties.JWT_BEARER_TOKEN_PROVIDER_PROPERTY_KEY + "}'.isEmpty())")
+@ConditionalOnExpression(value = "${" + CommonAuthorizationProperties.ENABLED_PROPERTY_KEY + ":false} and ('${"
+    + CommonAuthorizationProperties.JWT_BEARER_TOKEN_PROVIDER_PROPERTY_KEY + "}'.equals('keycloak') or '${"
+    + CommonAuthorizationProperties.JWT_BEARER_TOKEN_PROVIDER_PROPERTY_KEY + "}'.isEmpty())")
 public class KeycloakRoleProvider implements RoleProvider {
 
-	private static final String CLAIM_REALM_ACCESS = "realm_access";
+  private static final String CLAIM_REALM_ACCESS = "realm_access";
 
-	private static final String CLAIM_ROLES = "roles";
+  private static final String CLAIM_ROLES = "roles";
 
-	private SubjectInformationProvider<Object> subjectInformationProvider;
+  private final SubjectInformationProvider<Object> subjectInformationProvider;
 
-	public KeycloakRoleProvider(SubjectInformationProvider<Object> subjectInformationProvider) {
-		this.subjectInformationProvider = subjectInformationProvider;
-	}
+  public KeycloakRoleProvider(SubjectInformationProvider<Object> subjectInformationProvider) {
+    this.subjectInformationProvider = subjectInformationProvider;
+  }
 
-	@Override
-	public List<String> getRoles() {
-		SubjectInformation<Object> subjectInfo = getSubjectInformation();
+  @Override
+  public List<String> getRoles() {
+    SubjectInformation<Object> subjectInfo = getSubjectInformation();
 
-		Jwt jwt = (Jwt) subjectInfo.get();
+    Jwt jwt = (Jwt) subjectInfo.get();
 
-		validateJwt(jwt);
-		
-		Map<String, Collection<String>> realmAccess = jwt.getClaim(CLAIM_REALM_ACCESS);
+    validateJwt(jwt);
 
-		return getRolesFromRealmAccess(realmAccess);
-	}
+    Map<String, Collection<String>> realmAccess = jwt.getClaim(CLAIM_REALM_ACCESS);
 
-	private List<String> getRolesFromRealmAccess(Map<String, Collection<String>> realmAccess) {
-		if (realmAccess == null || realmAccess.isEmpty())
-			return new ArrayList<>();
-		
-		Collection<String> roles = realmAccess.get(CLAIM_ROLES);
-			
-		if (roles == null || roles.isEmpty())
-			return new ArrayList<>(); 
+    return getRolesFromRealmAccess(realmAccess);
+  }
 
-		return new ArrayList<>(roles);
-	}
+  private List<String> getRolesFromRealmAccess(Map<String, Collection<String>> realmAccess) {
+    if (realmAccess == null || realmAccess.isEmpty()) {
+      return new ArrayList<>();
+    }
 
-	private void validateJwt(Jwt jwt) {
-		if (jwt == null)
-			throw new NullSubjectException("Jwt subject information is null.");
-	}
+    Collection<String> roles = realmAccess.get(CLAIM_ROLES);
 
-	private SubjectInformation<Object> getSubjectInformation() {
-		SubjectInformation<Object> subjectInfo = subjectInformationProvider.get();
+    if (roles == null || roles.isEmpty()) {
+      return new ArrayList<>();
+    }
 
-		if (subjectInfo == null)
-			throw new NullSubjectException("Subject information is null.");
-		
-		return subjectInfo;
-	}
+    return new ArrayList<>(roles);
+  }
+
+  private void validateJwt(Jwt jwt) {
+    if (jwt == null) {
+      throw ExceptionBuilderFactory.getInstance().nullSubjectException().subject("Jwt subject").build();
+    }
+  }
+
+  private SubjectInformation<Object> getSubjectInformation() {
+    SubjectInformation<Object> subjectInfo = subjectInformationProvider.get();
+
+    if (subjectInfo == null) {
+      throw ExceptionBuilderFactory.getInstance().nullSubjectException().subject("Subject").build();
+    }
+
+    return subjectInfo;
+  }
 
 }

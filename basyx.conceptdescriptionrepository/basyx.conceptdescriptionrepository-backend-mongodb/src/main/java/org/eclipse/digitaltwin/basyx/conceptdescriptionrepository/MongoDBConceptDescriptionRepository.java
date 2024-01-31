@@ -33,13 +33,13 @@ import org.eclipse.digitaltwin.aas4j.v3.model.EmbeddedDataSpecification;
 import org.eclipse.digitaltwin.aas4j.v3.model.Reference;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
-import org.eclipse.digitaltwin.basyx.core.exceptions.IdentificationMismatchException;
-import org.eclipse.digitaltwin.basyx.core.exceptions.MissingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationSupport;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
@@ -166,15 +166,18 @@ public class MongoDBConceptDescriptionRepository implements ConceptDescriptionRe
   }
 
   private void throwIfConceptDescriptionIdEmptyOrNull(String id) {
-    if (id == null || id.isBlank())
-      throw new MissingIdentifierException(id);
+    if (id == null || id.isBlank()) {
+      throw ExceptionBuilderFactory.getInstance().missingIdentifierException().elementId(id).build();
+    }
   }
 
   private void throwIfCollidesWithExistingId(ConceptDescription conceptDescription) {
     Query query = new Query().addCriteria(Criteria.where(IDJSONPATH).is(conceptDescription.getId()));
 
-    if (mongoTemplate.exists(query, ConceptDescription.class, collectionName))
-      throw new CollidingIdentifierException(conceptDescription.getId());
+    if (mongoTemplate.exists(query, ConceptDescription.class, collectionName)) {
+      throw ExceptionBuilderFactory.getInstance().collidingIdentifierException()
+          .collidingIdentifier(conceptDescription.getId()).build();
+    }
   }
 
   private void configureIndexForConceptDescriptionId(MongoTemplate mongoTemplate) {

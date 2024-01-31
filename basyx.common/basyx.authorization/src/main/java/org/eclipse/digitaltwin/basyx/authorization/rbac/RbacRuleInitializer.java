@@ -30,47 +30,47 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-
-import org.eclipse.digitaltwin.basyx.core.exceptions.MissingAuthorizationConfigurationException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.springframework.core.io.ResourceLoader;
 
 /**
  * Initializes {@link RbacRule} from the resource
- * 
+ *
  * @author danish
  */
 public class RbacRuleInitializer {
 
-	private String rbacJsonFilePath;
+  private final String rbacJsonFilePath;
 
-	private final ObjectMapper objectMapper;
+  private final ObjectMapper objectMapper;
 
-	private ResourceLoader resourceLoader;
+  private final ResourceLoader resourceLoader;
 
-	public RbacRuleInitializer(ObjectMapper objectMapper, String filePath, ResourceLoader resourceLoader) {
-		this.objectMapper = objectMapper;
-		this.rbacJsonFilePath = filePath;
-		this.resourceLoader = resourceLoader;
-	}
+  public RbacRuleInitializer(ObjectMapper objectMapper, String filePath, ResourceLoader resourceLoader) {
+    this.objectMapper = objectMapper;
+    this.rbacJsonFilePath = filePath;
+    this.resourceLoader = resourceLoader;
+  }
 
-	/**
-	 * Provides the list of {@link RbacRule} from the resource
-	 * 
-	 * @return list of rbac rules
-	 * @throws IOException
-	 */
-	public List<RbacRule> deserialize() throws IOException {
-		return objectMapper.readValue(getFile(rbacJsonFilePath), new TypeReference<List<RbacRule>>() {
-		});
-	}
+  /**
+   * Provides the list of {@link RbacRule} from the resource
+   *
+   * @return list of rbac rules
+   * @throws IOException
+   */
+  public List<RbacRule> deserialize() throws IOException {
+    return objectMapper.readValue(getFile(rbacJsonFilePath), new TypeReference<List<RbacRule>>() {
+    });
+  }
 
-	private File getFile(String filePath) {
-		
-		try {
-			return resourceLoader.getResource(filePath).getFile();
-		} catch(IOException e) {
-			throw new MissingAuthorizationConfigurationException(filePath);
-		}
-		
-	}
+  private File getFile(String filePath) {
+
+    try {
+      return resourceLoader.getResource(filePath).getFile();
+    } catch (IOException e) {
+      throw ExceptionBuilderFactory.getInstance().missingAuthorizationConfigurationException().filePath(filePath)
+          .build();
+    }
+
+  }
 }

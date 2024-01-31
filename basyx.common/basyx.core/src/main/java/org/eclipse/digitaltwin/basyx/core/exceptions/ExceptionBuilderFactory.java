@@ -79,4 +79,20 @@ public class ExceptionBuilderFactory {
   public RepositoryRegistryUnlinkException.Builder repositoryRegistryUnlinkException() {
     return new RepositoryRegistryUnlinkException.Builder(serializer);
   }
+
+  public MissingIdentifierException.Builder missingIdentifierException() {
+    return new MissingIdentifierException.Builder(serializer);
+  }
+
+  public MissingAuthorizationConfigurationException.Builder missingAuthorizationConfigurationException() {
+    return new MissingAuthorizationConfigurationException.Builder(serializer);
+  }
+
+  public InsufficientPermissionException.Builder insufficientPermissionException() {
+    return new InsufficientPermissionException.Builder(serializer);
+  }
+
+  public NullSubjectException.Builder nullSubjectException() {
+    return new NullSubjectException.Builder(serializer);
+  }
 }
