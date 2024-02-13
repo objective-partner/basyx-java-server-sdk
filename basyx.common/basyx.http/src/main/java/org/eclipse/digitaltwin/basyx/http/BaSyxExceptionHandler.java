@@ -28,9 +28,9 @@ package org.eclipse.digitaltwin.basyx.http;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.time.OffsetDateTime;
 import java.util.UUID;
 import org.eclipse.digitaltwin.basyx.core.exceptions.BaSyxResponseException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.http.model.Message;
 import org.eclipse.digitaltwin.basyx.http.model.Message.MessageTypeEnum;
 import org.eclipse.digitaltwin.basyx.http.model.Result;
@@ -71,17 +71,11 @@ public class BaSyxExceptionHandler extends ResponseEntityExceptionHandler {
   }
 
   private String deriveResultFromException(Exception exception, HttpStatus statusCode, String correlationId) {
-    Message message = new Message();
-    message.code(String.valueOf(statusCode.value()));
-    message.correlationId(correlationId);
-    message.messageType(MessageTypeEnum.EXCEPTION);
-    message.setText(exception.getMessage());
-    message.setTimestamp(OffsetDateTime.now().toString());
+    BaSyxResponseException responseException = ExceptionBuilderFactory.getInstance().baSyxResponseException()
+        .technicalMessageTemplate(exception.getMessage()).returnCode(statusCode.value()).correlationId(correlationId)
+        .build();
 
-    Result result = new Result();
-    result.addMessagesItem(message);
-    return tryMarshalResult(exception, result);
-
+    return deriveResultFromException(responseException);
   }
 
   private String deriveResultFromException(BaSyxResponseException exception) {
