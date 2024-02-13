@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (C) 2023 the Eclipse BaSyx Authors
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
  * "Software"), to deal in the Software without restriction, including
@@ -8,10 +8,10 @@
  * distribute, sublicense, and/or sell copies of the Software, and to
  * permit persons to whom the Software is furnished to do so, subject to
  * the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -19,37 +19,44 @@
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- * 
+ *
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
 package org.eclipse.digitaltwin.basyx.core.exceptions;
 
-import java.util.UUID;
+import org.springframework.stereotype.Component;
 
 /**
  * Indicates that the provided file could not be handled
- *  
- * @author zhangzai, Al-Agtash
  *
+ * @author zhangzai, Al-Agtash
  */
 @SuppressWarnings("serial")
 public class FileHandlingException extends BaSyxResponseException {
 
-	public FileHandlingException() {
-		super(500, "File could not be handled", UUID.randomUUID().toString());
-	}
+  private FileHandlingException(int httpStatusCode, String reason, String correlationId, String timestamp) {
+    super(httpStatusCode, reason, correlationId, timestamp);
+  }
 
-	public FileHandlingException(String fileName) {
-		super(500, getMessage(fileName), UUID.randomUUID().toString());
-	}
+  @Component
+  public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
 
-  public FileHandlingException(String fileName, String correlationId) {
-		super(500, getMessage(fileName), correlationId);
-	}
+    public Builder(ITraceableMessageSerializer serializer) {
+      super(serializer);
+      messageReference("FileHandlingException");
+      returnCode(500);
+      technicalMessageTemplate("Exception occurred while handling the file '{Filename}'.");
+    }
 
-	private static String getMessage(String fileName) {
-		return "Exception occurred while handling the file: " + fileName;
-	}
-	
+    public Builder filename(String value) {
+      param("Filename", value);
+      return this;
+    }
+
+    @Override
+    public FileHandlingException build() {
+      return new FileHandlingException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
+    }
+  }
 }

@@ -25,14 +25,15 @@
 
 package org.eclipse.digitaltwin.basyx.aasdiscoveryservice.http;
 
+import static org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.AasDiscoveryUtils.deriveAssetLinksFromShell;
+
 import java.util.List;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.AasDiscoveryService;
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.AasDiscoveryServiceSuite;
-import static org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.AasDiscoveryUtils.deriveAssetLinksFromShell;
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.model.AssetLink;
-import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingAssetLinkException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.springframework.boot.SpringApplication;
@@ -68,7 +69,7 @@ public class TestAasDiscoveryServiceHTTP extends AasDiscoveryServiceHTTPSuite {
 		List<AssetLink> linksFromShell = deriveAssetLinksFromShell(shell);
 		try {
 			aasDiscoveryService.createAllAssetLinksById(shell.getId(), shell.getAssetInformation().getSpecificAssetIds());
-		} catch (CollidingAssetLinkException e) {
+		} catch (CollidingIdentifierException e) {
 			aasDiscoveryService.deleteAllAssetLinksById(shell.getId());
 			aasDiscoveryService.createAllAssetLinksById(shell.getId(), shell.getAssetInformation().getSpecificAssetIds());
 		}

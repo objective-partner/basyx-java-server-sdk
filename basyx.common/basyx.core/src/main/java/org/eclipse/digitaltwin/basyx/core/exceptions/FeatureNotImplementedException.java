@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (C) 2023 the Eclipse BaSyx Authors
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
  * "Software"), to deal in the Software without restriction, including
@@ -8,10 +8,10 @@
  * distribute, sublicense, and/or sell copies of the Software, and to
  * permit persons to whom the Software is furnished to do so, subject to
  * the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -19,36 +19,44 @@
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- * 
+ *
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
 package org.eclipse.digitaltwin.basyx.core.exceptions;
 
-import java.util.UUID;
+import org.springframework.stereotype.Component;
 
 /**
  * This exception is used for features where certain functionalities are not implemented yet.
- *  
- * @author zhangzai, Al-Agtash
  *
+ * @author zhangzai, Al-Agtash
  */
 @SuppressWarnings("serial")
 public class FeatureNotImplementedException extends BaSyxResponseException {
-	
-  public FeatureNotImplementedException(){
-		super(501, getMessage(""), UUID.randomUUID().toString());
+
+  private FeatureNotImplementedException(int httpStatusCode, String reason, String correlationId, String timestamp) {
+    super(httpStatusCode, reason, correlationId, timestamp);
   }
 
-	public FeatureNotImplementedException(String featureName) {
-		super(501, getMessage(featureName), UUID.randomUUID().toString());
-	}
+  @Component
+  public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
 
-	public FeatureNotImplementedException(String featureName, String correlationId) {
-		super(501, getMessage(featureName), correlationId);
-	}
+    public Builder(ITraceableMessageSerializer serializer) {
+      super(serializer);
+      messageReference("FeatureNotImplementedException");
+      returnCode(501);
+      technicalMessageTemplate("Feature '{FeatureName}' is not implemented yet.");
+    }
 
-	private static String getMessage(String featureName) {
-		return "Feature " + featureName + " is not implemented yet";
-	}
+    public Builder featureName(String value) {
+      param("FeatureName", value);
+      return this;
+    }
+
+    @Override
+    public FeatureNotImplementedException build() {
+      return new FeatureNotImplementedException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
+    }
+  }
 }

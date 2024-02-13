@@ -33,8 +33,7 @@ import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.AasDiscoveryServic
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.AasDiscoveryUtils;
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.model.AssetLink;
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.model.ElementCount;
-import org.eclipse.digitaltwin.basyx.core.exceptions.AssetLinkDoesNotExistException;
-import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingAssetLinkException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationSupport;
@@ -90,7 +89,7 @@ public class MongoDBAasDiscoveryService implements AasDiscoveryService {
 		AasDiscoveryDocument document = mongoTemplate.findOne(getSingleObjectQuery(shellIdentifier), AasDiscoveryDocument.class, collectionName);
 
 		if (document == null)
-			throw new AssetLinkDoesNotExistException(shellIdentifier);
+			throw ExceptionBuilderFactory.getInstance().assetLinkDoesNotExistException().missingIdentifier(shellIdentifier).build();
 
 		return document.getSpecificAssetIds();
 	}
@@ -100,7 +99,7 @@ public class MongoDBAasDiscoveryService implements AasDiscoveryService {
 		Query query = getSingleObjectQuery(shellIdentifier);
 
 		if (mongoTemplate.exists(query, AasDiscoveryDocument.class, collectionName))
-			throw new CollidingAssetLinkException(shellIdentifier);
+			throw ExceptionBuilderFactory.getInstance().collidingIdentifierException().collidingIdentifier(shellIdentifier).build();
 
 		Set<AssetLink> assetLinks = new HashSet<>(AasDiscoveryUtils.deriveAssetLinksFromSpecificAssetIds(assetIds));
 
@@ -151,7 +150,7 @@ public class MongoDBAasDiscoveryService implements AasDiscoveryService {
 		DeleteResult result = mongoTemplate.remove(query, AssetLink.class, collectionName);
 
 		if (result.getDeletedCount() == 0)
-			throw new AssetLinkDoesNotExistException(shellIdentifier);
+			throw ExceptionBuilderFactory.getInstance().assetLinkDoesNotExistException().missingIdentifier(shellIdentifier).build();
 	}
 
 	@Override
