@@ -7,4 +7,6 @@ public interface ITraceableExceptionBuilder {
   String getTechnicalMessageTemplate();
 
   Reference getMessageReference();
+
+  String getNamespace();
 }
