@@ -8,10 +8,10 @@
  * distribute, sublicense, and/or sell copies of the Software, and to
  * permit persons to whom the Software is furnished to do so, subject to
  * the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -27,16 +27,14 @@ package org.eclipse.digitaltwin.basyx.submodelrepository.feature.registry.integr
 import java.io.File;
 import java.io.InputStream;
 import java.util.List;
-
 import org.eclipse.digitaltwin.aas4j.v3.model.OperationVariable;
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
 import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElement;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementNotAFileException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.exceptions.FileDoesNotExistException;
-import org.eclipse.digitaltwin.basyx.core.exceptions.RepositoryRegistryLinkException;
-import org.eclipse.digitaltwin.basyx.core.exceptions.RepositoryRegistryUnlinkException;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 import org.eclipse.digitaltwin.basyx.submodelregistry.client.ApiException;
@@ -53,164 +51,175 @@ import org.slf4j.LoggerFactory;
  * Decorator for linking {@link SubmodelRepository} with SubmodelRegistry
  *
  * @author danish
- *
  */
 public class RegistryIntegrationSubmodelRepository implements SubmodelRepository {
-	private static Logger logger = LoggerFactory.getLogger(RegistryIntegrationSubmodelRepository.class);
 
-	private SubmodelRepository decorated;
-	private SubmodelRepositoryRegistryLink submodelRepositoryRegistryLink;
-	private AttributeMapper attributeMapper;
+  private static final Logger logger = LoggerFactory.getLogger(RegistryIntegrationSubmodelRepository.class);
 
-	public RegistryIntegrationSubmodelRepository(SubmodelRepository decorated, SubmodelRepositoryRegistryLink submodelRepositoryRegistryLink, AttributeMapper attributeMapper) {
-		this.decorated = decorated;
-		this.submodelRepositoryRegistryLink = submodelRepositoryRegistryLink;
-		this.attributeMapper = attributeMapper;
-	}
+  private final SubmodelRepository decorated;
+  private final SubmodelRepositoryRegistryLink submodelRepositoryRegistryLink;
+  private final AttributeMapper attributeMapper;
 
-	@Override
-	public CursorResult<List<Submodel>> getAllSubmodels(PaginationInfo paginationInfo) {
-		return decorated.getAllSubmodels(paginationInfo);
-	}
+  public RegistryIntegrationSubmodelRepository(SubmodelRepository decorated,
+      SubmodelRepositoryRegistryLink submodelRepositoryRegistryLink, AttributeMapper attributeMapper) {
+    this.decorated = decorated;
+    this.submodelRepositoryRegistryLink = submodelRepositoryRegistryLink;
+    this.attributeMapper = attributeMapper;
+  }
+
+  @Override
+  public CursorResult<List<Submodel>> getAllSubmodels(PaginationInfo paginationInfo) {
+    return decorated.getAllSubmodels(paginationInfo);
+  }
 
   @Override
   public CursorResult<List<Submodel>> getAllSubmodelsMetadata(PaginationInfo pInfo) {
     return decorated.getAllSubmodelsMetadata(pInfo);
   }
 
-	@Override
-	public Submodel getSubmodel(String submodelId) throws ElementDoesNotExistException {
-		return decorated.getSubmodel(submodelId);
-	}
+  @Override
+  public Submodel getSubmodel(String submodelId) throws ElementDoesNotExistException {
+    return decorated.getSubmodel(submodelId);
+  }
 
-	@Override
-	public void updateSubmodel(String submodelId, Submodel submodel) throws ElementDoesNotExistException {
-		decorated.updateSubmodel(submodelId, submodel);
-	}
+  @Override
+  public void updateSubmodel(String submodelId, Submodel submodel) throws ElementDoesNotExistException {
+    decorated.updateSubmodel(submodelId, submodel);
+  }
 
-	@Override
-	public void createSubmodel(Submodel submodel) throws CollidingIdentifierException {
-		decorated.createSubmodel(submodel);
+  @Override
+  public void createSubmodel(Submodel submodel) throws CollidingIdentifierException {
+    decorated.createSubmodel(submodel);
 
-		integrateSubmodelWithRegistry(submodel, submodelRepositoryRegistryLink.getSubmodelRepositoryBaseURL());
-	}
+    integrateSubmodelWithRegistry(submodel, submodelRepositoryRegistryLink.getSubmodelRepositoryBaseURL());
+  }
 
-	@Override
-	public void deleteSubmodel(String submodelId) throws ElementDoesNotExistException {
-		deleteFromRegistry(submodelId);
-		
-		decorated.deleteSubmodel(submodelId);
-	}
+  @Override
+  public void deleteSubmodel(String submodelId) throws ElementDoesNotExistException {
+    deleteFromRegistry(submodelId);
 
-	@Override
-	public CursorResult<List<SubmodelElement>> getSubmodelElements(String submodelId, PaginationInfo paginationInfo) throws ElementDoesNotExistException {
-		return decorated.getSubmodelElements(submodelId, paginationInfo);
-	}
+    decorated.deleteSubmodel(submodelId);
+  }
 
-	@Override
-	public SubmodelElement getSubmodelElement(String submodelId, String submodelElementIdShort) throws ElementDoesNotExistException {
-		return decorated.getSubmodelElement(submodelId, submodelElementIdShort);
-	}
+  @Override
+  public CursorResult<List<SubmodelElement>> getSubmodelElements(String submodelId, PaginationInfo paginationInfo)
+      throws ElementDoesNotExistException {
+    return decorated.getSubmodelElements(submodelId, paginationInfo);
+  }
 
-	@Override
-	public SubmodelElementValue getSubmodelElementValue(String submodelId, String submodelElementIdShort) throws ElementDoesNotExistException {
-		return decorated.getSubmodelElementValue(submodelId, submodelElementIdShort);
-	}
+  @Override
+  public SubmodelElement getSubmodelElement(String submodelId, String submodelElementIdShort)
+      throws ElementDoesNotExistException {
+    return decorated.getSubmodelElement(submodelId, submodelElementIdShort);
+  }
 
-	@Override
-	public void setSubmodelElementValue(String submodelId, String idShortPath, SubmodelElementValue value) throws ElementDoesNotExistException {
-		decorated.setSubmodelElementValue(submodelId, idShortPath, value);
-	}
+  @Override
+  public SubmodelElementValue getSubmodelElementValue(String submodelId, String submodelElementIdShort)
+      throws ElementDoesNotExistException {
+    return decorated.getSubmodelElementValue(submodelId, submodelElementIdShort);
+  }
 
-	@Override
-	public void createSubmodelElement(String submodelId, SubmodelElement submodelElement) {
-		decorated.createSubmodelElement(submodelId, submodelElement);
-	}
+  @Override
+  public void setSubmodelElementValue(String submodelId, String idShortPath, SubmodelElementValue value)
+      throws ElementDoesNotExistException {
+    decorated.setSubmodelElementValue(submodelId, idShortPath, value);
+  }
 
-	@Override
-	public void createSubmodelElement(String submodelId, String idShortPath, SubmodelElement submodelElement) throws ElementDoesNotExistException {
-		decorated.createSubmodelElement(submodelId, submodelElement);
-	}
+  @Override
+  public void createSubmodelElement(String submodelId, SubmodelElement submodelElement) {
+    decorated.createSubmodelElement(submodelId, submodelElement);
+  }
 
-	@Override
-	public void deleteSubmodelElement(String submodelId, String idShortPath) throws ElementDoesNotExistException {
-		decorated.deleteSubmodelElement(submodelId, idShortPath);
-	}
+  @Override
+  public void createSubmodelElement(String submodelId, String idShortPath, SubmodelElement submodelElement)
+      throws ElementDoesNotExistException {
+    decorated.createSubmodelElement(submodelId, submodelElement);
+  }
 
-	@Override
-	public OperationVariable[] invokeOperation(String submodelId, String idShortPath, OperationVariable[] input) throws ElementDoesNotExistException {
-		return decorated.invokeOperation(submodelId, idShortPath, input);
-	}
+  @Override
+  public void deleteSubmodelElement(String submodelId, String idShortPath) throws ElementDoesNotExistException {
+    decorated.deleteSubmodelElement(submodelId, idShortPath);
+  }
 
-	@Override
-	public SubmodelValueOnly getSubmodelByIdValueOnly(String submodelId) throws ElementDoesNotExistException {
-		return decorated.getSubmodelByIdValueOnly(submodelId);
-	}
+  @Override
+  public OperationVariable[] invokeOperation(String submodelId, String idShortPath, OperationVariable[] input)
+      throws ElementDoesNotExistException {
+    return decorated.invokeOperation(submodelId, idShortPath, input);
+  }
 
-	@Override
-	public Submodel getSubmodelByIdMetadata(String submodelId) throws ElementDoesNotExistException {
-		return decorated.getSubmodelByIdMetadata(submodelId);
-	}
+  @Override
+  public SubmodelValueOnly getSubmodelByIdValueOnly(String submodelId) throws ElementDoesNotExistException {
+    return decorated.getSubmodelByIdValueOnly(submodelId);
+  }
 
-	@Override
-	public File getFileByPathSubmodel(String submodelId, String idShortPath) throws ElementDoesNotExistException, ElementNotAFileException, FileDoesNotExistException {
-		return decorated.getFileByPathSubmodel(submodelId, idShortPath);
-	}
+  @Override
+  public Submodel getSubmodelByIdMetadata(String submodelId) throws ElementDoesNotExistException {
+    return decorated.getSubmodelByIdMetadata(submodelId);
+  }
 
-	@Override
-	public void setFileValue(String submodelId, String idShortPath, String fileName, InputStream inputStream) throws ElementDoesNotExistException, ElementNotAFileException {
-		decorated.setFileValue(submodelId, idShortPath, fileName, inputStream);
-	}
+  @Override
+  public File getFileByPathSubmodel(String submodelId, String idShortPath)
+      throws ElementDoesNotExistException, ElementNotAFileException, FileDoesNotExistException {
+    return decorated.getFileByPathSubmodel(submodelId, idShortPath);
+  }
 
-	@Override
-	public void deleteFileValue(String submodelId, String idShortPath) throws ElementDoesNotExistException, ElementNotAFileException, FileDoesNotExistException {
-		decorated.deleteFileValue(submodelId, idShortPath);
-	}
+  @Override
+  public void setFileValue(String submodelId, String idShortPath, String fileName, InputStream inputStream)
+      throws ElementDoesNotExistException, ElementNotAFileException {
+    decorated.setFileValue(submodelId, idShortPath, fileName, inputStream);
+  }
 
-	private void integrateSubmodelWithRegistry(Submodel submodel, String submodelRepositoryURL) {
-		SubmodelDescriptor descriptor = new SubmodelDescriptorFactory(submodel, submodelRepositoryURL, attributeMapper).create();
+  @Override
+  public void deleteFileValue(String submodelId, String idShortPath)
+      throws ElementDoesNotExistException, ElementNotAFileException, FileDoesNotExistException {
+    decorated.deleteFileValue(submodelId, idShortPath);
+  }
 
-		SubmodelRegistryApi registryApi = submodelRepositoryRegistryLink.getRegistryApi();
+  private void integrateSubmodelWithRegistry(Submodel submodel, String submodelRepositoryURL) {
+    SubmodelDescriptor descriptor = new SubmodelDescriptorFactory(submodel, submodelRepositoryURL,
+        attributeMapper).create();
 
-		try {
-			registryApi.postSubmodelDescriptor(descriptor);
+    SubmodelRegistryApi registryApi = submodelRepositoryRegistryLink.getRegistryApi();
 
-			logger.info("Submodel '{}' has been automatically linked with the Registry", submodel.getId());
-		} catch (ApiException e) {
-			e.printStackTrace();
+    try {
+      registryApi.postSubmodelDescriptor(descriptor);
 
-			throw new RepositoryRegistryLinkException(submodel.getId());
-		}
-	}
+      logger.info("Submodel '{}' has been automatically linked with the Registry", submodel.getId());
+    } catch (ApiException e) {
+      e.printStackTrace();
+      throw ExceptionBuilderFactory.getInstance().repositoryRegistryLinkException().elementId(submodel.getId()).build();
+    }
+  }
 
-	private void deleteFromRegistry(String submodelId) {
-		SubmodelRegistryApi registryApi = submodelRepositoryRegistryLink.getRegistryApi();
-		
-		if (!submodelExistsOnRegistry(submodelId, registryApi)) {
-			logger.error("Unable to un-link the Submodel descriptor '{}' from the Registry because it does not exist on the Registry.", submodelId);
-			
-			return;
-		}
+  private void deleteFromRegistry(String submodelId) {
+    SubmodelRegistryApi registryApi = submodelRepositoryRegistryLink.getRegistryApi();
 
-		try {
-			registryApi.deleteSubmodelDescriptorById(submodelId);
+    if (!submodelExistsOnRegistry(submodelId, registryApi)) {
+      logger.error(
+          "Unable to un-link the Submodel descriptor '{}' from the Registry because it does not exist on the Registry.",
+          submodelId);
 
-			logger.info("Submodel '{}' has been automatically un-linked from the Registry.", submodelId);
-		} catch (ApiException e) {
-			e.printStackTrace();
+      return;
+    }
 
-			throw new RepositoryRegistryUnlinkException(submodelId);
-		}
-	}
-	
-	private boolean submodelExistsOnRegistry(String submodelId, SubmodelRegistryApi registryApi) {
-		try {
-			registryApi.getSubmodelDescriptorById(submodelId);
-			
-			return true;
-		} catch (ApiException e) {
-			return false;
-		}
-	}
+    try {
+      registryApi.deleteSubmodelDescriptorById(submodelId);
+
+      logger.info("Submodel '{}' has been automatically un-linked from the Registry.", submodelId);
+    } catch (ApiException e) {
+      e.printStackTrace();
+      throw ExceptionBuilderFactory.getInstance().repositoryRegistryUnlinkException().elementId(submodelId).build();
+    }
+  }
+
+  private boolean submodelExistsOnRegistry(String submodelId, SubmodelRegistryApi registryApi) {
+    try {
+      registryApi.getSubmodelDescriptorById(submodelId);
+
+      return true;
+    } catch (ApiException e) {
+      return false;
+    }
+  }
 
 }
