@@ -107,8 +107,8 @@ public class InMemoryAasService implements AasService {
       Key foundKey = keys.stream().filter(key -> key.getType().equals(KeyTypes.SUBMODEL)).findFirst().get();
       return foundKey.getValue().equals(submodelId);
     }).findFirst().orElseThrow(() -> {
-      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(submodelId).elementType(
-          KeyTypes.SUBMODEL).build();
+      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.SUBMODEL)
+          .missingElement(submodelId).build();
     });
 
     return specificSubmodelReference;

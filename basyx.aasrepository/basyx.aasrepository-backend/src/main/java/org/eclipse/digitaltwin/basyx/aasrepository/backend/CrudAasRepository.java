@@ -95,8 +95,8 @@ public class CrudAasRepository implements AasRepository {
   @Override
   public AssetAdministrationShell getAas(String aasId) throws ElementDoesNotExistException {
     return aasBackend.findById(aasId).orElseThrow(() -> {
-      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(aasId).elementType(
-          KeyTypes.ASSET_ADMINISTRATION_SHELL).build();
+      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException()
+          .elementType(KeyTypes.ASSET_ADMINISTRATION_SHELL).missingElement(aasId).build();
     });
   }
 
@@ -201,8 +201,8 @@ public class CrudAasRepository implements AasRepository {
 
   private AasService getAasServiceOrThrow(String aasId) {
     AssetAdministrationShell aas = aasBackend.findById(aasId).orElseThrow(() -> {
-      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(aasId).elementType(
-          KeyTypes.ASSET_ADMINISTRATION_SHELL).build();
+      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException()
+          .elementType(KeyTypes.ASSET_ADMINISTRATION_SHELL).missingElement(aasId).build();
     });
 
     return aasServiceFactory.create(aas);
@@ -231,8 +231,8 @@ public class CrudAasRepository implements AasRepository {
 
   private void throwIfAasDoesNotExist(String aasId) {
     if (!aasBackend.existsById(aasId)) {
-      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(aasId).elementType(
-          KeyTypes.ASSET_ADMINISTRATION_SHELL).build();
+      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException()
+          .elementType(KeyTypes.ASSET_ADMINISTRATION_SHELL).missingElement(aasId).build();
     }
   }
 

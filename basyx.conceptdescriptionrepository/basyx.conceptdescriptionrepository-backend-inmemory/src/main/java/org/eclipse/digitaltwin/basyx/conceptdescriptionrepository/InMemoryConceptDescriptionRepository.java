@@ -36,6 +36,7 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 import org.eclipse.digitaltwin.aas4j.v3.model.ConceptDescription;
 import org.eclipse.digitaltwin.aas4j.v3.model.EmbeddedDataSpecification;
+import org.eclipse.digitaltwin.aas4j.v3.model.KeyTypes;
 import org.eclipse.digitaltwin.aas4j.v3.model.Reference;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
@@ -214,7 +215,8 @@ public class InMemoryConceptDescriptionRepository implements ConceptDescriptionR
 
   private void throwIfConceptDescriptionDoesNotExist(String id) {
     if (!conceptDescriptions.containsKey(id)) {
-      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(id).build();
+      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException()
+          .elementType(KeyTypes.CONCEPT_DESCRIPTION).missingElement(id).build();
     }
   }
 

@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (C) 2023 the Eclipse BaSyx Authors
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
  * "Software"), to deal in the Software without restriction, including
@@ -8,10 +8,10 @@
  * distribute, sublicense, and/or sell copies of the Software, and to
  * permit persons to whom the Software is furnished to do so, subject to
  * the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -19,7 +19,7 @@
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- * 
+ *
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-
 import org.eclipse.digitaltwin.basyx.aasxfileserver.model.Package;
 import org.eclipse.digitaltwin.basyx.aasxfileserver.model.PackageDescription;
 import org.eclipse.digitaltwin.basyx.aasxfileserver.model.PackagesBody;
@@ -43,128 +42,132 @@ import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
  * In-Memory implementation of the {@link AASXFileServer}
  *
  * @author chaithra
- *
  */
 public class InMemoryAASXFileServer implements AASXFileServer {
 
-	private Map<String, Package> packageMap = new LinkedHashMap<>();
-	private AtomicInteger packageId = new AtomicInteger(0);
+  private final Map<String, Package> packageMap = new LinkedHashMap<>();
+  private final AtomicInteger packageId = new AtomicInteger(0);
 
-	private String aasxFileServerName;
+  private String aasxFileServerName;
 
-	/**
-	 * Creates the InMemoryAASXFileServer
-	 * 
-	 */
-	public InMemoryAASXFileServer() {
-	}
+  /**
+   * Creates the InMemoryAASXFileServer
+   */
+  public InMemoryAASXFileServer() {
+  }
 
-	/**
-	 * Creates the InMemoryAASXFileServer
-	 * 
-	 * @param aasxRepositoryName
-	 *            Name of the CDRepository
-	 */
-	public InMemoryAASXFileServer(String aasxFileServerName) {
-		this.aasxFileServerName = aasxFileServerName;
-	}
+  /**
+   * Creates the InMemoryAASXFileServer
+   *
+   * @param aasxRepositoryName Name of the CDRepository
+   */
+  public InMemoryAASXFileServer(String aasxFileServerName) {
+    this.aasxFileServerName = aasxFileServerName;
+  }
 
-	@Override
-	public Collection<PackageDescription> getAllAASXPackageIds(String shellId) {
-		Collection<PackageDescription> packageDescriptions = packageMap.values().stream().map(Package::getPackageDescription).collect(Collectors.toList());
-		
-		if (shellId == null || shellId.isBlank())
-			return packageDescriptions;
-		
-		return packageDescriptions.stream().filter(packageDesc -> containsShellId(packageDesc, shellId)).collect(Collectors.toList());
-	}
+  @Override
+  public Collection<PackageDescription> getAllAASXPackageIds(String shellId) {
+    Collection<PackageDescription> packageDescriptions = packageMap.values().stream()
+        .map(Package::getPackageDescription).collect(Collectors.toList());
 
-	@Override
-	public InputStream getAASXByPackageId(String packageId) throws ElementDoesNotExistException {
-		throwIfAASXPackageIdDoesNotExist(packageId);
+    if (shellId == null || shellId.isBlank()) {
+      return packageDescriptions;
+    }
 
-		return packageMap.get(packageId).getPackagesBody().getFile();
-	}
+    return packageDescriptions.stream().filter(packageDesc -> containsShellId(packageDesc, shellId))
+        .collect(Collectors.toList());
+  }
 
-	@Override
-	public void updateAASXByPackageId(String packageId, List<String> shellIds, InputStream file, String filename) throws ElementDoesNotExistException {
+  @Override
+  public InputStream getAASXByPackageId(String packageId) throws ElementDoesNotExistException {
+    throwIfAASXPackageIdDoesNotExist(packageId);
 
-		throwIfAASXPackageIdDoesNotExist(packageId);
+    return packageMap.get(packageId).getPackagesBody().getFile();
+  }
 
-		updateAASXPackage(packageId, shellIds, file, filename);
-	}
+  @Override
+  public void updateAASXByPackageId(String packageId, List<String> shellIds, InputStream file, String filename)
+      throws ElementDoesNotExistException {
 
-	@Override
-	public PackageDescription createAASXPackage(List<String> shellIds, InputStream file, String fileName) {
+    throwIfAASXPackageIdDoesNotExist(packageId);
 
-		String newpackageId = String.valueOf(packageId.incrementAndGet());
+    updateAASXPackage(packageId, shellIds, file, filename);
+  }
 
-		PackageDescription packageDescription = createPackageDescription(shellIds, newpackageId);
+  @Override
+  public PackageDescription createAASXPackage(List<String> shellIds, InputStream file, String fileName) {
 
-		createPackage(shellIds, file, fileName, newpackageId, packageDescription);
+    String newpackageId = String.valueOf(packageId.incrementAndGet());
 
-		return packageDescription;
-	}
+    PackageDescription packageDescription = createPackageDescription(shellIds, newpackageId);
 
-	@Override
-	public void deleteAASXByPackageId(String packageId) throws ElementDoesNotExistException {
-		throwIfAASXPackageIdDoesNotExist(packageId);
+    createPackage(shellIds, file, fileName, newpackageId, packageDescription);
 
-		packageMap.remove(packageId);
-	}
+    return packageDescription;
+  }
 
-	@Override
-	public String getName() {
-		return aasxFileServerName == null ? AASXFileServer.super.getName() : aasxFileServerName;
-	}
+  @Override
+  public void deleteAASXByPackageId(String packageId) throws ElementDoesNotExistException {
+    throwIfAASXPackageIdDoesNotExist(packageId);
 
-	private PackageDescription createPackageDescription(List<String> shellIds, String newPackageId) {
-		PackageDescription packageDescription = new PackageDescription();
-		packageDescription.packageId(newPackageId);
-		packageDescription.aasIds(shellIds);
+    packageMap.remove(packageId);
+  }
 
-		return packageDescription;
-	}
+  @Override
+  public String getName() {
+    return aasxFileServerName == null ? AASXFileServer.super.getName() : aasxFileServerName;
+  }
 
-	private PackagesBody createPackagesBody(List<String> shellIds, InputStream file, String fileName) {
-		PackagesBody packagesBody = new PackagesBody();
-		packagesBody.aasIds(shellIds);
-		packagesBody.file(file);
-		packagesBody.fileName(fileName);
+  private PackageDescription createPackageDescription(List<String> shellIds, String newPackageId) {
+    PackageDescription packageDescription = new PackageDescription();
+    packageDescription.packageId(newPackageId);
+    packageDescription.aasIds(shellIds);
 
-		return packagesBody;
-	}
+    return packageDescription;
+  }
 
-	private void createPackage(List<String> shellIds, InputStream file, String fileName, String newPackageId, PackageDescription packageDescription) {
-		PackagesBody packagesBody = createPackagesBody(shellIds, file, fileName);
+  private PackagesBody createPackagesBody(List<String> shellIds, InputStream file, String fileName) {
+    PackagesBody packagesBody = new PackagesBody();
+    packagesBody.aasIds(shellIds);
+    packagesBody.file(file);
+    packagesBody.fileName(fileName);
 
-		Package aasxPackage = new Package(newPackageId, packageDescription, packagesBody);
+    return packagesBody;
+  }
 
-		packageMap.put(newPackageId, aasxPackage);
-	}
+  private void createPackage(List<String> shellIds, InputStream file, String fileName, String newPackageId,
+      PackageDescription packageDescription) {
+    PackagesBody packagesBody = createPackagesBody(shellIds, file, fileName);
 
-	private void updateAASXPackage(String packageId, List<String> shellIds, InputStream file, String filename) {
-		Package aasxPackage = this.packageMap.get(packageId);
+    Package aasxPackage = new Package(newPackageId, packageDescription, packagesBody);
 
-		updatePackagesBody(shellIds, file, filename, aasxPackage.getPackagesBody());
+    packageMap.put(newPackageId, aasxPackage);
+  }
 
-		aasxPackage.getPackageDescription().setAasIds(shellIds);
-	}
+  private void updateAASXPackage(String packageId, List<String> shellIds, InputStream file, String filename) {
+    Package aasxPackage = this.packageMap.get(packageId);
 
-	private void updatePackagesBody(List<String> shellIds, InputStream file, String filename, PackagesBody packagesBody) {
-		packagesBody.setAasIds(shellIds);
-		packagesBody.setFileName(filename);
-		packagesBody.setFile(file);
-	}
+    updatePackagesBody(shellIds, file, filename, aasxPackage.getPackagesBody());
 
-	private void throwIfAASXPackageIdDoesNotExist(String id) {
+    aasxPackage.getPackageDescription().setAasIds(shellIds);
+  }
 
-		if (!packageMap.containsKey(id))
-			throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(id).build();
-	}
-	
-	private boolean containsShellId(PackageDescription packageDesc, String shellId) {
-		return packageDesc.getAasIds().stream().anyMatch(aasId -> aasId.equals(shellId));
-	}
+  private void updatePackagesBody(List<String> shellIds, InputStream file, String filename, PackagesBody packagesBody) {
+    packagesBody.setAasIds(shellIds);
+    packagesBody.setFileName(filename);
+    packagesBody.setFile(file);
+  }
+
+  private void throwIfAASXPackageIdDoesNotExist(String id) {
+
+    if (!packageMap.containsKey(id)) {
+      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType("AASX_PACKAGE_ID")
+          .missingElement(id).build();
+    }
+  }
+
+  private boolean containsShellId(PackageDescription packageDesc, String shellId) {
+    return packageDesc.getAasIds().stream().anyMatch(aasId -> aasId.equals(shellId));
+  }
 
 }

@@ -40,6 +40,7 @@ import org.apache.tika.mime.MimeTypes;
 import org.apache.tika.utils.StringUtils;
 import org.bson.types.ObjectId;
 import org.eclipse.digitaltwin.aas4j.v3.model.File;
+import org.eclipse.digitaltwin.aas4j.v3.model.KeyTypes;
 import org.eclipse.digitaltwin.aas4j.v3.model.OperationVariable;
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
 import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElement;
@@ -204,7 +205,8 @@ public class MongoDBSubmodelRepository implements SubmodelRepository {
     Submodel submodel = mongoTemplate.findOne(new Query().addCriteria(Criteria.where(ID_JSON_PATH).is(submodelId)),
         Submodel.class, collectionName);
     if (submodel == null) {
-      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(submodelId).build();
+      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.SUBMODEL)
+          .missingElement(submodelId).build();
     }
     return submodel;
   }
@@ -222,7 +224,8 @@ public class MongoDBSubmodelRepository implements SubmodelRepository {
 
   private void throwIfSubmodelDoesNotExist(Query query, String submodelId) {
     if (!mongoTemplate.exists(query, Submodel.class, collectionName)) {
-      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(submodelId).build();
+      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.SUBMODEL)
+          .missingElement(submodelId).build();
     }
 
   }
@@ -291,7 +294,8 @@ public class MongoDBSubmodelRepository implements SubmodelRepository {
         Submodel.class, collectionName);
 
     if (result.getDeletedCount() == 0) {
-      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(submodelId).build();
+      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.SUBMODEL)
+          .missingElement(submodelId).build();
     }
 
   }

@@ -56,6 +56,11 @@ public class ElementDoesNotExistException extends BaSyxResponseException {
       return this;
     }
 
+    public Builder elementType(String type) {
+      param("ElementType", type);
+      return this;
+    }
+
     public Builder missingElement(String value) {
       param("MissingElementId", value);
       return this;

@@ -49,7 +49,8 @@ public class SubmodelElementIdShortPathParser {
       String[] splitted = splitIdShortPathAtDots(idShortPath);
       return generateTokenStackFromSplittedArray(splitted);
     } catch (ElementDoesNotExistException e) {
-      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(idShortPath).build();
+      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.SUBMODEL_ELEMENT)
+          .missingElement(idShortPath).build();
     }
   }
 

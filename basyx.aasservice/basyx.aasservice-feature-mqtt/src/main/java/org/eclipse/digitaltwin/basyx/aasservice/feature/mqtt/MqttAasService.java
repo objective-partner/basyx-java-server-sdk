@@ -155,9 +155,8 @@ public class MqttAasService implements AasService {
         .filter(reference -> containsSubmodelId(reference, submodelId))
         .findFirst()
         .orElseThrow(() -> {
-          throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(submodelId)
-              .elementType(
-                  KeyTypes.SUBMODEL).build();
+          throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.SUBMODEL)
+              .missingElement(submodelId).build();
         });
   }
 

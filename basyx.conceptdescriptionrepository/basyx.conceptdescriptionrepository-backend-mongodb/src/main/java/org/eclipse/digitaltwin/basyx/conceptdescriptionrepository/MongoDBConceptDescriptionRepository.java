@@ -30,6 +30,7 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 import org.eclipse.digitaltwin.aas4j.v3.model.ConceptDescription;
 import org.eclipse.digitaltwin.aas4j.v3.model.EmbeddedDataSpecification;
+import org.eclipse.digitaltwin.aas4j.v3.model.KeyTypes;
 import org.eclipse.digitaltwin.aas4j.v3.model.Reference;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
@@ -117,8 +118,8 @@ public class MongoDBConceptDescriptionRepository implements ConceptDescriptionRe
         collectionName);
 
     if (conceptDescription == null) {
-      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(conceptDescriptionId)
-          .build();
+      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException()
+          .elementType(KeyTypes.CONCEPT_DESCRIPTION).missingElement(conceptDescriptionId).build();
     }
 
     return conceptDescription;
@@ -154,8 +155,8 @@ public class MongoDBConceptDescriptionRepository implements ConceptDescriptionRe
     DeleteResult result = mongoTemplate.remove(query, ConceptDescription.class, collectionName);
 
     if (result.getDeletedCount() == 0) {
-      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(conceptDescriptionId)
-          .build();
+      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException()
+          .elementType(KeyTypes.CONCEPT_DESCRIPTION).missingElement(conceptDescriptionId).build();
     }
 
   }
@@ -200,8 +201,8 @@ public class MongoDBConceptDescriptionRepository implements ConceptDescriptionRe
 
   private void throwIfConceptDescriptionDoesNotExist(Query query, String conceptDescriptionId) {
     if (!mongoTemplate.exists(query, ConceptDescription.class, collectionName)) {
-      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(conceptDescriptionId)
-          .build();
+      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException()
+          .elementType(KeyTypes.CONCEPT_DESCRIPTION).missingElement(conceptDescriptionId).build();
     }
   }
 
