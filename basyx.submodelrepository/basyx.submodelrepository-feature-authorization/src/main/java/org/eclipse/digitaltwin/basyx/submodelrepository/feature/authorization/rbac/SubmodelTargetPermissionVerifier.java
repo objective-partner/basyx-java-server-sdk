@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (C) 2023 the Eclipse BaSyx Authors
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
  * "Software"), to deal in the Software without restriction, including
@@ -8,10 +8,10 @@
  * distribute, sublicense, and/or sell copies of the Software, and to
  * permit persons to whom the Software is furnished to do so, subject to
  * the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -19,7 +19,7 @@
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- * 
+ *
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
@@ -31,25 +31,28 @@ import org.eclipse.digitaltwin.basyx.submodelrepository.feature.authorization.Su
 
 /**
  * Verifies the {@link SubmodelTargetInformation} against the {@link RbacRule}
- * 
+ *
  * @author danish
  */
 public class SubmodelTargetPermissionVerifier implements TargetPermissionVerifier<SubmodelTargetInformation> {
 
-	private static final String ALL_ALLOWED_WILDCARD = "*";
+  private static final String ALL_ALLOWED_WILDCARD = "*";
 
-	@Override
-	public boolean isVerified(RbacRule rbacRule, SubmodelTargetInformation targetInformation) {
-		
-		String submodelId = targetInformation.getSubmodelId();
-		String submodelElementIdShortPath = targetInformation.getSubmodelElementIdShortPath();
-		
-		SubmodelTargetInformation rbacRuleSubmodelTargetInformation = (SubmodelTargetInformation) rbacRule.getTargetInformation();
+  @Override
+  public boolean isVerified(RbacRule rbacRule, SubmodelTargetInformation targetInformation) {
 
-		if (rbacRuleSubmodelTargetInformation.getSubmodelId().equals(ALL_ALLOWED_WILDCARD) || rbacRuleSubmodelTargetInformation.getSubmodelId().equals(submodelId))
-			return rbacRuleSubmodelTargetInformation.getSubmodelElementIdShortPath().equals(ALL_ALLOWED_WILDCARD) || rbacRuleSubmodelTargetInformation.getSubmodelElementIdShortPath().equals(submodelElementIdShortPath);
-		
-		return false;
-	}
+    String submodelId = targetInformation.getSubmodelId();
+    String submodelElementIdShortPath = targetInformation.getSubmodelElementIdShortPath();
+
+    SubmodelTargetInformation rbacRuleSubmodelTargetInformation = (SubmodelTargetInformation) rbacRule.getTargetInformation();
+
+    if (rbacRuleSubmodelTargetInformation.getSubmodelId().equals(ALL_ALLOWED_WILDCARD) || match(submodelId,
+        rbacRuleSubmodelTargetInformation.getSubmodelId())) {
+      return rbacRuleSubmodelTargetInformation.getSubmodelElementIdShortPath().equals(ALL_ALLOWED_WILDCARD)
+          || match(submodelElementIdShortPath, rbacRuleSubmodelTargetInformation.getSubmodelElementIdShortPath());
+    }
+
+    return false;
+  }
 
 }

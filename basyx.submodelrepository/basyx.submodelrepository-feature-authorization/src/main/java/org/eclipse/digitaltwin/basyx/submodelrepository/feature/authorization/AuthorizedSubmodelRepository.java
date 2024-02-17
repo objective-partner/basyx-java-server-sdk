@@ -221,7 +221,7 @@ public class AuthorizedSubmodelRepository implements SubmodelRepository {
   @Override
   public Submodel getSubmodelByIdMetadata(String submodelId) throws ElementDoesNotExistException {
     boolean isAuthorized = permissionResolver.hasPermission(Action.READ,
-        new SubmodelTargetInformation(submodelId, ALL_ALLOWED_WILDCARD));
+        new SubmodelTargetInformation(submodelId, ALL_ALLOWED_WILDCARD)); // TODO metadata includes no sme...
 
     throwExceptionIfInsufficientPermission(isAuthorized);
 
