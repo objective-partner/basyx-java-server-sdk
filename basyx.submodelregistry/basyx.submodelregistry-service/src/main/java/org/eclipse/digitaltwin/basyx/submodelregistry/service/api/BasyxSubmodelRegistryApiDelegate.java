@@ -71,7 +71,7 @@ public class BasyxSubmodelRegistryApiDelegate implements SubmodelDescriptorsApiD
 	@Override
 	public ResponseEntity<SubmodelDescriptor> postSubmodelDescriptor(SubmodelDescriptor submodelDescriptor) {
 		storage.insertSubmodelDescriptor(submodelDescriptor);
-		URI location = locationBuilder.getSubmodelLocation(submodelDescriptor.getId());		
+		URI location = locationBuilder.getSubmodelLocation(submodelDescriptor.getId());
 		return ResponseEntity.created(location).body(submodelDescriptor);
 	}
 

@@ -31,6 +31,7 @@ import java.util.List;
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetInformation;
 import org.eclipse.digitaltwin.aas4j.v3.model.Reference;
+import org.eclipse.digitaltwin.basyx.core.FilterParams;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.MissingIdentifierException;
@@ -44,13 +45,13 @@ import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
  *
  */
 public interface AasRepository {
-	
+
 	/**
 	 * Retrieves all Asset Administration Shells from the repository
 	 * 
 	 * @return a list of all found Asset Administration Shells
 	 */
-	public CursorResult<List<AssetAdministrationShell>> getAllAas(PaginationInfo pInfo);
+	CursorResult<List<AssetAdministrationShell>> getAllAas(FilterParams filterParams);
 
 	/**
 	 * Retrieves a specific AAS
@@ -59,7 +60,7 @@ public interface AasRepository {
 	 *            the id of the AAS
 	 * @return the requested AAS
 	 */
-	public AssetAdministrationShell getAas(String aasId) throws ElementDoesNotExistException;
+	AssetAdministrationShell getAas(String aasId) throws ElementDoesNotExistException;
 
 	/**
 	 * Creates a new AAS at the endpoint
@@ -67,9 +68,9 @@ public interface AasRepository {
 	 * @param aas
 	 *            the AAS to be created
 	 * @throws MissingIdentifierException
-	 *            for creating AAS
+	 *             for creating AAS
 	 */
-	public void createAas(AssetAdministrationShell aas) throws CollidingIdentifierException, MissingIdentifierException;
+	void createAas(AssetAdministrationShell aas) throws CollidingIdentifierException, MissingIdentifierException;
 
 	/**
 	 * Deletes a specific AAS
@@ -77,35 +78,35 @@ public interface AasRepository {
 	 * @param aasId
 	 *            the id of the AAS to be deleted
 	 */
-	public void deleteAas(String aasId);
+	void deleteAas(String aasId);
 
 	/**
 	 * Overwrites an existing AAS
 	 * 
 	 * @param aas
 	 */
-	public void updateAas(String aasId, AssetAdministrationShell aas);
+	void updateAas(String aasId, AssetAdministrationShell aas);
 
 	/**
 	 * Returns a List of References to Submodels
 	 * 
 	 * @param referenceId
 	 */
-	public CursorResult<List<Reference>> getSubmodelReferences(String aasId, PaginationInfo pInfo);
+	CursorResult<List<Reference>> getSubmodelReferences(String aasId, PaginationInfo pInfo);
 
 	/**
 	 * Adds a Submodel Reference
 	 * 
 	 * @param submodelReference
 	 */
-	public void addSubmodelReference(String aasId, Reference submodelReference);
+	void addSubmodelReference(String aasId, Reference submodelReference);
 
 	/**
 	 * Removes a Submodel Reference
 	 * 
 	 * @param submodelId
 	 */
-	public void removeSubmodelReference(String aasId, String submodelId);
+	void removeSubmodelReference(String aasId, String submodelId);
 
 	/**
 	 * Sets the asset-information of a specific AAS
@@ -115,7 +116,7 @@ public interface AasRepository {
 	 * 
 	 * @return the requested Asset-Information of the specified AAS
 	 */
-	public void setAssetInformation(String aasId, AssetInformation aasInfo) throws ElementDoesNotExistException;
+	void setAssetInformation(String aasId, AssetInformation aasInfo) throws ElementDoesNotExistException;
 
 	/**
 	 * Retrieves the asset-information of a specific AAS
@@ -125,7 +126,7 @@ public interface AasRepository {
 	 * 
 	 * @return the requested AAS
 	 */
-	public AssetInformation getAssetInformation(String aasId) throws ElementDoesNotExistException;
+	AssetInformation getAssetInformation(String aasId) throws ElementDoesNotExistException;
 
 	/**
 	 * Get Thumbnail of the specific aas
@@ -134,7 +135,7 @@ public interface AasRepository {
 	 *            the id of the AAS
 	 * @return the file of the thumbnail
 	 */
-	public File getThumbnail(String aasId);
+	File getThumbnail(String aasId);
 
 	/**
 	 * Set Thumbnail of the AAS
@@ -148,7 +149,7 @@ public interface AasRepository {
 	 * @param inputStream
 	 *            inputstream of the thumbnail file
 	 */
-	public void setThumbnail(String aasId, String fileName, String contentType, InputStream inputStream);
+	void setThumbnail(String aasId, String fileName, String contentType, InputStream inputStream);
 
 	/**
 	 * Delete the thumbnail file of the AAS
@@ -156,15 +157,15 @@ public interface AasRepository {
 	 * @param aasId
 	 *            the id of the AAS
 	 */
-	public void deleteThumbnail(String aasId);
-    
+	void deleteThumbnail(String aasId);
+
 	/**
 	 * Returns the name of the repository
 	 * 
 	 * @return repoName
 	 */
-	public default String getName() {
+	default String getName() {
 		return "aas-repo";
 	}
-	
+
 }

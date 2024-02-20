@@ -26,7 +26,6 @@
 package org.eclipse.digitaltwin.basyx.submodelrepository.http;
 
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
-
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepository;
 import org.eclipse.digitaltwin.basyx.submodelservice.http.SubmodelServiceSubmodelElementsTestSuiteHTTP;
 import org.junit.After;
@@ -49,7 +48,7 @@ public class TestSubmodelRepositorySubmodelElementsHTTP extends SubmodelServiceS
 
 	@BeforeClass
 	public static void startAASRepo() throws Exception {
-		appContext = new SpringApplication(DummySubmodelRepositoryComponent.class).run(new String[] {});
+		appContext = new SpringApplication(DummySubmodelRepositoryComponent.class).run();
 	}
 
 	@Before

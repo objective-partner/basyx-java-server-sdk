@@ -24,6 +24,8 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.aasrepository.feature.mqtt;
 
+import jakarta.annotation.Nullable;
+
 import java.io.File;
 import java.io.InputStream;
 import java.util.List;
@@ -53,12 +55,12 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class MqttAasRepository implements AasRepository {
-	private static Logger logger = LoggerFactory.getLogger(MqttAasRepository.class);
-	private MqttAasRepositoryTopicFactory topicFactory;
+	private static final Logger logger = LoggerFactory.getLogger(MqttAasRepository.class);
+	private final MqttAasRepositoryTopicFactory topicFactory;
 
-	private AasRepository decorated;
+	private final AasRepository decorated;
 
-	private IMqttClient mqttClient;
+	private final IMqttClient mqttClient;
 
 	public MqttAasRepository(AasRepository decorated, IMqttClient mqttClient, MqttAasRepositoryTopicFactory topicFactory) {
 		this.topicFactory = topicFactory;
@@ -67,8 +69,8 @@ public class MqttAasRepository implements AasRepository {
 	}
 
 	@Override
-	public CursorResult<List<AssetAdministrationShell>> getAllAas(PaginationInfo pInfo) {
-		return decorated.getAllAas(pInfo);
+	public CursorResult<List<AssetAdministrationShell>> getAllAas(PaginationInfo pInfo, @Nullable List<String> aasIds) {
+		return decorated.getAllAas(pInfo, aasIds);
 	}
 
 	@Override

@@ -28,17 +28,25 @@ package org.eclipse.digitaltwin.basyx.aasrepository.feature.authorization;
 import java.io.File;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.annotation.Nullable;
+
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetInformation;
 import org.eclipse.digitaltwin.aas4j.v3.model.Reference;
 import org.eclipse.digitaltwin.basyx.aasrepository.AasRepository;
 import org.eclipse.digitaltwin.basyx.authorization.rbac.Action;
 import org.eclipse.digitaltwin.basyx.authorization.rbac.RbacPermissionResolver;
+import org.eclipse.digitaltwin.basyx.authorization.rbac.RbacRule;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
+import org.springframework.util.CollectionUtils;
 
 /**
  * Decorator for authorized {@link AasRepository}
@@ -47,142 +55,146 @@ import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
  */
 public class AuthorizedAasRepository implements AasRepository {
 
-  private final AasRepository decorated;
-  private final RbacPermissionResolver<AasTargetInformation> permissionResolver;
+	private final AasRepository decorated;
+	private final RbacPermissionResolver<AasTargetInformation> permissionResolver;
 
+	public AuthorizedAasRepository(AasRepository decorated, RbacPermissionResolver<AasTargetInformation> permissionResolver) {
+		this.decorated = decorated;
+		this.permissionResolver = permissionResolver;
+	}
 
-  public AuthorizedAasRepository(AasRepository decorated,
-      RbacPermissionResolver<AasTargetInformation> permissionResolver) {
-    this.decorated = decorated;
-    this.permissionResolver = permissionResolver;
-  }
+	@Override
+	public CursorResult<List<AssetAdministrationShell>> getAllAas(PaginationInfo pInfo, @Nullable Set<String> aasIds) {
+		Stream<RbacRule> matchingRules = permissionResolver.getMatchingRules(Action.READ, AasTargetInformation.class);
 
-  @Override
-  public CursorResult<List<AssetAdministrationShell>> getAllAas(PaginationInfo pInfo) {
-    boolean isAuthorized = permissionResolver.hasPermission(Action.READ, new AasTargetInformation("*"));
+		Set<AasTargetInformation> ruleTargetInfos = matchingRules.map(rbacRule -> (AasTargetInformation) rbacRule.getTargetInformation()).collect(Collectors.toUnmodifiableSet());
 
-    throwExceptionIfInsufficientPermission(isAuthorized);
+		if (CollectionUtils.isEmpty(ruleTargetInfos)) {
+			throwExceptionIfInsufficientPermission(false);
+		}
 
-    return decorated.getAllAas(pInfo);
-  }
+		Set<String> collectedAasIds = ruleTargetInfos.parallelStream().map(AasTargetInformation::getAasId).collect(Collectors.toUnmodifiableSet());
 
-  @Override
-  public AssetAdministrationShell getAas(String shellId) throws ElementDoesNotExistException {
-    boolean isAuthorized = permissionResolver.hasPermission(Action.READ, new AasTargetInformation(shellId));
+		return decorated.getAllAas(pInfo, collectedAasIds);
+	}
 
-    throwExceptionIfInsufficientPermission(isAuthorized);
+	@Override
+	public AssetAdministrationShell getAas(String shellId) throws ElementDoesNotExistException {
+		boolean isAuthorized = permissionResolver.hasPermission(Action.READ, new AasTargetInformation(shellId));
 
-    return decorated.getAas(shellId);
-  }
+		throwExceptionIfInsufficientPermission(isAuthorized);
 
-  @Override
-  public void createAas(AssetAdministrationShell shell) throws CollidingIdentifierException {
-    boolean isAuthorized = permissionResolver.hasPermission(Action.CREATE, new AasTargetInformation(shell.getId()));
+		return decorated.getAas(shellId);
+	}
 
-    throwExceptionIfInsufficientPermission(isAuthorized);
+	@Override
+	public void createAas(AssetAdministrationShell shell) throws CollidingIdentifierException {
+		boolean isAuthorized = permissionResolver.hasPermission(Action.CREATE, new AasTargetInformation(shell.getId()));
 
-    decorated.createAas(shell);
-  }
+		throwExceptionIfInsufficientPermission(isAuthorized);
 
-  @Override
-  public void updateAas(String shellId, AssetAdministrationShell shell) {
-    boolean isAuthorized = permissionResolver.hasPermission(Action.UPDATE, new AasTargetInformation(shellId));
+		decorated.createAas(shell);
+	}
 
-    throwExceptionIfInsufficientPermission(isAuthorized);
+	@Override
+	public void updateAas(String shellId, AssetAdministrationShell shell) {
+		boolean isAuthorized = permissionResolver.hasPermission(Action.UPDATE, new AasTargetInformation(shellId));
 
-    decorated.updateAas(shellId, shell);
-  }
+		throwExceptionIfInsufficientPermission(isAuthorized);
 
-  @Override
-  public void deleteAas(String shellId) {
-    boolean isAuthorized = permissionResolver.hasPermission(Action.DELETE, new AasTargetInformation(shellId));
+		decorated.updateAas(shellId, shell);
+	}
 
-    throwExceptionIfInsufficientPermission(isAuthorized);
+	@Override
+	public void deleteAas(String shellId) {
+		boolean isAuthorized = permissionResolver.hasPermission(Action.DELETE, new AasTargetInformation(shellId));
 
-    decorated.deleteAas(shellId);
-  }
+		throwExceptionIfInsufficientPermission(isAuthorized);
 
-  @Override
-  public CursorResult<List<Reference>> getSubmodelReferences(String shellId, PaginationInfo paginationInfo) {
-    boolean isAuthorized = permissionResolver.hasPermission(Action.READ, new AasTargetInformation(shellId));
+		decorated.deleteAas(shellId);
+	}
 
-    throwExceptionIfInsufficientPermission(isAuthorized);
+	@Override
+	public CursorResult<List<Reference>> getSubmodelReferences(String shellId, PaginationInfo paginationInfo) {
+		boolean isAuthorized = permissionResolver.hasPermission(Action.READ, new AasTargetInformation(shellId));
 
-    return decorated.getSubmodelReferences(shellId, paginationInfo);
-  }
+		throwExceptionIfInsufficientPermission(isAuthorized);
 
-  @Override
-  public void addSubmodelReference(String shellId, Reference submodelReference) {
-    boolean isAuthorized = permissionResolver.hasPermission(Action.UPDATE, new AasTargetInformation(shellId));
+		return decorated.getSubmodelReferences(shellId, paginationInfo);
+	}
 
-    throwExceptionIfInsufficientPermission(isAuthorized);
+	@Override
+	public void addSubmodelReference(String shellId, Reference submodelReference) {
+		boolean isAuthorized = permissionResolver.hasPermission(Action.UPDATE, new AasTargetInformation(shellId));
 
-    decorated.addSubmodelReference(shellId, submodelReference);
-  }
+		throwExceptionIfInsufficientPermission(isAuthorized);
 
-  @Override
-  public void removeSubmodelReference(String shellId, String submodelId) {
-    boolean isAuthorized = permissionResolver.hasPermission(Action.DELETE, new AasTargetInformation(shellId));
+		decorated.addSubmodelReference(shellId, submodelReference);
+	}
 
-    throwExceptionIfInsufficientPermission(isAuthorized);
+	@Override
+	public void removeSubmodelReference(String shellId, String submodelId) {
+		boolean isAuthorized = permissionResolver.hasPermission(Action.DELETE, new AasTargetInformation(shellId));
 
-    decorated.removeSubmodelReference(shellId, submodelId);
-  }
+		throwExceptionIfInsufficientPermission(isAuthorized);
 
-  @Override
-  public void setAssetInformation(String shellId, AssetInformation shellInfo) throws ElementDoesNotExistException {
-    boolean isAuthorized = permissionResolver.hasPermission(Action.UPDATE, new AasTargetInformation(shellId));
+		decorated.removeSubmodelReference(shellId, submodelId);
+	}
 
-    throwExceptionIfInsufficientPermission(isAuthorized);
+	@Override
+	public void setAssetInformation(String shellId, AssetInformation shellInfo) throws ElementDoesNotExistException {
+		boolean isAuthorized = permissionResolver.hasPermission(Action.UPDATE, new AasTargetInformation(shellId));
 
-    decorated.setAssetInformation(shellId, shellInfo);
-  }
+		throwExceptionIfInsufficientPermission(isAuthorized);
 
-  @Override
-  public AssetInformation getAssetInformation(String shellId) throws ElementDoesNotExistException {
-    boolean isAuthorized = permissionResolver.hasPermission(Action.READ, new AasTargetInformation(shellId));
+		decorated.setAssetInformation(shellId, shellInfo);
+	}
 
-    throwExceptionIfInsufficientPermission(isAuthorized);
+	@Override
+	public AssetInformation getAssetInformation(String shellId) throws ElementDoesNotExistException {
+		boolean isAuthorized = permissionResolver.hasPermission(Action.READ, new AasTargetInformation(shellId));
 
-    return decorated.getAssetInformation(shellId);
-  }
+		throwExceptionIfInsufficientPermission(isAuthorized);
 
-  @Override
-  public File getThumbnail(String aasId) {
-    boolean isAuthorized = permissionResolver.hasPermission(Action.READ, new AasTargetInformation(aasId));
+		return decorated.getAssetInformation(shellId);
+	}
 
-    throwExceptionIfInsufficientPermission(isAuthorized);
+	@Override
+	public File getThumbnail(String aasId) {
+		boolean isAuthorized = permissionResolver.hasPermission(Action.READ, new AasTargetInformation(aasId));
 
-    return decorated.getThumbnail(aasId);
-  }
+		throwExceptionIfInsufficientPermission(isAuthorized);
 
-  @Override
-  public void setThumbnail(String aasId, String fileName, String contentType, InputStream inputStream) {
-    boolean isAuthorized = permissionResolver.hasPermission(Action.UPDATE, new AasTargetInformation(aasId));
+		return decorated.getThumbnail(aasId);
+	}
 
-    throwExceptionIfInsufficientPermission(isAuthorized);
+	@Override
+	public void setThumbnail(String aasId, String fileName, String contentType, InputStream inputStream) {
+		boolean isAuthorized = permissionResolver.hasPermission(Action.UPDATE, new AasTargetInformation(aasId));
 
-    decorated.setThumbnail(aasId, fileName, contentType, inputStream);
-  }
+		throwExceptionIfInsufficientPermission(isAuthorized);
 
-  @Override
-  public void deleteThumbnail(String aasId) {
-    boolean isAuthorized = permissionResolver.hasPermission(Action.DELETE, new AasTargetInformation(aasId));
+		decorated.setThumbnail(aasId, fileName, contentType, inputStream);
+	}
 
-    throwExceptionIfInsufficientPermission(isAuthorized);
+	@Override
+	public void deleteThumbnail(String aasId) {
+		boolean isAuthorized = permissionResolver.hasPermission(Action.DELETE, new AasTargetInformation(aasId));
 
-    decorated.deleteThumbnail(aasId);
-  }
+		throwExceptionIfInsufficientPermission(isAuthorized);
 
-  @Override
-  public String getName() {
-    return decorated.getName();
-  }
+		decorated.deleteThumbnail(aasId);
+	}
 
-  private void throwExceptionIfInsufficientPermission(boolean isAuthorized) {
-    if (!isAuthorized) {
-      throw ExceptionBuilderFactory.getInstance().insufficientPermissionException().build();
-    }
-  }
+	@Override
+	public String getName() {
+		return decorated.getName();
+	}
+
+	private void throwExceptionIfInsufficientPermission(boolean isAuthorized) {
+		if (!isAuthorized) {
+			throw ExceptionBuilderFactory.getInstance().insufficientPermissionException().build();
+		}
+	}
 
 }

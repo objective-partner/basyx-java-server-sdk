@@ -47,7 +47,7 @@ public class TestSubmodelRepositorySubmodelHTTP extends SubmodelRepositorySubmod
 
 	@BeforeClass
 	public static void startAASRepo() throws Exception {
-		appContext = new SpringApplication(DummySubmodelRepositoryComponent.class).run(new String[] {});
+		appContext = new SpringApplication(DummySubmodelRepositoryComponent.class).run();
 	}
 
 	@Override

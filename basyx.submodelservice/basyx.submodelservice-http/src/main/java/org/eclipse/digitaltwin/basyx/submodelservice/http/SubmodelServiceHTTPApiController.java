@@ -25,11 +25,11 @@
 
 package org.eclipse.digitaltwin.basyx.submodelservice.http;
 
-import java.util.Arrays;
-import java.util.List;
-
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+
+import java.util.Arrays;
+import java.util.List;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.OperationVariable;
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
@@ -62,7 +62,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class SubmodelServiceHTTPApiController implements SubmodelServiceHTTPApi {
 
 	private static final PaginationInfo NO_LIMIT_PAGINATION_INFO = new PaginationInfo(0, null);
-	private SubmodelService service;
+	private final SubmodelService service;
 
 	@Autowired
 	public SubmodelServiceHTTPApiController(SubmodelService service) {

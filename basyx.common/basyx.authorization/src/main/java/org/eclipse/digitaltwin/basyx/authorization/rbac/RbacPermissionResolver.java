@@ -25,6 +25,8 @@
 
 package org.eclipse.digitaltwin.basyx.authorization.rbac;
 
+import java.util.stream.Stream;
+
 /**
  * An interface for resolving Rbac permissions
  * 
@@ -32,6 +34,8 @@ package org.eclipse.digitaltwin.basyx.authorization.rbac;
  */
 public interface RbacPermissionResolver<T extends TargetInformation> {
 
-	public boolean hasPermission(Action action, T targetInformation);
-	
+	boolean hasPermission(Action action, T targetInformation);
+
+	Stream<RbacRule> getMatchingRules(Action action, Class<? extends TargetInformation> targetInformation);
+
 }

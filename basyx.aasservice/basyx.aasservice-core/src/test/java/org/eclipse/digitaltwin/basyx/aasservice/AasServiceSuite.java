@@ -23,7 +23,6 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.aasservice;
 
 import static org.junit.Assert.assertEquals;
@@ -56,7 +55,7 @@ public abstract class AasServiceSuite {
 	private static final PaginationInfo NO_LIMIT_PAGINATION_INFO = new PaginationInfo(0, null);
 
 	private AasService aasService;
-	
+
 	private AssetAdministrationShell aas;
 
 	protected abstract AasServiceFactory getAASServiceFactory();
@@ -90,8 +89,7 @@ public abstract class AasServiceSuite {
 
 		Reference submodelReference = getFirstSubmodelReference(submodelReferences);
 
-		assertTrue(
-				submodelReference.getKeys().stream().filter(ref -> ref.getValue() == "testKey").findAny().isPresent());
+		assertTrue(submodelReference.getKeys().stream().filter(ref -> ref.getValue() == "testKey").findAny().isPresent());
 	}
 
 	@Test
@@ -112,7 +110,7 @@ public abstract class AasServiceSuite {
 	public void getAssetInformation() {
 		assertEquals(aas.getAssetInformation(), aasService.getAssetInformation());
 	}
-	
+
 	@Test
 	public void setAssetInformation() {
 		AssetInformation assetInfo = createDummyAssetInformation();
@@ -121,9 +119,7 @@ public abstract class AasServiceSuite {
 	}
 
 	private AssetInformation createDummyAssetInformation() {
-		AssetInformation assetInfo = new DefaultAssetInformation.Builder().assetKind(AssetKind.INSTANCE)
-				.globalAssetId("assetIDTestKey")
-				.build();
+		AssetInformation assetInfo = new DefaultAssetInformation.Builder().assetKind(AssetKind.INSTANCE).globalAssetId("assetIDTestKey").build();
 		return assetInfo;
 	}
 
@@ -132,9 +128,6 @@ public abstract class AasServiceSuite {
 	}
 
 	private DefaultSubmodel createDummySubmodel() {
-		return new DefaultSubmodel.Builder()
-				.semanticId(
-						new DefaultReference.Builder().keys(new DefaultKey.Builder().value("testKey").build()).build())
-				.build();
+		return new DefaultSubmodel.Builder().semanticId(new DefaultReference.Builder().keys(new DefaultKey.Builder().value("testKey").build()).build()).build();
 	}
 }

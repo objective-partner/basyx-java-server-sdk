@@ -26,14 +26,19 @@
 package org.eclipse.digitaltwin.basyx.aasrepository.backend.inmemory;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
-import org.springframework.data.repository.CrudRepository;
+import org.eclipse.digitaltwin.basyx.aasrepository.backend.BaSyxCrudRepository;
+import org.eclipse.digitaltwin.basyx.core.FilterParams;
+import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
+import org.eclipse.digitaltwin.basyx.core.pagination.PaginationSupport;
 
 /**
  * InMemory implementation for the AAS backend
@@ -41,14 +46,14 @@ import org.springframework.data.repository.CrudRepository;
  * @author mateusmolina
  * 
  */
-public class AasInMemoryBackend implements CrudRepository<AssetAdministrationShell, String> {
+public class AasInMemoryBackend implements BaSyxCrudRepository<AssetAdministrationShell, String> {
 
-	private Map<String, AssetAdministrationShell> inMemoryStore = new LinkedHashMap<>();
+	private final Map<String, AssetAdministrationShell> inMemoryStore = new LinkedHashMap<>();
 
 	@Override
 	public <S extends AssetAdministrationShell> S save(S entity) {
 		inMemoryStore.put(entity.getId(), entity);
-		
+
 		return entity;
 	}
 
@@ -111,7 +116,16 @@ public class AasInMemoryBackend implements CrudRepository<AssetAdministrationShe
 	public void deleteAll() {
 		inMemoryStore.clear();
 	}
-	
 
+	@Override
+	public CursorResult<List<AssetAdministrationShell>> findAll(FilterParams filterParams) {
+		Iterable<AssetAdministrationShell> iterable = findAll();
+		List<AssetAdministrationShell> allAas = StreamSupport.stream(iterable.spliterator(), false).toList();
+
+		TreeMap<String, AssetAdministrationShell> aasMap = allAas.stream().collect(Collectors.toMap(AssetAdministrationShell::getId, aas -> aas, (a, b) -> a, TreeMap::new));
+
+		PaginationSupport<AssetAdministrationShell> paginationSupport = new PaginationSupport<>(aasMap, AssetAdministrationShell::getId);
+
+		return paginationSupport.getPaged(filterParams.getPaginationInfo());
+	}
 }
-

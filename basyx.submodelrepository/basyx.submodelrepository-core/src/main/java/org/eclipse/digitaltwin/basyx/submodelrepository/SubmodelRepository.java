@@ -25,8 +25,8 @@
 
 package org.eclipse.digitaltwin.basyx.submodelrepository;
 
-import java.util.List;
 import java.io.InputStream;
+import java.util.List;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.OperationVariable;
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
@@ -54,14 +54,14 @@ public interface SubmodelRepository {
 	 * 
 	 * @return a list of all found Submodels
 	 */
-	public CursorResult<List<Submodel>> getAllSubmodels(PaginationInfo pInfo);
+	CursorResult<List<Submodel>> getAllSubmodels(PaginationInfo pInfo);
 
-  /**
-   * Retrieves the metadata attributes of all Submodels from the repository
-   *
-   * @return a list of all found Submodels
-   */
-  public CursorResult<List<Submodel>> getAllSubmodelsMetadata(PaginationInfo pInfo);
+	/**
+	 * Retrieves the metadata attributes of all Submodels from the repository
+	 *
+	 * @return a list of all found Submodels
+	 */
+	CursorResult<List<Submodel>> getAllSubmodelsMetadata(PaginationInfo pInfo);
 
 	/**
 	 * Retrieves the Submodel with the specific id
@@ -70,7 +70,7 @@ public interface SubmodelRepository {
 	 * @return
 	 * @throws ElementDoesNotExistException
 	 */
-	public Submodel getSubmodel(String submodelId) throws ElementDoesNotExistException;
+	Submodel getSubmodel(String submodelId) throws ElementDoesNotExistException;
 
 	/**
 	 * Updates an existing Submodel
@@ -79,7 +79,7 @@ public interface SubmodelRepository {
 	 * @param submodel
 	 * @throws ElementDoesNotExistException
 	 */
-	public void updateSubmodel(String submodelId, Submodel submodel) throws ElementDoesNotExistException;
+	void updateSubmodel(String submodelId, Submodel submodel) throws ElementDoesNotExistException;
 
 	/**
 	 * Creates a new submodel
@@ -87,7 +87,7 @@ public interface SubmodelRepository {
 	 * @param submodel
 	 * @throws CollidingIdentifierException
 	 */
-	public void createSubmodel(Submodel submodel) throws CollidingIdentifierException, MissingIdentifierException;
+	void createSubmodel(Submodel submodel) throws CollidingIdentifierException, MissingIdentifierException;
 
 	/**
 	 * Deletes a Submodel
@@ -95,7 +95,7 @@ public interface SubmodelRepository {
 	 * @param submodelId
 	 * @throws ElementDoesNotExistException
 	 */
-	public void deleteSubmodel(String submodelId) throws ElementDoesNotExistException;
+	void deleteSubmodel(String submodelId) throws ElementDoesNotExistException;
 
 	/**
 	 * Retrieves all SubmodelElements of a Submodel
@@ -103,7 +103,7 @@ public interface SubmodelRepository {
 	 * @param submodelId
 	 * @return
 	 */
-	public CursorResult<List<SubmodelElement>> getSubmodelElements(String submodelId, PaginationInfo pInfo) throws ElementDoesNotExistException;
+	CursorResult<List<SubmodelElement>> getSubmodelElements(String submodelId, PaginationInfo pInfo) throws ElementDoesNotExistException;
 
 	/**
 	 * Retrieves a specific SubmodelElement of a Submodel
@@ -116,7 +116,7 @@ public interface SubmodelRepository {
 	 * @throws ElementDoesNotExistException
 	 *             if the SubmodelElement or the Submodel does not exist
 	 */
-	public SubmodelElement getSubmodelElement(String submodelId, String smeIdShort) throws ElementDoesNotExistException;
+	SubmodelElement getSubmodelElement(String submodelId, String smeIdShort) throws ElementDoesNotExistException;
 
 	/**
 	 * Retrieves the value of a specific SubmodelElement of a Submodel
@@ -129,7 +129,7 @@ public interface SubmodelRepository {
 	 * @throws ElementDoesNotExistException
 	 *             if the SubmodelElement or the Submodel does not exist
 	 */
-	public SubmodelElementValue getSubmodelElementValue(String submodelId, String smeIdShort) throws ElementDoesNotExistException;
+	SubmodelElementValue getSubmodelElementValue(String submodelId, String smeIdShort) throws ElementDoesNotExistException;
 
 	/**
 	 * Sets the value of a specific SubmodelElement of a Submodel
@@ -143,7 +143,7 @@ public interface SubmodelRepository {
 	 * @throws ElementDoesNotExistException
 	 *             if the SubmodelElement or the Submodel does not exist
 	 */
-	public void setSubmodelElementValue(String submodelId, String smeIdShort, SubmodelElementValue value) throws ElementDoesNotExistException;
+	void setSubmodelElementValue(String submodelId, String smeIdShort, SubmodelElementValue value) throws ElementDoesNotExistException;
 
 	/**
 	 * Creates a SubmodelElement in a Submodel
@@ -153,7 +153,7 @@ public interface SubmodelRepository {
 	 * @param smElement
 	 *            the SubmodelElement
 	 */
-	public void createSubmodelElement(String submodelId, SubmodelElement smElement);
+	void createSubmodelElement(String submodelId, SubmodelElement smElement);
 
 	/**
 	 * Creates a nested SubmodelElement
@@ -165,7 +165,7 @@ public interface SubmodelRepository {
 	 * @param smElement
 	 *            the SubmodelElement
 	 */
-	public void createSubmodelElement(String submodelId, String idShortPath, SubmodelElement smElement) throws ElementDoesNotExistException;
+	void createSubmodelElement(String submodelId, String idShortPath, SubmodelElement smElement) throws ElementDoesNotExistException;
 
 	/**
 	 * Deletes a SubmodelElement
@@ -175,14 +175,14 @@ public interface SubmodelRepository {
 	 * @param idShortPath
 	 *            the SubmodelElement IdShort
 	 */
-	public void deleteSubmodelElement(String submodelId, String idShortPath) throws ElementDoesNotExistException;
+	void deleteSubmodelElement(String submodelId, String idShortPath) throws ElementDoesNotExistException;
 
 	/**
 	 * Returns the name of the repository
 	 * 
 	 * @return repoName
 	 */
-	public default String getName() {
+	default String getName() {
 		return "sm-repo";
 	}
 
@@ -199,7 +199,7 @@ public interface SubmodelRepository {
 	 *             If the operation defined in the idShortPath does not exist
 	 * @return
 	 */
-	public OperationVariable[] invokeOperation(String submodelId, String idShortPath, OperationVariable[] input) throws ElementDoesNotExistException;
+	OperationVariable[] invokeOperation(String submodelId, String idShortPath, OperationVariable[] input) throws ElementDoesNotExistException;
 
 	/**
 	 * Retrieves the Submodel as Value-Only_representation with the specific id
@@ -208,7 +208,7 @@ public interface SubmodelRepository {
 	 * @return
 	 * @throws ElementDoesNotExistException
 	 */
-	public SubmodelValueOnly getSubmodelByIdValueOnly(String submodelId) throws ElementDoesNotExistException;
+	SubmodelValueOnly getSubmodelByIdValueOnly(String submodelId) throws ElementDoesNotExistException;
 
 	/**
 	 * Retrieves only the Metadata of a submodel
@@ -217,7 +217,7 @@ public interface SubmodelRepository {
 	 * @return
 	 * @throws ElementDoesNotExistException
 	 */
-	public Submodel getSubmodelByIdMetadata(String submodelId) throws ElementDoesNotExistException;
+	Submodel getSubmodelByIdMetadata(String submodelId) throws ElementDoesNotExistException;
 
 	/**
 	 * Retrieves the file of a file submodelelement
@@ -232,7 +232,7 @@ public interface SubmodelRepository {
 	 * @throws ElementNotAFileException
 	 * @throws FileDoesNotExistException
 	 */
-	public java.io.File getFileByPathSubmodel(String submodelId, String idShortPath) throws ElementDoesNotExistException, ElementNotAFileException, FileDoesNotExistException;
+	java.io.File getFileByPathSubmodel(String submodelId, String idShortPath) throws ElementDoesNotExistException, ElementNotAFileException, FileDoesNotExistException;
 
 	/**
 	 * Uploads a file to a file submodelelement
@@ -247,7 +247,7 @@ public interface SubmodelRepository {
 	 * @throws ElementDoesNotExistException
 	 * @throws ElementNotAFileException
 	 */
-	public void setFileValue(String submodelId, String idShortPath, String fileName, InputStream inputStream) throws ElementDoesNotExistException, ElementNotAFileException;
+	void setFileValue(String submodelId, String idShortPath, String fileName, InputStream inputStream) throws ElementDoesNotExistException, ElementNotAFileException;
 
 	/**
 	 * Deletes the file of a file submodelelement
@@ -261,5 +261,5 @@ public interface SubmodelRepository {
 	 * @throws ElementNotAFileException
 	 * @throws FileDoesNotExistException
 	 */
-	public void deleteFileValue(String submodelId, String idShortPath) throws ElementDoesNotExistException, ElementNotAFileException, FileDoesNotExistException;
+	void deleteFileValue(String submodelId, String idShortPath) throws ElementDoesNotExistException, ElementNotAFileException, FileDoesNotExistException;
 }

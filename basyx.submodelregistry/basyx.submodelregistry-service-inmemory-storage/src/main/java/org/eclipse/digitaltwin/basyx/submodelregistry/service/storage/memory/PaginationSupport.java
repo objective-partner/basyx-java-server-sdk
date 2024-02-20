@@ -32,22 +32,22 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import lombok.RequiredArgsConstructor;
+
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 import org.eclipse.digitaltwin.basyx.submodelregistry.model.SubmodelDescriptor;
-
-import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class PaginationSupport {
 
 	private final TreeMap<String, SubmodelDescriptor> sortedMap;
-	
+
 	public CursorResult<List<SubmodelDescriptor>> getDescriptorsPaged(PaginationInfo pInfo) {
 		Map<String, SubmodelDescriptor> cursorView = getCursorView(pInfo);
 		Stream<Entry<String, SubmodelDescriptor>> eStream = cursorView.entrySet().stream();
 		Stream<SubmodelDescriptor> tStream = eStream.map(Entry::getValue);
-		tStream = applyLimit(pInfo, tStream);		
+		tStream = applyLimit(pInfo, tStream);
 		List<SubmodelDescriptor> descriptorList = tStream.collect(Collectors.toList());
 		String cursor = computeNextCursor(descriptorList);
 		return new CursorResult<List<SubmodelDescriptor>>(cursor, Collections.unmodifiableList(descriptorList));
@@ -62,7 +62,7 @@ public class PaginationSupport {
 
 	private String computeNextCursor(List<SubmodelDescriptor> descriptorList) {
 		if (!descriptorList.isEmpty()) {
-			SubmodelDescriptor last = descriptorList.get(descriptorList.size()-1);
+			SubmodelDescriptor last = descriptorList.get(descriptorList.size() - 1);
 			String lastId = last.getId();
 			return sortedMap.higherKey(lastId);
 		}

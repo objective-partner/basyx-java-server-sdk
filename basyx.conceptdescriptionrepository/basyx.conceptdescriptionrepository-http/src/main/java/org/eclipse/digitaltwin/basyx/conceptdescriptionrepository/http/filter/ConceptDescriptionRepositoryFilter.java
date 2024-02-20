@@ -42,7 +42,7 @@ import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 public class ConceptDescriptionRepositoryFilter {
 
 	private static final int MAX_NUM_OF_EXPECTED_PARAMETERS = 1;
-	private ConceptDescriptionRepository repository;
+	private final ConceptDescriptionRepository repository;
 
 	public ConceptDescriptionRepositoryFilter(ConceptDescriptionRepository conceptDescriptionRepository) {
 		this.repository = conceptDescriptionRepository;

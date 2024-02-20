@@ -34,20 +34,19 @@ import org.slf4j.LoggerFactory;
 
 /**
  * An abstract permission resolver for {@link TargetInformation}
- * 
+ *
  * @param <T>
- * 
  * @author danish
  */
 public class SimpleRbacPermissionResolver<T extends TargetInformation> implements RbacPermissionResolver<T> {
 
 	private static final String ALL_ALLOWED_WILDCARD = "*";
 
-	private Logger logger = LoggerFactory.getLogger(SimpleRbacPermissionResolver.class);
+	private final Logger logger = LoggerFactory.getLogger(SimpleRbacPermissionResolver.class);
 
-	private RbacStorage rbacStorage;
-	private RoleProvider roleAuthenticator;
-	private TargetPermissionVerifier<T> targetPermissionVerifier;
+	private final RbacStorage rbacStorage;
+	private final RoleProvider roleAuthenticator;
+	private final TargetPermissionVerifier<T> targetPermissionVerifier;
 
 	public SimpleRbacPermissionResolver(RbacStorage rbacStorage, RoleProvider roleAuthenticator, TargetPermissionVerifier<T> targetPermissionVerifier) {
 		super();
@@ -60,28 +59,31 @@ public class SimpleRbacPermissionResolver<T extends TargetInformation> implement
 		return rbacStorage;
 	}
 
-	public RoleProvider getRoleProvider() {
-		return roleAuthenticator;
+	public List<String> getRoles() {
+		return roleAuthenticator.getRoles();
 	}
 
 	/**
 	 * Checks whether the {@link TargetInformation} has sufficient permission for
 	 * the {@link Action} based on the {@link RbacRule}
-	 * 
+	 *
 	 * @param action
 	 * @param targetInformation
-	 * 
-	 * @return 
+	 * @return
 	 */
 	public boolean hasPermission(final Action action, final T targetInformation) {
-		final Optional<RbacRule> matchingRule = getMatchingRules(roleAuthenticator.getRoles(), action, targetInformation).findAny();
-		logger.info("roles: {}, action: {}, targetInfo: {} - matching-rule?: {}", roleAuthenticator.getRoles(), action, targetInformation, matchingRule);
+		final Optional<RbacRule> matchingRule = getMatchingRules(action, targetInformation).findAny();
+		logger.info("roles: {}, action: {}, targetInfo: {} - matching-rule?: {}", getRoles(), action, targetInformation, matchingRule);
 		return matchingRule.isPresent();
 	}
 
-	private Stream<RbacRule> getMatchingRules(final List<String> roles, final Action action, final T targetInformation) {
-		return this.rbacStorage.getRbacRules().parallelStream().filter(rbacRule -> checkRolesMatchRbacRule(rbacRule, roles)).filter(rbacRule -> checkActionMatchesRbacRule(rbacRule, action))
-				.filter(rbacRule -> checkRbacRuleMatchesTargetInfo(rbacRule, targetInformation));
+	public Stream<RbacRule> getMatchingRules(final Action action, final Class<? extends TargetInformation> targetInformation) {
+		return this.rbacStorage.getRbacRules().parallelStream().filter(rbacRule -> checkRolesMatchRbacRule(rbacRule, roleAuthenticator.getRoles())).filter(rbacRule -> checkActionMatchesRbacRule(rbacRule, action))
+				.filter(rbacRule -> checkRbacRuleMatchesTargetInfoType(rbacRule, targetInformation));
+	}
+
+	public Stream<RbacRule> getMatchingRules(final Action action, final T targetInformation) {
+		return getMatchingRules(action, targetInformation.getClass()).filter(rbacRule -> checkRbacRuleMatchesTargetInfoValue(rbacRule, targetInformation));
 	}
 
 	private boolean checkRolesMatchRbacRule(final RbacRule rbacRule, final List<String> roles) {
@@ -92,11 +94,11 @@ public class SimpleRbacPermissionResolver<T extends TargetInformation> implement
 		return rbacRule.getAction().stream().anyMatch(rbacRuleAction -> rbacRuleAction.equals(action));
 	}
 
-	private boolean checkRbacRuleMatchesTargetInfo(final RbacRule rbacRule, final T targetInformation) {
-		
-		if (!(targetInformation.getClass().isInstance(rbacRule.getTargetInformation())))
-			return false;
-		
+	private boolean checkRbacRuleMatchesTargetInfoType(final RbacRule rbacRule, final Class<? extends TargetInformation> targetInformation) {
+		return targetInformation.isInstance(rbacRule.getTargetInformation());
+	}
+
+	private boolean checkRbacRuleMatchesTargetInfoValue(RbacRule rbacRule, T targetInformation) {
 		return targetPermissionVerifier.isVerified(rbacRule, targetInformation);
 	}
 

@@ -31,7 +31,6 @@ import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -355,7 +354,7 @@ public abstract class SubmodelRepositorySuite {
 	}
 
 	@Test
-	public void deleteFile() throws ElementDoesNotExistException, ElementNotAFileException, FileNotFoundException, IOException {
+	public void deleteFile() throws ElementDoesNotExistException, ElementNotAFileException, IOException {
 		SubmodelRepository repo = getSubmodelRepositoryWithDummySubmodels();
 
 		repo.setFileValue(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_FILE_ID_SHORT, "SampleJsonFile.json", getInputStreamOfFileFromClasspath("SampleJsonFile.json"));
@@ -513,7 +512,6 @@ public abstract class SubmodelRepositorySuite {
 			repo.getFileByPathSubmodel(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_FILE_ID_SHORT);
 			repo.deleteFileValue(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_FILE_ID_SHORT);
 		} catch (FileDoesNotExistException e) {
-			return;
 		}
 
 	}
@@ -540,13 +538,13 @@ public abstract class SubmodelRepositorySuite {
 		return DummySubmodelFactory.SUBMODEL_OPERATIONAL_DATA_ELEMENT_COLLECTION_ID_SHORT + "." + DummySubmodelFactory.SUBMODEL_OPERATIONAL_DATA_ELEMENT_LIST_ID_SHORT + "[0]";
 	}
 
-	private InputStream getInputStreamOfFileFromClasspath(String fileName) throws FileNotFoundException, IOException {
+	private InputStream getInputStreamOfFileFromClasspath(String fileName) throws IOException {
 		ClassPathResource classPathResource = new ClassPathResource(fileName);
 
 		return classPathResource.getInputStream();
 	}
 
-	private InputStream getInputStreamOfDummyFile() throws FileNotFoundException, IOException {
+	private InputStream getInputStreamOfDummyFile() throws IOException {
 		return new ByteArrayInputStream(DUMMY_FILE_CONTENT.getBytes());
 	}
 

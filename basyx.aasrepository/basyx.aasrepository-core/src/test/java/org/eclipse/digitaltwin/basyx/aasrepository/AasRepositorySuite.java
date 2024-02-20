@@ -30,7 +30,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -75,13 +74,13 @@ public abstract class AasRepositorySuite {
 	private static final String AAS_1_ID = "aas1/s";
 	private static final String AAS_EMPTY_ID = " ";
 	private static final String AAS_NULL_ID = null;
-	
+
 	private AssetAdministrationShell aas1;
 	private AssetAdministrationShell aas2;
 
 	private final PaginationInfo noLimitPaginationInfo = new PaginationInfo(0, "");
 
-	private List<AssetAdministrationShell> preconfiguredShells = new ArrayList<>();
+	private final List<AssetAdministrationShell> preconfiguredShells = new ArrayList<>();
 
 	private static final String DUMMY_SUBMODEL_ID = "dummySubmodelId";
 	private static final String THUMBNAIL_FILE_PATH_1 = "BaSyx-Logo-1.png";
@@ -138,12 +137,12 @@ public abstract class AasRepositorySuite {
 	public void createWithCollidingAasIdentifiers() throws CollidingIdentifierException {
 		aasRepo.createAas(aas1);
 	}
-	
+
 	@Test(expected = MissingIdentifierException.class)
 	public void createWithEmptyAasIdentifier() {
 		aasRepo.createAas(new DefaultAssetAdministrationShell.Builder().id(AAS_EMPTY_ID).build());
 	}
-	
+
 	@Test(expected = MissingIdentifierException.class)
 	public void createWithNullAasIdentifier() {
 		aasRepo.createAas(new DefaultAssetAdministrationShell.Builder().id(AAS_NULL_ID).build());
@@ -289,7 +288,7 @@ public abstract class AasRepositorySuite {
 	}
 
 	@Test
-	public void updateThumbnail() throws FileNotFoundException, IOException {
+	public void updateThumbnail() throws IOException {
 		// Set the thumbnail of the AAS for the first time
 		aasRepo.setThumbnail(AAS2, THUMBNAIL_FILE_PATH_1, "", getInputStreamOfFileFromClasspath(THUMBNAIL_FILE_PATH_1));
 
@@ -303,7 +302,7 @@ public abstract class AasRepositorySuite {
 	}
 
 	@Test
-	public void setThumbnail() throws FileNotFoundException, IOException {
+	public void setThumbnail() throws IOException {
 		aasRepo.setThumbnail(AAS2, THUMBNAIL_FILE_PATH_1, "", getInputStreamOfFileFromClasspath(THUMBNAIL_FILE_PATH_1));
 
 		File retrievedThumbnail = aasRepo.getThumbnail(AAS2);
@@ -327,7 +326,7 @@ public abstract class AasRepositorySuite {
 	}
 
 	@Test(expected = FileDoesNotExistException.class)
-	public void deleteThumbnail() throws FileNotFoundException, IOException {
+	public void deleteThumbnail() throws IOException {
 		aasRepo.setThumbnail(AAS2, THUMBNAIL_FILE_PATH_1, "", getInputStreamOfFileFromClasspath(THUMBNAIL_FILE_PATH_1));
 		aasRepo.deleteThumbnail(AAS2);
 
@@ -352,7 +351,7 @@ public abstract class AasRepositorySuite {
 	private AssetInformation createDummyAssetInformation() {
 		return new DefaultAssetInformation.Builder().assetKind(AssetKind.INSTANCE).globalAssetId("assetIDTestKey").build();
 	}
-	
+
 	/**
 	 * @return 5 References each with value of smRef_(0-4)
 	 */
@@ -365,7 +364,7 @@ public abstract class AasRepositorySuite {
 		return referenceList;
 	}
 
-	private InputStream getInputStreamOfFileFromClasspath(String fileName) throws FileNotFoundException, IOException {
+	private InputStream getInputStreamOfFileFromClasspath(String fileName) throws IOException {
 		ClassPathResource classPathResource = new ClassPathResource(fileName);
 
 		return classPathResource.getInputStream();

@@ -25,14 +25,14 @@
 
 package org.eclipse.digitaltwin.basyx.submodelrepository.http;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.OperationVariable;
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
@@ -72,7 +72,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @RestController
 public class SubmodelRepositoryApiHTTPController implements SubmodelRepositoryHTTPApi {
 
-	private SubmodelRepository repository;
+	private final SubmodelRepository repository;
 
 	@Autowired
 	public SubmodelRepositoryApiHTTPController(SubmodelRepository repository) {
@@ -101,7 +101,8 @@ public class SubmodelRepositoryApiHTTPController implements SubmodelRepositoryHT
 	}
 
 	@Override
-	public ResponseEntity<PagedResult> getAllSubmodels(@Base64UrlEncodedIdentifierSize(min = 1, max = 3072) @Valid Base64UrlEncodedIdentifier semanticId, @Valid String idShort, @Min(1) @Valid Integer limit, @Valid Base64UrlEncodedCursor cursor, @Valid String level, @Valid String extent) {
+	public ResponseEntity<PagedResult> getAllSubmodels(@Base64UrlEncodedIdentifierSize(min = 1, max = 3072) @Valid Base64UrlEncodedIdentifier semanticId, @Valid String idShort, @Min(1) @Valid Integer limit,
+			@Valid Base64UrlEncodedCursor cursor, @Valid String level, @Valid String extent) {
 		if (limit == null) {
 			limit = 100;
 		}
@@ -125,9 +126,8 @@ public class SubmodelRepositoryApiHTTPController implements SubmodelRepositoryHT
 		return new ResponseEntity<PagedResult>(paginatedSubmodel, HttpStatus.OK);
 	}
 
-  @Override
-  public ResponseEntity<PagedResult> getAllSubmodelsMetadata(Base64UrlEncodedIdentifier semanticId, String idShort,
-      Integer limit, Base64UrlEncodedCursor cursor, String extent) {
+	@Override
+	public ResponseEntity<PagedResult> getAllSubmodelsMetadata(Base64UrlEncodedIdentifier semanticId, String idShort, Integer limit, Base64UrlEncodedCursor cursor, String extent) {
 		if (limit == null) {
 			limit = 100;
 		}
@@ -148,7 +148,8 @@ public class SubmodelRepositoryApiHTTPController implements SubmodelRepositoryHT
 		paginatedSubmodel.result(new ArrayList<>(cursorResult.getResult()));
 		paginatedSubmodel.setPagingMetadata(new PagedResultPagingMetadata().cursor(encodedCursor));
 
-		return new ResponseEntity<PagedResult>(paginatedSubmodel, HttpStatus.OK);  }
+		return new ResponseEntity<PagedResult>(paginatedSubmodel, HttpStatus.OK);
+	}
 
 	@Override
 	public ResponseEntity<Submodel> getSubmodelById(Base64UrlEncodedIdentifier submodelIdentifier, @Valid String level, @Valid String extent) {

@@ -25,16 +25,15 @@
 
 package org.eclipse.digitaltwin.basyx.aasrepository.http;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 import java.util.List;
+
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetInformation;
 import org.eclipse.digitaltwin.aas4j.v3.model.Reference;
@@ -57,6 +56,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2022-01-10T15:59:05.892Z[GMT]")
 @RestController
@@ -115,7 +118,10 @@ public class AasRepositoryApiHTTPController implements AasRepositoryHTTPApi {
 		}
 
 		PaginationInfo paginationInfo = new PaginationInfo(limit, decodedCursor);
-		CursorResult<List<AssetAdministrationShell>> paginatedAAS = aasRepository.getAllAas(paginationInfo);
+
+		AasFilterParams filterParams = new AasFilterParams(idShort, paginationInfo, null, assetIds);
+
+		CursorResult<List<AssetAdministrationShell>> paginatedAAS = aasRepository.getAllAas(filterParams);
 
 		GetAssetAdministrationShellsResult result = new GetAssetAdministrationShellsResult();
 
