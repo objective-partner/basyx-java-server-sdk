@@ -33,8 +33,10 @@ import java.util.List;
  * @author danish
  */
 public interface RbacStorage {
-	
-    public List<RbacRule> getRbacRules();
-    public void addRule(RbacRule rbacRule);
-    public void removeRule(RbacRule rbacRule);
+
+	public List<RbacRule> getRbacRules();
+
+	public void addRule(RbacRule rbacRule);
+
+	public void removeRule(RbacRule rbacRule);
 }

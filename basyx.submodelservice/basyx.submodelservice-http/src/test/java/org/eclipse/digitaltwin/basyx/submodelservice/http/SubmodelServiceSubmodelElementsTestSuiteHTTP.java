@@ -453,8 +453,8 @@ public abstract class SubmodelServiceSubmodelElementsTestSuiteHTTP {
 		BaSyxHttpTestUtils.assertSameJSONContent(expectedValue, BaSyxHttpTestUtils.getResponseAsString(response));
 
 	}
-	
-	private String getJSONWithoutCursorInfo(String response) throws JsonMappingException, JsonProcessingException  {
+
+	private String getJSONWithoutCursorInfo(String response) throws JsonMappingException, JsonProcessingException {
 		return BaSyxHttpTestUtils.removeCursorFromJSON(response);
 	}
 

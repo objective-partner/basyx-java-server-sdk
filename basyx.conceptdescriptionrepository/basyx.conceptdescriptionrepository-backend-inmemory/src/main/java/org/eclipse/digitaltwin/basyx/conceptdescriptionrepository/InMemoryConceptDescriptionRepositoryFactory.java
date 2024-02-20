@@ -30,21 +30,23 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Component;
 
 /**
- * ConceptDescriptionRepository factory returning an in-memory backend ConceptDescriptionRepository
+ * ConceptDescriptionRepository factory returning an in-memory backend
+ * ConceptDescriptionRepository
  * 
  * @author schnicke, danish
  */
 @Component
 @ConditionalOnExpression("'${basyx.backend}'.equals('InMemory')")
 public class InMemoryConceptDescriptionRepositoryFactory implements ConceptDescriptionRepositoryFactory {
-	
+
 	private String cdRepositoryName;
-	
+
 	@Autowired(required = false)
-	public InMemoryConceptDescriptionRepositoryFactory() { }
-	
+	public InMemoryConceptDescriptionRepositoryFactory() {
+	}
+
 	@Autowired(required = false)
-	public InMemoryConceptDescriptionRepositoryFactory(@Value("${basyx.cdrepo.name:cd-repo}") String cdRepositoryName) { 
+	public InMemoryConceptDescriptionRepositoryFactory(@Value("${basyx.cdrepo.name:cd-repo}") String cdRepositoryName) {
 		this.cdRepositoryName = cdRepositoryName;
 	}
 

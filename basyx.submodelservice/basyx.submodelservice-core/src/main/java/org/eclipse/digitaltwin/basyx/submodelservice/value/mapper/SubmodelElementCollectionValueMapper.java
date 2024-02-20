@@ -23,21 +23,21 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.submodelservice.value.mapper;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElementCollection;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelElementCollectionValue;
 
 /**
- * Maps {@link SubmodelElementCollection} value to {@link SubmodelElementCollectionValue} 
+ * Maps {@link SubmodelElementCollection} value to
+ * {@link SubmodelElementCollectionValue}
  * 
  * @author danish
  *
  */
 public class SubmodelElementCollectionValueMapper implements ValueMapper<SubmodelElementCollectionValue> {
 	private SubmodelElementCollection submodelElementCollection;
-	
+
 	public SubmodelElementCollectionValueMapper(SubmodelElementCollection submodelElementCollection) {
 		this.submodelElementCollection = submodelElementCollection;
 	}
@@ -51,5 +51,5 @@ public class SubmodelElementCollectionValueMapper implements ValueMapper<Submode
 	public void setValue(SubmodelElementCollectionValue submodelElementCollectionValue) {
 		ValueMapperUtil.setValueOfSubmodelElementWithValueOnly(submodelElementCollection.getValue(), submodelElementCollectionValue.getValue());
 	}
-	
+
 }

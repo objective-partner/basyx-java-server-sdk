@@ -36,12 +36,12 @@ import org.eclipse.digitaltwin.aas4j.v3.model.File;
 public class FileBlobValue implements SubmodelElementValue {
 	private String contentType;
 	private String value;
-	
+
 	@SuppressWarnings("unused")
 	private FileBlobValue() {
 		super();
 	}
-	
+
 	public FileBlobValue(String contentType, String value) {
 		this.contentType = contentType;
 		this.value = value;

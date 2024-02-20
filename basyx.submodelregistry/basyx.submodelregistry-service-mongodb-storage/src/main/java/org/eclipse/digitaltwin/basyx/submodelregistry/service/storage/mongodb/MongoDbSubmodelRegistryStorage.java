@@ -24,16 +24,11 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.submodelregistry.service.storage.mongodb;
 
-import com.mongodb.ClientSessionOptions;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
@@ -51,6 +46,11 @@ import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.aggregation.SortOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+
+import com.mongodb.ClientSessionOptions;
+
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class MongoDbSubmodelRegistryStorage implements SubmodelRegistryStorage {

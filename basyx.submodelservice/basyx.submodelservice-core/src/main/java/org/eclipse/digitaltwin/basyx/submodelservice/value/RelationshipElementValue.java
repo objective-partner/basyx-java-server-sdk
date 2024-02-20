@@ -35,11 +35,11 @@ import org.eclipse.digitaltwin.aas4j.v3.model.RelationshipElement;
 public class RelationshipElementValue implements SubmodelElementValue {
 	private ReferenceValue first;
 	private ReferenceValue second;
-	
+
 	protected RelationshipElementValue() {
 		super();
 	}
-	
+
 	public RelationshipElementValue(ReferenceValue first, ReferenceValue second) {
 		this.first = first;
 		this.second = second;

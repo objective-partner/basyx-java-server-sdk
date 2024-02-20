@@ -27,7 +27,6 @@ package org.eclipse.digitaltwin.basyx.aasrepository.backend;
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.digitaltwin.basyx.aasrepository.AasRepository;
-import org.eclipse.digitaltwin.basyx.aasrepository.backend.CrudAasRepository;
 import org.junit.Test;
 
 /**

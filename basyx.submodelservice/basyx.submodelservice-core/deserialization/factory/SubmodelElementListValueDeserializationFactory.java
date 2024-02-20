@@ -23,35 +23,35 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.submodelrepository.http.deserialization.factory;
 
 import java.util.List;
 
 import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelElementListValue;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelElementValue;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Factory class to create deserialized {@link SubmodelElementListValue} based on
- * the content
+ * Factory class to create deserialized {@link SubmodelElementListValue} based
+ * on the content
  * 
  * @author danish
  *
  */
 public class SubmodelElementListValueDeserializationFactory {
-	
+
 	private ObjectMapper objectMapper;
 	private JsonNode node;
-	
+
 	public SubmodelElementListValueDeserializationFactory(ObjectMapper objectMapper, JsonNode node) {
 		this.objectMapper = objectMapper;
 		this.node = node;
 	}
-	
+
 	/**
 	 * Deserializes the corresponding {@link SubmodelElementListValue} based on the
 	 * JSON content
@@ -60,8 +60,9 @@ public class SubmodelElementListValueDeserializationFactory {
 	 * 
 	 */
 	public SubmodelElementListValue create() throws JsonProcessingException {
-		List<SubmodelElementValue> submodelElementValues = objectMapper.readValue(node.toString(), new TypeReference<List<SubmodelElementValue>>() {});
-		
+		List<SubmodelElementValue> submodelElementValues = objectMapper.readValue(node.toString(), new TypeReference<List<SubmodelElementValue>>() {
+		});
+
 		return new SubmodelElementListValue(submodelElementValues);
 	}
 

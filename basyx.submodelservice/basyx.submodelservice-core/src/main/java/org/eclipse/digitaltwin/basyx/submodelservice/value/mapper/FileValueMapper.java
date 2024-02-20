@@ -28,14 +28,14 @@ import org.eclipse.digitaltwin.aas4j.v3.model.File;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.FileBlobValue;
 
 /**
- * Maps {@link File} value to {@link FileBlobValue} 
+ * Maps {@link File} value to {@link FileBlobValue}
  * 
  * @author danish
  *
  */
 public class FileValueMapper implements ValueMapper<FileBlobValue> {
 	private File file;
-	
+
 	public FileValueMapper(File file) {
 		this.file = file;
 	}

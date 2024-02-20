@@ -44,13 +44,13 @@ public class RegistryIntegrationSubmodelRepositoryFeature implements SubmodelRep
 	public static final String FEATURENAME = "basyx.submodelrepository.feature.registryintegration";
 
 	private SubmodelRepositoryRegistryLink submodelRepositoryRegistryLink;
-	
+
 	@Value("${" + FEATURENAME + ":}")
 	private String registryBaseURL;
-	
+
 	@Value("${basyx.externalurl:}")
 	private String submodelRepositoryExternalBaseURL;
-	
+
 	private AttributeMapper attributeMapper;
 
 	@Autowired

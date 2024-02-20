@@ -27,6 +27,7 @@ package org.eclipse.digitaltwin.basyx.aasenvironment.preconfiguration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import org.eclipse.digitaltwin.aas4j.v3.model.Environment;
 import org.eclipse.digitaltwin.aas4j.v3.model.Identifiable;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
@@ -39,26 +40,25 @@ import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
  */
 public class IndentifiableAssertion {
 
-  private final Set<String> currentShellIds = new HashSet<>();
-  private final Set<String> currentSubmodelIds = new HashSet<>();
+	private final Set<String> currentShellIds = new HashSet<>();
+	private final Set<String> currentSubmodelIds = new HashSet<>();
 
-  public void assertNoDuplicateIds(Environment environment) {
-    assertNoDuplicateIds(environment.getAssetAdministrationShells(), currentShellIds);
-    assertNoDuplicateIds(environment.getSubmodels(), currentSubmodelIds);
-  }
+	public void assertNoDuplicateIds(Environment environment) {
+		assertNoDuplicateIds(environment.getAssetAdministrationShells(), currentShellIds);
+		assertNoDuplicateIds(environment.getSubmodels(), currentSubmodelIds);
+	}
 
-  private <T extends Identifiable> void assertNoDuplicateIds(List<T> identifiables, Set<String> currentIds)
-      throws CollidingIdentifierException {
-    if (identifiables == null) {
-      return;
-    }
-    for (T eachIdentifiable : identifiables) {
-      String id = eachIdentifiable.getId();
-      boolean success = currentIds.add(id);
-      if (!success) {
-        throw ExceptionBuilderFactory.getInstance().collidingIdentifierException().collidingIdentifier(id).build();
-      }
-    }
-  }
+	private <T extends Identifiable> void assertNoDuplicateIds(List<T> identifiables, Set<String> currentIds) throws CollidingIdentifierException {
+		if (identifiables == null) {
+			return;
+		}
+		for (T eachIdentifiable : identifiables) {
+			String id = eachIdentifiable.getId();
+			boolean success = currentIds.add(id);
+			if (!success) {
+				throw ExceptionBuilderFactory.getInstance().collidingIdentifierException().collidingIdentifier(id).build();
+			}
+		}
+	}
 
 }

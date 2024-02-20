@@ -27,6 +27,7 @@ package org.eclipse.digitaltwin.basyx.conceptdescriptionrepository.core;
 
 import java.util.Arrays;
 import java.util.Collection;
+
 import org.eclipse.digitaltwin.aas4j.v3.model.ConceptDescription;
 import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultConceptDescription;
 
@@ -45,35 +46,29 @@ public class DummyConceptDescriptionFactory {
 	public static ConceptDescription createConceptDescription() {
 		ConceptDescriptionRepositorySuiteHelper helper = new ConceptDescriptionRepositorySuiteHelper();
 
-		return new DefaultConceptDescription.Builder().id(ConceptDescriptionRepositorySuiteHelper.CONCEPT_DESCRIPTION_ID)
-				.idShort(ConceptDescriptionRepositorySuiteHelper.CONCEPT_DESCRIPTION_ID_SHORT)
-				.isCaseOf(Arrays.asList(helper.CD_FIRST_REFERENCE, helper.CD_SECOND_REFERENCE))
-				.administration(helper.CD_ADMINISTRATIVE_INFORMATION).description(helper.CD_DESCRIPTIONS)
-				.displayName(helper.CD_DISPLAY_NAME).build();
+		return new DefaultConceptDescription.Builder().id(ConceptDescriptionRepositorySuiteHelper.CONCEPT_DESCRIPTION_ID).idShort(ConceptDescriptionRepositorySuiteHelper.CONCEPT_DESCRIPTION_ID_SHORT)
+				.isCaseOf(Arrays.asList(helper.CD_FIRST_REFERENCE, helper.CD_SECOND_REFERENCE)).administration(helper.CD_ADMINISTRATIVE_INFORMATION).description(helper.CD_DESCRIPTIONS).displayName(helper.CD_DISPLAY_NAME).build();
 	}
 
 	public static ConceptDescription createBasicConceptDescription() {
 		ConceptDescriptionRepositorySuiteHelper helper = new ConceptDescriptionRepositorySuiteHelper();
 
-		return new DefaultConceptDescription.Builder().id(ConceptDescriptionRepositorySuiteHelper.BASIC_CONCEPT_DESCRIPTION_ID)
-				.idShort(ConceptDescriptionRepositorySuiteHelper.BASIC_CONCEPT_DESCRIPTION_ID_SHORT)
+		return new DefaultConceptDescription.Builder().id(ConceptDescriptionRepositorySuiteHelper.BASIC_CONCEPT_DESCRIPTION_ID).idShort(ConceptDescriptionRepositorySuiteHelper.BASIC_CONCEPT_DESCRIPTION_ID_SHORT)
 				.isCaseOf(Arrays.asList(helper.BCD_FIRST_REFERENCE, helper.BCD_SECOND_REFERENCE)).build();
 	}
-	
+
 	public static ConceptDescription createBasicConceptDescriptionHavingCommonIsCaseOf() {
 		ConceptDescriptionRepositorySuiteHelper helper = new ConceptDescriptionRepositorySuiteHelper();
-		
+
 		return new DefaultConceptDescription.Builder().id(ConceptDescriptionRepositorySuiteHelper.BASIC_CONCEPT_DESCRIPTION_COMMON_IS_CASEOF_ID)
-				.idShort(ConceptDescriptionRepositorySuiteHelper.BASIC_CONCEPT_DESCRIPTION_COMMON_IS_CASEOF_ID_SHORT)
-				.isCaseOf(Arrays.asList(helper.NOT_COMMON_REFERENCE, helper.BCD_SECOND_REFERENCE)).build();
+				.idShort(ConceptDescriptionRepositorySuiteHelper.BASIC_CONCEPT_DESCRIPTION_COMMON_IS_CASEOF_ID_SHORT).isCaseOf(Arrays.asList(helper.NOT_COMMON_REFERENCE, helper.BCD_SECOND_REFERENCE)).build();
 	}
-	
+
 	public static ConceptDescription createBasicConceptDescriptionWithDataSpecification() {
 		ConceptDescriptionRepositorySuiteHelper helper = new ConceptDescriptionRepositorySuiteHelper();
-		
-		return new DefaultConceptDescription.Builder().id(ConceptDescriptionRepositorySuiteHelper.CONCEPT_DESCRIPTION_WITH_DS_ID)
-				.idShort(ConceptDescriptionRepositorySuiteHelper.CONCEPT_DESCRIPTION_WITH_DS_ID_SHORT).embeddedDataSpecifications(helper.embeddedDataSpecification)
-				.isCaseOf(Arrays.asList(helper.NOT_COMMON_REFERENCE, helper.CD_FIRST_REFERENCE)).build();
+
+		return new DefaultConceptDescription.Builder().id(ConceptDescriptionRepositorySuiteHelper.CONCEPT_DESCRIPTION_WITH_DS_ID).idShort(ConceptDescriptionRepositorySuiteHelper.CONCEPT_DESCRIPTION_WITH_DS_ID_SHORT)
+				.embeddedDataSpecifications(helper.embeddedDataSpecification).isCaseOf(Arrays.asList(helper.NOT_COMMON_REFERENCE, helper.CD_FIRST_REFERENCE)).build();
 	}
 
 }

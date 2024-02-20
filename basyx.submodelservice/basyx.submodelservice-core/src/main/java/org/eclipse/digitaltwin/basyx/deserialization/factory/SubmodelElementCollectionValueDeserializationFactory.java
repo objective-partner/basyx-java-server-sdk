@@ -23,7 +23,6 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.deserialization.factory;
 
 import java.util.List;
@@ -37,31 +36,32 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Factory class to create deserialized {@link SubmodelElementCollectionValue} based on
- * the content
+ * Factory class to create deserialized {@link SubmodelElementCollectionValue}
+ * based on the content
  * 
  * @author danish
  *
  */
 public class SubmodelElementCollectionValueDeserializationFactory {
-	
+
 	private ObjectMapper objectMapper;
 	private JsonNode node;
-	
+
 	public SubmodelElementCollectionValueDeserializationFactory(ObjectMapper objectMapper, JsonNode node) {
 		this.objectMapper = objectMapper;
 		this.node = node;
 	}
-	
+
 	/**
-	 * Deserializes the corresponding {@link SubmodelElementCollectionValue} based on the
-	 * JSON content
+	 * Deserializes the corresponding {@link SubmodelElementCollectionValue} based
+	 * on the JSON content
 	 * 
 	 * @return {@link SubmodelElementCollectionValue}
 	 * 
 	 */
 	public SubmodelElementCollectionValue create() throws JsonProcessingException {
-		List<ValueOnly> valueOnlies = objectMapper.readValue(node.toString(), new TypeReference<List<ValueOnly>>() {});
+		List<ValueOnly> valueOnlies = objectMapper.readValue(node.toString(), new TypeReference<List<ValueOnly>>() {
+		});
 
 		return new SubmodelElementCollectionValue(valueOnlies);
 	}

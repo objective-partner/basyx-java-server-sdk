@@ -131,8 +131,7 @@ public class TestMqttV2AASAggregatorObserver {
 	}
 
 	private AssetAdministrationShell createAasDummy(String aasId) {
-		return new DefaultAssetAdministrationShell.Builder().id(aasId)
-				.build();
+		return new DefaultAssetAdministrationShell.Builder().id(aasId).build();
 	}
 
 	private static AasRepository createMqttAasRepository(MqttClient client) {

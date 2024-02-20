@@ -26,7 +26,6 @@
 package org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core;
 
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.SpecificAssetId;
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.model.AssetLink;

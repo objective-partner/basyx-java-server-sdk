@@ -24,11 +24,13 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.http.model;
 
+import java.util.Objects;
+
+import org.springframework.validation.annotation.Validated;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
-import java.util.Objects;
-import org.springframework.validation.annotation.Validated;
 
 /**
  * Message

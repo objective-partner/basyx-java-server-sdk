@@ -36,7 +36,6 @@ public class DummySubmodelServiceComponent {
 
 	@Bean
 	public SubmodelService getSubmodelService() {
-		return new InMemorySubmodelServiceFactory()
-				.create(DummySubmodelFactory.createSubmodelWithAllSubmodelElements());
+		return new InMemorySubmodelServiceFactory().create(DummySubmodelFactory.createSubmodelWithAllSubmodelElements());
 	}
 }

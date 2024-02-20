@@ -57,13 +57,13 @@ import com.mongodb.client.MongoClients;
 public class TestMongoDBAasRepository extends AasRepositorySuite {
 	private static final String COLLECTION = "testAasCollection";
 	private static final String CONFIGURED_AAS_REPO_NAME = "configured-aas-repo-name";
-	
+
 	private MongoTemplate mongoTemplate;
 
 	@Override
 	protected AasRepository getAasRepository() {
 		mongoTemplate = createMongoTemplate();
-		
+
 		AasBackendProvider aasBackendProvider = new AasMongoDBBackendProvider(new BasyxMongoMappingContext(), COLLECTION, mongoTemplate);
 		AasRepositoryFactory aasRepositoryFactory = new SimpleAasRepositoryFactory(aasBackendProvider, new InMemoryAasServiceFactory());
 
@@ -78,7 +78,7 @@ public class TestMongoDBAasRepository extends AasRepositorySuite {
 	@Test
 	public void aasIsPersisted() {
 		AasRepository aasRepository = getAasRepository();
-		
+
 		AssetAdministrationShell expectedShell = createDummyShellOnRepo(aasRepository);
 		AssetAdministrationShell retrievedShell = aasRepository.getAas(expectedShell.getId());
 
@@ -88,23 +88,23 @@ public class TestMongoDBAasRepository extends AasRepositorySuite {
 	@Test
 	public void updatedAasIsPersisted() {
 		AasRepository aasRepository = getAasRepository();
-		
+
 		AssetAdministrationShell expectedShell = createDummyShellOnRepo(aasRepository);
 		addSubmodelReferenceToAas(expectedShell);
-		
+
 		aasRepository.updateAas(expectedShell.getId(), expectedShell);
 
 		AssetAdministrationShell retrievedShell = aasRepository.getAas(expectedShell.getId());
 
 		assertEquals(expectedShell, retrievedShell);
 	}
-	
+
 	@Test
 	public void getConfiguredMongoDBAasRepositoryName() {
 		String projectRoot = System.getProperty("user.dir");
 		String thumbnailFolder = projectRoot + "/target/thumbnail_storage";
 		AasRepository repo = new CrudAasRepository(new AasMongoDBBackendProvider(new BasyxMongoMappingContext(), COLLECTION, mongoTemplate), new InMemoryAasServiceFactory(), CONFIGURED_AAS_REPO_NAME, thumbnailFolder);
-		
+
 		assertEquals(CONFIGURED_AAS_REPO_NAME, repo.getName());
 	}
 
@@ -118,12 +118,12 @@ public class TestMongoDBAasRepository extends AasRepositorySuite {
 		aasRepository.createAas(expectedShell);
 		return expectedShell;
 	}
-	
+
 	private MongoTemplate createMongoTemplate() {
 		String connectionURL = "mongodb://mongoAdmin:mongoPassword@localhost:27017/";
-		
+
 		MongoClient client = MongoClients.create(connectionURL);
-		
+
 		return new MongoTemplate(client, "BaSyxTestDb");
 	}
 

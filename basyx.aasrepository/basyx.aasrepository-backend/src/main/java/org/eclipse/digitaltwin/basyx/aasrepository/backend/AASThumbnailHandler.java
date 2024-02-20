@@ -40,8 +40,6 @@ import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultResource;
 import org.eclipse.digitaltwin.basyx.aasrepository.AasRepository;
 import org.eclipse.digitaltwin.basyx.core.Base64UrlEncoder;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
-import org.eclipse.digitaltwin.basyx.core.exceptions.FileDoesNotExistException;
-import org.eclipse.digitaltwin.basyx.core.exceptions.FileHandlingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,7 +61,6 @@ public class AASThumbnailHandler {
 			}
 		}
 	}
-
 
 	public void updateThumbnail(AasRepository aasRepo, String aasId, String contentType, String filePath) {
 		AssetInformation assetInfor = aasRepo.getAssetInformation(aasId);
@@ -91,7 +88,8 @@ public class AASThumbnailHandler {
 
 	public String createFilePath(String aasId, String fileName) {
 		String encodedShellId = Base64UrlEncoder.encode(aasId);
-		// Ignore the original filename - on update, the file should be overridden, otherwise we have a cadaver
+		// Ignore the original filename - on update, the file should be overridden,
+		// otherwise we have a cadaver
 		return thumbnailStorageBaseFolder + "/" + encodedShellId + "-" + "thumbnail";
 	}
 

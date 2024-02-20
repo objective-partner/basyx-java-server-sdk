@@ -23,7 +23,6 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.aasrepository.backend.mongodb;
 
 import org.eclipse.digitaltwin.basyx.aasservice.AasServiceFactory;

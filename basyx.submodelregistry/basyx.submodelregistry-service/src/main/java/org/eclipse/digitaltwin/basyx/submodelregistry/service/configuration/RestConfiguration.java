@@ -39,13 +39,13 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 @Configuration
 @EnableWebMvc
-public class RestConfiguration extends BaSyxHTTPConfiguration  {
-	
+public class RestConfiguration extends BaSyxHTTPConfiguration {
+
 	@Bean
 	public LocationBuilder locationBuilder() {
 		return new DefaultLocationBuilder();
 	}
-	
+
 	@Bean
 	public RestTemplate restTemplate() {
 		return new RestTemplate();
@@ -57,6 +57,7 @@ public class RestConfiguration extends BaSyxHTTPConfiguration  {
 		builder.featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 		return new MappingJackson2HttpMessageConverter(builder.build());
 	}
+
 	@Bean
 	public CorsPathPatternProvider getSubmodelRegistryServiceCorsUrlProvider() {
 		return new CorsPathPatternProvider("/submodel-descriptors/**");

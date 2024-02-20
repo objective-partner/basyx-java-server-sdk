@@ -29,7 +29,6 @@ import java.util.Collection;
 import org.eclipse.digitaltwin.aas4j.v3.model.Entity;
 import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElement;
 import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElementCollection;
-import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 
 /**
@@ -70,10 +69,9 @@ public class HierarchicalSubmodelElementIdShortPathToken implements PathToken {
 	}
 
 	private SubmodelElement filterSubmodelElement(Collection<SubmodelElement> submodelElements) {
-		return submodelElements.stream().filter(sme -> sme.getIdShort().equals(token)).findAny()
-				.orElseThrow(() -> {
-					throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(token).build();
-				});
+		return submodelElements.stream().filter(sme -> sme.getIdShort().equals(token)).findAny().orElseThrow(() -> {
+			throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().missingElement(token).build();
+		});
 	}
 
 }

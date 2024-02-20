@@ -35,28 +35,28 @@ import org.springframework.stereotype.Component;
 @SuppressWarnings("serial")
 public class FeatureNotSupportedException extends BaSyxResponseException {
 
-  private FeatureNotSupportedException(int httpStatusCode, String reason, String correlationId, String timestamp) {
-    super(httpStatusCode, reason, correlationId, timestamp);
-  }
+	private FeatureNotSupportedException(int httpStatusCode, String reason, String correlationId, String timestamp) {
+		super(httpStatusCode, reason, correlationId, timestamp);
+	}
 
-  @Component
-  public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
+	@Component
+	public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
 
-    public Builder(ITraceableMessageSerializer serializer) {
-      super(serializer);
-      messageReference("FeatureNotSupportedException");
-      returnCode(406);
-      technicalMessageTemplate("Feature '{FeatureName}' is not supported by the current configuration.");
-    }
+		public Builder(ITraceableMessageSerializer serializer) {
+			super(serializer);
+			messageReference("FeatureNotSupportedException");
+			returnCode(406);
+			technicalMessageTemplate("Feature '{FeatureName}' is not supported by the current configuration.");
+		}
 
-    public Builder featureName(String value) {
-      param("FeatureName", value);
-      return this;
-    }
+		public Builder featureName(String value) {
+			param("FeatureName", value);
+			return this;
+		}
 
-    @Override
-    public FeatureNotSupportedException build() {
-      return new FeatureNotSupportedException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
-    }
-  }
+		@Override
+		public FeatureNotSupportedException build() {
+			return new FeatureNotSupportedException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
+		}
+	}
 }

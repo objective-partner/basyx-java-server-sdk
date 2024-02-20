@@ -36,13 +36,13 @@ import org.apache.commons.lang3.StringUtils;
  */
 public interface TargetPermissionVerifier<T extends TargetInformation> {
 
-  boolean isVerified(RbacRule rbacRule, T targetInformation);
+	boolean isVerified(RbacRule rbacRule, T targetInformation);
 
-  default boolean match(String id, String idFromRule) {
-    if (StringUtils.endsWith(idFromRule, "*")) {
-      String prefix = RegExUtils.replaceAll(idFromRule, "\\*+$", ""); // remove ending wildcard
-      return StringUtils.startsWith(id, prefix);
-    }
-    return StringUtils.equals(id, idFromRule);
-  }
+	default boolean match(String id, String idFromRule) {
+		if (StringUtils.endsWith(idFromRule, "*")) {
+			String prefix = RegExUtils.replaceAll(idFromRule, "\\*+$", ""); // remove ending wildcard
+			return StringUtils.startsWith(id, prefix);
+		}
+		return StringUtils.equals(id, idFromRule);
+	}
 }

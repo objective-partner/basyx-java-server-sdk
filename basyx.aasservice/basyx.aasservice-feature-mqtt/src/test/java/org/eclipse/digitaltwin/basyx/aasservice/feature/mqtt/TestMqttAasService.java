@@ -112,7 +112,7 @@ public class TestMqttAasService extends AasServiceSuite {
 	private static AasServiceFactory createMqttAasServiceFactory(MqttClient client) {
 		AasServiceFactory serviceFactory = new InMemoryAasServiceFactory();
 		MqttAasServiceFeature mqttFeature = new MqttAasServiceFeature(client, aasRepository, objectMapper);
-		
+
 		return mqttFeature.decorate(serviceFactory);
 	}
 
@@ -128,9 +128,7 @@ public class TestMqttAasService extends AasServiceSuite {
 	}
 
 	private AssetInformation createDummyAssetInformation() {
-		AssetInformation assetInfo = new DefaultAssetInformation.Builder().assetKind(AssetKind.INSTANCE)
-				.globalAssetId("assetIDTestKey")
-				.build();
+		AssetInformation assetInfo = new DefaultAssetInformation.Builder().assetKind(AssetKind.INSTANCE).globalAssetId("assetIDTestKey").build();
 		return assetInfo;
 	}
 
@@ -163,7 +161,7 @@ public class TestMqttAasService extends AasServiceSuite {
 		assertEquals(topicFactory.createRemoveSubmodelReferenceTopic(repoId, shell.getId()), listener.lastTopic);
 		assertEquals(serialize(DummyAssetAdministrationShell.submodelReference), listener.lastPayload);
 	}
-	
+
 	private static ObjectMapper configureObjectMapper() {
 		List<SerializationExtension> extensions = Arrays.asList(new Aas4JHTTPSerializationExtension());
 

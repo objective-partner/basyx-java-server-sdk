@@ -23,7 +23,6 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.deserialization.factory;
 
 import java.util.ArrayList;
@@ -37,23 +36,23 @@ import org.eclipse.digitaltwin.basyx.submodelservice.value.MultiLanguageProperty
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
- * Factory class to create deserialized {@link MultiLanguagePropertyValue} based on
- * the content
+ * Factory class to create deserialized {@link MultiLanguagePropertyValue} based
+ * on the content
  * 
  * @author danish
  *
  */
 public class MultiLanguagePropertyValueDeserializationFactory {
-	
+
 	private JsonNode node;
-	
+
 	public MultiLanguagePropertyValueDeserializationFactory(JsonNode node) {
 		this.node = node;
 	}
-	
+
 	/**
-	 * Deserializes the corresponding {@link MultiLanguagePropertyValue} based on the
-	 * JSON content
+	 * Deserializes the corresponding {@link MultiLanguagePropertyValue} based on
+	 * the JSON content
 	 * 
 	 * @return {@link MultiLanguagePropertyValue}
 	 * 
@@ -63,7 +62,7 @@ public class MultiLanguagePropertyValueDeserializationFactory {
 
 		return new MultiLanguagePropertyValue(langStrings);
 	}
-	
+
 	private static List<LangStringTextType> createLangStrings(JsonNode node) {
 		List<LangStringTextType> langStrings = new ArrayList<>();
 

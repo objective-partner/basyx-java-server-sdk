@@ -31,10 +31,10 @@ package org.eclipse.digitaltwin.basyx.aasrepository.feature.authorization;
  * @author danish
  */
 public class DummyCredential {
-	
+
 	private String username;
 	private String password;
-	
+
 	public DummyCredential(String username, String password) {
 		super();
 		this.username = username;

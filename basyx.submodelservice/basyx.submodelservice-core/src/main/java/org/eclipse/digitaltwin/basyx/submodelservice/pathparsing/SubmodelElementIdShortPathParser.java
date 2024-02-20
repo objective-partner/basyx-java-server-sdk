@@ -27,6 +27,7 @@ package org.eclipse.digitaltwin.basyx.submodelservice.pathparsing;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+
 import org.eclipse.digitaltwin.aas4j.v3.model.KeyTypes;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
@@ -38,126 +39,116 @@ import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
  */
 public class SubmodelElementIdShortPathParser {
 
-  /**
-   * Splits an idShortPath
-   *
-   * @param idShortPath
-   * @return A stack containing all idShortTokens of the idShortPath
-   */
-  public Stack<PathToken> parsePathTokens(String idShortPath) {
-    try {
-      String[] splitted = splitIdShortPathAtDots(idShortPath);
-      return generateTokenStackFromSplittedArray(splitted);
-    } catch (ElementDoesNotExistException e) {
-      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.SUBMODEL_ELEMENT)
-          .missingElement(idShortPath).build();
-    }
-  }
+	/**
+	 * Splits an idShortPath
+	 *
+	 * @param idShortPath
+	 * @return A stack containing all idShortTokens of the idShortPath
+	 */
+	public Stack<PathToken> parsePathTokens(String idShortPath) {
+		try {
+			String[] splitted = splitIdShortPathAtDots(idShortPath);
+			return generateTokenStackFromSplittedArray(splitted);
+		} catch (ElementDoesNotExistException e) {
+			throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.SUBMODEL_ELEMENT).missingElement(idShortPath).build();
+		}
+	}
 
+	private static String[] splitIdShortPathAtDots(String idShortPath) {
+		return idShortPath.split("\\.");
+	}
 
-  private static String[] splitIdShortPathAtDots(String idShortPath) {
-    return idShortPath.split("\\.");
-  }
+	private static String getIdShortWithoutIndices(String idShort) {
+		return idShort.split("\\[")[0];
+	}
 
-  private static String getIdShortWithoutIndices(String idShort) {
-    return idShort.split("\\[")[0];
-  }
+	private static Stack<PathToken> generateTokenStackFromSplittedArray(String[] splitted) {
+		Stack<PathToken> tokenStack = new Stack<>();
+		for (int i = splitted.length - 1; i >= 0; i--) {
+			List<Integer> indices = getAllIndices(splitted[i]);
+			for (int ix = indices.size() - 1; ix >= 0; ix--) {
+				tokenStack.push(new ListIndexPathToken(indices.get(ix).toString()));
+			}
+			tokenStack.push(new HierarchicalSubmodelElementIdShortPathToken(getIdShortWithoutIndices(splitted[i])));
+		}
+		return tokenStack;
+	}
 
-  private static Stack<PathToken> generateTokenStackFromSplittedArray(String[] splitted) {
-    Stack<PathToken> tokenStack = new Stack<>();
-    for (int i = splitted.length - 1; i >= 0; i--) {
-      List<Integer> indices = getAllIndices(splitted[i]);
-      for (int ix = indices.size() - 1; ix >= 0; ix--) {
-        tokenStack.push(new ListIndexPathToken(indices.get(ix).toString()));
-      }
-      tokenStack.push(new HierarchicalSubmodelElementIdShortPathToken(getIdShortWithoutIndices(splitted[i])));
-    }
-    return tokenStack;
-  }
+	private static List<Integer> getAllIndices(String idShortToken) throws ElementDoesNotExistException {
+		List<Integer> indices = new ArrayList<>();
+		while (hasOpeningBrackets(idShortToken)) {
 
-  private static List<Integer> getAllIndices(String idShortToken) throws ElementDoesNotExistException {
-    List<Integer> indices = new ArrayList<>();
-    while (hasOpeningBrackets(idShortToken)) {
+			int occurrence = getIndexOfOpeningBracket(idShortToken);
+			int end = getIndexOfClosingBracket(idShortToken);
 
-      int occurrence = getIndexOfOpeningBracket(idShortToken);
-      int end = getIndexOfClosingBracket(idShortToken);
+			throwExceptionIfClosingBracketIsMissing(end);
+			throwExceptionIfInvalidCharacterAfterClosingBracket(idShortToken, end);
+			throwExceptionIfOpeningBracketIsInsideBrackets(idShortToken, occurrence, end);
 
-      throwExceptionIfClosingBracketIsMissing(end);
-      throwExceptionIfInvalidCharacterAfterClosingBracket(idShortToken, end);
-      throwExceptionIfOpeningBracketIsInsideBrackets(idShortToken, occurrence, end);
+			int index = extractIndex(idShortToken, occurrence, end);
 
-      int index = extractIndex(idShortToken, occurrence, end);
+			indices.add(index);
+			idShortToken = idShortToken.substring(end + 1);
 
-      indices.add(index);
-      idShortToken = idShortToken.substring(end + 1);
+		}
+		throwExceptionIfTooManyClosingBracketsExist(idShortToken);
 
-    }
-    throwExceptionIfTooManyClosingBracketsExist(idShortToken);
+		return indices;
+	}
 
-    return indices;
-  }
+	private static boolean hasOpeningBrackets(String idShortToken) {
+		return getIndexOfOpeningBracket(idShortToken) != -1;
+	}
 
-  private static boolean hasOpeningBrackets(String idShortToken) {
-    return getIndexOfOpeningBracket(idShortToken) != -1;
-  }
+	private static int getIndexOfOpeningBracket(String idShortToken) {
+		return idShortToken.indexOf('[');
+	}
 
-  private static int getIndexOfOpeningBracket(String idShortToken) {
-    return idShortToken.indexOf('[');
-  }
+	private static int getIndexOfClosingBracket(String idShortToken) {
+		return idShortToken.indexOf(']');
+	}
 
-  private static int getIndexOfClosingBracket(String idShortToken) {
-    return idShortToken.indexOf(']');
-  }
+	private static void throwExceptionIfClosingBracketIsMissing(int end) throws ElementDoesNotExistException {
+		if (end == -1) {
+			throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.SUBMODEL_ELEMENT).build();
+		}
+	}
 
-  private static void throwExceptionIfClosingBracketIsMissing(int end) throws ElementDoesNotExistException {
-    if (end == -1) {
-      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(
-          KeyTypes.SUBMODEL_ELEMENT).build();
-    }
-  }
+	private static void throwExceptionIfInvalidCharacterAfterClosingBracket(String idShort, int end) throws ElementDoesNotExistException {
+		if (idShort.length() - 1 > end) {
+			if (idShort.charAt(end + 1) != '[') {
+				throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.SUBMODEL_ELEMENT).build();
+			}
+		}
+	}
 
-  private static void throwExceptionIfInvalidCharacterAfterClosingBracket(String idShort, int end)
-      throws ElementDoesNotExistException {
-    if (idShort.length() - 1 > end) {
-      if (idShort.charAt(end + 1) != '[') {
-        throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(
-            KeyTypes.SUBMODEL_ELEMENT).build();
-      }
-    }
-  }
+	private static void throwExceptionIfOpeningBracketIsInsideBrackets(String idShort, int occurrence, int end) throws ElementDoesNotExistException {
+		if (idShort.substring(occurrence + 1, end).indexOf('[') != -1) {
+			throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.SUBMODEL_ELEMENT).build();
+		}
+	}
 
-  private static void throwExceptionIfOpeningBracketIsInsideBrackets(String idShort, int occurrence, int end)
-      throws ElementDoesNotExistException {
-    if (idShort.substring(occurrence + 1, end).indexOf('[') != -1) {
-      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(
-          KeyTypes.SUBMODEL_ELEMENT).build();
-    }
-  }
+	private static int extractIndex(String idShortToken, int occurrence, int end) {
+		String currentIndice = idShortToken.substring(occurrence + 1, end);
+		try {
+			int index = Integer.valueOf(currentIndice);
+			throwExceptionIfIndexIsInvalid(index);
+			return index;
+		} catch (NumberFormatException doesNotMatter) {
+		}
+		throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.SUBMODEL_ELEMENT).build();
+	}
 
-  private static int extractIndex(String idShortToken, int occurrence, int end) {
-    String currentIndice = idShortToken.substring(occurrence + 1, end);
-    try {
-      int index = Integer.valueOf(currentIndice);
-      throwExceptionIfIndexIsInvalid(index);
-      return index;
-    } catch (NumberFormatException doesNotMatter) {
-    }
-    throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(
-        KeyTypes.SUBMODEL_ELEMENT).build();
-  }
+	private static void throwExceptionIfIndexIsInvalid(int index) throws ElementDoesNotExistException {
+		if (index < 0) {
+			throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.SUBMODEL_ELEMENT).build();
+		}
+	}
 
-  private static void throwExceptionIfIndexIsInvalid(int index) throws ElementDoesNotExistException {
-    if (index < 0) {
-      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(
-          KeyTypes.SUBMODEL_ELEMENT).build();
-    }
-  }
-
-  private static void throwExceptionIfTooManyClosingBracketsExist(String idShortToken) {
-    if (getIndexOfClosingBracket(idShortToken) != -1) {
-      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(
-          KeyTypes.SUBMODEL_ELEMENT).build();
-    }
-  }
+	private static void throwExceptionIfTooManyClosingBracketsExist(String idShortToken) {
+		if (getIndexOfClosingBracket(idShortToken) != -1) {
+			throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.SUBMODEL_ELEMENT).build();
+		}
+	}
 
 }

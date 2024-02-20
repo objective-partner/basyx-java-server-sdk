@@ -23,7 +23,6 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.conceptdescriptionrepository;
 
 /**
@@ -33,7 +32,7 @@ package org.eclipse.digitaltwin.basyx.conceptdescriptionrepository;
  * 
  */
 public interface ConceptDescriptionRepositoryFactory {
-	
+
 	/**
 	 * Creates a new ConceptDescriptionRepository
 	 * 

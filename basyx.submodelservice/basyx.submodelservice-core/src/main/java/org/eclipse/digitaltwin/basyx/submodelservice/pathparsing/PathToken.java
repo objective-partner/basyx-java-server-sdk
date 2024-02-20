@@ -37,7 +37,8 @@ public interface PathToken {
 	/**
 	 * Retrieve the Nested SubmodelElement from the rootElement
 	 * 
-	 * @param rootElement the SubmodelElement, the nested SubmodelElment is in
+	 * @param rootElement
+	 *            the SubmodelElement, the nested SubmodelElment is in
 	 * @return the nested SubmodelElement in the rootElement
 	 */
 	public SubmodelElement getSubmodelElement(SubmodelElement rootElement);

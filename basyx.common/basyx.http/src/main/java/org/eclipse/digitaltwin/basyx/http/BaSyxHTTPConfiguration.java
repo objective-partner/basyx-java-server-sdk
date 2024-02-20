@@ -23,11 +23,11 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.http;
 
 import java.util.Arrays;
 import java.util.List;
+
 import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ITraceableMessageSerializer;
 import org.slf4j.Logger;
@@ -50,7 +50,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  *
  */
 @Configuration
-@ComponentScan(basePackageClasses = {ExceptionBuilderFactory.class})
+@ComponentScan(basePackageClasses = { ExceptionBuilderFactory.class })
 public class BaSyxHTTPConfiguration {
 	Logger logger = LoggerFactory.getLogger(BaSyxHTTPConfiguration.class);
 
@@ -68,7 +68,7 @@ public class BaSyxHTTPConfiguration {
 		for (SerializationExtension serializationExtension : serializationExtensions) {
 			serializationExtension.extend(builder);
 		}
-		
+
 		return builder;
 	}
 
@@ -82,9 +82,7 @@ public class BaSyxHTTPConfiguration {
 	 * @return
 	 */
 	@Bean
-	public WebMvcConfigurer corsConfigurer(List<CorsPathPatternProvider> configurationUrlProviders,
-										   @Value("${basyx.cors.allowed-origins:}") String[] allowedOrigins,
-										   @Value("${basyx.cors.allowed-methods:}") String[] allowedMethods) {
+	public WebMvcConfigurer corsConfigurer(List<CorsPathPatternProvider> configurationUrlProviders, @Value("${basyx.cors.allowed-origins:}") String[] allowedOrigins, @Value("${basyx.cors.allowed-methods:}") String[] allowedMethods) {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
@@ -106,16 +104,15 @@ public class BaSyxHTTPConfiguration {
 			}
 		};
 	}
-  @Bean
-  public ITraceableMessageSerializer traceableMessageSerializer(
-      Jackson2ObjectMapperBuilder jackson2ObjectMapperBuilder) {
-    return new TraceableMessageSerializer(jackson2ObjectMapperBuilder.build());
-  }
 
-  @Bean
-  public ExceptionBuilderFactory exceptionBuilderFactory(ITraceableMessageSerializer traceableMessageSerializer) {
-    return new ExceptionBuilderFactory(traceableMessageSerializer);
-  }
+	@Bean
+	public ITraceableMessageSerializer traceableMessageSerializer(Jackson2ObjectMapperBuilder jackson2ObjectMapperBuilder) {
+		return new TraceableMessageSerializer(jackson2ObjectMapperBuilder.build());
+	}
+
+	@Bean
+	public ExceptionBuilderFactory exceptionBuilderFactory(ITraceableMessageSerializer traceableMessageSerializer) {
+		return new ExceptionBuilderFactory(traceableMessageSerializer);
+	}
 
 }
-

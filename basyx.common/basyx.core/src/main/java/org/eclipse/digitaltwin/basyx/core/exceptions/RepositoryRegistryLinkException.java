@@ -35,28 +35,28 @@ import org.springframework.stereotype.Component;
 @SuppressWarnings("serial")
 public class RepositoryRegistryLinkException extends BaSyxResponseException {
 
-  private RepositoryRegistryLinkException(int httpStatusCode, String reason, String correlationId, String timestamp) {
-    super(httpStatusCode, reason, correlationId, timestamp);
-  }
+	private RepositoryRegistryLinkException(int httpStatusCode, String reason, String correlationId, String timestamp) {
+		super(httpStatusCode, reason, correlationId, timestamp);
+	}
 
-  @Component
-  public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
+	@Component
+	public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
 
-    public Builder(ITraceableMessageSerializer serializer) {
-      super(serializer);
-      messageReference("RepositoryRegistryLinkException");
-      returnCode(500);
-      technicalMessageTemplate("Unable to link the element '{ElementId}' with the Registry.");
-    }
+		public Builder(ITraceableMessageSerializer serializer) {
+			super(serializer);
+			messageReference("RepositoryRegistryLinkException");
+			returnCode(500);
+			technicalMessageTemplate("Unable to link the element '{ElementId}' with the Registry.");
+		}
 
-    public Builder elementId(String value) {
-      param("ElementId", value);
-      return this;
-    }
+		public Builder elementId(String value) {
+			param("ElementId", value);
+			return this;
+		}
 
-    @Override
-    public RepositoryRegistryLinkException build() {
-      return new RepositoryRegistryLinkException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
-    }
-  }
+		@Override
+		public RepositoryRegistryLinkException build() {
+			return new RepositoryRegistryLinkException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
+		}
+	}
 }

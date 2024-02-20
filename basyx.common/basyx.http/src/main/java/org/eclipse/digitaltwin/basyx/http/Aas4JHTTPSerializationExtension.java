@@ -48,43 +48,39 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 @Component
 public class Aas4JHTTPSerializationExtension implements SerializationExtension {
 
-  protected JsonMapper mapper;
-  protected SimpleAbstractTypeResolver typeResolver;
+	protected JsonMapper mapper;
+	protected SimpleAbstractTypeResolver typeResolver;
 
-  public Aas4JHTTPSerializationExtension() {
-    initTypeResolver();
-  }
+	public Aas4JHTTPSerializationExtension() {
+		initTypeResolver();
+	}
 
-  @Override
-  public void extend(Jackson2ObjectMapperBuilder builder) {
-    builder.featuresToEnable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-        .serializationInclusion(JsonInclude.Include.NON_NULL)
-        .featuresToDisable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-        .annotationIntrospector(new ReflectionAnnotationIntrospector())
-        .modulesToInstall(buildEnumModule(), buildImplementationModule());
-    ReflectionHelper.JSON_MIXINS.entrySet().forEach(x -> builder.mixIn(x.getKey(), x.getValue()));
-  }
+	@Override
+	public void extend(Jackson2ObjectMapperBuilder builder) {
+		builder.featuresToEnable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY).serializationInclusion(JsonInclude.Include.NON_NULL).featuresToDisable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+				.annotationIntrospector(new ReflectionAnnotationIntrospector()).modulesToInstall(buildEnumModule(), buildImplementationModule());
+		ReflectionHelper.JSON_MIXINS.entrySet().forEach(x -> builder.mixIn(x.getKey(), x.getValue()));
+	}
 
-  @SuppressWarnings("unchecked")
-  private void initTypeResolver() {
-    typeResolver = new SimpleAbstractTypeResolver();
-    ReflectionHelper.DEFAULT_IMPLEMENTATIONS.stream()
-        .forEach(x -> typeResolver.addMapping(x.getInterfaceType(), x.getImplementationType()));
-  }
+	@SuppressWarnings("unchecked")
+	private void initTypeResolver() {
+		typeResolver = new SimpleAbstractTypeResolver();
+		ReflectionHelper.DEFAULT_IMPLEMENTATIONS.stream().forEach(x -> typeResolver.addMapping(x.getInterfaceType(), x.getImplementationType()));
+	}
 
-  protected SimpleModule buildEnumModule() {
-    SimpleModule module = new SimpleModule("AAS4JEnumDeSerialization");
-    module.addSerializer(StandardizedLiteralEnum.class, new StandardizedLiteralEnumSerializer<>());
-    module.addDeserializer(Profile.class, new StandardizedLiteralEnumDeserializer<>(Profile.class));
-    ReflectionHelper.ENUMS.forEach(x -> module.addSerializer(x, new EnumSerializer()));
-    ReflectionHelper.ENUMS.forEach(x -> module.addDeserializer(x, new EnumDeserializer<>(x)));
-    return module;
-  }
+	protected SimpleModule buildEnumModule() {
+		SimpleModule module = new SimpleModule("AAS4JEnumDeSerialization");
+		module.addSerializer(StandardizedLiteralEnum.class, new StandardizedLiteralEnumSerializer<>());
+		module.addDeserializer(Profile.class, new StandardizedLiteralEnumDeserializer<>(Profile.class));
+		ReflectionHelper.ENUMS.forEach(x -> module.addSerializer(x, new EnumSerializer()));
+		ReflectionHelper.ENUMS.forEach(x -> module.addDeserializer(x, new EnumDeserializer<>(x)));
+		return module;
+	}
 
-  protected SimpleModule buildImplementationModule() {
-    SimpleModule module = new SimpleModule();
-    module.setAbstractTypes(typeResolver);
-    return module;
-  }
+	protected SimpleModule buildImplementationModule() {
+		SimpleModule module = new SimpleModule();
+		module.setAbstractTypes(typeResolver);
+		return module;
+	}
 
 }

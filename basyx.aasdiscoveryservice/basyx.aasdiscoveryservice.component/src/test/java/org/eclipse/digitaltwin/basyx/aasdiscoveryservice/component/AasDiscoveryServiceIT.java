@@ -1,4 +1,4 @@
-///*******************************************************************************
+/// *******************************************************************************
 // * Copyright (C) 2023 the Eclipse BaSyx Authors
 // *
 // * Permission is hereby granted, free of charge, to any person obtaining
@@ -23,15 +23,17 @@
 // * SPDX-License-Identifier: MIT
 // ******************************************************************************/
 //
-//package org.eclipse.digitaltwin.basyx.aasdiscoveryservice.component;
+// package org.eclipse.digitaltwin.basyx.aasdiscoveryservice.component;
 //
-//import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.tck.AasDiscoveryServiceTestDefinedURL;
+// import
+/// org.eclipse.digitaltwin.basyx.aasdiscoveryservice.tck.AasDiscoveryServiceTestDefinedURL;
 //
-///**
+/// **
 // * Integration test using the default "url" endpoint from the TCK
 // *
 // * @author danish
 // *
 // */
-//public class AasDiscoveryServiceIT extends AasDiscoveryServiceTestDefinedURL {
-//}
+// public class AasDiscoveryServiceIT extends AasDiscoveryServiceTestDefinedURL
+/// {
+// }

@@ -31,7 +31,7 @@ package org.eclipse.digitaltwin.basyx.aasrepository.feature.authorization;
  * @author danish
  */
 public class DummyCredentialStore {
-	
+
 	public static final DummyCredential ADMIN_CREDENTIAL = new DummyCredential("john.doe", "johndoe");
 	public static final DummyCredential USER_CREDENTIAL = new DummyCredential("jane.doe", "janedoe");
 	public static final DummyCredential MAINTAINER_CREDENTIAL = new DummyCredential("bob.maintainer", "bobmaintainer");

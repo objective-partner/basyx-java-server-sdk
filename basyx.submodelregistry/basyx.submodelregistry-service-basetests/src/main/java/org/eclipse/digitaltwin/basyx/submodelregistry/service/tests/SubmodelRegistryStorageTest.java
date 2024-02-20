@@ -57,10 +57,10 @@ public abstract class SubmodelRegistryStorageTest extends ExtensionsTest {
 		assertThat(newState).asList().isNotEqualTo(initialState).containsExactlyInAnyOrderElementsOf(expected);
 		verifyEventsSent();
 	}
-	
+
 	public void whenReplaceSubmodelDescriptorAdnNotPresent_thenExceptionIsTrown() {
 		assertThrows(SubmodelNotFoundException.class, () -> storage.replaceSubmodelDescriptor(UNKNOWN_SM_ID, new SubmodelDescriptor(UNKNOWN_SM_ID, List.of())));
-		
+
 	}
 
 	@Test
@@ -71,7 +71,7 @@ public abstract class SubmodelRegistryStorageTest extends ExtensionsTest {
 		SubmodelDescriptor toAdd = new SubmodelDescriptor(SM_ID_3, List.of());
 		storage.insertSubmodelDescriptor(toAdd);
 		List<SubmodelDescriptor> newState = getAllSubmodels();
-		
+
 		assertThat(newState).asList().isNotEqualTo(initialState).containsExactlyInAnyOrderElementsOf(expected);
 		verifyEventsSent();
 	}
@@ -100,8 +100,7 @@ public abstract class SubmodelRegistryStorageTest extends ExtensionsTest {
 		assertThat(secondResult.getResult()).containsExactlyInAnyOrderElementsOf(expected.subList(2, 4));
 
 		if (secondResult.getCursor() != null) { // implementation specific
-			CursorResult<List<SubmodelDescriptor>> thirdResult = getAllSubmodelsWithPagination(2,
-					secondResult.getCursor());
+			CursorResult<List<SubmodelDescriptor>> thirdResult = getAllSubmodelsWithPagination(2, secondResult.getCursor());
 			assertThat(thirdResult.getResult()).isEmpty();
 		}
 		verifyNoEventSent();
@@ -182,14 +181,14 @@ public abstract class SubmodelRegistryStorageTest extends ExtensionsTest {
 	public void whenRegistrationUpdateForNewId_AvailableUnderNewIdAndTwoEventsFired() throws IOException {
 		List<SubmodelDescriptor> initialState = getAllSubmodels();
 		SubmodelDescriptor descr = initialState.stream().filter(a -> a.getId().equals(SM_ID_2)).findAny().orElseThrow();
-		
+
 		SubmodelDescriptor copy = new SubmodelDescriptor(SM_ID_3, new LinkedList<>(descr.getEndpoints()));
 		copy.idShort(descr.getIdShort());
-		
+
 		storage.replaceSubmodelDescriptor(SM_ID_2, copy);
 		List<SubmodelDescriptor> currentState = getAllSubmodels();
 		List<SubmodelDescriptor> expected = testResourcesLoader.loadList(SubmodelDescriptor.class);
-		
+
 		assertThat(currentState).asList().isNotEqualTo(initialState).containsExactlyInAnyOrderElementsOf(expected);
 		verifyEventsSent();
 	}

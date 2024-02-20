@@ -49,7 +49,6 @@ import org.mockito.Mockito;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
 public abstract class ExtensionsTest extends BaseInterfaceTest {
 
 	@Test
@@ -177,7 +176,6 @@ public abstract class ExtensionsTest extends BaseInterfaceTest {
 		ShellDescriptorQuery queryB = new ShellDescriptorQuery(path, "b");
 		ShellDescriptorQuery queryC = new ShellDescriptorQuery(path, "c");
 
-		
 		searchByQuery(queryA.combinedWith(queryB).combinedWith(queryC), "abc");
 		searchByQuery(queryC, "c");
 	}
@@ -217,7 +215,7 @@ public abstract class ExtensionsTest extends BaseInterfaceTest {
 		ShellDescriptorQuery query = new ShellDescriptorQuery(AasRegistryPaths.extensions().value(), "V.*").queryType(QueryTypeEnum.REGEX);
 		searchByQuery(query);
 	}
-	
+
 	@Test
 	public void whenSearchForSubmodelTagExtension_TheRightResultsAreFound() throws IOException {
 		ShellDescriptorQuery query = new ShellDescriptorQuery(AasRegistryPaths.submodelDescriptors().extensions().value(), "BLUE").extensionName("TAG");
@@ -228,30 +226,30 @@ public abstract class ExtensionsTest extends BaseInterfaceTest {
 	public void whenSearchForShellAndSubmodelTagExtension_TheRightResultsAreFound() throws IOException {
 		ShellDescriptorQuery queryAas = new ShellDescriptorQuery(AasRegistryPaths.extensions().value(), "BLUE").extensionName("TAG");
 		ShellDescriptorQuery querySm = new ShellDescriptorQuery(AasRegistryPaths.submodelDescriptors().extensions().value(), "BLUE").extensionName("TAG");
-		
+
 		searchByQuery(queryAas.combinedWith(querySm));
 	}
-	
+
 	@Test
 	public void whenCombinedAndFilteredOnlyMatchingAreReturned() throws IOException {
 		ShellDescriptorQuery outer = new ShellDescriptorQuery(AasRegistryPaths.extensions().value(), "RED").extensionName("COLOR");
 		ShellDescriptorQuery smAB = new ShellDescriptorQuery(AasRegistryPaths.submodelDescriptors().extensions().value(), "AB").extensionName("TAG");
-		ShellDescriptorQuery smAC = new ShellDescriptorQuery(AasRegistryPaths.submodelDescriptors().extensions().value(), "AC").extensionName("TAG");				
-		searchByQuery(outer.combinedWith(smAB.combinedWith(smAC)));		
+		ShellDescriptorQuery smAC = new ShellDescriptorQuery(AasRegistryPaths.submodelDescriptors().extensions().value(), "AC").extensionName("TAG");
+		searchByQuery(outer.combinedWith(smAB.combinedWith(smAC)));
 	}
-	
+
 	@Test
 	public void whenSearchInSubmodelPath_SubmodelsMustMatchAllQueries() throws IOException {
 		ShellDescriptorQuery querySm1 = new ShellDescriptorQuery(AasRegistryPaths.submodelDescriptors().extensions().value(), "BLUE").extensionName("COLOR");
 		ShellDescriptorQuery querySm2 = new ShellDescriptorQuery(AasRegistryPaths.submodelDescriptors().extensions().value(), "RECTANGLE").extensionName("SHAPE");
-	
+
 		searchByQuery(querySm1.combinedWith(querySm2));
 	}
 
 	private void searchByQuery(ShellDescriptorQuery query) throws IOException {
 		searchByQuery(query, null);
 	}
-	
+
 	private void searchByQuery(ShellDescriptorQuery query, String suffix) throws IOException {
 		ShellDescriptorSearchRequest request = new ShellDescriptorSearchRequest().query(query);
 		List<AssetAdministrationShellDescriptor> expected = testResourcesLoader.loadList(AssetAdministrationShellDescriptor.class, suffix);
@@ -261,5 +259,5 @@ public abstract class ExtensionsTest extends BaseInterfaceTest {
 		assertThat(resultStr).isEqualTo(expectedStr);
 		assertThat(result.getHits()).asList().isEqualTo(expected);
 		assertThat(result.getTotal()).isEqualTo(expected.size());
-	}	
+	}
 }

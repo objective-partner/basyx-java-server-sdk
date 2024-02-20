@@ -51,7 +51,7 @@ public class BasyxSearchApiDelegate implements SearchApiDelegate {
 		ShellDescriptorSearchResponse result = storage.searchAasDescriptors(request);
 		return ResponseEntity.ok(result);
 	}
-	
+
 	private void assertSearchResultIsSetupCorrectly(ShellDescriptorQuery query) {
 		if (query == null) {
 			return;
@@ -61,7 +61,7 @@ public class BasyxSearchApiDelegate implements SearchApiDelegate {
 			return;
 		}
 		String path = query.getPath();
-		String validExtensionValueSuffix = "." + AasRegistryPaths.SEGMENT_EXTENSIONS + "." + AasRegistryPaths.SEGMENT_VALUE; 
+		String validExtensionValueSuffix = "." + AasRegistryPaths.SEGMENT_EXTENSIONS + "." + AasRegistryPaths.SEGMENT_VALUE;
 		if (!path.endsWith(validExtensionValueSuffix)) {
 			throw new ExtensionPathInvalidException(path);
 		}

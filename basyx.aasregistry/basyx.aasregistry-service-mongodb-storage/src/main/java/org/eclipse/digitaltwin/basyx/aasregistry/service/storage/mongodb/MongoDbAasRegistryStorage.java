@@ -24,8 +24,8 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.aasregistry.service.storage.mongodb;
 
-import com.mongodb.ClientSessionOptions;
 import jakarta.validation.Valid;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,8 +34,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+
 import org.eclipse.digitaltwin.basyx.aasregistry.model.AssetAdministrationShellDescriptor;
 import org.eclipse.digitaltwin.basyx.aasregistry.model.AssetKind;
 import org.eclipse.digitaltwin.basyx.aasregistry.model.ShellDescriptorQuery;
@@ -68,6 +67,11 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.mongodb.core.query.UpdateDefinition;
+
+import com.mongodb.ClientSessionOptions;
+
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class MongoDbAasRegistryStorage implements AasRegistryStorage {

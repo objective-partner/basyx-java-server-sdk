@@ -23,7 +23,6 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.serialization;
 
 import java.io.IOException;
@@ -46,12 +45,12 @@ public class SubmodelElementListValueSerializer extends JsonSerializer<SubmodelE
 	@Override
 	public void serialize(SubmodelElementListValue value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
 		gen.writeStartArray();
-		
-        for (SubmodelElementValue element : value.getSubmodelElementValues()) {
-            gen.writeObject(element);
-        }
-        
-        gen.writeEndArray();
+
+		for (SubmodelElementValue element : value.getSubmodelElementValues()) {
+			gen.writeObject(element);
+		}
+
+		gen.writeEndArray();
 	}
 
 }

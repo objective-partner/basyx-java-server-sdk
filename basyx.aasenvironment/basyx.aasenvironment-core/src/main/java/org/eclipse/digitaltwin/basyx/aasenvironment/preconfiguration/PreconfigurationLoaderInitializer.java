@@ -54,8 +54,7 @@ public class PreconfigurationLoaderInitializer implements InitializingBean {
 	private AasEnvironmentPreconfigurationLoader preconfigurationLoader;
 
 	@Autowired
-	public PreconfigurationLoaderInitializer(AasRepository aasRepository, SubmodelRepository submodelRepository, ConceptDescriptionRepository conceptDescriptionRepository,
-			AasEnvironmentPreconfigurationLoader preconfigurationLoader) {
+	public PreconfigurationLoaderInitializer(AasRepository aasRepository, SubmodelRepository submodelRepository, ConceptDescriptionRepository conceptDescriptionRepository, AasEnvironmentPreconfigurationLoader preconfigurationLoader) {
 		super();
 		this.aasRepository = aasRepository;
 		this.submodelRepository = submodelRepository;

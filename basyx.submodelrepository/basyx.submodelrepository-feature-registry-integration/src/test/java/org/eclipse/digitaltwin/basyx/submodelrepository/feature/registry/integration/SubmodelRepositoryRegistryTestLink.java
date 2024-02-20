@@ -57,7 +57,7 @@ import org.springframework.http.HttpStatus;
  * @author danish
  */
 public class SubmodelRepositoryRegistryTestLink {
-	
+
 	private static final String SUBMODEL_REPOSITORY_PATH = "/submodels";
 
 	private static final String SUMMY_SUBMODEL_IDSHORT = "TechnicalData";
@@ -94,7 +94,7 @@ public class SubmodelRepositoryRegistryTestLink {
 
 		assertDescriptionDeletionAtRegistry();
 	}
-	
+
 	private SubmodelDescriptor retrieveDescriptorFromRegistry() throws ApiException {
 		SubmodelRegistryApi api = new SubmodelRegistryApi(submodelRegistryUrl);
 
@@ -178,7 +178,7 @@ public class SubmodelRepositoryRegistryTestLink {
 			throw new RuntimeException();
 		}
 	}
-	
+
 	private static String createSubmodelRepositoryUrl(String smRepositoryBaseURL) {
 
 		try {

@@ -40,7 +40,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
 @TestPropertySource(properties = { "registry.type=inMemory" })
-@ContextConfiguration(classes = { InMemoryAasRegistyStorageTest.class,})
+@ContextConfiguration(classes = { InMemoryAasRegistyStorageTest.class, })
 public class InMemoryAasRegistyStorageTest extends AasRegistryStorageTest {
 
 	@Bean
@@ -49,16 +49,15 @@ public class InMemoryAasRegistyStorageTest extends AasRegistryStorageTest {
 		// so we do not want to alter the object and thus need a deep copy
 		return new CloningAasRegistryStorageDecorator(new InMemoryAasStorageConfiguration().storage());
 	}
-	
-	
+
 	@Test
 	public void whenInsertDescriptorWithDuplicateSubmodelIds_thenThrowException() throws IOException {
 		AssetAdministrationShellDescriptor descr = new AssetAdministrationShellDescriptor(IDENTIFICATION_NEW);
 		descr.addSubmodelDescriptorsItem(new SubmodelDescriptor(IDENTIFICATION_NEW_1, List.of()));
 		descr.addSubmodelDescriptorsItem(new SubmodelDescriptor(IDENTIFICATION_NEW_1, List.of()));
-		
-		assertThrows(DuplicateSubmodelIds.class, ()->storage.insertAasDescriptor(descr));
-		
+
+		assertThrows(DuplicateSubmodelIds.class, () -> storage.insertAasDescriptor(descr));
+
 		verifyNoEventSent();
 	}
 

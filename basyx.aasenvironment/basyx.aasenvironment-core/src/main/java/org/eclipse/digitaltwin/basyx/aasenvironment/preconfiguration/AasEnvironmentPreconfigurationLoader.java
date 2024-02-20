@@ -52,7 +52,6 @@ import org.eclipse.digitaltwin.basyx.aasenvironment.preconfiguration.Identifiabl
 import org.eclipse.digitaltwin.basyx.aasenvironment.preconfiguration.IdentifiableUploader.IdentifiableRepository;
 import org.eclipse.digitaltwin.basyx.aasrepository.AasRepository;
 import org.eclipse.digitaltwin.basyx.conceptdescriptionrepository.ConceptDescriptionRepository;
-import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,14 +69,14 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class AasEnvironmentPreconfigurationLoader {
-	
+
 	private Logger logger = LoggerFactory.getLogger(AasEnvironmentPreconfigurationLoader.class);
 
 	@Value("${basyx.environment:#{null}}")
 	private List<String> pathsToLoad;
 
 	private ResourceLoader resourceLoader;
-	
+
 	private List<InMemoryFile> relatedFiles;
 
 	@Autowired
@@ -95,14 +94,14 @@ public class AasEnvironmentPreconfigurationLoader {
 		List<File> files = scanForEnvironments(pathsToLoad);
 
 		int numberOfFiles = files.size();
-    
-    IndentifiableAssertion check = new IndentifiableAssertion();
+
+		IndentifiableAssertion check = new IndentifiableAssertion();
 
 		for (int i = 0; i < numberOfFiles; i++) {
 			File file = files.get(i);
 			logLoadingProcess(i, numberOfFiles, file.getName());
 			Environment environment = getEnvironmentFromFile(file);
-      check.assertNoDuplicateIds(environment);
+			check.assertNoDuplicateIds(environment);
 			addEnvironment(aasRepository, submodelRepository, conceptDescriptionRepository, environment);
 		}
 	}
@@ -141,8 +140,7 @@ public class AasEnvironmentPreconfigurationLoader {
 	}
 
 	private File getFile(String filePath) throws IOException {
-		return resourceLoader.getResource(filePath)
-				.getFile();
+		return resourceLoader.getResource(filePath).getFile();
 	}
 
 	private void addEnvironment(AasRepository aasRepository, SubmodelRepository submodelRepository, ConceptDescriptionRepository conceptDescriptionRepository, Environment environment) {
@@ -158,9 +156,7 @@ public class AasEnvironmentPreconfigurationLoader {
 		RecursiveDirectoryScanner directoryScanner = new RecursiveDirectoryScanner();
 
 		List<File> potentialEnvironments = directoryScanner.listFiles(rootDirectory);
-		return potentialEnvironments.stream()
-				.filter(file -> isAasxFile(file.getPath()) || isJsonFile(file.getPath()) || isXmlFile(file.getPath()))
-				.collect(Collectors.toList());
+		return potentialEnvironments.stream().filter(file -> isAasxFile(file.getPath()) || isJsonFile(file.getPath()) || isXmlFile(file.getPath())).collect(Collectors.toList());
 	}
 
 	private void createConceptDescriptionsOnRepositoryFromEnvironment(ConceptDescriptionRepository cdRepo, Environment environment) {
@@ -173,12 +169,12 @@ public class AasEnvironmentPreconfigurationLoader {
 	}
 
 	private void logSuccessConceptDescription(String conceptDescriptionId, boolean success) {
-    if (!success) {
-		  logger.warn("Colliding Ids detected for ConceptDescription: " + conceptDescriptionId + ". If they are not identical, this is an error. Please note that the already existing ConceptDescription was not updated.");
-    } else {
-      logSuccess("conceptDescription", conceptDescriptionId, success);
-    }
-  }
+		if (!success) {
+			logger.warn("Colliding Ids detected for ConceptDescription: " + conceptDescriptionId + ". If they are not identical, this is an error. Please note that the already existing ConceptDescription was not updated.");
+		} else {
+			logSuccess("conceptDescription", conceptDescriptionId, success);
+		}
+	}
 
 	private void createSubmodelsOnRepositoryFromEnvironment(SubmodelRepository submodelRepository, Environment environment) {
 		List<Submodel> submodels = environment.getSubmodels();
@@ -187,27 +183,27 @@ public class AasEnvironmentPreconfigurationLoader {
 
 		if (relatedFiles == null || relatedFiles.isEmpty())
 			return;
-		
+
 		for (Submodel submodel : submodels) {
 			List<List<SubmodelElement>> idShortElementPathsOfAllFileSMEs = new FileElementPathCollector(submodel).collect();
-			
+
 			idShortElementPathsOfAllFileSMEs.stream().forEach(fileSMEIdShortPath -> setFileToFileElement(submodel.getId(), fileSMEIdShortPath, submodelRepository));
 		}
 	}
 
 	private void setFileToFileElement(String submodelId, List<SubmodelElement> fileSMEIdShortPathElements, SubmodelRepository submodelRepository) {
 		String fileSMEIdShortPath = new IdShortPathBuilder(new ArrayList<>(fileSMEIdShortPathElements)).build();
-		
+
 		org.eclipse.digitaltwin.aas4j.v3.model.File fileSME = (org.eclipse.digitaltwin.aas4j.v3.model.File) submodelRepository.getSubmodelElement(submodelId, fileSMEIdShortPath);
-		
+
 		InMemoryFile inMemoryFile = getAssociatedInMemoryFile(relatedFiles, fileSME.getValue());
-		
+
 		if (inMemoryFile == null) {
 			logger.info("Unable to set file to the SubmodelElement File with IdShortPath '{}' because it does not exist in the AASX file.", fileSMEIdShortPath);
-			
+
 			return;
 		}
-		
+
 		submodelRepository.setFileValue(submodelId, fileSMEIdShortPath, getFileName(inMemoryFile.getPath()), new ByteArrayInputStream(inMemoryFile.getFileContent()));
 	}
 
@@ -216,12 +212,12 @@ public class AasEnvironmentPreconfigurationLoader {
 	}
 
 	private InMemoryFile getAssociatedInMemoryFile(List<InMemoryFile> relatedFiles, String value) {
-		
+
 		Optional<InMemoryFile> inMemoryFile = relatedFiles.stream().filter(file -> file.getPath().equals(value)).findAny();
-		
+
 		if (inMemoryFile.isEmpty())
 			return null;
-		
+
 		return inMemoryFile.get();
 	}
 

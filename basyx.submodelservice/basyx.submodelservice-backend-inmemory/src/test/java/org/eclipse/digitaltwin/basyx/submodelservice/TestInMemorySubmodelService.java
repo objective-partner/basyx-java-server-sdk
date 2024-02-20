@@ -23,7 +23,6 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.submodelservice;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;

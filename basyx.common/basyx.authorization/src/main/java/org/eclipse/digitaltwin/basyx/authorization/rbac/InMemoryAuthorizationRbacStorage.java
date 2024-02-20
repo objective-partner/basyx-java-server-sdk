@@ -33,21 +33,21 @@ import java.util.List;
  * @author danish
  */
 public class InMemoryAuthorizationRbacStorage implements RbacStorage {
-    private final List<RbacRule> rbacRules;
+	private final List<RbacRule> rbacRules;
 
-    public InMemoryAuthorizationRbacStorage(List<RbacRule> rbacRuleList) {
-        this.rbacRules = rbacRuleList;
-    }
+	public InMemoryAuthorizationRbacStorage(List<RbacRule> rbacRuleList) {
+		this.rbacRules = rbacRuleList;
+	}
 
-    public List<RbacRule> getRbacRules() {       
-        return rbacRules;
-    }
+	public List<RbacRule> getRbacRules() {
+		return rbacRules;
+	}
 
-    public void addRule(RbacRule rbacRule) {
-        rbacRules.add(rbacRule);
-    }
+	public void addRule(RbacRule rbacRule) {
+		rbacRules.add(rbacRule);
+	}
 
-    public void removeRule(RbacRule rbacRule) {
-        rbacRules.remove(rbacRule);
-    }
+	public void removeRule(RbacRule rbacRule) {
+		rbacRules.remove(rbacRule);
+	}
 }

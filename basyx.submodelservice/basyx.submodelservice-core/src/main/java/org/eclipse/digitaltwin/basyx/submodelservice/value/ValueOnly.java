@@ -23,7 +23,6 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.submodelservice.value;
 
 /**
@@ -35,7 +34,7 @@ package org.eclipse.digitaltwin.basyx.submodelservice.value;
 public class ValueOnly {
 	private String idShort;
 	private SubmodelElementValue submodelElementValue;
-	
+
 	public ValueOnly(String idShort, SubmodelElementValue submodelElementValue) {
 		this.idShort = idShort;
 		this.submodelElementValue = submodelElementValue;

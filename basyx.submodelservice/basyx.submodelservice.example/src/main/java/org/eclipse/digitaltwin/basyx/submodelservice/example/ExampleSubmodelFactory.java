@@ -23,7 +23,6 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.submodelservice.example;
 
 import java.util.ArrayList;
@@ -58,45 +57,24 @@ public class ExampleSubmodelFactory {
 
 	public Submodel create() {
 		List<LangStringTextType> description = new ArrayList<LangStringTextType>();
-		description.add(new DefaultLangStringTextType.Builder().language("de-DE")
-				.text("Test")
-				.build());
+		description.add(new DefaultLangStringTextType.Builder().language("de-DE").text("Test").build());
 		List<LangStringNameType> displayName = new ArrayList<LangStringNameType>();
-		displayName.add(new DefaultLangStringNameType.Builder().language("de-DE")
-				.text("Test")
-				.build());
+		displayName.add(new DefaultLangStringNameType.Builder().language("de-DE").text("Test").build());
 		List<Key> refKeys = new ArrayList<Key>();
-		refKeys.add(new DefaultKey.Builder().value("123")
-				.build());
+		refKeys.add(new DefaultKey.Builder().value("123").build());
 
-		SubmodelElement sme1 = new DefaultProperty.Builder()
-				.value("123")
-				.idShort("test")
-				.build();
+		SubmodelElement sme1 = new DefaultProperty.Builder().value("123").idShort("test").build();
 		Operation square = createInvokableOperation();
 		List<SubmodelElement> smeList = Arrays.asList(sme1, square);
 
-		Submodel submodel = new DefaultSubmodel.Builder().category("TestCategory")
-				.description(description)
-				.displayName(displayName)
-				.id("Example")
-				.idShort("example")
-				.kind(ModellingKind.INSTANCE)
-				.semanticId(new DefaultReference.Builder().keys(refKeys)
-						.build())
-				.submodelElements(smeList)
-				.build();
+		Submodel submodel = new DefaultSubmodel.Builder().category("TestCategory").description(description).displayName(displayName).id("Example").idShort("example").kind(ModellingKind.INSTANCE)
+				.semanticId(new DefaultReference.Builder().keys(refKeys).build()).submodelElements(smeList).build();
 
 		return submodel;
 	}
 
 	private static Operation createInvokableOperation() {
-		return new InvokableOperation.Builder()
-				.idShort("squareOperation")
-				.inputVariables(createIntOperationVariable("input"))
-				.outputVariables(createIntOperationVariable("result"))
-				.invokable(ExampleSubmodelFactory::square)
-				.build();
+		return new InvokableOperation.Builder().idShort("squareOperation").inputVariables(createIntOperationVariable("input")).outputVariables(createIntOperationVariable("result")).invokable(ExampleSubmodelFactory::square).build();
 	}
 
 	private static OperationVariable createOperationVariable(Property val) {
@@ -106,7 +84,7 @@ public class ExampleSubmodelFactory {
 	private static DefaultOperationVariable createIntOperationVariable(String idShort) {
 		return new DefaultOperationVariable.Builder().value(new DefaultProperty.Builder().idShort(idShort).valueType(DataTypeDefXsd.INT).build()).build();
 	}
-	
+
 	private static OperationVariable[] square(OperationVariable[] inputs) {
 		Property in = (Property) inputs[0].getValue();
 		Integer val = Integer.valueOf(in.getValue());

@@ -24,9 +24,6 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.submodelrepository;
 
-import com.mongodb.client.gridfs.model.GridFSFile;
-import com.mongodb.client.result.DeleteResult;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -64,6 +61,9 @@ import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
+
+import com.mongodb.client.gridfs.model.GridFSFile;
+import com.mongodb.client.result.DeleteResult;
 
 /**
  * MongoDB implementation of the SubmodelRepository

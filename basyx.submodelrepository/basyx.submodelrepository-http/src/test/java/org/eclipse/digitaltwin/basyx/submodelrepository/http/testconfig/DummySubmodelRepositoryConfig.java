@@ -23,7 +23,6 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.submodelrepository.http.testconfig;
 
 import org.eclipse.digitaltwin.basyx.submodelrepository.InMemorySubmodelRepository;
@@ -34,7 +33,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Configuration for tests  
+ * Configuration for tests
  * 
  * @author danish, kammognie
  *

@@ -49,7 +49,7 @@ public class BaSyxSubmodelHttpTestUtils {
 
 	public static String requestAllSubmodels(String url) throws IOException, ParseException {
 		try (CloseableHttpResponse response = BaSyxHttpTestUtils.executeGetOnURL(url)) {
-			return BaSyxHttpTestUtils.getResponseAsString(response);	
+			return BaSyxHttpTestUtils.getResponseAsString(response);
 		}
 	}
 }

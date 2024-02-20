@@ -28,37 +28,37 @@ package org.eclipse.digitaltwin.basyx.core.exceptions;
 import org.springframework.stereotype.Component;
 
 /**
- * Indicates that an entity has no identifier or an identifier with the value NULL
+ * Indicates that an entity has no identifier or an identifier with the value
+ * NULL
  *
  * @author kammognie
  */
 @SuppressWarnings("serial")
 public class MissingIdentifierException extends BaSyxResponseException {
 
-  private MissingIdentifierException(int httpStatusCode, String reason, String correlationId, String timestamp) {
-    super(httpStatusCode, reason, correlationId, timestamp);
-  }
+	private MissingIdentifierException(int httpStatusCode, String reason, String correlationId, String timestamp) {
+		super(httpStatusCode, reason, correlationId, timestamp);
+	}
 
-  @Component
-  public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
+	@Component
+	public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
 
-    public Builder(ITraceableMessageSerializer serializer) {
-      super(serializer);
-      messageReference("MissingIdentifierException");
-      returnCode(400);
-      technicalMessageTemplate(
-          "Element identifier should not be null or empty, the specified identifier is '{ElementId}'.");
-    }
+		public Builder(ITraceableMessageSerializer serializer) {
+			super(serializer);
+			messageReference("MissingIdentifierException");
+			returnCode(400);
+			technicalMessageTemplate("Element identifier should not be null or empty, the specified identifier is '{ElementId}'.");
+		}
 
-    public Builder elementId(String value) {
-      param("ElementId", value);
-      return this;
-    }
+		public Builder elementId(String value) {
+			param("ElementId", value);
+			return this;
+		}
 
-    @Override
-    public MissingIdentifierException build() {
-      return new MissingIdentifierException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
-    }
-  }
+		@Override
+		public MissingIdentifierException build() {
+			return new MissingIdentifierException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
+		}
+	}
 
 }

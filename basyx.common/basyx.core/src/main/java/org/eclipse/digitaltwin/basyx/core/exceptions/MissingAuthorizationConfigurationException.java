@@ -35,31 +35,28 @@ import org.springframework.stereotype.Component;
 @SuppressWarnings("serial")
 public class MissingAuthorizationConfigurationException extends BaSyxResponseException {
 
-  private MissingAuthorizationConfigurationException(int httpStatusCode, String reason, String correlationId,
-      String timestamp) {
-    super(httpStatusCode, reason, correlationId, timestamp);
-  }
+	private MissingAuthorizationConfigurationException(int httpStatusCode, String reason, String correlationId, String timestamp) {
+		super(httpStatusCode, reason, correlationId, timestamp);
+	}
 
-  @Component
-  public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
+	@Component
+	public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
 
-    public Builder(ITraceableMessageSerializer serializer) {
-      super(serializer);
-      messageReference("MissingAuthorizationConfigurationException");
-      returnCode(500);
-      technicalMessageTemplate(
-          "The authorization configuration file specified at path '{FilePath}' could not be found.");
-    }
+		public Builder(ITraceableMessageSerializer serializer) {
+			super(serializer);
+			messageReference("MissingAuthorizationConfigurationException");
+			returnCode(500);
+			technicalMessageTemplate("The authorization configuration file specified at path '{FilePath}' could not be found.");
+		}
 
-    public Builder filePath(String value) {
-      param("FilePath", value);
-      return this;
-    }
+		public Builder filePath(String value) {
+			param("FilePath", value);
+			return this;
+		}
 
-    @Override
-    public MissingAuthorizationConfigurationException build() {
-      return new MissingAuthorizationConfigurationException(getReturnCode(), composeMessage(), getCorrelationId(),
-          getTimestamp());
-    }
-  }
+		@Override
+		public MissingAuthorizationConfigurationException build() {
+			return new MissingAuthorizationConfigurationException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
+		}
+	}
 }

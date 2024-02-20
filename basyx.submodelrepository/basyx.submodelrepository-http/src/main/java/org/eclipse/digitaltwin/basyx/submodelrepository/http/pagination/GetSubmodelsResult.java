@@ -25,11 +25,11 @@
 
 package org.eclipse.digitaltwin.basyx.submodelrepository.http.pagination;
 
+import jakarta.validation.Valid;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import jakarta.validation.Valid;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
 import org.eclipse.digitaltwin.basyx.http.pagination.PagedResult;

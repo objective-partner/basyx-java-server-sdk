@@ -23,7 +23,6 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.submodelrepository.tck;
 
 import static org.junit.Assert.fail;
@@ -108,7 +107,7 @@ public class SubmodelTCKHelper {
 	@SuppressWarnings("unchecked")
 	private static String handlePaginationResultWrapper(Object obj) {
 		Map<String, ?> jsonMap = (Map<String, ?>) obj;
-		
+
 		return gson.toJson(jsonMap.get("result"));
 	}
 }

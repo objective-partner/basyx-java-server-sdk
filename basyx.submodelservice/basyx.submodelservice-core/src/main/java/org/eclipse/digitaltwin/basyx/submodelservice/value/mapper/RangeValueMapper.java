@@ -28,14 +28,14 @@ import org.eclipse.digitaltwin.aas4j.v3.model.Range;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.RangeValue;
 
 /**
- * Maps {@link Range} value to {@link RangeValue} 
+ * Maps {@link Range} value to {@link RangeValue}
  * 
  * @author danish
  *
  */
 public class RangeValueMapper implements ValueMapper<RangeValue> {
 	private Range range;
-	
+
 	public RangeValueMapper(Range range) {
 		this.range = range;
 	}
@@ -44,21 +44,21 @@ public class RangeValueMapper implements ValueMapper<RangeValue> {
 	public RangeValue getValue() {
 		return new RangeValue(parseIntValue(range.getMin()), parseIntValue(range.getMax()));
 	}
-	
+
 	@Override
 	public void setValue(RangeValue rangeValue) {
 		range.setMin(getMinValue(rangeValue));
 		range.setMax(getMaxValue(rangeValue));
 	}
-	
+
 	private String getMinValue(RangeValue rangeValue) {
 		return String.valueOf(rangeValue.getMin());
 	}
-	
+
 	private String getMaxValue(RangeValue rangeValue) {
 		return String.valueOf(rangeValue.getMax());
 	}
-	
+
 	private int parseIntValue(String value) {
 		return Integer.parseInt(value);
 	}

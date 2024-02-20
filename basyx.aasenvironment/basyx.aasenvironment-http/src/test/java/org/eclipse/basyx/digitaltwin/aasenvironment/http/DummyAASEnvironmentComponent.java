@@ -82,19 +82,11 @@ public class DummyAASEnvironmentComponent {
 	}
 
 	private Collection<AssetAdministrationShell> createDummyShells() {
-		AssetAdministrationShell shell1 = new DefaultAssetAdministrationShell.Builder().id(AAS_TECHNICAL_DATA_ID)
-				.idShort(AAS_TECHNICAL_DATA_ID)
-				.assetInformation(new DefaultAssetInformation.Builder().assetKind(AssetKind.INSTANCE)
-						.globalAssetId(SUBMODEL_TECHNICAL_DATA_ID)
-						.build())
-				.build();
+		AssetAdministrationShell shell1 = new DefaultAssetAdministrationShell.Builder().id(AAS_TECHNICAL_DATA_ID).idShort(AAS_TECHNICAL_DATA_ID)
+				.assetInformation(new DefaultAssetInformation.Builder().assetKind(AssetKind.INSTANCE).globalAssetId(SUBMODEL_TECHNICAL_DATA_ID).build()).build();
 
-		AssetAdministrationShell shell2 = new DefaultAssetAdministrationShell.Builder().id(AAS_OPERATIONAL_DATA_ID)
-				.idShort(AAS_OPERATIONAL_DATA_ID)
-				.assetInformation(new DefaultAssetInformation.Builder().assetKind(AssetKind.INSTANCE)
-						.globalAssetId(AAS_OPERATIONAL_DATA_ID)
-						.build())
-				.build();
+		AssetAdministrationShell shell2 = new DefaultAssetAdministrationShell.Builder().id(AAS_OPERATIONAL_DATA_ID).idShort(AAS_OPERATIONAL_DATA_ID)
+				.assetInformation(new DefaultAssetInformation.Builder().assetKind(AssetKind.INSTANCE).globalAssetId(AAS_OPERATIONAL_DATA_ID).build()).build();
 		Collection<AssetAdministrationShell> shells = new ArrayList<>();
 		shells.add(shell1);
 		shells.add(shell2);

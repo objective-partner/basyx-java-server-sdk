@@ -40,15 +40,14 @@ public class EntityValue implements SubmodelElementValue {
 	private List<ValueOnly> statements;
 	private EntityType entityType;
 	private Optional<String> globalAssetId = Optional.empty();
-	private Optional<List< SpecificAssetIdValue>> specificAssetIds = Optional.empty();
-	
+	private Optional<List<SpecificAssetIdValue>> specificAssetIds = Optional.empty();
+
 	@SuppressWarnings("unused")
 	private EntityValue() {
 		super();
 	}
-	
-	public EntityValue(List<ValueOnly> statements, EntityType entityType, String globalAssetId,
-			List< SpecificAssetIdValue> specificAssetIds) {
+
+	public EntityValue(List<ValueOnly> statements, EntityType entityType, String globalAssetId, List<SpecificAssetIdValue> specificAssetIds) {
 		this.statements = statements;
 		this.entityType = entityType;
 		this.globalAssetId = Optional.ofNullable(globalAssetId);
@@ -70,5 +69,5 @@ public class EntityValue implements SubmodelElementValue {
 	public List<SpecificAssetIdValue> getSpecificAssetIds() {
 		return specificAssetIds.orElse(null);
 	}
-	
+
 }

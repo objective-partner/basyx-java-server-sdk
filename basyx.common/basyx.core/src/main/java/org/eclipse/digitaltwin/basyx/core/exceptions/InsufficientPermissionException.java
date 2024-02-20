@@ -28,31 +28,31 @@ package org.eclipse.digitaltwin.basyx.core.exceptions;
 import org.springframework.stereotype.Component;
 
 /**
- * Indicates that the subject has insufficient permissions for the requested object.
+ * Indicates that the subject has insufficient permissions for the requested
+ * object.
  *
  * @author danish
  */
 @SuppressWarnings("serial")
 public class InsufficientPermissionException extends BaSyxResponseException {
 
-  private InsufficientPermissionException(int httpStatusCode, String reason, String correlationId, String timestamp) {
-    super(httpStatusCode, reason, correlationId, timestamp);
-  }
+	private InsufficientPermissionException(int httpStatusCode, String reason, String correlationId, String timestamp) {
+		super(httpStatusCode, reason, correlationId, timestamp);
+	}
 
-  @Component
-  public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
+	@Component
+	public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
 
-    public Builder(ITraceableMessageSerializer serializer) {
-      super(serializer);
-      messageReference("InsufficientPermissionException");
-      returnCode(403);
-      technicalMessageTemplate(
-          "Insufficient Permission: The current subject does not have the required permissions for this operation.");
-    }
+		public Builder(ITraceableMessageSerializer serializer) {
+			super(serializer);
+			messageReference("InsufficientPermissionException");
+			returnCode(403);
+			technicalMessageTemplate("Insufficient Permission: The current subject does not have the required permissions for this operation.");
+		}
 
-    @Override
-    public InsufficientPermissionException build() {
-      return new InsufficientPermissionException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
-    }
-  }
+		@Override
+		public InsufficientPermissionException build() {
+			return new InsufficientPermissionException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
+		}
+	}
 }

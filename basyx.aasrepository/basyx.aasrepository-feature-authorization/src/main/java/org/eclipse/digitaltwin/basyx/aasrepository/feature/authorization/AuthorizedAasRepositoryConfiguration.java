@@ -29,8 +29,8 @@ import org.eclipse.digitaltwin.basyx.aasrepository.feature.authorization.rbac.Aa
 import org.eclipse.digitaltwin.basyx.authorization.CommonAuthorizationProperties;
 import org.eclipse.digitaltwin.basyx.authorization.rbac.RbacPermissionResolver;
 import org.eclipse.digitaltwin.basyx.authorization.rbac.RbacStorage;
-import org.eclipse.digitaltwin.basyx.authorization.rbac.SimpleRbacPermissionResolver;
 import org.eclipse.digitaltwin.basyx.authorization.rbac.RoleProvider;
+import org.eclipse.digitaltwin.basyx.authorization.rbac.SimpleRbacPermissionResolver;
 import org.eclipse.digitaltwin.basyx.authorization.rbac.TargetPermissionVerifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
@@ -44,12 +44,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConditionalOnExpression("#{${" + CommonAuthorizationProperties.ENABLED_PROPERTY_KEY + ":false}}")
 public class AuthorizedAasRepositoryConfiguration {
-	
+
 	@Bean
 	public TargetPermissionVerifier<AasTargetInformation> getAasTargetPermissionVerifier() {
 		return new AasTargetPermissionVerifier();
 	}
-	
+
 	@Bean
 	public RbacPermissionResolver<AasTargetInformation> getAasPermissionResolver(RbacStorage rbacStorage, RoleProvider roleProvider, TargetPermissionVerifier<AasTargetInformation> targetPermissionVerifier) {
 

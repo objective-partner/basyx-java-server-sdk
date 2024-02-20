@@ -23,7 +23,6 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.submodelservice.value;
 
 import java.util.List;
@@ -38,7 +37,7 @@ import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElementList;
  */
 public class SubmodelElementListValue implements SubmodelElementValue {
 	private List<SubmodelElementValue> submodelElementValues;
-	
+
 	@SuppressWarnings("unused")
 	private SubmodelElementListValue() {
 		super();

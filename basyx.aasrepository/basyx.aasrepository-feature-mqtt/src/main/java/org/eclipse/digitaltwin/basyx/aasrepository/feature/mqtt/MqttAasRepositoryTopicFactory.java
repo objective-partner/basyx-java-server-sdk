@@ -56,14 +56,9 @@ public class MqttAasRepositoryTopicFactory extends AbstractMqttTopicFactory {
 	 * @return
 	 */
 	public String createCreateAASTopic(String repoId) {
-		return new StringJoiner("/", "", "")
-				.add(AASREPOSITORY)
-				.add(repoId)
-				.add(SHELLS)
-				.add(CREATED)
-				.toString();
+		return new StringJoiner("/", "", "").add(AASREPOSITORY).add(repoId).add(SHELLS).add(CREATED).toString();
 	}
-	
+
 	/**
 	 * Creates the hierarchical topic for the update event
 	 * 
@@ -71,14 +66,9 @@ public class MqttAasRepositoryTopicFactory extends AbstractMqttTopicFactory {
 	 * @return
 	 */
 	public String createUpdateAASTopic(String repoId) {
-		return new StringJoiner("/", "", "")
-				.add(AASREPOSITORY)
-				.add(repoId)
-				.add(SHELLS)
-				.add(UPDATED)
-				.toString();
+		return new StringJoiner("/", "", "").add(AASREPOSITORY).add(repoId).add(SHELLS).add(UPDATED).toString();
 	}
-	
+
 	/**
 	 * Creates the hierarchical topic for the delete event
 	 * 
@@ -86,11 +76,6 @@ public class MqttAasRepositoryTopicFactory extends AbstractMqttTopicFactory {
 	 * @return
 	 */
 	public String createDeleteAASTopic(String repoId) {
-		return new StringJoiner("/", "", "")
-				.add(AASREPOSITORY)
-				.add(repoId)
-				.add(SHELLS)
-				.add(DELETED)
-				.toString();
+		return new StringJoiner("/", "", "").add(AASREPOSITORY).add(repoId).add(SHELLS).add(DELETED).toString();
 	}
 }

@@ -35,8 +35,9 @@ import org.eclipse.digitaltwin.aas4j.v3.model.AdministrativeInformation;
 import org.eclipse.digitaltwin.aas4j.v3.model.Identifiable;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
+
 /**
- * Updates identifiables on server-side based on version and revision 
+ * Updates identifiables on server-side based on version and revision
  *
  * @author Gerhard Sonnenberg DFKI GmbH
  *
@@ -59,8 +60,8 @@ public class IdentifiableUploader<T extends Identifiable> {
 			return update(toUpload);
 		}
 		return false;
-	}	
-	
+	}
+
 	private boolean shouldUpdate(T current, T toUpload) {
 		if (isVersionOrRevisionPresent(current)) {
 			if (isVersionOrRevisionPresent(toUpload)) {
@@ -84,11 +85,11 @@ public class IdentifiableUploader<T extends Identifiable> {
 		}
 		try {
 			return Optional.ofNullable(repo.getById(id));
-		}catch (ElementDoesNotExistException e) {
+		} catch (ElementDoesNotExistException e) {
 			return Optional.empty();
 		}
 	}
-	
+
 	private boolean create(T toUpload) {
 		try {
 			repo.create(toUpload);
@@ -97,7 +98,7 @@ public class IdentifiableUploader<T extends Identifiable> {
 			return false;
 		}
 	}
-	
+
 	private boolean update(T toUpload) {
 		try {
 			repo.update(toUpload);

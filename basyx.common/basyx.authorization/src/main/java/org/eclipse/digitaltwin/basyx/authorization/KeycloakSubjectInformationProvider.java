@@ -25,21 +25,23 @@
 
 package org.eclipse.digitaltwin.basyx.authorization;
 
+import java.util.Optional;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 /**
- * A service for providing {@link SubjectInformation} from {@link SecurityContextHolder}
+ * A service for providing {@link SubjectInformation} from
+ * {@link SecurityContextHolder}
  * 
  * @author danish
  */
 @Service
-@ConditionalOnExpression(value = "${" + CommonAuthorizationProperties.ENABLED_PROPERTY_KEY + ":false} and ('${" + CommonAuthorizationProperties.JWT_BEARER_TOKEN_PROVIDER_PROPERTY_KEY + "}'.equals('keycloak') or '${" + CommonAuthorizationProperties.JWT_BEARER_TOKEN_PROVIDER_PROPERTY_KEY + "}'.isEmpty())")
+@ConditionalOnExpression(value = "${" + CommonAuthorizationProperties.ENABLED_PROPERTY_KEY + ":false} and ('${" + CommonAuthorizationProperties.JWT_BEARER_TOKEN_PROVIDER_PROPERTY_KEY + "}'.equals('keycloak') or '${"
+		+ CommonAuthorizationProperties.JWT_BEARER_TOKEN_PROVIDER_PROPERTY_KEY + "}'.isEmpty())")
 public class KeycloakSubjectInformationProvider implements SubjectInformationProvider<Object> {
 
 	public SubjectInformation<Object> get() {

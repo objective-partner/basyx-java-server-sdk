@@ -35,34 +35,33 @@ import org.springframework.stereotype.Component;
 @SuppressWarnings("serial")
 public class FileDoesNotExistException extends BaSyxResponseException {
 
-  private FileDoesNotExistException(int httpStatusCode, String reason, String correlationId, String timestamp) {
-    super(httpStatusCode, reason, correlationId, timestamp);
-  }
+	private FileDoesNotExistException(int httpStatusCode, String reason, String correlationId, String timestamp) {
+		super(httpStatusCode, reason, correlationId, timestamp);
+	}
 
-  @Component
-  public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
+	@Component
+	public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
 
-    public Builder(ITraceableMessageSerializer serializer) {
-      super(serializer);
-      messageReference("FileDoesNotExistException");
-      returnCode(406);
-      technicalMessageTemplate(
-          "Requested File inside the Asset administration shell '{ShellIdentifier}' / element path '{ElementPath}' does not exist.");
-    }
+		public Builder(ITraceableMessageSerializer serializer) {
+			super(serializer);
+			messageReference("FileDoesNotExistException");
+			returnCode(406);
+			technicalMessageTemplate("Requested File inside the Asset administration shell '{ShellIdentifier}' / element path '{ElementPath}' does not exist.");
+		}
 
-    public Builder shellIdentifier(String value) {
-      param("ShellIdentifier", value);
-      return this;
-    }
+		public Builder shellIdentifier(String value) {
+			param("ShellIdentifier", value);
+			return this;
+		}
 
-    public Builder elementPath(String value) {
-      param("ElementPath", value);
-      return this;
-    }
+		public Builder elementPath(String value) {
+			param("ElementPath", value);
+			return this;
+		}
 
-    @Override
-    public FileDoesNotExistException build() {
-      return new FileDoesNotExistException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
-    }
-  }
+		@Override
+		public FileDoesNotExistException build() {
+			return new FileDoesNotExistException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
+		}
+	}
 }

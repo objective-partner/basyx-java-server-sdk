@@ -25,14 +25,14 @@ public class CorsHeaderTest {
 
 	@Value("${local.server.port}")
 	private String port;
-	
+
 	@Test
 	public void testCorsHeader() throws IOException {
 		URL url = new URL("http://localhost:" + port + "/shell-descriptors");
 		URLConnection connection = url.openConnection();
 		List<String> varyHeaders = connection.getHeaderFields().get("Vary");
 		assertThat(varyHeaders.contains("Access-Control-Request-Headers"));
-		assertThat(varyHeaders.contains("Access-Control-Request-Method"));	
+		assertThat(varyHeaders.contains("Access-Control-Request-Method"));
 	}
-	
+
 }

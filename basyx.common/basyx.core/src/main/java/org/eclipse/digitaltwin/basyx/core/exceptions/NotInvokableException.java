@@ -30,33 +30,33 @@ import org.springframework.stereotype.Component;
 @SuppressWarnings("serial")
 public class NotInvokableException extends BaSyxResponseException {
 
-  private NotInvokableException(int httpStatusCode, String reason, String correlationId, String timestamp) {
-    super(httpStatusCode, reason, correlationId, timestamp);
-  }
+	private NotInvokableException(int httpStatusCode, String reason, String correlationId, String timestamp) {
+		super(httpStatusCode, reason, correlationId, timestamp);
+	}
 
-  @Component
-  public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
+	@Component
+	public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
 
-    public Builder(ITraceableMessageSerializer serializer) {
-      super(serializer);
-      messageReference("NotInvokableException");
-      returnCode(405);
-      technicalMessageTemplate("Element '{IdShortPath}' of '{SubmodelId}' is not invokable.");
-    }
+		public Builder(ITraceableMessageSerializer serializer) {
+			super(serializer);
+			messageReference("NotInvokableException");
+			returnCode(405);
+			technicalMessageTemplate("Element '{IdShortPath}' of '{SubmodelId}' is not invokable.");
+		}
 
-    public Builder submodelId(String value) {
-      param("SubmodelId", value);
-      return this;
-    }
+		public Builder submodelId(String value) {
+			param("SubmodelId", value);
+			return this;
+		}
 
-    public Builder idShortPath(String value) {
-      param("IdShortPath", value);
-      return this;
-    }
+		public Builder idShortPath(String value) {
+			param("IdShortPath", value);
+			return this;
+		}
 
-    @Override
-    public NotInvokableException build() {
-      return new NotInvokableException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
-    }
-  }
+		@Override
+		public NotInvokableException build() {
+			return new NotInvokableException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
+		}
+	}
 }

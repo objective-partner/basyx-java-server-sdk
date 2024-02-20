@@ -23,7 +23,6 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.submodelservice.value;
 
 import java.util.List;
@@ -38,12 +37,12 @@ import org.eclipse.digitaltwin.aas4j.v3.model.AnnotatedRelationshipElement;
  */
 public class AnnotatedRelationshipElementValue extends RelationshipElementValue implements SubmodelElementValue {
 	private List<ValueOnly> annotation;
-	
+
 	@SuppressWarnings("unused")
 	private AnnotatedRelationshipElementValue() {
 		super();
 	}
-	
+
 	public AnnotatedRelationshipElementValue(ReferenceValue first, ReferenceValue second, List<ValueOnly> annotation) {
 		super(first, second);
 		this.annotation = annotation;
@@ -52,5 +51,5 @@ public class AnnotatedRelationshipElementValue extends RelationshipElementValue 
 	public List<ValueOnly> getAnnotation() {
 		return annotation;
 	}
-	
+
 }

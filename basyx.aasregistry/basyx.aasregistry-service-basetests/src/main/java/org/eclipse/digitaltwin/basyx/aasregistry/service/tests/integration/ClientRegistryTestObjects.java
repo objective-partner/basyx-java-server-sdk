@@ -24,7 +24,6 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.aasregistry.service.tests.integration;
 
-
 import org.eclipse.digitaltwin.basyx.aasregistry.client.model.AssetAdministrationShellDescriptor;
 import org.eclipse.digitaltwin.basyx.aasregistry.client.model.Endpoint;
 import org.eclipse.digitaltwin.basyx.aasregistry.client.model.LangStringTextType;
@@ -35,7 +34,7 @@ public class ClientRegistryTestObjects {
 
 	private ClientRegistryTestObjects() {
 	}
-	
+
 	public static AssetAdministrationShellDescriptor newAssetAdministrationShellDescriptor(String id) {
 		AssetAdministrationShellDescriptor descriptor = new AssetAdministrationShellDescriptor();
 		descriptor.setId(id);
@@ -71,7 +70,7 @@ public class ClientRegistryTestObjects {
 		SubmodelDescriptor descriptor = new SubmodelDescriptor();
 		descriptor.setId(id);
 		descriptor.setIdShort(idShort);
-		
+
 		return descriptor;
 	}
 
@@ -83,6 +82,6 @@ public class ClientRegistryTestObjects {
 		protocolInfo.setEndpointProtocol("HTTP");
 		protocolInfo.setSubprotocol("AAS");
 		endpoint.setProtocolInformation(protocolInfo);
-		descriptor.addEndpointsItem(endpoint);	
+		descriptor.addEndpointsItem(endpoint);
 	}
 }

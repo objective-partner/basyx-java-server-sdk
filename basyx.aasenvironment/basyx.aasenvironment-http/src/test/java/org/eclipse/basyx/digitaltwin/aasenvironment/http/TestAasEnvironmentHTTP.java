@@ -102,8 +102,7 @@ public class TestAasEnvironmentHTTP {
 		CloseableHttpResponse response = executeGetOnURL(createSerializationURL(includeConceptDescription), ACCEPT_AASX);
 		assertEquals(HttpStatus.OK.value(), response.getCode());
 
-		TestAASEnvironmentSerialization.checkAASX(response.getEntity()
-				.getContent(), includeConceptDescription);
+		TestAASEnvironmentSerialization.checkAASX(response.getEntity().getContent(), includeConceptDescription);
 	}
 
 	@Test
@@ -113,8 +112,7 @@ public class TestAasEnvironmentHTTP {
 		CloseableHttpResponse response = executeGetOnURL(createSerializationURL(includeConceptDescription), ACCEPT_AASX);
 		assertEquals(HttpStatus.OK.value(), response.getCode());
 
-		TestAASEnvironmentSerialization.checkAASX(response.getEntity()
-				.getContent(), includeConceptDescription);
+		TestAASEnvironmentSerialization.checkAASX(response.getEntity().getContent(), includeConceptDescription);
 	}
 
 	@Test

@@ -23,7 +23,6 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.serialization;
 
 import java.io.IOException;
@@ -45,8 +44,8 @@ public class ValueOnlySerializer extends JsonSerializer<ValueOnly> {
 	@Override
 	public void serialize(ValueOnly value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
 		gen.writeStartObject();
-        gen.writePOJOField(value.getIdShort(), value.getSubmodelElementValue());
-        gen.writeEndObject();
+		gen.writePOJOField(value.getIdShort(), value.getSubmodelElementValue());
+		gen.writeEndObject();
 	}
 
 }

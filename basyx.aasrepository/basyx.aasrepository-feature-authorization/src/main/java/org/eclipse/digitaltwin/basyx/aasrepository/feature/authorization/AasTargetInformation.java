@@ -24,14 +24,15 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.aasrepository.feature.authorization;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 import org.eclipse.digitaltwin.basyx.authorization.rbac.TargetInformation;
 import org.eclipse.digitaltwin.basyx.authorization.rbac.TargetInformationSubtype;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Specialization of {@link TargetInformation} for Aas target information
@@ -40,7 +41,7 @@ import org.eclipse.digitaltwin.basyx.authorization.rbac.TargetInformationSubtype
  */
 @TargetInformationSubtype(getValue = "aas")
 public class AasTargetInformation implements TargetInformation {
-	
+
 	private String aasId;
 
 	@JsonCreator
@@ -76,7 +77,7 @@ public class AasTargetInformation implements TargetInformation {
 	public String toString() {
 		return "AasTargetInformation [aasId=" + aasId + "]";
 	}
-	
+
 	public String getAasId() {
 		return aasId;
 	}

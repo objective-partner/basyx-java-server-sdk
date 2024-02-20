@@ -37,12 +37,10 @@ import org.springframework.test.context.TestPropertySource;
 import com.mongodb.ExplainVerbosity;
 import com.mongodb.client.MongoCollection;
 
-@TestPropertySource(properties = { "registry.type=mongodb", "spring.data.mongodb.database=submodelregistry" 
-		, "spring.data.mongodb.uri=mongodb://mongoAdmin:mongoPassword@localhost:27017" })
+@TestPropertySource(properties = { "registry.type=mongodb", "spring.data.mongodb.database=submodelregistry", "spring.data.mongodb.uri=mongodb://mongoAdmin:mongoPassword@localhost:27017" })
 @ContextConfiguration(classes = { org.eclipse.digitaltwin.basyx.submodelregistry.service.configuration.MongoDbConfiguration.class })
 @EnableAutoConfiguration
 public class MongoDbSubmodelRegistryStorageTest extends SubmodelRegistryStorageTest {
-
 
 	@Autowired
 	private MongoTemplate template;

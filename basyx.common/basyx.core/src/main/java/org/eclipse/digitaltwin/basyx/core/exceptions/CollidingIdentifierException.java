@@ -35,28 +35,28 @@ import org.springframework.stereotype.Component;
 @SuppressWarnings("serial")
 public class CollidingIdentifierException extends BaSyxResponseException {
 
-  private CollidingIdentifierException(int httpStatusCode, String reason, String correlationId, String timestamp) {
-    super(httpStatusCode, reason, correlationId, timestamp);
-  }
+	private CollidingIdentifierException(int httpStatusCode, String reason, String correlationId, String timestamp) {
+		super(httpStatusCode, reason, correlationId, timestamp);
+	}
 
-  @Component
-  public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
+	@Component
+	public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
 
-    public Builder(ITraceableMessageSerializer serializer) {
-      super(serializer);
-      messageReference("CollidingIdentifierException");
-      returnCode(409);
-      technicalMessageTemplate("Object corresponding to identifer '{CollidingIdentifier}' already exists.");
-    }
+		public Builder(ITraceableMessageSerializer serializer) {
+			super(serializer);
+			messageReference("CollidingIdentifierException");
+			returnCode(409);
+			technicalMessageTemplate("Object corresponding to identifer '{CollidingIdentifier}' already exists.");
+		}
 
-    public Builder collidingIdentifier(String value) {
-      param("CollidingIdentifier", value);
-      return this;
-    }
+		public Builder collidingIdentifier(String value) {
+			param("CollidingIdentifier", value);
+			return this;
+		}
 
-    @Override
-    public CollidingIdentifierException build() {
-      return new CollidingIdentifierException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
-    }
-  }
+		@Override
+		public CollidingIdentifierException build() {
+			return new CollidingIdentifierException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
+		}
+	}
 }

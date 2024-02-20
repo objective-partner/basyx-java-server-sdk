@@ -33,7 +33,8 @@ import java.util.Base64;
  * Basic logic for Base64Url encoding and decoding
  * 
  * @author gordt, schnicke, mateusmolina
- * @deprecated Use {@link org.eclipse.digitaltwin.basyx.core.Base64UrlEncoder} instead
+ * @deprecated Use {@link org.eclipse.digitaltwin.basyx.core.Base64UrlEncoder}
+ *             instead
  */
 public class Base64UrlEncoder {
 	public static String encode(String plainValue) {

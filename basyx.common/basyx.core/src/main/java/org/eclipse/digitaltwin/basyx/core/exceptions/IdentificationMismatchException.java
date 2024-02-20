@@ -28,37 +28,37 @@ package org.eclipse.digitaltwin.basyx.core.exceptions;
 import org.springframework.stereotype.Component;
 
 /**
- * Indicates an update request is made on an element and the element that is passed for the update has different
- * identifier or idShort than the existing element.
+ * Indicates an update request is made on an element and the element that is
+ * passed for the update has different identifier or idShort than the existing
+ * element.
  *
  * @author danish, Al-Agtash
  */
 @SuppressWarnings("serial")
 public class IdentificationMismatchException extends BaSyxResponseException {
 
-  private IdentificationMismatchException(int httpStatusCode, String reason, String correlationId, String timestamp) {
-    super(httpStatusCode, reason, correlationId, timestamp);
-  }
+	private IdentificationMismatchException(int httpStatusCode, String reason, String correlationId, String timestamp) {
+		super(httpStatusCode, reason, correlationId, timestamp);
+	}
 
-  @Component
-  public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
+	@Component
+	public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
 
-    public Builder(ITraceableMessageSerializer serializer) {
-      super(serializer);
-      messageReference("IdentificationMismatchException");
-      returnCode(404);
-      technicalMessageTemplate(
-          "The provided element '{MismatchingIdentifier}' has mismatched identifier than the existing element that needs to be updated.");
-    }
+		public Builder(ITraceableMessageSerializer serializer) {
+			super(serializer);
+			messageReference("IdentificationMismatchException");
+			returnCode(404);
+			technicalMessageTemplate("The provided element '{MismatchingIdentifier}' has mismatched identifier than the existing element that needs to be updated.");
+		}
 
-    public Builder mismatchingIdentifier(String value) {
-      param("MismatchingIdentifier", value);
-      return this;
-    }
+		public Builder mismatchingIdentifier(String value) {
+			param("MismatchingIdentifier", value);
+			return this;
+		}
 
-    @Override
-    public IdentificationMismatchException build() {
-      return new IdentificationMismatchException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
-    }
-  }
+		@Override
+		public IdentificationMismatchException build() {
+			return new IdentificationMismatchException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
+		}
+	}
 }

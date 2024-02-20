@@ -39,14 +39,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class InMemorySubmodelRepositoryFactory implements SubmodelRepositoryFactory {
 	private SubmodelServiceFactory submodelServiceFactory;
-	
+
 	private String smRepositoryName;
 
 	@Autowired(required = false)
 	public InMemorySubmodelRepositoryFactory(SubmodelServiceFactory submodelServiceFactory) {
 		this.submodelServiceFactory = submodelServiceFactory;
 	}
-	
+
 	@Autowired(required = false)
 	public InMemorySubmodelRepositoryFactory(SubmodelServiceFactory submodelServiceFactory, @Value("${basyx.smrepo.name:sm-repo}") String smRepositoryName) {
 		this(submodelServiceFactory);

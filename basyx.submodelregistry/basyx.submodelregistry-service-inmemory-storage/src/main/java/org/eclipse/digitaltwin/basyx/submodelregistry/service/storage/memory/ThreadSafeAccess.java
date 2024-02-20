@@ -50,7 +50,7 @@ class ThreadSafeAccess {
 	public <A, T> T read(Function<A, T> func, A arg1) {
 		return runWithLock(func, arg1, readLock);
 	}
-	
+
 	public <T> T write(Supplier<T> supplier) {
 		return runWithLock(supplier, writeLock);
 	}
@@ -81,7 +81,7 @@ class ThreadSafeAccess {
 			lock.unlock();
 		}
 	}
-	
+
 	private <A, B> void runWithLock(BiConsumer<A, B> consumer, A arg1, B arg2, Lock lock) {
 		try {
 			lock.lock();

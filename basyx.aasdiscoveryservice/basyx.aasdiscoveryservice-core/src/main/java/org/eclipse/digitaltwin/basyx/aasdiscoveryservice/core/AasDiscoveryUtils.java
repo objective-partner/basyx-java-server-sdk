@@ -1,13 +1,13 @@
 package org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
 import org.eclipse.digitaltwin.aas4j.v3.model.SpecificAssetId;
 import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultAssetAdministrationShell;
 import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultAssetInformation;
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.model.AssetLink;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class AasDiscoveryUtils {
 

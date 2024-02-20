@@ -23,7 +23,6 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.submodelservice.value.mapper;
 
 import java.nio.charset.StandardCharsets;
@@ -32,14 +31,14 @@ import org.eclipse.digitaltwin.aas4j.v3.model.Blob;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.FileBlobValue;
 
 /**
- * Maps {@link Blob} value to {@link FileBlobValue} 
+ * Maps {@link Blob} value to {@link FileBlobValue}
  * 
  * @author danish
  *
  */
 public class BlobValueMapper implements ValueMapper<FileBlobValue> {
 	private Blob blob;
-	
+
 	public BlobValueMapper(Blob blob) {
 		this.blob = blob;
 	}
@@ -58,7 +57,7 @@ public class BlobValueMapper implements ValueMapper<FileBlobValue> {
 	private byte[] getEncodedByteArray(String value) {
 		return value.getBytes();
 	}
-	
+
 	private String getDecodedString(byte[] value) {
 		return new String(value, StandardCharsets.UTF_8);
 	}

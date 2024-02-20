@@ -63,11 +63,11 @@ public class AuthorizedSubmodelRepositoryTestSuite {
 	private static final String PARENT_SUBMODEL_ELEMENT_IDSHORT = "smc2";
 	private static final String SUBMODEL_ELEMENT_IDSHORT_PATH_2 = "smc1.specificSubmodelElementIdShort-2";
 	private static final String SUBMODEL_ELEMENT_IDSHORT_PATH = PARENT_SUBMODEL_ELEMENT_IDSHORT + ".specificSubmodelElementIdShort";
-	
+
 	private static final String OPERATION_SQUARE_SUBMODEL_ELEMENT_IDSHORT = "square";
 	private static final String OPERATION_CUBE_SUBMODEL_ELEMENT_IDSHORT = "cube";
 	private static final String OPERATION_SUBMODEL_ELEMENT_IDSHORT_PATH = "smc1." + OPERATION_SQUARE_SUBMODEL_ELEMENT_IDSHORT;
-	
+
 	private static final String NEW_SUBMODEL_ELEMENT_IDSHORT = "specificSMEProperty";
 	private static final String NEW_SUBMODEL_ELEMENT_IDSHORT_PATH = PARENT_SUBMODEL_ELEMENT_IDSHORT + "." + NEW_SUBMODEL_ELEMENT_IDSHORT;
 	private static final String FILE_SUBMODEL_ELEMENT_IDSHORT_PATH = PARENT_SUBMODEL_ELEMENT_IDSHORT + ".specificFileSubmodelElementIdShort";
@@ -536,7 +536,6 @@ public class AuthorizedSubmodelRepositoryTestSuite {
 		assertEquals(HttpStatus.FORBIDDEN.value(), retrievalResponse.getCode());
 	}
 
-	
 	@Test
 	public void createSubmodelElementWithNoAuthorization() throws IOException {
 		String element = getJSONValueAsString("authorization/SubmodelElementNew.json");
@@ -576,45 +575,44 @@ public class AuthorizedSubmodelRepositoryTestSuite {
 	@Test
 	public void deleteSubmodelElementWithCorrectRoleAndUnauthorizedSpecificSME() throws IOException {
 		createElementOnRepositoryWithAuthorization(createSubmodelRepositoryUrl(submodelRepositoryBaseUrl), getSubmodelJSONString(SUBMODEL_SIMPLE_2_JSON), getAccessToken(DummyCredentialStore.ADMIN_CREDENTIAL));
-		
+
 		String accessToken = getAccessToken(DummyCredentialStore.BASYX_SME_UPDATER_THREE_CREDENTIAL);
 
 		CloseableHttpResponse retrievalResponse = deleteElementWithAuthorization(getSpecificSubmodelElementAccessURL(SPECIFIC_SUBMODEL_ID_2, SUBMODEL_ELEMENT_IDSHORT_PATH), accessToken);
 		assertEquals(HttpStatus.FORBIDDEN.value(), retrievalResponse.getCode());
 
 		assertElementExistsOnServer(getSpecificSubmodelElementAccessURL(SPECIFIC_SUBMODEL_ID_2, SUBMODEL_ELEMENT_IDSHORT_PATH_2), getAccessToken(DummyCredentialStore.ADMIN_CREDENTIAL));
-		
+
 		deleteElementWithAuthorization(getSpecificSubmodelAccessURL(SPECIFIC_SUBMODEL_ID_2), getAccessToken(DummyCredentialStore.ADMIN_CREDENTIAL));
 	}
 
 	@Test
 	public void deleteSubmodelElementWithInsufficientPermissionRole() throws IOException {
 		createElementOnRepositoryWithAuthorization(createSubmodelRepositoryUrl(submodelRepositoryBaseUrl), getSubmodelJSONString(SUBMODEL_SIMPLE_2_JSON), getAccessToken(DummyCredentialStore.ADMIN_CREDENTIAL));
-		
+
 		String accessToken = getAccessToken(DummyCredentialStore.BASYX_CREATOR_CREDENTIAL);
 
 		CloseableHttpResponse retrievalResponse = deleteElementWithAuthorization(getSpecificSubmodelElementAccessURL(SPECIFIC_SUBMODEL_ID_2, SUBMODEL_ELEMENT_IDSHORT_PATH_2), accessToken);
 		assertEquals(HttpStatus.FORBIDDEN.value(), retrievalResponse.getCode());
 
 		assertElementExistsOnServer(getSpecificSubmodelElementAccessURL(SPECIFIC_SUBMODEL_ID_2, SUBMODEL_ELEMENT_IDSHORT_PATH_2), getAccessToken(DummyCredentialStore.ADMIN_CREDENTIAL));
-		
+
 		deleteElementWithAuthorization(getSpecificSubmodelAccessURL(SPECIFIC_SUBMODEL_ID_2), getAccessToken(DummyCredentialStore.ADMIN_CREDENTIAL));
 	}
 
 	@Test
 	public void deleteSubmodelElementWithNoAuthorization() throws IOException {
 		createElementOnRepositoryWithAuthorization(createSubmodelRepositoryUrl(submodelRepositoryBaseUrl), getSubmodelJSONString(SUBMODEL_SIMPLE_2_JSON), getAccessToken(DummyCredentialStore.ADMIN_CREDENTIAL));
-		
+
 		CloseableHttpResponse retrievalResponse = deleteElementWithNoAuthorization(getSpecificSubmodelElementAccessURL(SPECIFIC_SUBMODEL_ID_2, SUBMODEL_ELEMENT_IDSHORT_PATH_2));
 
 		assertEquals(HttpStatus.UNAUTHORIZED.value(), retrievalResponse.getCode());
 
 		assertElementExistsOnServer(getSpecificSubmodelElementAccessURL(SPECIFIC_SUBMODEL_ID_2, SUBMODEL_ELEMENT_IDSHORT_PATH_2), getAccessToken(DummyCredentialStore.ADMIN_CREDENTIAL));
-		
+
 		deleteElementWithAuthorization(getSpecificSubmodelAccessURL(SPECIFIC_SUBMODEL_ID_2), getAccessToken(DummyCredentialStore.ADMIN_CREDENTIAL));
 	}
 
-	
 	@Test
 	@Ignore
 	public void invokeWithCorrectRoleAndPermission() throws IOException, ParseException {
@@ -673,7 +671,7 @@ public class AuthorizedSubmodelRepositoryTestSuite {
 	@Ignore
 	public void invokeWithNoAuthorization() throws IOException {
 		String parameters = getJSONValueAsString("authorization/parameters.json");
-		
+
 		CloseableHttpResponse retrievalResponse = requestOperationInvocationNoAuthorization(getInvocationURL(SPECIFIC_SUBMODEL_ID, OPERATION_SUBMODEL_ELEMENT_IDSHORT_PATH), parameters);
 		assertEquals(HttpStatus.UNAUTHORIZED.value(), retrievalResponse.getCode());
 	}
@@ -724,7 +722,6 @@ public class AuthorizedSubmodelRepositoryTestSuite {
 		assertEquals(HttpStatus.UNAUTHORIZED.value(), retrievalResponse.getCode());
 	}
 
-	
 	@Test
 	public void getSubmodelByMetadataWithCorrectRoleAndPermission() throws IOException {
 		DummyCredential dummyCredential = DummyCredentialStore.BASYX_READER_CREDENTIAL;
@@ -771,7 +768,6 @@ public class AuthorizedSubmodelRepositoryTestSuite {
 		assertEquals(HttpStatus.UNAUTHORIZED.value(), retrievalResponse.getCode());
 	}
 
-	
 	@Test
 	public void getFileWithCorrectRoleAndPermission() throws IOException {
 		createElementOnRepositoryWithAuthorization(createSubmodelRepositoryUrl(submodelRepositoryBaseUrl), getSubmodelJSONString(SUBMODEL_SIMPLE_2_JSON), getAccessToken(DummyCredentialStore.ADMIN_CREDENTIAL));
@@ -846,7 +842,7 @@ public class AuthorizedSubmodelRepositoryTestSuite {
 
 		CloseableHttpResponse retrievalResponse = getElementWithNoAuthorization(getSMEFileDownloadURL(SPECIFIC_SUBMODEL_ID_2, FILE_SUBMODEL_ELEMENT_IDSHORT_PATH));
 		assertEquals(HttpStatus.UNAUTHORIZED.value(), retrievalResponse.getCode());
-		
+
 		deleteElementWithAuthorization(getSpecificSubmodelAccessURL(SPECIFIC_SUBMODEL_ID_2), getAccessToken(DummyCredentialStore.ADMIN_CREDENTIAL));
 	}
 
@@ -926,7 +922,6 @@ public class AuthorizedSubmodelRepositoryTestSuite {
 		deleteElementWithAuthorization(getSpecificSubmodelAccessURL(SPECIFIC_SUBMODEL_ID_2), getAccessToken(DummyCredentialStore.ADMIN_CREDENTIAL));
 	}
 
-	
 	@Test
 	public void deleteFileWithCorrectRoleAndPermission() throws IOException {
 		createElementOnRepositoryWithAuthorization(createSubmodelRepositoryUrl(submodelRepositoryBaseUrl), getSubmodelJSONString(SUBMODEL_SIMPLE_2_JSON), getAccessToken(DummyCredentialStore.ADMIN_CREDENTIAL));
@@ -1005,7 +1000,7 @@ public class AuthorizedSubmodelRepositoryTestSuite {
 
 		CloseableHttpResponse retrievalResponse = deleteElementWithNoAuthorization(getSMEFileDownloadURL(SPECIFIC_SUBMODEL_ID_2, FILE_SUBMODEL_ELEMENT_IDSHORT_PATH));
 		assertEquals(HttpStatus.UNAUTHORIZED.value(), retrievalResponse.getCode());
-		
+
 		deleteElementWithAuthorization(getSpecificSubmodelAccessURL(SPECIFIC_SUBMODEL_ID_2), getAccessToken(DummyCredentialStore.ADMIN_CREDENTIAL));
 	}
 

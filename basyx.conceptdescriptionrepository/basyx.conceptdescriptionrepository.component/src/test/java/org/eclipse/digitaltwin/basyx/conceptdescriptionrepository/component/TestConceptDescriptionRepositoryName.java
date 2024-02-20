@@ -55,34 +55,34 @@ public class TestConceptDescriptionRepositoryName {
 	@Test
 	public void getDefaultRepoName() {
 		startContext();
-		
+
 		ConceptDescriptionRepository repo = appContext.getBean(ConceptDescriptionRepository.class);
-		
+
 		assertEquals("cd-repo", repo.getName());
-		
+
 		closeContext();
 	}
 
 	@Test
 	public void getConfiguredRepoName() {
 		configureRepoNamePropertyAndStartContext();
-		
+
 		ConceptDescriptionRepository repo = appContext.getBean(ConceptDescriptionRepository.class);
-		
+
 		assertEquals(CONFIGURED_CD_REPO_NAME, repo.getName());
-		
+
 		resetRepoNamePropertyAndCloseContext();
 	}
 
 	private void resetRepoNamePropertyAndCloseContext() {
 		System.clearProperty(BASYX_CDREPO_NAME_KEY);
-		
+
 		closeContext();
 	}
 
 	private void configureRepoNamePropertyAndStartContext() {
 		System.setProperty(BASYX_CDREPO_NAME_KEY, CONFIGURED_CD_REPO_NAME);
-		
+
 		startContext();
 	}
 

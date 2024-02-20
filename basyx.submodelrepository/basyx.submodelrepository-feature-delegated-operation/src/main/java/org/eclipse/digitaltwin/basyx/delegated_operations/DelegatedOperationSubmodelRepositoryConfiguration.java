@@ -25,7 +25,6 @@
 
 package org.eclipse.digitaltwin.basyx.delegated_operations;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.digitaltwin.basyx.delegated_operations.mapper.AttributeMapper;
 import org.eclipse.digitaltwin.basyx.submodelregistry.client.api.SubmodelRegistryApi;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepository;
@@ -35,8 +34,11 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
- * Configuration for integrating {@link SubmodelRepository} with SubmodelRegistry
+ * Configuration for integrating {@link SubmodelRepository} with
+ * SubmodelRegistry
  * 
  * @author danish
  */
@@ -46,15 +48,16 @@ public class DelegatedOperationSubmodelRepositoryConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public SubmodelRepositoryRegistryLink getSubmodelRepositoryRegistryLink(@Value("${basyx.submodelrepository.feature.delegatedoperation.submodel_registry_url}") String registryBasePath, @Value("${basyx.externalurl}") String submodelRepositoryBaseURL) {
-	
+	public SubmodelRepositoryRegistryLink getSubmodelRepositoryRegistryLink(@Value("${basyx.submodelrepository.feature.delegatedoperation.submodel_registry_url}") String registryBasePath,
+			@Value("${basyx.externalurl}") String submodelRepositoryBaseURL) {
+
 		return new SubmodelRepositoryRegistryLink(new SubmodelRegistryApi(registryBasePath), submodelRepositoryBaseURL);
 	}
-	
+
 	@Bean
 	@ConditionalOnMissingBean
 	public AttributeMapper getSubmodelAttributeMapper(ObjectMapper objectMapper) {
-		
+
 		return new AttributeMapper(objectMapper);
 	}
 

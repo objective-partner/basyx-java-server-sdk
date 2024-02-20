@@ -25,16 +25,18 @@
 
 package org.eclipse.digitaltwin.basyx.authorization.rbac;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
+import org.eclipse.digitaltwin.basyx.authorization.CommonAuthorizationProperties;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ResourceLoader;
-import org.eclipse.digitaltwin.basyx.authorization.CommonAuthorizationProperties;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * Configurations for {@link RbacRule}
@@ -46,12 +48,12 @@ import java.util.ArrayList;
 @ConditionalOnExpression(value = "'${basyx.feature.authorization.type}' == 'rbac'")
 public class RbacRuleConfiguration {
 	public static final String RULES_FILE_KEY = "basyx.aasrepository.feature.authorization.rbac.file";
-	
+
 	@Value("${" + CommonAuthorizationProperties.RBAC_FILE_PROPERTY_KEY + ":}")
 	private String filePath;
-	
+
 	private ObjectMapper objectMapper;
-	
+
 	private ResourceLoader resourceLoader;
 
 	public RbacRuleConfiguration(ObjectMapper objectMapper, ResourceLoader resourceLoader) {
@@ -61,10 +63,10 @@ public class RbacRuleConfiguration {
 
 	@Bean
 	public RbacStorage createInMemoryRbacStorage() throws IOException {
-		
+
 		if (filePath.isBlank())
 			return new InMemoryAuthorizationRbacStorage(new ArrayList<>());
-		
+
 		return new InMemoryAuthorizationRbacStorage(new RbacRuleInitializer(objectMapper, filePath, resourceLoader).deserialize());
 	}
 

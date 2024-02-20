@@ -78,13 +78,13 @@ public class AccessTokenProvider {
 		HttpPost httpPost = new HttpPost(uriBuilder.build());
 
 		List<NameValuePair> formParams = new ArrayList<>();
-		
+
 		formParams.add(new BasicNameValuePair("grant_type", "password"));
 		formParams.add(new BasicNameValuePair("client_id", clientId));
 		formParams.add(new BasicNameValuePair("username", username));
 		formParams.add(new BasicNameValuePair("password", password));
 		httpPost.setEntity(new UrlEncodedFormEntity(formParams));
-		
+
 		return httpPost;
 	}
 

@@ -24,14 +24,15 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.submodelrepository.feature.authorization;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 import org.eclipse.digitaltwin.basyx.authorization.rbac.TargetInformation;
 import org.eclipse.digitaltwin.basyx.authorization.rbac.TargetInformationSubtype;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Specialization of {@link TargetInformation} for Submodel target information
@@ -40,7 +41,7 @@ import org.eclipse.digitaltwin.basyx.authorization.rbac.TargetInformationSubtype
  */
 @TargetInformationSubtype(getValue = "submodel")
 public class SubmodelTargetInformation implements TargetInformation {
-	
+
 	private String submodelId;
 	private String submodelElementIdShortPath;
 

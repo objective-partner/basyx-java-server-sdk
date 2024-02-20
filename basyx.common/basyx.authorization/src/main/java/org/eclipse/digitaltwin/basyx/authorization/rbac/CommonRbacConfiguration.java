@@ -44,7 +44,8 @@ import com.fasterxml.jackson.databind.jsontype.NamedType;
  * @author danish
  */
 @Configuration
-@ConditionalOnExpression(value = "${" + CommonAuthorizationProperties.ENABLED_PROPERTY_KEY + ":false} and ('${" + CommonAuthorizationProperties.TYPE_PROPERTY_KEY + "}'.equals('rbac') or '${" + CommonAuthorizationProperties.TYPE_PROPERTY_KEY + "}'.isEmpty())")
+@ConditionalOnExpression(value = "${" + CommonAuthorizationProperties.ENABLED_PROPERTY_KEY + ":false} and ('${" + CommonAuthorizationProperties.TYPE_PROPERTY_KEY + "}'.equals('rbac') or '${" + CommonAuthorizationProperties.TYPE_PROPERTY_KEY
+		+ "}'.isEmpty())")
 public class CommonRbacConfiguration {
 
 	@Bean
@@ -53,7 +54,7 @@ public class CommonRbacConfiguration {
 
 		Reflections reflections = new Reflections("org.eclipse.digitaltwin.basyx");
 		Set<Class<?>> subtypes = reflections.getTypesAnnotatedWith(TargetInformationSubtype.class);
-		
+
 		subtypes.stream().map(this::createNamedType).filter(Objects::nonNull).forEach(mapper::registerSubtypes);
 
 		return mapper;
@@ -61,7 +62,7 @@ public class CommonRbacConfiguration {
 
 	private NamedType createNamedType(Class<?> subType) {
 		TargetInformationSubtype annotation = subType.getAnnotation(TargetInformationSubtype.class);
-		
+
 		return (annotation != null) ? new NamedType(subType, annotation.getValue()) : null;
 	}
 

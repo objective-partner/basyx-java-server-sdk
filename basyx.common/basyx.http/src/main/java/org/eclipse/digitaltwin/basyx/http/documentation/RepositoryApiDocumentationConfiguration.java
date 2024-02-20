@@ -55,15 +55,14 @@ public class RepositoryApiDocumentationConfiguration {
 	public OpenAPI customOpenAPI() {
 		return new OpenAPI().info(apiInfo());
 	}
-	
+
 	@Bean
 	public ModelResolver modelResolver(Jackson2ObjectMapperBuilder builder) {
 		return new ModelResolver(builder.build());
 	}
 
 	protected Info apiInfo() {
-		return new Info().title(TITLE).description(DESCRIPTION).version(VERSION).contact(apiContact())
-				.license(apiLicence());
+		return new Info().title(TITLE).description(DESCRIPTION).version(VERSION).contact(apiContact()).license(apiLicence());
 	}
 
 	protected License apiLicence() {

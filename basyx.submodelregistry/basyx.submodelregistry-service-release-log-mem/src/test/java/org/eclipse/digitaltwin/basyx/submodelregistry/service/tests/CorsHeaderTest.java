@@ -49,7 +49,7 @@ public class CorsHeaderTest {
 
 	@Value("${local.server.port}")
 	private String port;
-	
+
 	@Test
 	public void testCorsHeader() throws IOException {
 		URL url = new URL("http://localhost:" + port + "/submodel-descriptors");

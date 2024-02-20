@@ -53,7 +53,7 @@ public class ProjectionTest {
 
 	@Autowired
 	private ObjectMapper mapper;
-	
+
 	@Rule
 	public TestResourcesLoader resourceLoader = new TestResourcesLoader(ProjectionTest.class.getPackageName(), mapper);
 
@@ -62,18 +62,18 @@ public class ProjectionTest {
 		String path = AasRegistryPaths.submodelDescriptors().endpoints().protocolInformation().endpointProtocolVersion();
 		assertSegmentBlocksCreated(path, true, "submodelDescriptors", "endpoints", "protocolInformation.endpointProtocolVersion");
 	}
-	
+
 	@Test
 	public void testSegmentBlockCollectorDataSpecificationContentDefinition() {
 		String path = AasRegistryPaths.submodelDescriptors().administration().embeddedDataSpecifications().dataSpecificationContent().asDataSpecificationIec61360().definition().text();
 		assertSegmentBlocksCreated(path, false, "submodelDescriptors", "administration.embeddedDataSpecifications", "dataSpecificationContent.definition", "text");
 	}
-	
+
 	private void assertSegmentBlocksCreated(String path, boolean expectedIsList, String... expectedSegments) {
 		SegmentBlocksBuilder builder = new SegmentBlocksBuilder(Map.of());
 		List<SegmentBlock> segments = builder.buildSegmentBlocks(path);
 		assertThat(segments.stream().map(SegmentBlock::getSegment).collect(Collectors.toList())).containsExactly(expectedSegments);
-		assertThat(segments.get(segments.size()-1).isListLeaf()).isEqualTo(expectedIsList);	
+		assertThat(segments.get(segments.size() - 1).isListLeaf()).isEqualTo(expectedIsList);
 	}
 
 	@Test
@@ -93,14 +93,14 @@ public class ProjectionTest {
 		String path = AasRegistryPaths.submodelDescriptors().endpoints().protocolInformation().endpointProtocolVersion();
 		assertFilter(projBuilder, new ShellDescriptorQuery(path, "^a_.*$").queryType(QueryTypeEnum.REGEX));
 	}
-	
+
 	@Test
 	public void testMatchSubmodelListProjection() throws IOException {
 		SearchPathProjectionBuilder projBuilder = new SearchPathProjectionBuilder(Map.of("id", "_id", "submodelDescriptors.id", "submodelDescriptors._id"));
 		String path = AasRegistryPaths.submodelDescriptors().endpoints().protocolInformation().endpointProtocolVersion();
 		assertFilter(projBuilder, new ShellDescriptorQuery(path, "2.0.0"));
 	}
-	
+
 	@Test
 	public void testProjectionOutsideSubmodel_ThenNoFilterReturned() throws IOException {
 		SearchPathProjectionBuilder projBuilder = new SearchPathProjectionBuilder(Map.of("id", "_id", "submodelDescriptors.id", "submodelDescriptors._id"));
@@ -108,14 +108,14 @@ public class ProjectionTest {
 		Optional<AggregationExpression> filterOpt = projBuilder.buildSubmodelFilter(List.of(new ShellDescriptorQuery(path, "type")));
 		assertThat(filterOpt).isEmpty();
 	}
-	
+
 	@Test
 	public void testRegexSubmodelFunctionalProjection() throws IOException {
 		SearchPathProjectionBuilder projBuilder = new SearchPathProjectionBuilder(Map.of("id", "_id", "submodelDescriptors.id", "submodelDescriptors._id"));
 		String path = AasRegistryPaths.submodelDescriptors().endpoints().protocolInformation().endpointProtocol();
 		assertFilter(projBuilder, new ShellDescriptorQuery(path, "^a_.*$").queryType(QueryTypeEnum.REGEX));
 	}
-	
+
 	@Test
 	public void testMatchSubmodelFunctionalProjection() throws IOException {
 		SearchPathProjectionBuilder projBuilder = new SearchPathProjectionBuilder(Map.of("id", "_id", "submodelDescriptors.id", "submodelDescriptors._id"));

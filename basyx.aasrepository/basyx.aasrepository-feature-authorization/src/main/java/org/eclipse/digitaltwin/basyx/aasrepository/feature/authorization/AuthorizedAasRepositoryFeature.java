@@ -45,10 +45,10 @@ import org.springframework.stereotype.Component;
 @ConditionalOnExpression("#{${" + CommonAuthorizationProperties.ENABLED_PROPERTY_KEY + ":false}}")
 @Order(0)
 public class AuthorizedAasRepositoryFeature implements AasRepositoryFeature {
-	
+
 	@Value("${" + CommonAuthorizationProperties.ENABLED_PROPERTY_KEY + ":}")
 	private boolean enabled;
-	
+
 	private RbacPermissionResolver<AasTargetInformation> permissionResolver;
 
 	@Autowired

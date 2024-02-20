@@ -24,9 +24,8 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.aasservice.feature.mqtt;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
+
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetInformation;
 import org.eclipse.digitaltwin.aas4j.v3.model.Key;
@@ -43,144 +42,141 @@ import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
- * Decorator for the AasService that triggers MQTT events for different operations on the service.
+ * Decorator for the AasService that triggers MQTT events for different
+ * operations on the service.
  *
  * @author jungjan
  */
 public class MqttAasService implements AasService {
 
-  private static final PaginationInfo NO_LIMIT_PAGINATION_INFO = new PaginationInfo(0, null);
-  private static final Logger logger = LoggerFactory.getLogger(MqttAasService.class);
-  private final MqttAasServiceTopicFactory topicFactory;
+	private static final PaginationInfo NO_LIMIT_PAGINATION_INFO = new PaginationInfo(0, null);
+	private static final Logger logger = LoggerFactory.getLogger(MqttAasService.class);
+	private final MqttAasServiceTopicFactory topicFactory;
 
-  private final AasService decorated;
+	private final AasService decorated;
 
-  private final IMqttClient mqttClient;
-  private final String repoId;
-  private final ObjectMapper objectMapper;
+	private final IMqttClient mqttClient;
+	private final String repoId;
+	private final ObjectMapper objectMapper;
 
-  public MqttAasService(AasService decorated, IMqttClient mqttClient, MqttAasServiceTopicFactory topicFactory,
-      String repoId, ObjectMapper objectMapper) {
-    this.topicFactory = topicFactory;
-    this.decorated = decorated;
-    this.mqttClient = mqttClient;
-    this.repoId = repoId;
-    this.objectMapper = objectMapper;
-  }
+	public MqttAasService(AasService decorated, IMqttClient mqttClient, MqttAasServiceTopicFactory topicFactory, String repoId, ObjectMapper objectMapper) {
+		this.topicFactory = topicFactory;
+		this.decorated = decorated;
+		this.mqttClient = mqttClient;
+		this.repoId = repoId;
+		this.objectMapper = objectMapper;
+	}
 
-  public String serialize(Object obj) {
-    try {
-      return objectMapper.writeValueAsString(obj);
-    } catch (JsonProcessingException e) {
-      throw new RuntimeException("MqttAasService serialization");
-    }
-  }
+	public String serialize(Object obj) {
+		try {
+			return objectMapper.writeValueAsString(obj);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException("MqttAasService serialization");
+		}
+	}
 
-  /**
-   * Sends MQTT message to connected broker
-   *
-   * @param topic   in which the message will be published
-   * @param payload the actual message
-   */
-  private void sendMqttMessage(String topic, String payload) {
-    MqttMessage msg = createMqttMessage(payload);
+	/**
+	 * Sends MQTT message to connected broker
+	 *
+	 * @param topic
+	 *            in which the message will be published
+	 * @param payload
+	 *            the actual message
+	 */
+	private void sendMqttMessage(String topic, String payload) {
+		MqttMessage msg = createMqttMessage(payload);
 
-    try {
-      logger.debug("Send MQTT message to " + topic + ": " + payload);
-      mqttClient.publish(topic, msg);
-    } catch (MqttPersistenceException e) {
-      logger.error("Could not persist mqtt message", e);
-    } catch (MqttException e) {
-      logger.error("Could not send mqtt message", e);
-    }
-  }
+		try {
+			logger.debug("Send MQTT message to " + topic + ": " + payload);
+			mqttClient.publish(topic, msg);
+		} catch (MqttPersistenceException e) {
+			logger.error("Could not persist mqtt message", e);
+		} catch (MqttException e) {
+			logger.error("Could not send mqtt message", e);
+		}
+	}
 
-  private MqttMessage createMqttMessage(String payload) {
-    if (payload == null) {
-      return new MqttMessage();
-    } else {
-      return new MqttMessage(payload.getBytes());
-    }
-  }
+	private MqttMessage createMqttMessage(String payload) {
+		if (payload == null) {
+			return new MqttMessage();
+		} else {
+			return new MqttMessage(payload.getBytes());
+		}
+	}
 
-  @Override
-  public AssetAdministrationShell getAAS() {
-    return decorated.getAAS();
-  }
+	@Override
+	public AssetAdministrationShell getAAS() {
+		return decorated.getAAS();
+	}
 
-  @Override
-  public CursorResult<List<Reference>> getSubmodelReferences(PaginationInfo pInfo) {
-    return decorated.getSubmodelReferences(pInfo);
-  }
+	@Override
+	public CursorResult<List<Reference>> getSubmodelReferences(PaginationInfo pInfo) {
+		return decorated.getSubmodelReferences(pInfo);
+	}
 
-  @Override
-  public void setAssetInformation(AssetInformation aasInfo) {
-    decorated.setAssetInformation(aasInfo);
+	@Override
+	public void setAssetInformation(AssetInformation aasInfo) {
+		decorated.setAssetInformation(aasInfo);
 
-    setAssetInfo(aasInfo);
-  }
+		setAssetInfo(aasInfo);
+	}
 
-  private void setAssetInfo(AssetInformation aasInfo) {
-    String shellId = extractShellId();
+	private void setAssetInfo(AssetInformation aasInfo) {
+		String shellId = extractShellId();
 
-    sendMqttMessage(topicFactory.createSetAssetInformationTopic(repoId, shellId), serialize(aasInfo));
-  }
+		sendMqttMessage(topicFactory.createSetAssetInformationTopic(repoId, shellId), serialize(aasInfo));
+	}
 
-  @Override
-  public void addSubmodelReference(Reference submodelReference) {
-    decorated.addSubmodelReference(submodelReference);
+	@Override
+	public void addSubmodelReference(Reference submodelReference) {
+		decorated.addSubmodelReference(submodelReference);
 
-    addedSudmodelReference(submodelReference);
-  }
+		addedSudmodelReference(submodelReference);
+	}
 
-  private void addedSudmodelReference(Reference submodelReference) {
-    String shellId = extractShellId();
+	private void addedSudmodelReference(Reference submodelReference) {
+		String shellId = extractShellId();
 
-    sendMqttMessage(topicFactory.createAddSubmodelReferenceTopic(repoId, shellId), serialize(submodelReference));
-  }
+		sendMqttMessage(topicFactory.createAddSubmodelReferenceTopic(repoId, shellId), serialize(submodelReference));
+	}
 
-  @Override
-  public void removeSubmodelReference(String submodelId) {
-    Reference submodelReference = extractSubmodelReferenceById(submodelId);
-    decorated.removeSubmodelReference(submodelId);
+	@Override
+	public void removeSubmodelReference(String submodelId) {
+		Reference submodelReference = extractSubmodelReferenceById(submodelId);
+		decorated.removeSubmodelReference(submodelId);
 
-    removedSubmodelReference(submodelReference);
-  }
+		removedSubmodelReference(submodelReference);
+	}
 
-  private Reference extractSubmodelReferenceById(String submodelId) {
-    List<Reference> submodelsReferences = getSubmodelReferences(NO_LIMIT_PAGINATION_INFO).getResult();
+	private Reference extractSubmodelReferenceById(String submodelId) {
+		List<Reference> submodelsReferences = getSubmodelReferences(NO_LIMIT_PAGINATION_INFO).getResult();
 
-    return submodelsReferences.stream()
-        .filter(reference -> containsSubmodelId(reference, submodelId))
-        .findFirst()
-        .orElseThrow(() -> {
-          throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.SUBMODEL)
-              .missingElement(submodelId).build();
-        });
-  }
+		return submodelsReferences.stream().filter(reference -> containsSubmodelId(reference, submodelId)).findFirst().orElseThrow(() -> {
+			throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.SUBMODEL).missingElement(submodelId).build();
+		});
+	}
 
-  private boolean containsSubmodelId(Reference reference, String submodelId) {
-    List<Key> keys = reference.getKeys();
-    return keys.stream()
-        .filter(key -> key.getValue()
-            .equals(submodelId))
-        .findFirst()
-        .get() != null;
-  }
+	private boolean containsSubmodelId(Reference reference, String submodelId) {
+		List<Key> keys = reference.getKeys();
+		return keys.stream().filter(key -> key.getValue().equals(submodelId)).findFirst().get() != null;
+	}
 
-  private void removedSubmodelReference(Reference submodelReference) {
-    String shellId = extractShellId();
+	private void removedSubmodelReference(Reference submodelReference) {
+		String shellId = extractShellId();
 
-    sendMqttMessage(topicFactory.createRemoveSubmodelReferenceTopic(repoId, shellId), serialize(submodelReference));
-  }
+		sendMqttMessage(topicFactory.createRemoveSubmodelReferenceTopic(repoId, shellId), serialize(submodelReference));
+	}
 
-  private String extractShellId() {
-    return getAAS().getId();
-  }
+	private String extractShellId() {
+		return getAAS().getId();
+	}
 
-  @Override
-  public AssetInformation getAssetInformation() {
-    return decorated.getAssetInformation();
-  }
+	@Override
+	public AssetInformation getAssetInformation() {
+		return decorated.getAssetInformation();
+	}
 }

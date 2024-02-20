@@ -23,7 +23,7 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.submodelregistry.service.tests.api;
- 
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertThrows;
 
@@ -77,16 +77,15 @@ public class BasyxRegistryApiDelegateTest {
 
 	@MockBean
 	private RegistryEventSink listener;
-	
+
 	@MockBean
-	private LocationBuilder locationBuilder;	
+	private LocationBuilder locationBuilder;
 
 	@Autowired
 	private SubmodelRegistryStorage storage;
 
 	@Autowired
 	private SubmodelDescriptorsApiController submodelController;
-
 
 	@Rule
 	public TestResourcesLoader testResourcesLoader = new TestResourcesLoader();
@@ -114,7 +113,6 @@ public class BasyxRegistryApiDelegateTest {
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 		assertThat(response.getBody().getResult()).asList().containsExactlyInAnyOrderElementsOf(repoContent);
 	}
-	
 
 	@Test
 	public void whenGetSubmodelDescriptorByIdNullArg_thenNullPointer() {
@@ -166,7 +164,6 @@ public class BasyxRegistryApiDelegateTest {
 		List<SubmodelDescriptor> expected = testResourcesLoader.loadList(SubmodelDescriptor.class);
 		assertThat(all.getBody().getResult()).asList().containsExactlyInAnyOrderElementsOf(expected);
 	}
-
 
 	@Test
 	public void whenDeleteAllSubmodelDescritors_thenReturnNoContent() {

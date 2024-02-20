@@ -46,8 +46,7 @@ public class PaginationSupport<T extends Object> {
 
 	public CursorResult<List<T>> getPaged(PaginationInfo pInfo) {
 		Map<String, T> cursorView = getCursorView(pInfo);
-		Stream<Entry<String, T>> eStream = cursorView.entrySet()
-				.stream();
+		Stream<Entry<String, T>> eStream = cursorView.entrySet().stream();
 
 		Stream<T> tStream = eStream.map(Entry::getValue);
 		tStream = applyLimit(pInfo, tStream);

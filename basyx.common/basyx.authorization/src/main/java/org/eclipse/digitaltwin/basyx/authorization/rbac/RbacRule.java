@@ -24,11 +24,12 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.authorization.rbac;
 
+import jakarta.annotation.Nonnull;
+
 import java.util.List;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-
-import jakarta.annotation.Nonnull;
 
 /**
  * A single role based access control rule consisting of role x action y target

@@ -23,8 +23,6 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.conceptdescriptionrepository;
 
-import com.mongodb.client.result.DeleteResult;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.TreeMap;
@@ -45,6 +43,8 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+
+import com.mongodb.client.result.DeleteResult;
 
 /**
  * MongoDB implementation of the ConceptDescriptionRepository

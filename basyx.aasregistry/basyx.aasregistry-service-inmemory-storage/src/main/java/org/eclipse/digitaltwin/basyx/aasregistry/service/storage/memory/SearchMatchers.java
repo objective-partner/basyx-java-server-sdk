@@ -40,7 +40,7 @@ import lombok.RequiredArgsConstructor;
 
 class SearchMatchers {
 
-	private SearchMatchers() {		
+	private SearchMatchers() {
 	}
 
 	public static Map<String, List<BiPredicate<Object[], String>>> createMatchers(List<ShellDescriptorQuery> queryList) {
@@ -52,8 +52,7 @@ class SearchMatchers {
 		}
 		return matchers;
 	}
-	
-	
+
 	public static BiPredicate<Object[], String> createMatcher(ShellDescriptorQuery query) {
 		QueryTypeEnum queryType = query.getQueryType();
 		String value = query.getValue();
@@ -71,14 +70,12 @@ class SearchMatchers {
 		}
 		return matcher;
 	}
-	
-	
+
 	@RequiredArgsConstructor
 	private static class TagExtensionMatcher implements BiPredicate<Object[], String> {
 
 		private final String extensionName;
 
-		
 		@Override
 		public boolean test(Object[] objectPath, String currentElem) {
 			Extension extension = getExtensionObject(objectPath);

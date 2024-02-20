@@ -25,7 +25,14 @@
 
 package org.eclipse.digitaltwin.basyx.aasenvironment;
 
-import static org.eclipse.digitaltwin.basyx.aasenvironment.IdShortPathTestHelper.*;
+import static org.eclipse.digitaltwin.basyx.aasenvironment.IdShortPathTestHelper.createScenario1Element;
+import static org.eclipse.digitaltwin.basyx.aasenvironment.IdShortPathTestHelper.createScenario2Element;
+import static org.eclipse.digitaltwin.basyx.aasenvironment.IdShortPathTestHelper.createScenario3Element;
+import static org.eclipse.digitaltwin.basyx.aasenvironment.IdShortPathTestHelper.createScenario4Element;
+import static org.eclipse.digitaltwin.basyx.aasenvironment.IdShortPathTestHelper.createScenario5Element;
+import static org.eclipse.digitaltwin.basyx.aasenvironment.IdShortPathTestHelper.createScenarioWithMultipleFileElements;
+import static org.eclipse.digitaltwin.basyx.aasenvironment.IdShortPathTestHelper.createSubmodel;
+import static org.eclipse.digitaltwin.basyx.aasenvironment.IdShortPathTestHelper.createSubmodelWithMultipleFileElements;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -41,26 +48,26 @@ import org.junit.Test;
  * @author danish
  */
 public class TestFileElementPathCollector {
-	
+
 	@Test
 	public void findIdShortPath() {
 		List<List<SubmodelElement>> expectedIdShortPathElements = new ArrayList<List<SubmodelElement>>();
 		expectedIdShortPathElements.addAll(Arrays.asList(createScenario1Element(), createScenario2Element(), createScenario3Element(), createScenario4Element(), createScenario5Element()));
-		
+
 		List<List<SubmodelElement>> actualIdShortPathElements = new FileElementPathCollector(createSubmodel("DummySubmodel")).collect();
-		
+
 		assertTrue(expectedIdShortPathElements.containsAll(actualIdShortPathElements));
 		assertTrue(actualIdShortPathElements.containsAll(expectedIdShortPathElements));
 	}
-	
+
 	@Test
 	public void findIdShortPathWithMultipleFilesInPath() {
 		List<List<SubmodelElement>> expectedIdShortPathElements = createScenarioWithMultipleFileElements();
-		
+
 		List<List<SubmodelElement>> actualIdShortPathElements = new FileElementPathCollector(createSubmodelWithMultipleFileElements("DummySubmodel")).collect();
-		
+
 		assertTrue(expectedIdShortPathElements.containsAll(actualIdShortPathElements));
 		assertTrue(actualIdShortPathElements.containsAll(expectedIdShortPathElements));
 	}
-	
+
 }

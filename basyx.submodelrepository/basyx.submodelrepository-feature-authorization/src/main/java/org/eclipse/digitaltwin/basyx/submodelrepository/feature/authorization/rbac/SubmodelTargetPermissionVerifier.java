@@ -36,23 +36,21 @@ import org.eclipse.digitaltwin.basyx.submodelrepository.feature.authorization.Su
  */
 public class SubmodelTargetPermissionVerifier implements TargetPermissionVerifier<SubmodelTargetInformation> {
 
-  private static final String ALL_ALLOWED_WILDCARD = "*";
+	private static final String ALL_ALLOWED_WILDCARD = "*";
 
-  @Override
-  public boolean isVerified(RbacRule rbacRule, SubmodelTargetInformation targetInformation) {
+	@Override
+	public boolean isVerified(RbacRule rbacRule, SubmodelTargetInformation targetInformation) {
 
-    String submodelId = targetInformation.getSubmodelId();
-    String submodelElementIdShortPath = targetInformation.getSubmodelElementIdShortPath();
+		String submodelId = targetInformation.getSubmodelId();
+		String submodelElementIdShortPath = targetInformation.getSubmodelElementIdShortPath();
 
-    SubmodelTargetInformation rbacRuleSubmodelTargetInformation = (SubmodelTargetInformation) rbacRule.getTargetInformation();
+		SubmodelTargetInformation rbacRuleSubmodelTargetInformation = (SubmodelTargetInformation) rbacRule.getTargetInformation();
 
-    if (rbacRuleSubmodelTargetInformation.getSubmodelId().equals(ALL_ALLOWED_WILDCARD) || match(submodelId,
-        rbacRuleSubmodelTargetInformation.getSubmodelId())) {
-      return rbacRuleSubmodelTargetInformation.getSubmodelElementIdShortPath().equals(ALL_ALLOWED_WILDCARD)
-          || match(submodelElementIdShortPath, rbacRuleSubmodelTargetInformation.getSubmodelElementIdShortPath());
-    }
+		if (rbacRuleSubmodelTargetInformation.getSubmodelId().equals(ALL_ALLOWED_WILDCARD) || match(submodelId, rbacRuleSubmodelTargetInformation.getSubmodelId())) {
+			return rbacRuleSubmodelTargetInformation.getSubmodelElementIdShortPath().equals(ALL_ALLOWED_WILDCARD) || match(submodelElementIdShortPath, rbacRuleSubmodelTargetInformation.getSubmodelElementIdShortPath());
+		}
 
-    return false;
-  }
+		return false;
+	}
 
 }

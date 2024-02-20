@@ -23,7 +23,6 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx;
 
 import java.util.function.Function;
@@ -40,7 +39,7 @@ import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultOperation;
  */
 public class InvokableOperation extends DefaultOperation {
 	private Function<OperationVariable[], OperationVariable[]> invokable;
-	
+
 	/**
 	 * Invokes the operation with the passed arguments
 	 * 

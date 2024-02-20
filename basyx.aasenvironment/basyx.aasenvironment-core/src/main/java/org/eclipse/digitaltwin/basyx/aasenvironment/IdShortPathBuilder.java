@@ -26,6 +26,7 @@
 package org.eclipse.digitaltwin.basyx.aasenvironment;
 
 import java.util.List;
+
 import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElement;
 import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElementList;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
@@ -36,6 +37,7 @@ import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
  * <p>
  * Some examples of valid list of {@link SubmodelElement}
  * </p>
+ * 
  * <pre>
  * [SMC, SML, SMC, Property]
  * [SMC]
@@ -48,100 +50,97 @@ import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
  */
 public class IdShortPathBuilder {
 
-  private final List<SubmodelElement> idShortPathElements;
+	private final List<SubmodelElement> idShortPathElements;
 
-  public IdShortPathBuilder(List<SubmodelElement> idShortPathElements) {
-    super();
-    this.idShortPathElements = idShortPathElements;
+	public IdShortPathBuilder(List<SubmodelElement> idShortPathElements) {
+		super();
+		this.idShortPathElements = idShortPathElements;
 
-    validateIdShortPathElements(idShortPathElements);
-  }
+		validateIdShortPathElements(idShortPathElements);
+	}
 
-  /**
-   * Builds the IdShortPath
-   *
-   * @return the idShortPath
-   */
-  public String build() {
-    int i = 0;
-    int j = 1;
+	/**
+	 * Builds the IdShortPath
+	 *
+	 * @return the idShortPath
+	 */
+	public String build() {
+		int i = 0;
+		int j = 1;
 
-    if (j == idShortPathElements.size()) {
-      return idShortPathElements.get(i).getIdShort();
-    }
+		if (j == idShortPathElements.size()) {
+			return idShortPathElements.get(i).getIdShort();
+		}
 
-    boolean previousOccurrenceSubmodelElementList = false;
+		boolean previousOccurrenceSubmodelElementList = false;
 
-    StringBuilder idShortPathBuilder = new StringBuilder();
+		StringBuilder idShortPathBuilder = new StringBuilder();
 
-    while (j < idShortPathElements.size()) {
-      SubmodelElement parentSME = idShortPathElements.get(i);
-      SubmodelElement childSME = idShortPathElements.get(j);
+		while (j < idShortPathElements.size()) {
+			SubmodelElement parentSME = idShortPathElements.get(i);
+			SubmodelElement childSME = idShortPathElements.get(j);
 
-      boolean isFirstElement = i == 0;
+			boolean isFirstElement = i == 0;
 
-      if (parentSME instanceof SubmodelElementList) {
-        appendSMLIdShortPath(isFirstElement, previousOccurrenceSubmodelElementList, idShortPathBuilder, parentSME,
-            childSME);
+			if (parentSME instanceof SubmodelElementList) {
+				appendSMLIdShortPath(isFirstElement, previousOccurrenceSubmodelElementList, idShortPathBuilder, parentSME, childSME);
 
-        previousOccurrenceSubmodelElementList = true;
-      } else {
+				previousOccurrenceSubmodelElementList = true;
+			} else {
 
-        if (previousOccurrenceSubmodelElementList) {
-          i++;
-          j++;
+				if (previousOccurrenceSubmodelElementList) {
+					i++;
+					j++;
 
-          previousOccurrenceSubmodelElementList = false;
+					previousOccurrenceSubmodelElementList = false;
 
-          continue;
-        }
+					continue;
+				}
 
-        appendNonSMLIdShortPath(isFirstElement, idShortPathBuilder, parentSME);
+				appendNonSMLIdShortPath(isFirstElement, idShortPathBuilder, parentSME);
 
-        previousOccurrenceSubmodelElementList = false;
-      }
+				previousOccurrenceSubmodelElementList = false;
+			}
 
-      i++;
-      j++;
-    }
+			i++;
+			j++;
+		}
 
-    if (!(idShortPathElements.get(i - 1) instanceof SubmodelElementList)) {
-      idShortPathBuilder.append(".").append(idShortPathElements.get(i).getIdShort());
-    }
+		if (!(idShortPathElements.get(i - 1) instanceof SubmodelElementList)) {
+			idShortPathBuilder.append(".").append(idShortPathElements.get(i).getIdShort());
+		}
 
-    return idShortPathBuilder.toString();
-  }
+		return idShortPathBuilder.toString();
+	}
 
-  private void appendNonSMLIdShortPath(boolean isFirstElement, StringBuilder idShortPathBuilder,
-      SubmodelElement parentSME) {
-    if (!isFirstElement) {
-      idShortPathBuilder.append(".");
-    }
+	private void appendNonSMLIdShortPath(boolean isFirstElement, StringBuilder idShortPathBuilder, SubmodelElement parentSME) {
+		if (!isFirstElement) {
+			idShortPathBuilder.append(".");
+		}
 
-    idShortPathBuilder.append(parentSME.getIdShort());
-  }
+		idShortPathBuilder.append(parentSME.getIdShort());
+	}
 
-  private void appendSMLIdShortPath(boolean isFirstElement, boolean previousOccurrenceSubmodelElementList,
-      StringBuilder idShortPathBuilder, SubmodelElement parentSME, SubmodelElement childSME) {
-    int index = ((SubmodelElementList) parentSME).getValue().indexOf(childSME);
+	private void appendSMLIdShortPath(boolean isFirstElement, boolean previousOccurrenceSubmodelElementList, StringBuilder idShortPathBuilder, SubmodelElement parentSME, SubmodelElement childSME) {
+		int index = ((SubmodelElementList) parentSME).getValue().indexOf(childSME);
 
-    if (previousOccurrenceSubmodelElementList) {
-      idShortPathBuilder.append("[").append(index).append("]");
+		if (previousOccurrenceSubmodelElementList) {
+			idShortPathBuilder.append("[").append(index).append("]");
 
-      return;
-    }
+			return;
+		}
 
-    if (!isFirstElement) {
-      idShortPathBuilder.append(".");
-    }
+		if (!isFirstElement) {
+			idShortPathBuilder.append(".");
+		}
 
-    idShortPathBuilder.append(parentSME.getIdShort()).append("[").append(index).append("]");
-  }
+		idShortPathBuilder.append(parentSME.getIdShort()).append("[").append(index).append("]");
+	}
 
-  private void validateIdShortPathElements(List<SubmodelElement> idShortPathElements) {
-    if (idShortPathElements == null || idShortPathElements.isEmpty()) {
-      throw ExceptionBuilderFactory.getInstance().invalidIdShortPathElementsException().build();
-    }
-  }
+	private void validateIdShortPathElements(List<SubmodelElement> idShortPathElements) {
+		if (idShortPathElements == null || idShortPathElements.isEmpty()) {
+			throw ExceptionBuilderFactory.getInstance().invalidIdShortPathElementsException().build();
+		}
+	}
 
 }

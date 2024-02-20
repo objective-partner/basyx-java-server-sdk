@@ -59,9 +59,9 @@ public class SearchPathCriteriaBuilderTest {
 
 	@Test
 	public void testId() throws IOException {
-		checkSearchPathMatchResult(AasRegistryPaths.id(), "myId");	
+		checkSearchPathMatchResult(AasRegistryPaths.id(), "myId");
 	}
-	
+
 	@Test
 	public void testIdShort() throws IOException {
 		checkSearchPathMatchResult(AasRegistryPaths.idShort(), "myIdShort");
@@ -98,13 +98,12 @@ public class SearchPathCriteriaBuilderTest {
 	public void testEndpointsProtocolInformationEndpointProtocolVersion() throws IOException {
 		checkSearchPathMatchResult(AasRegistryPaths.endpoints().protocolInformation().endpointProtocolVersion(), "1");
 	}
-	
+
 	@Test
 	public void testEndpointsProtocolInformationEndpointProtocolVersionRegex() throws IOException {
 		checkSearchPathRegexResult(AasRegistryPaths.endpoints().protocolInformation().endpointProtocolVersion(), "a.*c");
 	}
 
-	
 	@Test
 	public void testShellExtensionName() throws IOException {
 		ShellDescriptorQuery query = new ShellDescriptorQuery(AasRegistryPaths.extensions().value(), "RED").extensionName("COLOR");
@@ -121,11 +120,11 @@ public class SearchPathCriteriaBuilderTest {
 	private void checkSearchPathMatchResult(String path, String value) throws IOException {
 		checkSearchPathResult(new ShellDescriptorQuery(path, value));
 	}
-	
+
 	private void checkSearchPathRegexResult(String path, String value) throws IOException {
 		checkSearchPathResult(new ShellDescriptorQuery(path, value).queryType(QueryTypeEnum.REGEX));
 	}
-	
+
 	private void checkSearchPathResult(ShellDescriptorQuery sdQuery) throws IOException {
 		GroupedQueries queries = ShellDescriptorSearchRequests.groupQueries(sdQuery);
 		Criteria criteria = builder.buildCriteria(queries);

@@ -43,7 +43,6 @@ import lombok.RequiredArgsConstructor;
 public class SearchPathCriteriaBuilder {
 
 	private final Map<String, String> pathMappings;
-	
 
 	public List<Criteria> buildCriterias(GroupedQueries grouped) {
 		List<ShellDescriptorQuery> outsideSm = grouped.getQueriesOutsideSubmodel();
@@ -53,7 +52,7 @@ public class SearchPathCriteriaBuilder {
 		buildSubmodelCriterias(inSm, criterias);
 		return criterias;
 	}
-	
+
 	private void buildShellCriterias(List<ShellDescriptorQuery> queries, List<Criteria> toAppendTo) {
 		for (ShellDescriptorQuery eachQuery : queries) {
 			Criteria criteria = buildSearchPathCriteria(eachQuery.getPath(), eachQuery);
@@ -70,13 +69,13 @@ public class SearchPathCriteriaBuilder {
 			criterias.add(new Criteria(AasRegistryPaths.SEGMENT_SUBMODEL_DESCRIPTORS).elemMatch(new Criteria().andOperator(innerCriterias)));
 		}
 	}
-	
+
 	private Criteria buildInSubmodelSearchPathCriteria(ShellDescriptorQuery query) {
 		String searchPath = query.getPath();
 		searchPath = searchPath.substring(AasRegistryPaths.SEGMENT_SUBMODEL_DESCRIPTORS.length() + 1);
 		return buildSearchPathCriteria(searchPath, query);
 	}
-	
+
 	private Criteria buildSearchPathCriteria(String searchPath, ShellDescriptorQuery query) {
 		String value = query.getValue();
 		QueryTypeEnum qType = query.getQueryType();

@@ -1,4 +1,4 @@
-///*******************************************************************************
+/// *******************************************************************************
 // * Copyright (C) 2023 the Eclipse BaSyx Authors
 // *
 // * Permission is hereby granted, free of charge, to any person obtaining
@@ -22,44 +22,46 @@
 // *
 // * SPDX-License-Identifier: MIT
 // ******************************************************************************/
-//package org.eclipse.digitaltwin.basyx.aasdiscoveryservice.tck;
+// package org.eclipse.digitaltwin.basyx.aasdiscoveryservice.tck;
 //
-//import org.junit.internal.TextListener;
-//import org.junit.runner.JUnitCore;
-//import org.junit.runner.Result;
+// import org.junit.internal.TextListener;
+// import org.junit.runner.JUnitCore;
+// import org.junit.runner.Result;
 //
-///**
+/// **
 // * Application for testing an AAS Discovery. The first argument is the server
 // * URL.
 // *
 // * @author danish
 // *
 // */
-//public class AasDiscoveryServiceTestApplication {
+// public class AasDiscoveryServiceTestApplication {
 //
-//	public static void main(String[] args) throws Exception {
-//		String url = getAasDiscoveryServiceUrl(args);
+// public static void main(String[] args) throws Exception {
+// String url = getAasDiscoveryServiceUrl(args);
 //
-//		Result result = runTests(url);
+// Result result = runTests(url);
 //
-//		printResults(result);
-//	}
+// printResults(result);
+// }
 //
-//	private static void printResults(Result result) {
-//		System.out.println("Finished. Result: Failures: " + result.getFailureCount() + ". Ignored: " + result.getIgnoreCount() + ". Tests run: " + result.getRunCount() + ". Time: " + result.getRunTime() + "ms.");
-//	}
+// private static void printResults(Result result) {
+// System.out.println("Finished. Result: Failures: " + result.getFailureCount()
+/// + ". Ignored: " + result.getIgnoreCount() + ". Tests run: " +
+/// result.getRunCount() + ". Time: " + result.getRunTime() + "ms.");
+// }
 //
-//	private static Result runTests(String url) {
-//		AasDiscoveryServiceTestDefinedURL.url = url;
+// private static Result runTests(String url) {
+// AasDiscoveryServiceTestDefinedURL.url = url;
 //
-//		JUnitCore junit = new JUnitCore();
-//		junit.addListener(new TextListener(System.out));
+// JUnitCore junit = new JUnitCore();
+// junit.addListener(new TextListener(System.out));
 //
-//		return junit.run(AasDiscoveryServiceTestDefinedURL.class);
-//	}
+// return junit.run(AasDiscoveryServiceTestDefinedURL.class);
+// }
 //
-//	private static String getAasDiscoveryServiceUrl(String[] args) {
-//		return args[0];
-//	}
+// private static String getAasDiscoveryServiceUrl(String[] args) {
+// return args[0];
+// }
 //
-//}
+// }

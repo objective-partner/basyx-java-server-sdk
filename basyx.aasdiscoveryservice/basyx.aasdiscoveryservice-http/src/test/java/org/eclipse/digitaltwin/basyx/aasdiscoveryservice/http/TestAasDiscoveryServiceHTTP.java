@@ -60,8 +60,7 @@ public class TestAasDiscoveryServiceHTTP extends AasDiscoveryServiceHTTPSuite {
 
 		List<AssetAdministrationShell> dummyAssetLinks = AasDiscoveryServiceSuite.getMultipleDummyAasAssetLink();
 
-		dummyAssetLinks.stream()
-				.forEach(assetLink -> resetAssetLink(assetLink, aasDiscoveryService));
+		dummyAssetLinks.stream().forEach(assetLink -> resetAssetLink(assetLink, aasDiscoveryService));
 	}
 
 	private void resetAssetLink(AssetAdministrationShell shell, AasDiscoveryService aasDiscoveryService) {

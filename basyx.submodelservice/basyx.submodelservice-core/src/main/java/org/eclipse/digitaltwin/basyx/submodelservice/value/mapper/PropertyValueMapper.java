@@ -28,14 +28,14 @@ import org.eclipse.digitaltwin.aas4j.v3.model.Property;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.PropertyValue;
 
 /**
- * Maps {@link Property} value to {@link PropertyValue} 
+ * Maps {@link Property} value to {@link PropertyValue}
  * 
  * @author danish
  *
  */
 public class PropertyValueMapper implements ValueMapper<PropertyValue> {
 	private Property property;
-	
+
 	public PropertyValueMapper(Property property) {
 		this.property = property;
 	}

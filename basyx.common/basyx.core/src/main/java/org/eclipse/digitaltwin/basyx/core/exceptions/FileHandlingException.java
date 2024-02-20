@@ -35,28 +35,28 @@ import org.springframework.stereotype.Component;
 @SuppressWarnings("serial")
 public class FileHandlingException extends BaSyxResponseException {
 
-  private FileHandlingException(int httpStatusCode, String reason, String correlationId, String timestamp) {
-    super(httpStatusCode, reason, correlationId, timestamp);
-  }
+	private FileHandlingException(int httpStatusCode, String reason, String correlationId, String timestamp) {
+		super(httpStatusCode, reason, correlationId, timestamp);
+	}
 
-  @Component
-  public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
+	@Component
+	public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
 
-    public Builder(ITraceableMessageSerializer serializer) {
-      super(serializer);
-      messageReference("FileHandlingException");
-      returnCode(500);
-      technicalMessageTemplate("Exception occurred while handling the file '{Filename}'.");
-    }
+		public Builder(ITraceableMessageSerializer serializer) {
+			super(serializer);
+			messageReference("FileHandlingException");
+			returnCode(500);
+			technicalMessageTemplate("Exception occurred while handling the file '{Filename}'.");
+		}
 
-    public Builder filename(String value) {
-      param("Filename", value);
-      return this;
-    }
+		public Builder filename(String value) {
+			param("Filename", value);
+			return this;
+		}
 
-    @Override
-    public FileHandlingException build() {
-      return new FileHandlingException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
-    }
-  }
+		@Override
+		public FileHandlingException build() {
+			return new FileHandlingException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
+		}
+	}
 }

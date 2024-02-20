@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetInformation;
 import org.eclipse.digitaltwin.aas4j.v3.model.Key;
@@ -46,90 +47,86 @@ import org.eclipse.digitaltwin.basyx.core.pagination.PaginationSupport;
  */
 public class InMemoryAasService implements AasService {
 
-  private final AssetAdministrationShell aas;
+	private final AssetAdministrationShell aas;
 
-  /**
-   * Creates the InMemory AasService containing the passed AAS
-   *
-   * @param aas
-   */
-  public InMemoryAasService(AssetAdministrationShell aas) {
-    this.aas = aas;
-  }
+	/**
+	 * Creates the InMemory AasService containing the passed AAS
+	 *
+	 * @param aas
+	 */
+	public InMemoryAasService(AssetAdministrationShell aas) {
+		this.aas = aas;
+	}
 
-  @Override
-  public AssetAdministrationShell getAAS() {
-    return aas;
-  }
+	@Override
+	public AssetAdministrationShell getAAS() {
+		return aas;
+	}
 
-  @Override
-  public CursorResult<List<Reference>> getSubmodelReferences(PaginationInfo pInfo) {
-    List<Reference> submodelReferences = aas.getSubmodels();
+	@Override
+	public CursorResult<List<Reference>> getSubmodelReferences(PaginationInfo pInfo) {
+		List<Reference> submodelReferences = aas.getSubmodels();
 
-    Function<Reference, String> idResolver = extractSubmodelID();
+		Function<Reference, String> idResolver = extractSubmodelID();
 
-    TreeMap<String, Reference> submodelRefMap = convertToTreeMap(submodelReferences, idResolver);
+		TreeMap<String, Reference> submodelRefMap = convertToTreeMap(submodelReferences, idResolver);
 
-    PaginationSupport<Reference> paginationSupport = new PaginationSupport<>(submodelRefMap, idResolver);
-    CursorResult<List<Reference>> paginatedSubmodelReference = paginationSupport.getPaged(pInfo);
+		PaginationSupport<Reference> paginationSupport = new PaginationSupport<>(submodelRefMap, idResolver);
+		CursorResult<List<Reference>> paginatedSubmodelReference = paginationSupport.getPaged(pInfo);
 
-    return paginatedSubmodelReference;
-  }
+		return paginatedSubmodelReference;
+	}
 
+	@Override
+	public void addSubmodelReference(Reference submodelReference) {
+		aas.getSubmodels().add(submodelReference);
+	}
 
-  @Override
-  public void addSubmodelReference(Reference submodelReference) {
-    aas.getSubmodels().add(submodelReference);
-  }
+	@Override
+	public void removeSubmodelReference(String submodelId) {
+		Reference specificSubmodelReference = getSubmodelReferenceById(submodelId);
 
-  @Override
-  public void removeSubmodelReference(String submodelId) {
-    Reference specificSubmodelReference = getSubmodelReferenceById(submodelId);
+		aas.getSubmodels().remove(specificSubmodelReference);
+	}
 
-    aas.getSubmodels().remove(specificSubmodelReference);
-  }
+	@Override
+	public void setAssetInformation(AssetInformation aasInfo) {
+		aas.setAssetInformation(aasInfo);
+	}
 
-  @Override
-  public void setAssetInformation(AssetInformation aasInfo) {
-    aas.setAssetInformation(aasInfo);
-  }
+	@Override
+	public AssetInformation getAssetInformation() {
+		return aas.getAssetInformation();
+	}
 
-  @Override
-  public AssetInformation getAssetInformation() {
-    return aas.getAssetInformation();
-  }
+	private Reference getSubmodelReferenceById(String submodelId) {
+		List<Reference> submodelReferences = aas.getSubmodels();
 
-  private Reference getSubmodelReferenceById(String submodelId) {
-    List<Reference> submodelReferences = aas.getSubmodels();
+		Reference specificSubmodelReference = submodelReferences.stream().filter(reference -> {
+			List<Key> keys = reference.getKeys();
+			Key foundKey = keys.stream().filter(key -> key.getType().equals(KeyTypes.SUBMODEL)).findFirst().get();
+			return foundKey.getValue().equals(submodelId);
+		}).findFirst().orElseThrow(() -> {
+			throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.SUBMODEL).missingElement(submodelId).build();
+		});
 
-    Reference specificSubmodelReference = submodelReferences.stream().filter(reference -> {
-      List<Key> keys = reference.getKeys();
-      Key foundKey = keys.stream().filter(key -> key.getType().equals(KeyTypes.SUBMODEL)).findFirst().get();
-      return foundKey.getValue().equals(submodelId);
-    }).findFirst().orElseThrow(() -> {
-      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.SUBMODEL)
-          .missingElement(submodelId).build();
-    });
+		return specificSubmodelReference;
+	}
 
-    return specificSubmodelReference;
-  }
+	private TreeMap<String, Reference> convertToTreeMap(List<Reference> submodelReferences, Function<Reference, String> idResolver) {
+		return submodelReferences.stream().collect(Collectors.toMap(reference -> idResolver.apply(reference), ref -> ref, (ref1, ref2) -> ref1, TreeMap::new));
+	}
 
-  private TreeMap<String, Reference> convertToTreeMap(List<Reference> submodelReferences,
-      Function<Reference, String> idResolver) {
-    return submodelReferences.stream().collect(Collectors
-        .toMap(reference -> idResolver.apply(reference), ref -> ref, (ref1, ref2) -> ref1, TreeMap::new));
-  }
-
-  private Function<Reference, String> extractSubmodelID() {
-    return reference -> {
-      List<Key> keys = reference.getKeys();
-      for (Key key : keys) {
-        if (key.getType() == KeyTypes.SUBMODEL) {
-          return key.getValue();
-        }
-      }
-      return ""; // Return an empty string if no ID is found
-    };
-  }
+	private Function<Reference, String> extractSubmodelID() {
+		return reference -> {
+			List<Key> keys = reference.getKeys();
+			for (Key key : keys) {
+				if (key.getType() == KeyTypes.SUBMODEL) {
+					return key.getValue();
+				}
+			}
+			return ""; // Return an empty string if no ID is found
+		};
+	}
 
 }

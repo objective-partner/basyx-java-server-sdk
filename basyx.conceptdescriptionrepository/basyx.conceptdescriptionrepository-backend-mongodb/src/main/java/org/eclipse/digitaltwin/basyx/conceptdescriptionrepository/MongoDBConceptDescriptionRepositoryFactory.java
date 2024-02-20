@@ -46,15 +46,13 @@ public class MongoDBConceptDescriptionRepositoryFactory implements ConceptDescri
 	private String cdRepositoryName;
 
 	@Autowired(required = false)
-	public MongoDBConceptDescriptionRepositoryFactory(MongoTemplate mongoTemplate,
-			@Value("${basyx.conceptdescriptionrepository.mongodb.collectionName:conceptdescription-repo}") String collectionName) {
+	public MongoDBConceptDescriptionRepositoryFactory(MongoTemplate mongoTemplate, @Value("${basyx.conceptdescriptionrepository.mongodb.collectionName:conceptdescription-repo}") String collectionName) {
 		this.mongoTemplate = mongoTemplate;
 		this.collectionName = collectionName;
 	}
 
 	@Autowired(required = false)
-	public MongoDBConceptDescriptionRepositoryFactory(MongoTemplate mongoTemplate,
-			@Value("${basyx.conceptdescriptionrepository.mongodb.collectionName:conceptdescription-repo}") String collectionName,
+	public MongoDBConceptDescriptionRepositoryFactory(MongoTemplate mongoTemplate, @Value("${basyx.conceptdescriptionrepository.mongodb.collectionName:conceptdescription-repo}") String collectionName,
 			@Value("${basyx.cdrepo.name:cd-repo}") String cdRepositoryName) {
 		this(mongoTemplate, collectionName);
 		this.cdRepositoryName = cdRepositoryName;

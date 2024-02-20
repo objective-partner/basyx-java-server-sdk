@@ -28,35 +28,36 @@ package org.eclipse.digitaltwin.basyx.core.exceptions;
 import org.springframework.stereotype.Component;
 
 /**
- * This exception is used for features where certain functionalities are not implemented yet.
+ * This exception is used for features where certain functionalities are not
+ * implemented yet.
  *
  * @author zhangzai, Al-Agtash
  */
 @SuppressWarnings("serial")
 public class FeatureNotImplementedException extends BaSyxResponseException {
 
-  private FeatureNotImplementedException(int httpStatusCode, String reason, String correlationId, String timestamp) {
-    super(httpStatusCode, reason, correlationId, timestamp);
-  }
+	private FeatureNotImplementedException(int httpStatusCode, String reason, String correlationId, String timestamp) {
+		super(httpStatusCode, reason, correlationId, timestamp);
+	}
 
-  @Component
-  public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
+	@Component
+	public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
 
-    public Builder(ITraceableMessageSerializer serializer) {
-      super(serializer);
-      messageReference("FeatureNotImplementedException");
-      returnCode(501);
-      technicalMessageTemplate("Feature '{FeatureName}' is not implemented yet.");
-    }
+		public Builder(ITraceableMessageSerializer serializer) {
+			super(serializer);
+			messageReference("FeatureNotImplementedException");
+			returnCode(501);
+			technicalMessageTemplate("Feature '{FeatureName}' is not implemented yet.");
+		}
 
-    public Builder featureName(String value) {
-      param("FeatureName", value);
-      return this;
-    }
+		public Builder featureName(String value) {
+			param("FeatureName", value);
+			return this;
+		}
 
-    @Override
-    public FeatureNotImplementedException build() {
-      return new FeatureNotImplementedException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
-    }
-  }
+		@Override
+		public FeatureNotImplementedException build() {
+			return new FeatureNotImplementedException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
+		}
+	}
 }

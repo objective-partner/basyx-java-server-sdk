@@ -23,7 +23,6 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.conceptdescriptionrepository.http;
 
 import org.eclipse.digitaltwin.basyx.http.Base64UrlEncodedIdentifier;
@@ -42,35 +41,31 @@ public class BaSyxConceptDescriptionHttpTestUtils {
 	public static String getSpecificConceptDescriptionAccessPath(String accessUrl, String conceptDescriptionId) {
 		return accessUrl + "/" + Base64UrlEncodedIdentifier.encodeIdentifier(conceptDescriptionId);
 	}
-	
+
 	public static String getAllConceptDescriptionsWithIdShortParameterAccessPath(String accessUrl, String idShort) {
 		return accessUrl + "?" + ID_SHORT_PARAM_NAME + "=" + idShort;
 	}
-	
+
 	public static String getAllConceptDescriptionsWithIsCaseOfParameterAccessPath(String accessUrl, String isCaseOf) {
 		return accessUrl + "?" + IS_CASE_OF_PARAM_NAME + "=" + Base64UrlEncodedIdentifier.encodeIdentifier(isCaseOf);
 	}
-	
-	public static String getAllConceptDescriptionsWithDataSpecRefParameterAccessPath(String accessUrl,
-			String dataSpecificationRef) {
-		return accessUrl + "?" + DATA_SPEC_REF_PARAM_NAME + "="
-				+ Base64UrlEncodedIdentifier.encodeIdentifier(dataSpecificationRef);
+
+	public static String getAllConceptDescriptionsWithDataSpecRefParameterAccessPath(String accessUrl, String dataSpecificationRef) {
+		return accessUrl + "?" + DATA_SPEC_REF_PARAM_NAME + "=" + Base64UrlEncodedIdentifier.encodeIdentifier(dataSpecificationRef);
 	}
-	
-	public static String getAllConceptDescriptionsWithTwoParametersAccessPath(String accessUrl, String idShort,
-			String dataSpecificationRef) {
+
+	public static String getAllConceptDescriptionsWithTwoParametersAccessPath(String accessUrl, String idShort, String dataSpecificationRef) {
 		String idShortOption = ID_SHORT_PARAM_NAME + "=" + idShort;
 		String dataSpecOption = DATA_SPEC_REF_PARAM_NAME + "=" + Base64UrlEncodedIdentifier.encodeIdentifier(dataSpecificationRef);
-		
+
 		return accessUrl + "?" + idShortOption + "&" + dataSpecOption;
 	}
-	
-	public static String getAllConceptDescriptionsWithAllParametersAccessPath(String accessUrl, String idShort,
-			String isCaseOf, String dataSpecificationRef) {
+
+	public static String getAllConceptDescriptionsWithAllParametersAccessPath(String accessUrl, String idShort, String isCaseOf, String dataSpecificationRef) {
 		String idShortOption = ID_SHORT_PARAM_NAME + "=" + idShort;
 		String isCaseOfOption = IS_CASE_OF_PARAM_NAME + "=" + Base64UrlEncodedIdentifier.encodeIdentifier(isCaseOf);
 		String dataSpecOption = DATA_SPEC_REF_PARAM_NAME + "=" + Base64UrlEncodedIdentifier.encodeIdentifier(dataSpecificationRef);
-		
+
 		return accessUrl + "?" + idShortOption + "&" + isCaseOfOption + "&" + dataSpecOption;
 	}
 }

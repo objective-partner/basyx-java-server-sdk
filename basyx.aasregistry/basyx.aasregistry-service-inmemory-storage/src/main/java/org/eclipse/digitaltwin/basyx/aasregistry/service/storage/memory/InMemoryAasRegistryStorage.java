@@ -107,7 +107,7 @@ public class InMemoryAasRegistryStorage implements AasRegistryStorage {
 	}
 
 	@Override
-	public void insertAasDescriptor( AssetAdministrationShellDescriptor descr) throws AasDescriptorAlreadyExistsException {
+	public void insertAasDescriptor(AssetAdministrationShellDescriptor descr) throws AasDescriptorAlreadyExistsException {
 		String aasId = descr.getId();
 		if (aasDescriptorLookupMap.containsKey(aasId)) {
 			throw new AasDescriptorAlreadyExistsException(aasId);
@@ -116,7 +116,7 @@ public class InMemoryAasRegistryStorage implements AasRegistryStorage {
 		aasDescriptorLookupMap.put(aasId, descr);
 		submodelLookupMap.put(aasId, newSubmodelMap);
 	}
-	
+
 	private TreeMap<String, SubmodelDescriptor> toSubmodelLookupMap(List<SubmodelDescriptor> submodelDescriptors) {
 		return Optional.ofNullable(submodelDescriptors).orElseGet(LinkedList::new).stream().collect(Collectors.toMap(SubmodelDescriptor::getId, Function.identity(), this::mergeSubmodels, TreeMap::new));
 	}
@@ -134,7 +134,7 @@ public class InMemoryAasRegistryStorage implements AasRegistryStorage {
 	}
 
 	@Override
-	public SubmodelDescriptor getSubmodel( String aasDescriptorId, String submodelId) {
+	public SubmodelDescriptor getSubmodel(String aasDescriptorId, String submodelId) {
 		Map<String, SubmodelDescriptor> descriptorModels = submodelLookupMap.get(aasDescriptorId);
 		if (descriptorModels == null) {
 			throw new AasDescriptorNotFoundException(aasDescriptorId);
@@ -176,9 +176,8 @@ public class InMemoryAasRegistryStorage implements AasRegistryStorage {
 	}
 
 	private void replaceSubmodelInAasDescriptor(String aasDescriptorId, String submodelId, SubmodelDescriptor submodel) {
-		AssetAdministrationShellDescriptor aasDescriptor = aasDescriptorLookupMap.get(aasDescriptorId);		
-		ListIterator<SubmodelDescriptor> submodels = Optional.ofNullable(aasDescriptor.getSubmodelDescriptors())
-							.orElse(Collections.emptyList()).listIterator();	
+		AssetAdministrationShellDescriptor aasDescriptor = aasDescriptorLookupMap.get(aasDescriptorId);
+		ListIterator<SubmodelDescriptor> submodels = Optional.ofNullable(aasDescriptor.getSubmodelDescriptors()).orElse(Collections.emptyList()).listIterator();
 		while (submodels.hasNext()) {
 			SubmodelDescriptor eachItem = submodels.next();
 			if (Objects.equals(eachItem.getId(), submodelId)) {

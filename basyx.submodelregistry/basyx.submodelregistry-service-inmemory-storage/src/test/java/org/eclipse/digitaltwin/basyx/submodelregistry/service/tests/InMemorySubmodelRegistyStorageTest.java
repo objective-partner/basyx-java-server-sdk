@@ -24,21 +24,19 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.submodelregistry.service.tests;
 
-import org.eclipse.digitaltwin.basyx.submodelregistry.service.storage.memory.InMemorySubmodelRegistryStorage;
 import org.eclipse.digitaltwin.basyx.submodelregistry.service.storage.SubmodelRegistryStorage;
+import org.eclipse.digitaltwin.basyx.submodelregistry.service.storage.memory.InMemorySubmodelRegistryStorage;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
 @TestPropertySource(properties = { "registry.type=inMemory" })
-@ContextConfiguration(classes = { InMemorySubmodelRegistyStorageTest.class})
+@ContextConfiguration(classes = { InMemorySubmodelRegistyStorageTest.class })
 public class InMemorySubmodelRegistyStorageTest extends SubmodelRegistryStorageTest {
-
 
 	@Bean
 	public SubmodelRegistryStorage createBaseStorage() {
 		return new InMemorySubmodelRegistryStorage();
 	}
-	
 
 }

@@ -24,15 +24,16 @@
  ******************************************************************************/
 
 package org.eclipse.digitaltwin.basyx.http;
-import java.io.IOException;
-
-import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
  * Adds Basyx Header to every Request
@@ -45,11 +46,10 @@ public class HttpBaSyxHeader extends OncePerRequestFilter {
 	public static final String HEADER_KEY = "AAS_Middleware";
 	public static final String HEADER_VALUE = "BaSyx";
 
-	@Override 
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
-        
+	@Override
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
 		response.addHeader(HEADER_KEY, HEADER_VALUE);
-        filterChain.doFilter(request, response);
-    }
+		filterChain.doFilter(request, response);
+	}
 }

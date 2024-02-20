@@ -23,14 +23,13 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.http;
-
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 
 /**
  * Handles conversion from a string representing a Base64Url encoded value to

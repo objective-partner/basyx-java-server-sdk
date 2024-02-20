@@ -23,7 +23,6 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.deserialization;
 
 import java.io.IOException;
@@ -44,7 +43,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  */
 public class ValueOnlyJsonDeserializer extends JsonDeserializer<ValueOnly> {
-	
+
 	private SubmodelElementValueDeserializationFactory submodelElementValueDeserializationFactory = new SubmodelElementValueDeserializationFactory();
 
 	@Override
@@ -52,9 +51,9 @@ public class ValueOnlyJsonDeserializer extends JsonDeserializer<ValueOnly> {
 		try {
 			ObjectMapper mapper = (ObjectMapper) p.getCodec();
 			JsonNode node = mapper.readTree(p);
-			
+
 			String idShort = node.fieldNames().next();
-			
+
 			return new ValueOnly(idShort, submodelElementValueDeserializationFactory.create(mapper, node.get(idShort)));
 		} catch (IOException e) {
 			throw new RuntimeException(e);

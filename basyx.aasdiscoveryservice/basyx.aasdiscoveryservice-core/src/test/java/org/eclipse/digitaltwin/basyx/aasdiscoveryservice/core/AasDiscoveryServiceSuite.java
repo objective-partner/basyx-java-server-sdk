@@ -63,19 +63,14 @@ public abstract class AasDiscoveryServiceSuite {
 
 		List<AssetAdministrationShell> assetLinks = getMultipleDummyAasAssetLink();
 
-		assetLinks.stream()
-				.forEach(assetLink -> createAssetLink(assetLink, discoveryService));
+		assetLinks.stream().forEach(assetLink -> createAssetLink(assetLink, discoveryService));
 
 		List<String> expectedResult = new ArrayList<>(List.of("TestAasID1"));
 
 		// AssetLinks are AND connected...
-		List<AssetLink> assetIds = new ArrayList<>(List.of(
-				new AssetLink("DummyAssetName1", "DummyAsset_1_Value"),
-				new AssetLink("DummyAssetName2",  "DummyAsset_2_Value")
-		));
+		List<AssetLink> assetIds = new ArrayList<>(List.of(new AssetLink("DummyAssetName1", "DummyAsset_1_Value"), new AssetLink("DummyAssetName2", "DummyAsset_2_Value")));
 
-		List<String> actualResult = discoveryService.getAllAssetAdministrationShellIdsByAssetLink(noLimitPaginationInfo, assetIds)
-				.getResult();
+		List<String> actualResult = discoveryService.getAllAssetAdministrationShellIdsByAssetLink(noLimitPaginationInfo, assetIds).getResult();
 
 		assertEquals(expectedResult.size(), actualResult.size());
 		assertTrue(expectedResult.containsAll(actualResult) && actualResult.containsAll(expectedResult));
@@ -87,8 +82,7 @@ public abstract class AasDiscoveryServiceSuite {
 
 		List<AssetAdministrationShell> assetLinks = getMultipleDummyAasAssetLink();
 
-		assetLinks.stream()
-				.forEach(assetLink -> createAssetLink(assetLink, discoveryService));
+		assetLinks.stream().forEach(assetLink -> createAssetLink(assetLink, discoveryService));
 
 		List<SpecificAssetId> expectedResult = Arrays.asList(createDummySpecificAssetId("DummyAssetName3", "DummyAsset_3_Value"), createDummySpecificAssetId("DummyAssetName4", "DummyAsset_4_Value"));
 
@@ -106,8 +100,7 @@ public abstract class AasDiscoveryServiceSuite {
 
 		String shellIdentifier = "TestAasID3";
 
-		List<SpecificAssetId> expectedAssetIds = Arrays.asList(
-				createDummySpecificAssetId("DummyAssetName4", "DummyAsset_4_Value"), createDummySpecificAssetId("DummyAssetName5", "DummyAsset_5_Value"));
+		List<SpecificAssetId> expectedAssetIds = Arrays.asList(createDummySpecificAssetId("DummyAssetName4", "DummyAsset_4_Value"), createDummySpecificAssetId("DummyAssetName5", "DummyAsset_5_Value"));
 
 		List<SpecificAssetId> createdAssetIds = discoveryService.createAllAssetLinksById(shellIdentifier, expectedAssetIds);
 		assertEquals(expectedAssetIds, createdAssetIds);
@@ -138,8 +131,7 @@ public abstract class AasDiscoveryServiceSuite {
 
 		List<AssetAdministrationShell> assetLinks = getMultipleDummyAasAssetLink();
 
-		assetLinks.stream()
-				.forEach(assetLink -> createAssetLink(assetLink, discoveryService));
+		assetLinks.stream().forEach(assetLink -> createAssetLink(assetLink, discoveryService));
 
 		discoveryService.deleteAllAssetLinksById(shellIdentifier);
 
@@ -168,10 +160,8 @@ public abstract class AasDiscoveryServiceSuite {
 		SpecificAssetId specificAssetId_3 = createDummySpecificAssetId("DummyAssetName3", "DummyAsset_3_Value");
 		SpecificAssetId specificAssetId_4 = createDummySpecificAssetId("DummyAssetName4", "DummyAsset_4_Value");
 
-		return Arrays.asList(
-				deriveShellFromIdAndSpecificAssetIds(dummyShellIdentifier_1, Arrays.asList(specificAssetId_1, specificAssetId_2)),
-				deriveShellFromIdAndSpecificAssetIds(dummyShellIdentifier_2, Arrays.asList(specificAssetId_3, specificAssetId_4))
-		);
+		return Arrays.asList(deriveShellFromIdAndSpecificAssetIds(dummyShellIdentifier_1, Arrays.asList(specificAssetId_1, specificAssetId_2)),
+				deriveShellFromIdAndSpecificAssetIds(dummyShellIdentifier_2, Arrays.asList(specificAssetId_3, specificAssetId_4)));
 	}
 
 	public static void createAssetLink(AssetAdministrationShell shell, AasDiscoveryService aasDiscoveryService) {
@@ -189,9 +179,7 @@ public abstract class AasDiscoveryServiceSuite {
 	}
 
 	protected static SpecificAssetId createDummySpecificAssetId(String name, String value) {
-		return new DefaultSpecificAssetId.Builder().name(name)
-				.value(value)
-				.build();
+		return new DefaultSpecificAssetId.Builder().name(name).value(value).build();
 	}
 
 }

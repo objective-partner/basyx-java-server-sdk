@@ -35,28 +35,28 @@ import org.springframework.stereotype.Component;
 @SuppressWarnings("serial")
 public class NullSubjectException extends BaSyxResponseException {
 
-  private NullSubjectException(int httpStatusCode, String reason, String correlationId, String timestamp) {
-    super(httpStatusCode, reason, correlationId, timestamp);
-  }
+	private NullSubjectException(int httpStatusCode, String reason, String correlationId, String timestamp) {
+		super(httpStatusCode, reason, correlationId, timestamp);
+	}
 
-  @Component
-  public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
+	@Component
+	public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
 
-    public Builder(ITraceableMessageSerializer serializer) {
-      super(serializer);
-      messageReference("NullSubjectException");
-      returnCode(500);
-      technicalMessageTemplate("'{Subject}' information is null.");
-    }
+		public Builder(ITraceableMessageSerializer serializer) {
+			super(serializer);
+			messageReference("NullSubjectException");
+			returnCode(500);
+			technicalMessageTemplate("'{Subject}' information is null.");
+		}
 
-    public Builder subject(String value) {
-      param("Subject", value);
-      return this;
-    }
+		public Builder subject(String value) {
+			param("Subject", value);
+			return this;
+		}
 
-    @Override
-    public NullSubjectException build() {
-      return new NullSubjectException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
-    }
-  }
+		@Override
+		public NullSubjectException build() {
+			return new NullSubjectException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
+		}
+	}
 }

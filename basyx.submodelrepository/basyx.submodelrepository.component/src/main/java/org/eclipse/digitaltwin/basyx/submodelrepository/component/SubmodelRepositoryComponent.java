@@ -23,7 +23,6 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.submodelrepository.component;
 
 import org.springframework.boot.SpringApplication;
@@ -37,9 +36,7 @@ import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
  * @author schnicke
  *
  */
-@SpringBootApplication(
-		scanBasePackages = {"org.eclipse.digitaltwin.basyx","org.eclipse.digitaltwin.basyx.submodelrepository.component"}, 
-		exclude = { MongoAutoConfiguration.class, MongoDataAutoConfiguration.class })
+@SpringBootApplication(scanBasePackages = { "org.eclipse.digitaltwin.basyx", "org.eclipse.digitaltwin.basyx.submodelrepository.component" }, exclude = { MongoAutoConfiguration.class, MongoDataAutoConfiguration.class })
 public class SubmodelRepositoryComponent {
 	public static void main(String[] args) {
 		SpringApplication.run(SubmodelRepositoryComponent.class, args);

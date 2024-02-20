@@ -30,39 +30,38 @@ import org.springframework.stereotype.Component;
 @SuppressWarnings("serial")
 public class InvocationFailedException extends BaSyxResponseException {
 
-  private InvocationFailedException(int httpStatusCode, String reason, String correlationId, String timestamp) {
-    super(httpStatusCode, reason, correlationId, timestamp);
-  }
+	private InvocationFailedException(int httpStatusCode, String reason, String correlationId, String timestamp) {
+		super(httpStatusCode, reason, correlationId, timestamp);
+	}
 
-  @Component
-  public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
+	@Component
+	public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
 
-    public Builder(ITraceableMessageSerializer serializer) {
-      super(serializer);
-      messageReference("InvocationFailedException");
-      returnCode(500);
-      technicalMessageTemplate(
-          "Failed to invoke operation on Element '{IdShortPath}' of '{SubmodelId}' due to: {Reason}.");
-    }
+		public Builder(ITraceableMessageSerializer serializer) {
+			super(serializer);
+			messageReference("InvocationFailedException");
+			returnCode(500);
+			technicalMessageTemplate("Failed to invoke operation on Element '{IdShortPath}' of '{SubmodelId}' due to: {Reason}.");
+		}
 
-    public Builder submodelId(String value) {
-      param("SubmodelId", value);
-      return this;
-    }
+		public Builder submodelId(String value) {
+			param("SubmodelId", value);
+			return this;
+		}
 
-    public Builder idShortPath(String value) {
-      param("IdShortPath", value);
-      return this;
-    }
+		public Builder idShortPath(String value) {
+			param("IdShortPath", value);
+			return this;
+		}
 
-    public Builder reason(String value) {
-      param("Reason", value);
-      return this;
-    }
+		public Builder reason(String value) {
+			param("Reason", value);
+			return this;
+		}
 
-    @Override
-    public InvocationFailedException build() {
-      return new InvocationFailedException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
-    }
-  }
+		@Override
+		public InvocationFailedException build() {
+			return new InvocationFailedException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
+		}
+	}
 }

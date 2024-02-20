@@ -27,10 +27,10 @@
  */
 package org.eclipse.digitaltwin.basyx.submodelrepository.http;
 
-import java.util.List;
-
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+
+import java.util.List;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
 import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElement;
@@ -78,9 +78,8 @@ public interface SubmodelRepositoryHTTPApi {
 
 			@ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-      @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes",
-          content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class)))})
-  @RequestMapping(value = "/submodels", produces = {"application/json"}, method = RequestMethod.GET)
+			@ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))) })
+	@RequestMapping(value = "/submodels", produces = { "application/json" }, method = RequestMethod.GET)
 	ResponseEntity<PagedResult> getAllSubmodels(
 			@Base64UrlEncodedIdentifierSize(min = 1, max = 3072) @Parameter(in = ParameterIn.QUERY, description = "The value of the semantic id reference (UTF8-BASE64-URL-encoded)", schema = @Schema()) @Valid @RequestParam(value = "semanticId", required = false) Base64UrlEncodedIdentifier semanticId,
 			@Parameter(in = ParameterIn.QUERY, description = "The Asset Administration Shell’s IdShort", schema = @Schema()) @Valid @RequestParam(value = "idShort", required = false) String idShort,
@@ -103,9 +102,8 @@ public interface SubmodelRepositoryHTTPApi {
 
 			@ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-      @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes",
-          content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class)))})
-  @RequestMapping(value = "/submodels/$metadata", produces = {"application/json"}, method = RequestMethod.GET)
+			@ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))) })
+	@RequestMapping(value = "/submodels/$metadata", produces = { "application/json" }, method = RequestMethod.GET)
 	ResponseEntity<PagedResult> getAllSubmodelsMetadata(
 			@Base64UrlEncodedIdentifierSize(min = 1, max = 3072) @Parameter(in = ParameterIn.QUERY, description = "The value of the semantic id reference (UTF8-BASE64-URL-encoded)", schema = @Schema()) @Valid @RequestParam(value = "semanticId", required = false) Base64UrlEncodedIdentifier semanticId,
 			@Parameter(in = ParameterIn.QUERY, description = "The Asset Administration Shell’s IdShort", schema = @Schema()) @Valid @RequestParam(value = "idShort", required = false) String idShort,

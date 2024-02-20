@@ -31,8 +31,8 @@ import org.junit.runner.Result;
 
 /**
  * Application for testing the {@link AuthorizedSubmodelRepository} feature. The
- * first argument is the Submodel Repository Base URL, the second argument is the
- * Authentication server's token endpoint
+ * first argument is the Submodel Repository Base URL, the second argument is
+ * the Authentication server's token endpoint
  * 
  * @author schnicke, danish
  *

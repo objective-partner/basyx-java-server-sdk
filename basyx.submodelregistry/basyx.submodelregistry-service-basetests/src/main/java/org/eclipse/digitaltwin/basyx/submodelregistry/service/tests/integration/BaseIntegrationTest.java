@@ -109,7 +109,7 @@ public abstract class BaseIntegrationTest {
 	private int port;
 
 	private ObjectMapper mapper = new ObjectMapper();
-	
+
 	@Rule
 	public TestResourcesLoader resourceLoader = new TestResourcesLoader(BaseIntegrationTest.class.getPackageName(), mapper);
 
@@ -144,7 +144,7 @@ public abstract class BaseIntegrationTest {
 
 	@Test
 	public void whenWritingParallel_transactionManagementWorks() throws ApiException {
-		IntStream.iterate(0, i -> i + 1).limit(300).parallel().forEach(this::postSubmodel);		
+		IntStream.iterate(0, i -> i + 1).limit(300).parallel().forEach(this::postSubmodel);
 		assertThat(api.getAllSubmodelDescriptors(null, null).getResult()).hasSize(300);
 		for (int i = 0; i < 300; i++) {
 			queue().poll();
@@ -233,10 +233,10 @@ public abstract class BaseIntegrationTest {
 		SubmodelDescriptor descr = new SubmodelDescriptor().id(IDENTIFICATION_9).addEndpointsItem(defaultClientEndpoint());
 		ApiResponse<Void> putResult = api.putSubmodelDescriptorByIdWithHttpInfo(IDENTIFICATION_7, descr);
 		assertThat(putResult.getStatusCode()).isEqualTo(NO_CONTENT);
-		
+
 		assertThatEventWasSend(new RegistryEvent(IDENTIFICATION_7, EventType.SUBMODEL_UNREGISTERED, null));
 		assertThatEventWasSend(new RegistryEvent(descr.getId(), EventType.SUBMODEL_REGISTERED, convert(descr)));
-		
+
 		assertThrowsApiException(() -> api.getSubmodelDescriptorByIdWithHttpInfo(IDENTIFICATION_7), NOT_FOUND);
 		ApiResponse<SubmodelDescriptor> getResult = api.getSubmodelDescriptorByIdWithHttpInfo(IDENTIFICATION_9);
 		assertThat(getResult.getStatusCode()).isEqualTo(OK);
@@ -293,9 +293,9 @@ public abstract class BaseIntegrationTest {
 		SubmodelDescriptor sm = new SubmodelDescriptor().id("sm").id("short").addDescriptionItem(dType).addDisplayNameItem(nType).addEndpointsItem(ep).addExtensionsItem(ext).addSupplementalSemanticIdItem(reference);
 		sm.setAdministration(aInfo);
 		SubmodelDescriptor descr = api.postSubmodelDescriptor(sm);
-		
+
 		assertThat(descr).isEqualTo(sm);
-		
+
 		assertThatEventWasSend(new RegistryEvent(descr.getId(), EventType.SUBMODEL_REGISTERED, convert(sm)));
 	}
 
@@ -312,7 +312,7 @@ public abstract class BaseIntegrationTest {
 		List<String> locations = response.getHeaders().get("Location");
 		assertThat(locations).hasSize(1);
 		String location = locations.get(0);
-		
+
 		String expectedSuffix = "/submodel-descriptors/aHR0cHM6Ly9zbS5pZA==";
 		assertThat(location).endsWith(expectedSuffix);
 		assertRestResourceAvailable(location);
@@ -323,8 +323,8 @@ public abstract class BaseIntegrationTest {
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
 		con.setRequestMethod("GET");
 		int status = con.getResponseCode();
-		assertThat(status).isEqualTo(200);			
-	}	
+		assertThat(status).isEqualTo(200);
+	}
 
 	private void deleteSubmodelDescriptor(String submodelId) throws ApiException {
 		queue().reset();
@@ -357,7 +357,7 @@ public abstract class BaseIntegrationTest {
 		ProtocolInformation protocolInfo = new ProtocolInformation().href("http://127.0.0.1:8099/submodel").endpointProtocol("HTTP").subprotocol("AAS");
 		return new Endpoint()._interface("https://admin-shell.io/aas/API/3/0/SubmodelServiceSpecification/SSP-003").protocolInformation(protocolInfo);
 	}
-	
+
 	public org.eclipse.digitaltwin.basyx.submodelregistry.model.Endpoint defaultServerEndpoint() {
 		org.eclipse.digitaltwin.basyx.submodelregistry.model.ProtocolInformation protocolInfo = new org.eclipse.digitaltwin.basyx.submodelregistry.model.ProtocolInformation("http://127.0.0.1:8099/submodel").endpointProtocol("HTTP")
 				.subprotocol("AAS");
@@ -375,6 +375,6 @@ public abstract class BaseIntegrationTest {
 			assertThat(ex.getCode()).isEqualTo(statusCode);
 		}
 	}
-	
+
 	public abstract EventQueue queue();
 }

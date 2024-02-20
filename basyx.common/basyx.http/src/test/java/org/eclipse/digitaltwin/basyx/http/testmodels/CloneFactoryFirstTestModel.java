@@ -35,12 +35,13 @@ import org.eclipse.digitaltwin.basyx.http.CustomTypeCloneFactory;
  * @author danish
  */
 public class CloneFactoryFirstTestModel {
-	
+
 	private String name;
 	private String type;
-	
-	public CloneFactoryFirstTestModel() {}
-	
+
+	public CloneFactoryFirstTestModel() {
+	}
+
 	public CloneFactoryFirstTestModel(String name, String type) {
 		super();
 		this.name = name;

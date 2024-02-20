@@ -49,57 +49,57 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author danish
  */
 public class TestAttributeMapper {
-	
+
 	private static AttributeMapper attributeMapper = new AttributeMapper(configureObjectMapper());
-	
+
 	@Test
 	public void mapDescriptions() {
 		List<LangStringTextType> expectedDescriptions = RegistryIntegrationTestHelper.getAasRegLangStringTextTypes();
-		
+
 		List<LangStringTextType> actualDescriptions = attributeMapper.mapDescription(RegistryIntegrationTestHelper.getAas4jLangStringTextTypes());
-		
+
 		assertEquals(expectedDescriptions.size(), actualDescriptions.size());
 		assertEquals(expectedDescriptions, actualDescriptions);
 	}
-	
+
 	@Test
 	public void mapDisplayNames() {
 		List<LangStringNameType> expectedDisplayNames = RegistryIntegrationTestHelper.getAasRegLangStringNameTypes();
-		
+
 		List<LangStringNameType> actualDisplayNames = attributeMapper.mapDisplayName(RegistryIntegrationTestHelper.getAas4jLangStringNameTypes());
-		
+
 		assertEquals(expectedDisplayNames.size(), actualDisplayNames.size());
 		assertEquals(expectedDisplayNames, actualDisplayNames);
 	}
-	
+
 	@Test
 	public void mapExtensions() {
 		List<Extension> expectedExtensions = RegistryIntegrationTestHelper.getAasRegExtensions();
-		
+
 		List<Extension> actualExtensions = attributeMapper.mapExtensions(RegistryIntegrationTestHelper.getAas4jExtensions());
-		
+
 		assertEquals(expectedExtensions.size(), actualExtensions.size());
 		assertEquals(expectedExtensions, actualExtensions);
 	}
-	
+
 	@Test
 	public void mapAdministration() {
 		AdministrativeInformation expectedAdministrativeInformation = RegistryIntegrationTestHelper.getAasRegAdministration();
-		
+
 		AdministrativeInformation actualAdministrativeInformation = attributeMapper.mapAdministration(RegistryIntegrationTestHelper.getAas4jAdministration());
-		
+
 		assertEquals(expectedAdministrativeInformation, actualAdministrativeInformation);
 	}
-	
+
 	@Test
 	public void mapAssetKind() {
 		AssetKind expectedAssetKind = RegistryIntegrationTestHelper.AASREG_ASSET_KIND;
-		
+
 		AssetKind actualAssetKind = attributeMapper.mapAssetKind(RegistryIntegrationTestHelper.AAS4J_ASSET_KIND);
 
 		assertEquals(expectedAssetKind, actualAssetKind);
 	}
-	
+
 	private static ObjectMapper configureObjectMapper() {
 		List<SerializationExtension> extensions = Arrays.asList(new Aas4JHTTPSerializationExtension());
 

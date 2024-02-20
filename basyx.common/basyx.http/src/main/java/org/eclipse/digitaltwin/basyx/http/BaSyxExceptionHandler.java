@@ -23,12 +23,10 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.http;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.UUID;
+
 import org.eclipse.digitaltwin.basyx.core.exceptions.BaSyxResponseException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.http.model.Message;
@@ -42,6 +40,9 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * Configures overall Exception to HTTP status code mapping
  *
@@ -51,53 +52,51 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class BaSyxExceptionHandler extends ResponseEntityExceptionHandler {
 
-  private static final Logger logger = LoggerFactory.getLogger(BaSyxExceptionHandler.class);
-  private final ObjectMapper objectMapper = new ObjectMapper();
+	private static final Logger logger = LoggerFactory.getLogger(BaSyxExceptionHandler.class);
+	private final ObjectMapper objectMapper = new ObjectMapper();
 
-  @ExceptionHandler(IllegalArgumentException.class)
-  public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException exception) {
-    String correlationId = UUID.randomUUID().toString();
-    logger.debug("[{}] {}", correlationId, exception.getMessage(), exception);
-    String resultJson = deriveResultFromException(exception, HttpStatus.BAD_REQUEST, correlationId);
-    return new ResponseEntity<>(resultJson, HttpStatus.BAD_REQUEST);
-  }
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException exception) {
+		String correlationId = UUID.randomUUID().toString();
+		logger.debug("[{}] {}", correlationId, exception.getMessage(), exception);
+		String resultJson = deriveResultFromException(exception, HttpStatus.BAD_REQUEST, correlationId);
+		return new ResponseEntity<>(resultJson, HttpStatus.BAD_REQUEST);
+	}
 
-  @ExceptionHandler(BaSyxResponseException.class)
-  public ResponseEntity<String> handleBaSyxResponseException(BaSyxResponseException exception) {
-    logger.warn("[{}] {}", exception.getCorrelationId(), exception.getMessage(), exception);
-    HttpStatus httpStatus = HttpStatus.valueOf(exception.getHttpStatusCode());
-    String resultJson = deriveResultFromException(exception);
-    return new ResponseEntity<>(resultJson, httpStatus);
-  }
+	@ExceptionHandler(BaSyxResponseException.class)
+	public ResponseEntity<String> handleBaSyxResponseException(BaSyxResponseException exception) {
+		logger.warn("[{}] {}", exception.getCorrelationId(), exception.getMessage(), exception);
+		HttpStatus httpStatus = HttpStatus.valueOf(exception.getHttpStatusCode());
+		String resultJson = deriveResultFromException(exception);
+		return new ResponseEntity<>(resultJson, httpStatus);
+	}
 
-  private String deriveResultFromException(Exception exception, HttpStatus statusCode, String correlationId) {
-    BaSyxResponseException responseException = ExceptionBuilderFactory.getInstance().baSyxResponseException()
-        .technicalMessageTemplate(exception.getMessage()).returnCode(statusCode.value()).correlationId(correlationId)
-        .build();
+	private String deriveResultFromException(Exception exception, HttpStatus statusCode, String correlationId) {
+		BaSyxResponseException responseException = ExceptionBuilderFactory.getInstance().baSyxResponseException().technicalMessageTemplate(exception.getMessage()).returnCode(statusCode.value()).correlationId(correlationId).build();
 
-    return deriveResultFromException(responseException);
-  }
+		return deriveResultFromException(responseException);
+	}
 
-  private String deriveResultFromException(BaSyxResponseException exception) {
-    Message message = new Message();
-    message.code(String.valueOf(exception.getHttpStatusCode()));
-    message.correlationId(exception.getCorrelationId());
-    message.setText(exception.getMessage());
-    message.setTimestamp(exception.getTimestamp());
-    message.messageType(MessageTypeEnum.EXCEPTION);
+	private String deriveResultFromException(BaSyxResponseException exception) {
+		Message message = new Message();
+		message.code(String.valueOf(exception.getHttpStatusCode()));
+		message.correlationId(exception.getCorrelationId());
+		message.setText(exception.getMessage());
+		message.setTimestamp(exception.getTimestamp());
+		message.messageType(MessageTypeEnum.EXCEPTION);
 
-    Result result = new Result();
-    result.addMessagesItem(message);
-    return tryMarshalResult(exception, result);
-  }
+		Result result = new Result();
+		result.addMessagesItem(message);
+		return tryMarshalResult(exception, result);
+	}
 
-  private String tryMarshalResult(Exception exception, Result result) {
-    try {
-      return objectMapper.writeValueAsString(result);
-    } catch (JsonProcessingException e) {
-      String reason = "Failed to marshal result object, while handling exception in cause";
-      logger.warn(reason, exception);
-      throw new RuntimeException(reason, exception);
-    }
-  }
+	private String tryMarshalResult(Exception exception, Result result) {
+		try {
+			return objectMapper.writeValueAsString(result);
+		} catch (JsonProcessingException e) {
+			String reason = "Failed to marshal result object, while handling exception in cause";
+			logger.warn(reason, exception);
+			throw new RuntimeException(reason, exception);
+		}
+	}
 }

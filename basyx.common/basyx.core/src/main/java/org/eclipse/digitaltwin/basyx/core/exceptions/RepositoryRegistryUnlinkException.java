@@ -35,30 +35,29 @@ import org.springframework.stereotype.Component;
 @SuppressWarnings("serial")
 public class RepositoryRegistryUnlinkException extends BaSyxResponseException {
 
-  private RepositoryRegistryUnlinkException(int httpStatusCode, String reason, String correlationId, String timestamp) {
-    super(httpStatusCode, reason, correlationId, timestamp);
-  }
+	private RepositoryRegistryUnlinkException(int httpStatusCode, String reason, String correlationId, String timestamp) {
+		super(httpStatusCode, reason, correlationId, timestamp);
+	}
 
-  @Component
-  public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
+	@Component
+	public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
 
-    public Builder(ITraceableMessageSerializer serializer) {
-      super(serializer);
-      messageReference("RepositoryRegistryUnlinkException");
-      returnCode(500);
-      technicalMessageTemplate("Unable to unlink the element '{ElementId}' from the Registry.");
-    }
+		public Builder(ITraceableMessageSerializer serializer) {
+			super(serializer);
+			messageReference("RepositoryRegistryUnlinkException");
+			returnCode(500);
+			technicalMessageTemplate("Unable to unlink the element '{ElementId}' from the Registry.");
+		}
 
-    public Builder elementId(String value) {
-      param("ElementId", value);
-      return this;
-    }
+		public Builder elementId(String value) {
+			param("ElementId", value);
+			return this;
+		}
 
-    @Override
-    public RepositoryRegistryUnlinkException build() {
-      return new RepositoryRegistryUnlinkException(getReturnCode(), composeMessage(), getCorrelationId(),
-          getTimestamp());
-    }
-  }
+		@Override
+		public RepositoryRegistryUnlinkException build() {
+			return new RepositoryRegistryUnlinkException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
+		}
+	}
 
 }

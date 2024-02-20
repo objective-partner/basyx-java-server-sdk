@@ -1,4 +1,4 @@
-///*******************************************************************************
+/// *******************************************************************************
 // * Copyright (C) 2023 the Eclipse BaSyx Authors
 // *
 // * Permission is hereby granted, free of charge, to any person obtaining
@@ -22,78 +22,87 @@
 // *
 // * SPDX-License-Identifier: MIT
 // ******************************************************************************/
-//package org.eclipse.digitaltwin.basyx.aasdiscoveryservice.tck;
+// package org.eclipse.digitaltwin.basyx.aasdiscoveryservice.tck;
 //
-//import static org.junit.Assert.fail;
+// import static org.junit.Assert.fail;
 //
-//import java.io.IOException;
-//import java.util.List;
+// import java.io.IOException;
+// import java.util.List;
 //
-//import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
-//import org.apache.hc.core5.http.ParseException;
-//import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.AasDiscoveryServiceSuite;
-//import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.model.AssetLink;
-//import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.http.AasDiscoveryServiceHTTPSuite;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
+// import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+// import org.apache.hc.core5.http.ParseException;
+// import
+/// org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.AasDiscoveryServiceSuite;
+// import
+/// org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.model.AssetLink;
+// import
+/// org.eclipse.digitaltwin.basyx.aasdiscoveryservice.http.AasDiscoveryServiceHTTPSuite;
+// import org.slf4j.Logger;
+// import org.slf4j.LoggerFactory;
 //
-//import com.google.gson.Gson;
+// import com.google.gson.Gson;
 //
-///**
+/// **
 // *
 // *
 // * @author danish
 // *
 // */
-//public class AasDiscoveryServiceTestDefinedURL extends AasDiscoveryServiceHTTPSuite {
-//	private static final Logger logger = LoggerFactory.getLogger(AasDiscoveryServiceTestDefinedURL.class);
-//	public static String url = "http://localhost:8081/lookup/shells";
-//	private static Gson gson = new Gson();
+// public class AasDiscoveryServiceTestDefinedURL extends
+/// AasDiscoveryServiceHTTPSuite {
+// private static final Logger logger =
+/// LoggerFactory.getLogger(AasDiscoveryServiceTestDefinedURL.class);
+// public static String url = "http://localhost:8081/lookup/shells";
+// private static Gson gson = new Gson();
 //
-//	@Override
-//	protected String getURL() {
-//		return url;
-//	}
+// @Override
+// protected String getURL() {
+// return url;
+// }
 //
-//	@Override
-//	public void resetService() {
-//		createDummyAssetLinks();
-//	}
+// @Override
+// public void resetService() {
+// createDummyAssetLinks();
+// }
 //
-//	private void createDummyAssetLinks() {
-//		List<AssetLink> dummyAssetLinks = AasDiscoveryServiceSuite.getMultipleDummyAasAssetLink();
-//		dummyAssetLinks.forEach(this::createAssetLink);
-//	}
+// private void createDummyAssetLinks() {
+// List<AssetLink> dummyAssetLinks =
+/// AasDiscoveryServiceSuite.getMultipleDummyAasAssetLink();
+// dummyAssetLinks.forEach(this::createAssetLink);
+// }
 //
-//	private void createAssetLink(AssetLink assetLink) {
-//		try {
-//			String specificAssetIdsJSON = gson.toJson(assetLink.getSpecificAssetIds());
-//			CloseableHttpResponse creationResponse = createAssetLinks(assetLink.getShellIdentifier(), specificAssetIdsJSON);
+// private void createAssetLink(AssetLink assetLink) {
+// try {
+// String specificAssetIdsJSON = gson.toJson(assetLink.getSpecificAssetIds());
+// CloseableHttpResponse creationResponse =
+/// createAssetLinks(assetLink.getShellIdentifier(), specificAssetIdsJSON);
 //
-//			if (creationResponse.getCode() != 409) {
-//				logger.info("Creating Asset Link with shell id '{}', ResponseCode is '{}'", assetLink.getShellIdentifier(), creationResponse.getCode());
-//				return;
-//			}
+// if (creationResponse.getCode() != 409) {
+// logger.info("Creating Asset Link with shell id '{}', ResponseCode is '{}'",
+/// assetLink.getShellIdentifier(), creationResponse.getCode());
+// return;
+// }
 //
-//			resetAssetLink(assetLink);
-//		} catch (IOException | ParseException e) {
-//			throw new RuntimeException(e);
-//		}
-//	}
+// resetAssetLink(assetLink);
+// } catch (IOException | ParseException e) {
+// throw new RuntimeException(e);
+// }
+// }
 //
-//	private void resetAssetLink(AssetLink assetLink) {
-//		deleteAssetLink(assetLink.getShellIdentifier());
+// private void resetAssetLink(AssetLink assetLink) {
+// deleteAssetLink(assetLink.getShellIdentifier());
 //
-//		createAssetLink(assetLink);
-//	}
+// createAssetLink(assetLink);
+// }
 //
-//	private void deleteAssetLink(String shellId) {
-//		try {
-//			CloseableHttpResponse deleteResponse = deleteAssetLinkById(shellId);
-//			logger.info("Deleting Asset Link with shell id '{}', ResponseCode is '{}'", shellId, deleteResponse.getCode());
-//		} catch (IOException e) {
-//			fail(e.toString());
-//		}
-//	}
+// private void deleteAssetLink(String shellId) {
+// try {
+// CloseableHttpResponse deleteResponse = deleteAssetLinkById(shellId);
+// logger.info("Deleting Asset Link with shell id '{}', ResponseCode is '{}'",
+/// shellId, deleteResponse.getCode());
+// } catch (IOException e) {
+// fail(e.toString());
+// }
+// }
 //
-//}
+// }

@@ -23,7 +23,6 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.aasrepository.feature.registry.integration;
 
 import org.eclipse.digitaltwin.basyx.aasrepository.AasRepository;
@@ -46,13 +45,13 @@ public class RegistryIntegrationAasRepositoryFeature implements AasRepositoryFea
 	public final static String FEATURENAME = "basyx.aasrepository.feature.registryintegration";
 
 	private AasRepositoryRegistryLink aasRepositoryRegistryLink;
-	
+
 	@Value("${" + FEATURENAME + ":}")
 	private String registryBaseURL;
-	
+
 	@Value("${basyx.externalurl:}")
 	private String aasRepositoryExternalBaseURL;
-	
+
 	private AttributeMapper attributeMapper;
 
 	@Autowired

@@ -23,7 +23,6 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.conceptdescriptionrepository.http;
 
 import org.eclipse.digitaltwin.basyx.http.CorsPathPatternProvider;

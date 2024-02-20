@@ -35,13 +35,12 @@ import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 
 import lombok.NonNull;
 
-
 public class CursorEncodingRegistryStorage extends AasRegistryStorageDelegate {
 
 	public CursorEncodingRegistryStorage(AasRegistryStorage storage) {
 		super(storage);
 	}
-	
+
 	@Override
 	public CursorResult<List<AssetAdministrationShellDescriptor>> getAllAasDescriptors(@NonNull PaginationInfo pRequest, @NonNull DescriptorFilter filter) {
 		PaginationInfo decoded = decodeCursor(pRequest);
@@ -60,7 +59,7 @@ public class CursorEncodingRegistryStorage extends AasRegistryStorageDelegate {
 		String encodedCursor = encodeCursor(result.getCursor());
 		return new CursorResult<>(encodedCursor, result.getResult());
 	}
-	
+
 	private PaginationInfo decodeCursor(PaginationInfo info) {
 		String cursor = decodeCursor(info.getCursor());
 		return new PaginationInfo(info.getLimit(), cursor);
@@ -77,6 +76,6 @@ public class CursorEncodingRegistryStorage extends AasRegistryStorageDelegate {
 		if (cursor == null) {
 			return null;
 		}
-		return new String(java.util.Base64.getUrlEncoder().encode(cursor.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);		
-	}	
+		return new String(java.util.Base64.getUrlEncoder().encode(cursor.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);
+	}
 }

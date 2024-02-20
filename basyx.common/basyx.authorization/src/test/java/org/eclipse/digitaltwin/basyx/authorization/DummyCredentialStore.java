@@ -31,7 +31,7 @@ package org.eclipse.digitaltwin.basyx.authorization;
  * @author danish
  */
 public class DummyCredentialStore {
-	
+
 	public static final DummyCredential ADMIN_CREDENTIAL = new DummyCredential("john.doe", "johndoe");
 	public static final DummyCredential USER_CREDENTIAL = new DummyCredential("jane.doe", "janedoe");
 	public static final DummyCredential MAINTAINER_CREDENTIAL = new DummyCredential("bob.maintainer", "bobmaintainer");
@@ -45,7 +45,7 @@ public class DummyCredentialStore {
 	public static final DummyCredential BASYX_ASSET_UPDATER_TWO_CREDENTIAL = new DummyCredential("basyx.asset.updater.2", "basyxassetupdater2");
 	public static final DummyCredential BASYX_DELETER_CREDENTIAL = new DummyCredential("basyx.deleter", "basyxdeleter");
 	public static final DummyCredential BASYX_DELETER_TWO_CREDENTIAL = new DummyCredential("basyx.deleter.2", "basyxdeleter2");
-	
+
 	public static final DummyCredential BASYX_SME_READER_CREDENTIAL = new DummyCredential("basyx.sme.reader", "basyxsmereader");
 	public static final DummyCredential BASYX_SME_READER_TWO_CREDENTIAL = new DummyCredential("basyx.sme.reader.2", "basyxsmereader2");
 	public static final DummyCredential BASYX_SME_UPDATER_CREDENTIAL = new DummyCredential("basyx.sme.updater", "basyxsmeupdater");

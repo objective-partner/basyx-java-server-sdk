@@ -24,10 +24,7 @@ public class DummyAssetAdministrationShell {
 	public static Reference submodelReference = buildDummyReference();
 
 	public static AssetAdministrationShell getDummyShell() {
-		return new DefaultAssetAdministrationShell.Builder().id("arbitrary")
-				.assetInformation(new DefaultAssetInformation.Builder().assetKind(AssetKind.INSTANCE)
-						.globalAssetId(SUBMODEL_ID).build())
-				.build();
+		return new DefaultAssetAdministrationShell.Builder().id("arbitrary").assetInformation(new DefaultAssetInformation.Builder().assetKind(AssetKind.INSTANCE).globalAssetId(SUBMODEL_ID).build()).build();
 	}
 
 	/**
@@ -42,7 +39,6 @@ public class DummyAssetAdministrationShell {
 	}
 
 	private static Reference buildDummyReference() {
-		return new DefaultReference.Builder()
-				.keys(new DefaultKey.Builder().type(KeyTypes.SUBMODEL).value(SUBMODEL_ID).build()).build();
+		return new DefaultReference.Builder().keys(new DefaultKey.Builder().type(KeyTypes.SUBMODEL).value(SUBMODEL_ID).build()).build();
 	}
 }

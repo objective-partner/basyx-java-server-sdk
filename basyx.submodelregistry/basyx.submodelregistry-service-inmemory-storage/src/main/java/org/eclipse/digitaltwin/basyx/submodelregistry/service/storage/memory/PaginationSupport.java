@@ -32,11 +32,11 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import lombok.RequiredArgsConstructor;
-
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 import org.eclipse.digitaltwin.basyx.submodelregistry.model.SubmodelDescriptor;
+
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class PaginationSupport {

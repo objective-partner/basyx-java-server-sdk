@@ -33,7 +33,7 @@ import java.util.List;
  * @author danish
  */
 public interface RoleProvider {
-	
+
 	public List<String> getRoles();
 
 }

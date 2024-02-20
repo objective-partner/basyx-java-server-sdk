@@ -33,5 +33,5 @@ package org.eclipse.digitaltwin.basyx.authorization;
  * @author danish
  */
 public interface SubjectInformation<T> {
-    public T get();
+	public T get();
 }

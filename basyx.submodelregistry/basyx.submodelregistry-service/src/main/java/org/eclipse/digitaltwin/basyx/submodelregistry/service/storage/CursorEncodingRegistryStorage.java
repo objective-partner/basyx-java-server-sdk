@@ -27,11 +27,11 @@ package org.eclipse.digitaltwin.basyx.submodelregistry.service.storage;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import lombok.NonNull;
-
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 import org.eclipse.digitaltwin.basyx.submodelregistry.model.SubmodelDescriptor;
+
+import lombok.NonNull;
 
 public class CursorEncodingRegistryStorage extends SubmodelRegistryStorageDecorator {
 

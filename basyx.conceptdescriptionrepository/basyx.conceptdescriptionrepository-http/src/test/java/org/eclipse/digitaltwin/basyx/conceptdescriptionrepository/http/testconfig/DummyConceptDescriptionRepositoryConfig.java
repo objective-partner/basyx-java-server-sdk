@@ -40,9 +40,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class DummyConceptDescriptionRepositoryConfig {
 
-		@Bean
-		@ConditionalOnMissingBean
-		public ConceptDescriptionRepository createConceptDescriptionRepository() {
-			return new InMemoryConceptDescriptionRepository();
-		}
+	@Bean
+	@ConditionalOnMissingBean
+	public ConceptDescriptionRepository createConceptDescriptionRepository() {
+		return new InMemoryConceptDescriptionRepository();
+	}
 }

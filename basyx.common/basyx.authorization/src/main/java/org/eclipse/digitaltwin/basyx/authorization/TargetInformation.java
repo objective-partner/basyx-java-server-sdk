@@ -34,7 +34,7 @@ import java.util.Map;
  * 
  */
 public interface TargetInformation {
-	
+
 	public Map<String, String> toMap();
 
 }

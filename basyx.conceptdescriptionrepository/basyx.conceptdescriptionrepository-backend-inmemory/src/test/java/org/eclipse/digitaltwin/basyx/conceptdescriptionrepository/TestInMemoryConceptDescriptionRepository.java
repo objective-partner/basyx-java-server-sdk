@@ -23,7 +23,6 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.conceptdescriptionrepository;
 
 import static org.junit.Assert.assertEquals;
@@ -44,7 +43,7 @@ import org.junit.Test;
  *
  */
 public class TestInMemoryConceptDescriptionRepository extends ConceptDescriptionRepositorySuite {
-	
+
 	private static final String CONFIGURED_CD_REPO_NAME = "configured-cd-repo-name";
 
 	@Override
@@ -56,11 +55,11 @@ public class TestInMemoryConceptDescriptionRepository extends ConceptDescription
 	protected ConceptDescriptionRepository getConceptDescriptionRepository(Collection<ConceptDescription> conceptDescriptions) {
 		return new InMemoryConceptDescriptionRepository(conceptDescriptions);
 	}
-	
+
 	@Test
-    public void getConfiguredInMemoryConceptDescriptionRepositoryName() {
+	public void getConfiguredInMemoryConceptDescriptionRepositoryName() {
 		ConceptDescriptionRepository repo = new InMemoryConceptDescriptionRepository(CONFIGURED_CD_REPO_NAME);
-		
+
 		assertEquals(CONFIGURED_CD_REPO_NAME, repo.getName());
 	}
 

@@ -34,8 +34,8 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import org.apache.commons.io.IOUtils;
 
+import org.apache.commons.io.IOUtils;
 import org.eclipse.digitaltwin.basyx.aasxfileserver.AASXFileServer;
 import org.eclipse.digitaltwin.basyx.aasxfileserver.model.PackageDescription;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
@@ -61,12 +61,12 @@ public abstract class AASXFileServerSuite {
 		PackageDescription expectedDescription2 = DummyAASXFileServerFactory.createDummyPackageDescription("2", DummyAASXFileServerFactory.SECOND_SHELL_IDS);
 
 		Collection<PackageDescription> expectedPackageDescriptions = Arrays.asList(expectedDescription1, expectedDescription2);
-		
+
 		Collection<PackageDescription> actualPackageDescriptions = server.getAllAASXPackageIds("");
 
 		assertGetAllAASXPackageIds(expectedPackageDescriptions, actualPackageDescriptions);
 	}
-	
+
 	@Test
 	public void getAllAASXPackageIdsByShellId() {
 
@@ -76,7 +76,7 @@ public abstract class AASXFileServerSuite {
 		PackageDescription expectedDescription = DummyAASXFileServerFactory.createDummyPackageDescription("2", DummyAASXFileServerFactory.SECOND_SHELL_IDS);
 
 		Collection<PackageDescription> expectedPackageDescriptions = Arrays.asList(expectedDescription);
-		
+
 		Collection<PackageDescription> actualPackageDescriptions = server.getAllAASXPackageIds("AAS_ID_3");
 
 		assertGetAllAASXPackageIds(expectedPackageDescriptions, actualPackageDescriptions);

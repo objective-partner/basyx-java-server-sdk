@@ -30,7 +30,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.digitaltwin.basyx.http.CustomTypeCloneFactory;
 import org.eclipse.digitaltwin.basyx.http.testmodels.CloneFactoryFirstTestModel;
 import org.eclipse.digitaltwin.basyx.http.testmodels.CloneFactorySecondTestModel;
 import org.junit.Test;

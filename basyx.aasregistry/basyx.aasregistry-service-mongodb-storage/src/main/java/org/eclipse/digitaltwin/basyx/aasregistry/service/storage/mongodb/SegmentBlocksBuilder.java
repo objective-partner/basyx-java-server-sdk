@@ -37,7 +37,7 @@ import lombok.RequiredArgsConstructor;
 public class SegmentBlocksBuilder {
 
 	public final Map<String, String> pathMappings;
-	
+
 	public List<SegmentBlock> buildSegmentBlocks(String searchPath) {
 		PathBuilder pathBuilder = new PathBuilder(pathMappings);
 		SegmentBlockBuildingVisitor buildVisitor = new SegmentBlockBuildingVisitor(pathBuilder);
@@ -52,21 +52,18 @@ public class SegmentBlocksBuilder {
 
 		@Getter
 		private final boolean isLeaf;
-		
+
 		@Getter
 		private final boolean isListLeaf;
 	}
-	
-	
-	
+
 	@RequiredArgsConstructor
 	public static class SegmentBlockBuildingVisitor implements AasRegistryPathProcessor.AssetAdministrationShellDescriptorPathVisitor {
 
-		private final PathBuilder builder;		
+		private final PathBuilder builder;
 
 		private List<SegmentBlock> blockSegments = new ArrayList<>();
 
-		
 		public List<SegmentBlock> getSegmentBlocks() {
 			return blockSegments;
 		}
@@ -98,7 +95,7 @@ public class SegmentBlocksBuilder {
 			blockSegments.add(new SegmentBlock(path, true, false));
 		}
 	}
-	
+
 	@RequiredArgsConstructor
 	private static class PathBuilder {
 
