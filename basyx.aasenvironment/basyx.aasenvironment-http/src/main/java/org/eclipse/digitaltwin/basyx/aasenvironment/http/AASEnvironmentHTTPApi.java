@@ -25,11 +25,9 @@
 
 package org.eclipse.digitaltwin.basyx.aasenvironment.http;
 
-import jakarta.validation.Valid;
-
 import java.util.List;
 
-import org.eclipse.digitaltwin.basyx.http.model.Result;
+import org.eclipse.digitaltwin.aas4j.v3.model.Result;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -44,6 +42,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 
 @jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2023-05-08T12:36:05.278579031Z[GMT]")
 @Validated

@@ -26,6 +26,7 @@
 package org.eclipse.digitaltwin.basyx.submodelrepository.core;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -35,6 +36,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -66,7 +68,7 @@ import org.springframework.core.io.ClassPathResource;
 /**
  * Testsuite for implementations of the SubmodelRepository interface
  * 
- * @author schnicke, danish, kammognie, zhangzai
+ * @author schnicke, danish, kammognie, zhangzai, mateusmolina
  *
  */
 public abstract class SubmodelRepositorySuite {
@@ -77,7 +79,13 @@ public abstract class SubmodelRepositorySuite {
 
 	protected abstract SubmodelRepository getSubmodelRepository();
 
-	protected abstract SubmodelRepository getSubmodelRepository(Collection<Submodel> submodels);
+	protected SubmodelRepository getSubmodelRepository(Collection<Submodel> submodels) {
+		SubmodelRepository repo = getSubmodelRepository();
+		submodels.forEach(repo::createSubmodel);
+		return repo;
+	}
+	
+	protected abstract boolean fileExistsInStorage(String fileValue);
 
 	@Test
 	public void getAllSubmodelsPreconfigured() {
@@ -188,6 +196,94 @@ public abstract class SubmodelRepositorySuite {
 		Collection<Submodel> submodels = Arrays.asList(buildDummySubmodel(EMPTY_ID), buildDummySubmodel(DummySubmodelFactory.SUBMODEL_OPERATIONAL_DATA_ID), buildDummySubmodel(NULL_ID));
 
 		getSubmodelRepository(submodels);
+	}
+	
+	@Test
+	public void updateNonFileSME() {
+		SubmodelRepository repo = getSubmodelRepositoryWithDummySubmodels();
+		
+		String idShortPathPropertyInSmeCol = SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_SUBMODEL_ELEMENT_COLLECTION_ID_SHORT + "." + SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_PROPERTY_ID_SHORT;
+		
+		Property newProperty = SubmodelServiceHelper.createDummyProperty(SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_PROPERTY_ID_SHORT, "arbitraryValue", DataTypeDefXsd.STRING);
+		
+		repo.updateSubmodelElement(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol, newProperty);
+		
+		Property updatedProperty = (Property) repo.getSubmodelElement(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol);
+		
+		assertEquals(newProperty, updatedProperty);
+	}
+	
+	@Test
+	public void updateNonFileSMEWithFileSME() {
+		SubmodelRepository repo = getSubmodelRepositoryWithDummySubmodels();
+		
+		String idShortPathPropertyInSmeCol = SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_SUBMODEL_ELEMENT_COLLECTION_ID_SHORT + "." + SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_PROPERTY_ID_SHORT;
+		
+		org.eclipse.digitaltwin.aas4j.v3.model.File newFileSME = SubmodelServiceHelper.createDummyFile(SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_PROPERTY_ID_SHORT, "text/plain", "arbitraryFileValue");
+		
+		repo.updateSubmodelElement(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol, newFileSME);
+		
+		org.eclipse.digitaltwin.aas4j.v3.model.File updatedFile = (org.eclipse.digitaltwin.aas4j.v3.model.File) repo.getSubmodelElement(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol);
+		
+		assertEquals(newFileSME, updatedFile);
+	}
+	
+	@Test
+	public void updateFileSMEWithNonFileSME() throws FileNotFoundException, IOException {
+		SubmodelRepository repo = getSubmodelRepositoryWithDummySubmodels();
+		
+		String idShortPathPropertyInSmeCol = SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_SUBMODEL_ELEMENT_COLLECTION_ID_SHORT + "." + SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_FILE_ID_SHORT;
+		
+		String fileName = "SampleJsonFile.json";
+		
+		repo.setFileValue(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol, fileName, getInputStreamOfFileFromClasspath(fileName));
+		
+		File file = repo.getFileByPathSubmodel(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol);
+		
+		assertFileExistsOnPath(file);
+		
+		Property newProperty = SubmodelServiceHelper.createDummyProperty(SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_FILE_ID_SHORT, "4005", DataTypeDefXsd.INT);
+		
+		repo.updateSubmodelElement(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol, newProperty);
+		
+		Property updatedProperty = (Property) repo.getSubmodelElement(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol);
+		
+		assertEquals(newProperty, updatedProperty);
+	}
+	
+	@Test
+	public void updateFileSMEWithFileSME() throws FileNotFoundException, IOException {
+		SubmodelRepository repo = getSubmodelRepositoryWithDummySubmodels();
+		
+		String idShortPathPropertyInSmeCol = SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_SUBMODEL_ELEMENT_COLLECTION_ID_SHORT + "." + SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_FILE_ID_SHORT;
+		
+		String fileName = "SampleJsonFile.json";
+		
+		repo.setFileValue(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol, fileName, getInputStreamOfFileFromClasspath(fileName));
+		
+		File file = repo.getFileByPathSubmodel(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol);
+		
+		assertFileExistsOnPath(file);
+		
+		org.eclipse.digitaltwin.aas4j.v3.model.File newFileSME = SubmodelServiceHelper.createDummyFile(SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_FILE_ID_SHORT, "text/plain", "someArbitraryPlainText");
+		
+		repo.updateSubmodelElement(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol, newFileSME);
+		
+		org.eclipse.digitaltwin.aas4j.v3.model.File updatedFileSME = (org.eclipse.digitaltwin.aas4j.v3.model.File) repo.getSubmodelElement(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol);
+		
+		assertEquals(newFileSME, updatedFileSME);
+		assertFileExistsOnPath(file);
+	}
+	
+	@Test(expected = ElementDoesNotExistException.class)
+	public void updateNonExistingSME() {
+		SubmodelRepository repo = getSubmodelRepositoryWithDummySubmodels();
+		
+		String idShortPathPropertyInSmeCol = SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_SUBMODEL_ELEMENT_COLLECTION_ID_SHORT + ".NonExistingSMEIdShort";
+		
+		Property newNonExistingProperty = SubmodelServiceHelper.createDummyProperty(SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_PROPERTY_ID_SHORT, "arbitraryPropertyValue", DataTypeDefXsd.STRING);
+		
+		repo.updateSubmodelElement(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol, newNonExistingProperty);
 	}
 
 	@Test
@@ -398,7 +494,7 @@ public abstract class SubmodelRepositorySuite {
 	public void createSubmodelElement() {
 		SubmodelRepository repo = getSubmodelRepositoryWithDummySubmodels();
 
-		Property property = new DefaultProperty.Builder().idShort("test321").category("cat1").value("305").valueType(DataTypeDefXsd.INTEGER).build();
+		Property property = SubmodelServiceHelper.createDummyProperty("test321", "305", DataTypeDefXsd.INTEGER);
 		repo.createSubmodelElement(DummySubmodelFactory.SUBMODEL_SIMPLE_DATA_ID, property);
 
 		SubmodelElement sme = repo.getSubmodelElement(DummySubmodelFactory.SUBMODEL_SIMPLE_DATA_ID, "test321");
@@ -406,13 +502,13 @@ public abstract class SubmodelRepositorySuite {
 
 	}
 
-	@Test(expected = ElementDoesNotExistException.class)
+	@Test
 	public void deleteSubmodeleElement() {
 		SubmodelRepository repo = getSubmodelRepositoryWithDummySubmodels();
-		repo.deleteSubmodelElement(DummySubmodelFactory.SUBMODEL_SIMPLE_DATA_ID, "test123");
+		repo.deleteSubmodelElement(DummySubmodelFactory.SUBMODEL_SIMPLE_DATA_ID, DummySubmodelFactory.SUBMODEL_ELEMENT_SIMPLE_DATA_ID_SHORT);
 
 		try {
-			repo.getSubmodelElement(DummySubmodelFactory.SUBMODEL_SIMPLE_DATA_ID, "test123");
+			repo.getSubmodelElement(DummySubmodelFactory.SUBMODEL_SIMPLE_DATA_ID, DummySubmodelFactory.SUBMODEL_ELEMENT_SIMPLE_DATA_ID_SHORT);
 			fail();
 		} catch (ElementDoesNotExistException expected) {
 		}
@@ -438,11 +534,11 @@ public abstract class SubmodelRepositorySuite {
 		assertEquals("test987", propertyInSmeListCreated.getIdShort());
 	}
 
-	@Test(expected = ElementDoesNotExistException.class)
+	@Test
 	public void deleteNestedSubmodelElementInSubmodelElementCollection() {
-		SubmodelRepository repo = getSubmodelRepositoryWithDummySubmodels();
+		SubmodelRepository repo = getSubmodelRepositoryWithHierarchicalSubmodelElements();
 
-		String idShortPathPropertyInSmeCol = DummySubmodelFactory.SUBMODEL_OPERATIONAL_DATA_ELEMENT_COLLECTION_ID_SHORT + DummySubmodelFactory.SUBMODEL_ELEMENT_SECOND_ID_SHORT;
+		String idShortPathPropertyInSmeCol = DummySubmodelFactory.SUBMODEL_OPERATIONAL_DATA_ELEMENT_COLLECTION_ID_SHORT + "." + DummySubmodelFactory.SUBMODEL_ELEMENT_SECOND_ID_SHORT;
 
 		repo.deleteSubmodelElement(DummySubmodelFactory.SUBMODEL_OPERATIONAL_DATA_ID, idShortPathPropertyInSmeCol);
 
@@ -450,13 +546,13 @@ public abstract class SubmodelRepositorySuite {
 			repo.getSubmodelElement(DummySubmodelFactory.SUBMODEL_OPERATIONAL_DATA_ID, idShortPathPropertyInSmeCol);
 			fail();
 		} catch (ElementDoesNotExistException expected) {
-			throw expected;
+
 		}
 	}
 
-	@Test(expected = ElementDoesNotExistException.class)
+	@Test
 	public void deleteNestedSubmodelElementInSubmodelElementList() {
-		SubmodelRepository repo = getSubmodelRepositoryWithDummySubmodels();
+		SubmodelRepository repo = getSubmodelRepositoryWithHierarchicalSubmodelElements();
 
 		repo.deleteSubmodelElement(DummySubmodelFactory.SUBMODEL_OPERATIONAL_DATA_ID, generateIdShortPath());
 
@@ -464,8 +560,26 @@ public abstract class SubmodelRepositorySuite {
 			repo.getSubmodelElement(DummySubmodelFactory.SUBMODEL_OPERATIONAL_DATA_ID, generateIdShortPath());
 			fail();
 		} catch (ElementDoesNotExistException expected) {
-			throw expected;
+
 		}
+	}
+
+	@Test
+	public void deleteFileSubmodelElementDeletesFile() throws ElementDoesNotExistException, ElementNotAFileException, FileNotFoundException, IOException {
+		SubmodelRepository repo = getSubmodelRepositoryWithDummySubmodels();
+
+		final String filename = "SampleJsonFile.json";
+
+		repo.setFileValue(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_FILE_ID_SHORT, filename, getInputStreamOfFileFromClasspath(filename));
+
+		SubmodelElement submodelElement = repo.getSubmodelElement(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_FILE_ID_SHORT);
+		String fileValue = ((org.eclipse.digitaltwin.aas4j.v3.model.File) submodelElement).getValue();
+
+		assertTrue(fileExistsInStorage(fileValue));
+
+		repo.deleteSubmodelElement(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_FILE_ID_SHORT);
+
+		assertFalse(fileExistsInStorage(fileValue));
 	}
 
 	@Test
@@ -487,11 +601,11 @@ public abstract class SubmodelRepositorySuite {
 	// Has to be overwritten if backend does not support operations
 	@Test
 	public void invokeOperation() {
-		SubmodelRepository submodelRepo = getSubmodelRepositoryWithDummySubmodels();
+		SubmodelRepository submodelRepo = getSubmodelRepositoryWithInvokableOperation();
 
 		Property val = new DefaultProperty.Builder().idShort("in").value("2").build();
 
-		OperationVariable[] result = submodelRepo.invokeOperation(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_OPERATION_ID,
+		OperationVariable[] result = submodelRepo.invokeOperation(DummySubmodelFactory.SUBMODEL_ALL_SUBMODEL_ELEMENTS_ID, SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_OPERATION_ID,
 				new OperationVariable[] { SubmodelServiceHelper.createOperationVariable(val) });
 
 		Property ret = (Property) result[0].getValue();
@@ -505,6 +619,11 @@ public abstract class SubmodelRepositorySuite {
 		SubmodelRepository submodelRepo = getSubmodelRepositoryWithDummySubmodels();
 
 		submodelRepo.invokeOperation(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_ANNOTATED_RELATIONSHIP_ELEMENT_ID_SHORT, new OperationVariable[0]);
+	}
+	
+	private void assertFileExistsOnPath(File file) {
+		
+		assertTrue(file.exists());
 	}
 
 	private void deleteFileIfExisted(SubmodelRepository repo) {
@@ -526,6 +645,16 @@ public abstract class SubmodelRepositorySuite {
 
 	private SubmodelRepository getSubmodelRepositoryWithDummySubmodels() {
 		Collection<Submodel> expectedSubmodels = DummySubmodelFactory.getSubmodels();
+		SubmodelRepository repo = getSubmodelRepository(expectedSubmodels);
+		return repo;
+	}
+
+	private SubmodelRepository getSubmodelRepositoryWithInvokableOperation() {
+		return getSubmodelRepository(Collections.singleton(DummySubmodelFactory.createSubmodelWithAllSubmodelElements()));
+	}
+
+	private SubmodelRepository getSubmodelRepositoryWithHierarchicalSubmodelElements() {
+		Collection<Submodel> expectedSubmodels = Arrays.asList(DummySubmodelFactory.createOperationalDataSubmodelWithHierarchicalSubmodelElements());
 		SubmodelRepository repo = getSubmodelRepository(expectedSubmodels);
 		return repo;
 	}

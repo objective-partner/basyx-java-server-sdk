@@ -114,9 +114,8 @@ public class ValueMapperUtil {
 	 * Creates a {@link ValueOnly} collection from the corresponding collection of
 	 * {@link SubmodelElement}
 	 * 
-	 * @param submodelElements
-	 *            collection of submodel elements
-	 * @return List<ValueOnly> the created collection of value only
+	 * @param submodelElements       collection of submodel elements
+	 * @return valueOnlies           the created collection of value only
 	 * 
 	 */
 	public static List<ValueOnly> createValueOnlyCollection(Collection<SubmodelElement> submodelElements) {
@@ -155,10 +154,8 @@ public class ValueMapperUtil {
 	 * Maps the submodel elements ({@link SubmodelElement}) with its corresponding
 	 * new instance of submodel element values ({@link SubmodelElementValue})
 	 * 
-	 * @param submodelElements
-	 *            list of submodel elements
-	 * @return List<SubmodelElementValue> list of the mapped new instance of
-	 *         submodel element values
+	 * @param submodelElements                  list of submodel elements
+	 * @return submodelElementValues            list of the mapped new instance of submodel element values
 	 * 
 	 */
 	public static List<SubmodelElementValue> createSubmodelElementValues(List<SubmodelElement> submodelElements) {

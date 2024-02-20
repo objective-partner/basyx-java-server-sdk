@@ -25,9 +25,9 @@
 
 package org.eclipse.digitaltwin.basyx.http;
 
-import org.eclipse.digitaltwin.aas4j.v3.dataformat.core.deserialization.EnumDeserializer;
-import org.eclipse.digitaltwin.aas4j.v3.dataformat.core.serialization.EnumSerializer;
-import org.eclipse.digitaltwin.aas4j.v3.dataformat.core.util.ReflectionHelper;
+import org.eclipse.digitaltwin.aas4j.v3.dataformat.core.internal.deserialization.EnumDeserializer;
+import org.eclipse.digitaltwin.aas4j.v3.dataformat.core.internal.serialization.EnumSerializer;
+import org.eclipse.digitaltwin.aas4j.v3.dataformat.core.internal.util.ReflectionHelper;
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.json.internal.ReflectionAnnotationIntrospector;
 import org.eclipse.digitaltwin.basyx.core.StandardizedLiteralEnum;
 import org.eclipse.digitaltwin.basyx.http.description.Profile;
@@ -36,7 +36,6 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
@@ -48,8 +47,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 @Component
 public class Aas4JHTTPSerializationExtension implements SerializationExtension {
 
-	protected JsonMapper mapper;
-	protected SimpleAbstractTypeResolver typeResolver;
+  protected SimpleAbstractTypeResolver typeResolver;
 
 	public Aas4JHTTPSerializationExtension() {
 		initTypeResolver();
@@ -68,14 +66,14 @@ public class Aas4JHTTPSerializationExtension implements SerializationExtension {
 		ReflectionHelper.DEFAULT_IMPLEMENTATIONS.stream().forEach(x -> typeResolver.addMapping(x.getInterfaceType(), x.getImplementationType()));
 	}
 
-	protected SimpleModule buildEnumModule() {
-		SimpleModule module = new SimpleModule("AAS4JEnumDeSerialization");
-		module.addSerializer(StandardizedLiteralEnum.class, new StandardizedLiteralEnumSerializer<>());
-		module.addDeserializer(Profile.class, new StandardizedLiteralEnumDeserializer<>(Profile.class));
-		ReflectionHelper.ENUMS.forEach(x -> module.addSerializer(x, new EnumSerializer()));
-		ReflectionHelper.ENUMS.forEach(x -> module.addDeserializer(x, new EnumDeserializer<>(x)));
-		return module;
-	}
+  protected SimpleModule buildEnumModule() {
+    SimpleModule module = new SimpleModule();
+    module.addSerializer(StandardizedLiteralEnum.class, new StandardizedLiteralEnumSerializer<>());
+    module.addDeserializer(Profile.class, new StandardizedLiteralEnumDeserializer<>(Profile.class));
+	ReflectionHelper.ENUMS.forEach(x -> module.addSerializer(x, new EnumSerializer()));
+    ReflectionHelper.ENUMS.forEach(x -> module.addDeserializer(x, new EnumDeserializer<>(x)));
+    return module;
+  }
 
 	protected SimpleModule buildImplementationModule() {
 		SimpleModule module = new SimpleModule();

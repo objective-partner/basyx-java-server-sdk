@@ -10,6 +10,8 @@
 
 	<groupId>org.eclipse.digitaltwin.basyx</groupId>
 	<artifactId>basyx.common</artifactId>
+	<name>BaSyx common</name>
+	<description>BaSyx common</description>
 	<packaging>pom</packaging>
 
 	<modules>
@@ -18,5 +20,6 @@
 		<module>basyx.mqttcore</module>
 		<module>basyx.mongocore</module>
 		<module>basyx.authorization</module>
+		<module>basyx.client</module>
 	</modules>
 </project>

@@ -59,8 +59,8 @@ public class InMemoryAASXFileServer implements AASXFileServer {
 
 	/**
 	 * Creates the InMemoryAASXFileServer
-	 *
-	 * @param aasxRepositoryName
+	 * 
+	 * @param aasxFileServerName
 	 *            Name of the CDRepository
 	 */
 	public InMemoryAASXFileServer(String aasxFileServerName) {

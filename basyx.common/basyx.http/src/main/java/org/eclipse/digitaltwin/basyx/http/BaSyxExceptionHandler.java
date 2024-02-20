@@ -99,4 +99,9 @@ public class BaSyxExceptionHandler extends ResponseEntityExceptionHandler {
 			throw new RuntimeException(reason, exception);
 		}
 	}
+
+	@ExceptionHandler(OperationDelegationException.class)
+	public <T> ResponseEntity<T> handleNullSubjectException(OperationDelegationException exception) {
+		return new ResponseEntity<>(HttpStatus.FAILED_DEPENDENCY);
+	}
 }

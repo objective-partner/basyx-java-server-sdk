@@ -135,9 +135,9 @@ public class RegistryIntegrationAasRepository implements AasRepository {
 
 			logger.info("Shell '{}' has been automatically linked with the Registry", shell.getId());
 		} catch (ApiException e) {
-			e.printStackTrace();
-			throw ExceptionBuilderFactory.getInstance().repositoryRegistryLinkException().elementId(shell.getId()).build();
-		}
+            e.printStackTrace();
+            throw ExceptionBuilderFactory.getInstance().repositoryRegistryLinkException().elementId(shell.getId()).build();
+        }
 	}
 
 	private void deleteFromRegistry(String shellId) {
@@ -154,7 +154,7 @@ public class RegistryIntegrationAasRepository implements AasRepository {
 
 			logger.info("Shell '{}' has been automatically un-linked from the Registry.", shellId);
 		} catch (ApiException e) {
-			e.printStackTrace();
+            e.printStackTrace();
 			throw ExceptionBuilderFactory.getInstance().repositoryRegistryUnlinkException().elementId(shellId).build();
 		}
 	}

@@ -23,6 +23,7 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
+
 package org.eclipse.digitaltwin.basyx.aasrepository.backend.inmemory;
 
 import static org.junit.Assert.assertEquals;
@@ -43,7 +44,7 @@ import org.junit.Test;
  */
 public class TestInMemoryAasRepository extends AasRepositorySuite {
 	private static final String CONFIGURED_AAS_REPO_NAME = "configured-aas-repo-name";
-
+	
 	private AasBackendProvider backendProvider = new AasInMemoryBackendProvider();
 
 	@Override
@@ -51,17 +52,10 @@ public class TestInMemoryAasRepository extends AasRepositorySuite {
 		return new SimpleAasRepositoryFactory(backendProvider, new InMemoryAasServiceFactory()).create();
 	}
 
-	@Override
-	protected void sanitizeRepository() {
-		backendProvider.getCrudRepository().deleteAll();
-	}
-
 	@Test
 	public void getConfiguredInMemoryAasRepositoryName() {
-		String projectRoot = System.getProperty("user.dir");
-		String thumbnailFolder = projectRoot + "/target/thumbnail_storage";
-		AasRepository repo = new CrudAasRepository(backendProvider, new InMemoryAasServiceFactory(), CONFIGURED_AAS_REPO_NAME, thumbnailFolder);
-
+		AasRepository repo = new CrudAasRepository(backendProvider, new InMemoryAasServiceFactory(), CONFIGURED_AAS_REPO_NAME);
+		
 		assertEquals(CONFIGURED_AAS_REPO_NAME, repo.getName());
 	}
 

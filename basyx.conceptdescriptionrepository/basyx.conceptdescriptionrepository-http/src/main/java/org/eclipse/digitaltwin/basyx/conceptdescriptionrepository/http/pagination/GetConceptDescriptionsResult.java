@@ -42,7 +42,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Paginated wrapper for
- * {@link ConceptDescriptionRepository#getAllConceptDescriptions()}
+ * {@link ConceptDescriptionRepository#getAllConceptDescriptions(org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo)}
  */
 @Validated
 @jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2023-05-22T07:02:56.105163402Z[GMT]")

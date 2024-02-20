@@ -132,6 +132,11 @@ public class RegistryIntegrationSubmodelRepository implements SubmodelRepository
 	}
 
 	@Override
+	public void updateSubmodelElement(String submodelIdentifier, String idShortPath, SubmodelElement submodelElement) throws ElementDoesNotExistException {
+		decorated.updateSubmodelElement(submodelIdentifier, idShortPath, submodelElement);
+	}
+
+	@Override
 	public void deleteSubmodelElement(String submodelId, String idShortPath) throws ElementDoesNotExistException {
 		decorated.deleteSubmodelElement(submodelId, idShortPath);
 	}

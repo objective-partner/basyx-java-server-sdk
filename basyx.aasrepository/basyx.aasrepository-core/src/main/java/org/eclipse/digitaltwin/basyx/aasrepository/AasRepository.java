@@ -90,7 +90,9 @@ public interface AasRepository {
 	/**
 	 * Returns a List of References to Submodels
 	 * 
-	 * @param referenceId
+	 * @param aasId
+	 * @param pInfo
+	 * @return
 	 */
 	CursorResult<List<Reference>> getSubmodelReferences(String aasId, PaginationInfo pInfo);
 
@@ -113,8 +115,6 @@ public interface AasRepository {
 	 * 
 	 * @param aasId
 	 *            the id of the AAS
-	 * 
-	 * @return the requested Asset-Information of the specified AAS
 	 */
 	void setAssetInformation(String aasId, AssetInformation aasInfo) throws ElementDoesNotExistException;
 
@@ -131,7 +131,7 @@ public interface AasRepository {
 	/**
 	 * Get Thumbnail of the specific aas
 	 * 
-	 * @param aasID
+	 * @param aasId
 	 *            the id of the AAS
 	 * @return the file of the thumbnail
 	 */
@@ -140,7 +140,7 @@ public interface AasRepository {
 	/**
 	 * Set Thumbnail of the AAS
 	 * 
-	 * @param aasID
+	 * @param aasId
 	 *            the id of the AAS
 	 * @param fileName
 	 *            name of the thumbnail file with extension

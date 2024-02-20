@@ -27,8 +27,8 @@ package org.eclipse.digitaltwin.basyx.aasenvironment;
 
 import java.util.List;
 
-import org.eclipse.digitaltwin.aas4j.v3.dataformat.DeserializationException;
-import org.eclipse.digitaltwin.aas4j.v3.dataformat.SerializationException;
+import org.eclipse.digitaltwin.aas4j.v3.dataformat.core.DeserializationException;
+import org.eclipse.digitaltwin.aas4j.v3.dataformat.core.SerializationException;
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.json.JsonDeserializer;
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.json.JsonSerializer;
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
@@ -93,7 +93,7 @@ public class MetamodelCloneCreator {
 
 	private List<AssetAdministrationShell> getDeserializedShells(String serializedShells) {
 		try {
-			return jsonDeserializer.readReferables(serializedShells, AssetAdministrationShell.class);
+			return jsonDeserializer.readList(serializedShells, AssetAdministrationShell.class);
 		} catch (DeserializationException e) {
 			e.printStackTrace();
 			throw new RuntimeException("Unable to deserialize the AASs");
@@ -111,7 +111,7 @@ public class MetamodelCloneCreator {
 
 	private List<Submodel> getDeserializedSubmodels(String serializedSubmodels) {
 		try {
-			return jsonDeserializer.readReferables(serializedSubmodels, Submodel.class);
+			return jsonDeserializer.readList(serializedSubmodels, Submodel.class);
 		} catch (DeserializationException e) {
 			e.printStackTrace();
 			throw new RuntimeException("Unable to deserialize the Submodels");
@@ -129,7 +129,7 @@ public class MetamodelCloneCreator {
 
 	private List<ConceptDescription> getDeserializedCDs(String serializedCDs) {
 		try {
-			return jsonDeserializer.readReferables(serializedCDs, ConceptDescription.class);
+			return jsonDeserializer.readList(serializedCDs, ConceptDescription.class);
 		} catch (DeserializationException e) {
 			e.printStackTrace();
 			throw new RuntimeException("Unable to deserialize the Concept descriptions");

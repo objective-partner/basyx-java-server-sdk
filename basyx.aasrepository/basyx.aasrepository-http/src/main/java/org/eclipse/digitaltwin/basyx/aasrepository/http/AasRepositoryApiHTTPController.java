@@ -107,7 +107,7 @@ public class AasRepositoryApiHTTPController implements AasRepositoryHTTPApi {
 	}
 
 	@Override
-	public ResponseEntity<PagedResult> getAllAssetAdministrationShells(@Valid List<SpecificAssetId> assetIds, @Valid String idShort, @Min(1) @Valid Integer limit, @Valid Base64UrlEncodedCursor cursor) {
+	public ResponseEntity<PagedResult> getAllAssetAdministrationShells(@Valid List<SpecificAssetId> assetIds, @Valid String idShort, @Min(0) @Valid Integer limit, @Valid Base64UrlEncodedCursor cursor) {
 		if (limit == null) {
 			limit = 100;
 		}
@@ -134,7 +134,7 @@ public class AasRepositoryApiHTTPController implements AasRepositoryHTTPApi {
 	}
 
 	@Override
-	public ResponseEntity<PagedResult> getAllSubmodelReferencesAasRepository(Base64UrlEncodedIdentifier aasIdentifier, @Min(1) @Valid Integer limit, @Valid Base64UrlEncodedCursor cursor) {
+	public ResponseEntity<PagedResult> getAllSubmodelReferencesAasRepository(Base64UrlEncodedIdentifier aasIdentifier, @Min(0) @Valid Integer limit, @Valid Base64UrlEncodedCursor cursor) {
 		if (limit == null) {
 			limit = 100;
 		}

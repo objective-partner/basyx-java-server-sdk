@@ -1,5 +1,7 @@
 package org.eclipse.digitaltwin.basyx.http;
 
+import org.springframework.stereotype.Component;
+
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 

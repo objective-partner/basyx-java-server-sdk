@@ -8,6 +8,8 @@
 	</parent>
 
 	<artifactId>basyx.aasrepository</artifactId>
+	<name>BaSyx aasrepository</name>
+	<description>BaSyx aasrepository</description>
 	<packaging>pom</packaging>
 
 	<modules>
@@ -22,5 +24,6 @@
 		<module>basyx.aasrepository-feature-authorization</module>
 		<module>basyx.aasrepository-tck</module>
 		<module>basyx.aasrepository.component</module>
+		<module>basyx.aasrepository-client</module>
 	</modules>
 </project>

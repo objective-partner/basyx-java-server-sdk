@@ -25,7 +25,6 @@
 package org.eclipse.digitaltwin.basyx.submodelservice;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,6 +45,8 @@ import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultReference;
 import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultSubmodel;
 import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultSubmodelElementCollection;
 import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultSubmodelElementList;
+
+import com.google.common.collect.Lists;
 
 /**
  * 
@@ -98,8 +99,8 @@ public class DummySubmodelFactory {
 	public static final String SUBMODEL_SIMPLE_DATA_ID_SHORT = "simpleSubmodel001";
 	public static final String SUBMODEL_SIMPLE_DATA_ID = "simpleSubmodel001";
 	public static final String SUBMODEL_ELEMENT_SIMPLE_DATA_ID_SHORT = "elementToDelete";
-
-	// SUBMODEL_FOR_FILE_TEST
+	
+	//SUBMODEL_FOR_FILE_TEST
 	public static final String SUBMODEL_FOR_FILE_TEST = "8A6344BDAB57E184";
 	public static final String SUBMODEL_FOR_FILE_TEST_ID_SHORT = "FileTests";
 	public static final String SUBMODEL_ELEMENT_FILE_ID_SHORT = "FileData";
@@ -107,50 +108,76 @@ public class DummySubmodelFactory {
 	public static final String FILE_NAME = "BaSyx-Logo.png";
 
 	public static Collection<Submodel> getSubmodels() {
-		return Arrays.asList(createTechnicalDataSubmodel(), createOperationalDataSubmodel(), createSimpleDataSubmodel());
+		return Lists.newArrayList(createTechnicalDataSubmodel(), createOperationalDataSubmodel(), createSimpleDataSubmodel());
 	}
 
 	public static Submodel createSubmodelWithAllSubmodelElements() {
 		List<SubmodelElement> submodelElements = getAllSubmodelElementsList();
 
-		Submodel submodel = new DefaultSubmodel.Builder().idShort("AllSubmodelElementsIdShort").id(SUBMODEL_ALL_SUBMODEL_ELEMENTS_ID).submodelElements(submodelElements).build();
+		Submodel submodel = new DefaultSubmodel.Builder()
+				.idShort("AllSubmodelElementsIdShort").id(SUBMODEL_ALL_SUBMODEL_ELEMENTS_ID)
+				.submodelElements(submodelElements).build();
+
 
 		return submodel;
 	}
 
 	public static Submodel createTechnicalDataSubmodel() {
-		return new DefaultSubmodel.Builder()
-				.semanticId(new DefaultReference.Builder().keys(new DefaultKey.Builder().type(KeyTypes.GLOBAL_REFERENCE).value(SUBMODEL_TECHNICAL_DATA_SEMANTIC_ID).build()).type(ReferenceTypes.EXTERNAL_REFERENCE).build())
-				.idShort(SUBMODEL_TECHNICAL_DATA_ID_SHORT).id(SUBMODEL_TECHNICAL_DATA_ID).submodelElements(SubmodelServiceHelper.getAllSubmodelElements()).build();
+		return new DefaultSubmodel.Builder().semanticId(new DefaultReference.Builder().keys(new DefaultKey.Builder().type(KeyTypes.GLOBAL_REFERENCE)
+				.value(SUBMODEL_TECHNICAL_DATA_SEMANTIC_ID)
+				.build())
+				.type(ReferenceTypes.EXTERNAL_REFERENCE)
+				.build())
+				.idShort(SUBMODEL_TECHNICAL_DATA_ID_SHORT)
+				.id(SUBMODEL_TECHNICAL_DATA_ID)
+				.submodelElements(SubmodelServiceHelper.getAllSubmodelElementsWithoutInvokableOperation())
+				.build();
 	}
-
+	
 	public static Submodel createSubmodelWithFileElement() {
-		return new DefaultSubmodel.Builder()
-				.semanticId(new DefaultReference.Builder().keys(new DefaultKey.Builder().type(KeyTypes.GLOBAL_REFERENCE).value(SUBMODEL_TECHNICAL_DATA_SEMANTIC_ID).build()).type(ReferenceTypes.EXTERNAL_REFERENCE).build())
-				.idShort(SUBMODEL_FOR_FILE_TEST_ID_SHORT).id(SUBMODEL_FOR_FILE_TEST).submodelElements(Arrays.asList(createFileElement(), createNonFileElement())).build();
+		return new DefaultSubmodel.Builder().semanticId(new DefaultReference.Builder().keys(new DefaultKey.Builder().type(KeyTypes.GLOBAL_REFERENCE)
+				.value(SUBMODEL_TECHNICAL_DATA_SEMANTIC_ID)
+				.build())
+				.type(ReferenceTypes.EXTERNAL_REFERENCE)
+				.build())
+				.idShort(SUBMODEL_FOR_FILE_TEST_ID_SHORT)
+				.id(SUBMODEL_FOR_FILE_TEST)
+				.submodelElements(Lists.newArrayList(createFileElement(), createNonFileElement()))
+				.build();
 	}
 
 	public static Submodel createOperationalDataSubmodel() {
-		return new DefaultSubmodel.Builder().idShort(SUBMODEL_OPERATIONAL_DATA_ID_SHORT).id(SUBMODEL_OPERATIONAL_DATA_ID).submodelElements(getOperationalDataSubmodelElements()).build();
+		return new DefaultSubmodel.Builder().idShort(SUBMODEL_OPERATIONAL_DATA_ID_SHORT)
+				.id(SUBMODEL_OPERATIONAL_DATA_ID)
+				.submodelElements(getOperationalDataSubmodelElements()).build();
 	}
 
 	public static Submodel createSimpleDataSubmodel() {
-		return new DefaultSubmodel.Builder().idShort(SUBMODEL_SIMPLE_DATA_ID_SHORT).id(SUBMODEL_SIMPLE_DATA_ID).submodelElements(createSimpleSubmodelElements()).build();
+		return new DefaultSubmodel.Builder().idShort(SUBMODEL_SIMPLE_DATA_ID_SHORT).id(SUBMODEL_SIMPLE_DATA_ID)
+				.submodelElements(createSimpleSubmodelElements()).build();
 	}
 
 	public static Submodel createOperationalDataSubmodelWithHierarchicalSubmodelElements() {
-		return new DefaultSubmodel.Builder().idShort(SUBMODEL_OPERATIONAL_DATA_ID_SHORT).id(SUBMODEL_OPERATIONAL_DATA_ID).submodelElements(createOperationalDataSubmodelElements()).build();
+		return new DefaultSubmodel.Builder().idShort(SUBMODEL_OPERATIONAL_DATA_ID_SHORT)
+				.id(SUBMODEL_OPERATIONAL_DATA_ID).submodelElements(createOperationalDataSubmodelElements()).build();
 	}
 
 	private static List<SubmodelElement> getAllSubmodelElementsList() {
-		return Stream.of(SubmodelServiceHelper.getAllSubmodelElements(), getOperationalDataSubmodelElements(), createSimpleSubmodelElements()).flatMap(Collection::stream).collect(Collectors.toList());
+		return Stream.of(SubmodelServiceHelper.getAllSubmodelElements(), getOperationalDataSubmodelElements(),
+				createSimpleSubmodelElements()).flatMap(Collection::stream).collect(Collectors.toList());
 	}
 
 	private static List<SubmodelElement> getOperationalDataSubmodelElements() {
 		List<SubmodelElement> submodelElements = new ArrayList<>();
 		submodelElements.add(new DefaultProperty.Builder()
-				.semanticId(new DefaultReference.Builder().keys(new DefaultKey.Builder().type(KeyTypes.CONCEPT_DESCRIPTION).value(SUBMODEL_OPERATIONAL_DATA_SEMANTIC_ID_PROPERTY).build()).type(ReferenceTypes.EXTERNAL_REFERENCE).build())
-				.idShort(SUBMODEL_OPERATIONAL_DATA_PROPERTY_ID_SHORT).category(SUBMODEL_OPERATIONAL_DATA_PROPERTY_CATEGORY).value(SUBMODEL_OPERATIONAL_DATA_PROPERTY_VALUE).valueType(DataTypeDefXsd.INTEGER).build());
+				.semanticId(new DefaultReference.Builder()
+						.keys(new DefaultKey.Builder().type(KeyTypes.CONCEPT_DESCRIPTION)
+								.value(SUBMODEL_OPERATIONAL_DATA_SEMANTIC_ID_PROPERTY).build())
+						.type(ReferenceTypes.EXTERNAL_REFERENCE).build())
+				.idShort(SUBMODEL_OPERATIONAL_DATA_PROPERTY_ID_SHORT)
+				.category(SUBMODEL_OPERATIONAL_DATA_PROPERTY_CATEGORY).value(SUBMODEL_OPERATIONAL_DATA_PROPERTY_VALUE)
+				.valueType(DataTypeDefXsd.INTEGER)
+				.build());
 		return submodelElements;
 	}
 
@@ -178,8 +205,8 @@ public class DummySubmodelFactory {
 		return list;
 	}
 
-	private static void setValuesOfSubmodelElements(SubmodelElement sme2, SubmodelElement sme3, SubmodelElementCollection submodelElementCollection, SubmodelElementList submodelElementList, List<SubmodelElement> submodelElementsCollection,
-			List<SubmodelElement> submodelElementsList) {
+	private static void setValuesOfSubmodelElements(SubmodelElement sme2, SubmodelElement sme3, SubmodelElementCollection submodelElementCollection, SubmodelElementList submodelElementList,
+			List<SubmodelElement> submodelElementsCollection, List<SubmodelElement> submodelElementsList) {
 		submodelElementList.setIdShort(SUBMODEL_OPERATIONAL_DATA_ELEMENT_LIST_ID_SHORT);
 		submodelElementCollection.setIdShort(SUBMODEL_OPERATIONAL_DATA_ELEMENT_COLLECTION_ID_SHORT);
 		submodelElementsList.add(sme2);
@@ -216,7 +243,11 @@ public class DummySubmodelFactory {
 	}
 
 	private static SubmodelElement createProperty(String propertyIdShort) {
-		SubmodelElement sme3 = new DefaultProperty.Builder().idShort(propertyIdShort).category(SUBMODEL_OPERATIONAL_DATA_PROPERTY_CATEGORY).value(SUBMODEL_OPERATIONAL_DATA_PROPERTY_VALUE).valueType(DataTypeDefXsd.INTEGER).build();
+		SubmodelElement sme3 = new DefaultProperty.Builder().idShort(propertyIdShort)
+				.category(SUBMODEL_OPERATIONAL_DATA_PROPERTY_CATEGORY)
+				.value(SUBMODEL_OPERATIONAL_DATA_PROPERTY_VALUE)
+				.valueType(DataTypeDefXsd.INTEGER)
+				.build();
 		return sme3;
 	}
 
@@ -239,18 +270,18 @@ public class DummySubmodelFactory {
 		list.add(createProperty(SUBMODEL_ELEMENT_SIMPLE_DATA_ID_SHORT));
 		return list;
 	}
-
+	
 	private static Property createNonFileElement() {
 		Property simpleProperty = SubmodelServiceHelper.createPropertySubmodelElement();
 		simpleProperty.setIdShort(SUBMODEL_ELEMENT_NON_FILE_ID_SHORT);
-
+		
 		return simpleProperty;
 	}
-
+	
 	private static File createFileElement() {
 		File simpleFile = SubmodelServiceHelper.createFileSubmodelElement();
 		simpleFile.setValue(FILE_NAME);
-
+		
 		return simpleFile;
 	}
 

@@ -352,9 +352,9 @@ public class AuthorizedAasRepositoryTestSuite {
 	@Test
 	public void removeSubmodelReferenceWithCorrectRoleAndPermission() throws IOException {
 		createAasOnRepositoryWithAuthorization(getAasJSONString(AAS_SIMPLE_2_JSON), getAccessToken(DummyCredentialStore.ADMIN_CREDENTIAL));
-
-		String accessToken = getAccessToken(DummyCredentialStore.BASYX_DELETER_CREDENTIAL);
-
+		
+		String accessToken = getAccessToken(DummyCredentialStore.BASYX_ASSET_UPDATER_CREDENTIAL);
+		
 		CloseableHttpResponse retrievalResponse = deleteElementWithAuthorization(getSpecificSubmodelReferenceUrl(SPECIFIC_SHELL_ID_2, "http://i40.customer.com/type/1/1/testSubmodel"), accessToken);
 		assertEquals(HttpStatus.OK.value(), retrievalResponse.getCode());
 
@@ -364,9 +364,9 @@ public class AuthorizedAasRepositoryTestSuite {
 	@Test
 	public void removeSubmodelReferenceWithCorrectRoleAndSpecificAasPermission() throws IOException {
 		createAasOnRepositoryWithAuthorization(getAasJSONString(AAS_SIMPLE_2_JSON), getAccessToken(DummyCredentialStore.ADMIN_CREDENTIAL));
-
-		String accessToken = getAccessToken(DummyCredentialStore.BASYX_DELETER_TWO_CREDENTIAL);
-
+		
+		String accessToken = getAccessToken(DummyCredentialStore.BASYX_ASSET_UPDATER_TWO_CREDENTIAL);
+		
 		CloseableHttpResponse retrievalResponse = deleteElementWithAuthorization(getSpecificSubmodelReferenceUrl(SPECIFIC_SHELL_ID_2, "http://i40.customer.com/type/1/1/testSubmodel"), accessToken);
 		assertEquals(HttpStatus.OK.value(), retrievalResponse.getCode());
 
@@ -375,16 +375,16 @@ public class AuthorizedAasRepositoryTestSuite {
 
 	@Test
 	public void removeSubmodelReferenceWithCorrectRoleAndUnauthorizedSpecificAas() throws IOException {
-		String accessToken = getAccessToken(DummyCredentialStore.BASYX_DELETER_TWO_CREDENTIAL);
-
+		String accessToken = getAccessToken(DummyCredentialStore.BASYX_ASSET_UPDATER_TWO_CREDENTIAL);
+		
 		CloseableHttpResponse retrievalResponse = deleteElementWithAuthorization(getSpecificSubmodelReferenceUrl(SPECIFIC_SHELL_ID, "http://i40.customer.com/type/1/1/testSubmodel"), accessToken);
 		assertEquals(HttpStatus.FORBIDDEN.value(), retrievalResponse.getCode());
 	}
 
 	@Test
 	public void removeSubmodelReferenceWithInsufficientPermissionRole() throws IOException {
-		String accessToken = getAccessToken(DummyCredentialStore.BASYX_UPDATER_CREDENTIAL);
-
+		String accessToken = getAccessToken(DummyCredentialStore.BASYX_CREATOR_CREDENTIAL);
+		
 		CloseableHttpResponse retrievalResponse = deleteElementWithAuthorization(getSpecificSubmodelReferenceUrl(SPECIFIC_SHELL_ID, "http://i40.customer.com/type/1/1/testSubmodel"), accessToken);
 		assertEquals(HttpStatus.FORBIDDEN.value(), retrievalResponse.getCode());
 	}
@@ -575,9 +575,9 @@ public class AuthorizedAasRepositoryTestSuite {
 	@Test
 	public void deleteThumbnailWithCorrectRoleAndPermission() throws IOException {
 		setThumbnailToAasWithAuthorization(SPECIFIC_SHELL_ID, getAccessToken(DummyCredentialStore.ADMIN_CREDENTIAL));
-
-		String accessToken = getAccessToken(DummyCredentialStore.BASYX_DELETER_CREDENTIAL);
-
+		
+		String accessToken = getAccessToken(DummyCredentialStore.BASYX_ASSET_UPDATER_CREDENTIAL);
+		
 		CloseableHttpResponse retrievalResponse = deleteElementWithAuthorization(BaSyxHttpTestUtils.getThumbnailAccessURL(createAasRepositoryUrl(aasRepositoryBaseUrl), SPECIFIC_SHELL_ID), accessToken);
 		assertEquals(HttpStatus.OK.value(), retrievalResponse.getCode());
 
@@ -589,9 +589,9 @@ public class AuthorizedAasRepositoryTestSuite {
 		createAasOnRepositoryWithAuthorization(getAasJSONString(AAS_SIMPLE_2_JSON), getAccessToken(DummyCredentialStore.ADMIN_CREDENTIAL));
 
 		setThumbnailToAasWithAuthorization(SPECIFIC_SHELL_ID_2, getAccessToken(DummyCredentialStore.ADMIN_CREDENTIAL));
-
-		String accessToken = getAccessToken(DummyCredentialStore.BASYX_DELETER_TWO_CREDENTIAL);
-
+		
+		String accessToken = getAccessToken(DummyCredentialStore.BASYX_ASSET_UPDATER_TWO_CREDENTIAL);
+		
 		CloseableHttpResponse retrievalResponse = deleteElementWithAuthorization(BaSyxHttpTestUtils.getThumbnailAccessURL(createAasRepositoryUrl(aasRepositoryBaseUrl), SPECIFIC_SHELL_ID_2), accessToken);
 		assertEquals(HttpStatus.OK.value(), retrievalResponse.getCode());
 
@@ -601,8 +601,8 @@ public class AuthorizedAasRepositoryTestSuite {
 
 	@Test
 	public void deleteThumbnailWithCorrectRoleAndUnauthorizedSpecificAas() throws IOException {
-		String accessToken = getAccessToken(DummyCredentialStore.BASYX_DELETER_TWO_CREDENTIAL);
-
+		String accessToken = getAccessToken(DummyCredentialStore.BASYX_ASSET_UPDATER_TWO_CREDENTIAL);
+		
 		CloseableHttpResponse retrievalResponse = deleteElementWithAuthorization(BaSyxHttpTestUtils.getThumbnailAccessURL(createAasRepositoryUrl(aasRepositoryBaseUrl), SPECIFIC_SHELL_ID), accessToken);
 		assertEquals(HttpStatus.FORBIDDEN.value(), retrievalResponse.getCode());
 	}

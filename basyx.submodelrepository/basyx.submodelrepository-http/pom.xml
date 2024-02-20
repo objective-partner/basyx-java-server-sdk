@@ -10,6 +10,8 @@
 	</parent>
 
 	<artifactId>basyx.submodelrepository-http</artifactId>
+	<name>BaSyx submodelrepository-http</name>
+	<description>BaSyx submodelrepository-http</description>
 
 	<dependencies>
 		<dependency>
@@ -44,6 +46,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.basyx</groupId>
+			<artifactId>basyx.submodelrepository-core</artifactId>
+			<classifier>tests</classifier>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.digitaltwin.basyx</groupId>
 			<artifactId>basyx.submodelrepository-backend-inmemory</artifactId>
 			<scope>test</scope>
 		</dependency>
@@ -71,7 +79,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.digitaltwin.aas4j</groupId>
-			<artifactId>dataformat-json</artifactId>
+			<artifactId>aas4j-dataformat-json</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents.client5</groupId>

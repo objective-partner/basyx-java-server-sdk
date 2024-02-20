@@ -87,7 +87,17 @@ public interface SubmodelRepository {
 	 * @param submodel
 	 * @throws CollidingIdentifierException
 	 */
-	void createSubmodel(Submodel submodel) throws CollidingIdentifierException, MissingIdentifierException;
+	public void createSubmodel(Submodel submodel) throws CollidingIdentifierException, MissingIdentifierException;
+
+	/**
+	 * Updates a SubmodelElement
+	 *
+	 * @param submodelIdentifier
+	 * @param idShortPath
+	 * @param submodelElement
+	 * @throws ElementDoesNotExistException
+	 */
+	public void updateSubmodelElement(String submodelIdentifier, String idShortPath, SubmodelElement submodelElement) throws ElementDoesNotExistException;
 
 	/**
 	 * Deletes a Submodel
@@ -241,8 +251,6 @@ public interface SubmodelRepository {
 	 *            the Submodel id
 	 * @param idShortPath
 	 *            the IdShort path of the file element
-	 * @param file
-	 *            the file object to upload
 	 * 
 	 * @throws ElementDoesNotExistException
 	 * @throws ElementNotAFileException

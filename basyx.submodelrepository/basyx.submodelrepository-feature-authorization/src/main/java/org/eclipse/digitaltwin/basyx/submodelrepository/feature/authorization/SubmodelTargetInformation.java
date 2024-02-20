@@ -52,8 +52,8 @@ public class SubmodelTargetInformation implements TargetInformation {
 	}
 
 	@Override
-	public Map<String, String> toMap() {
-		final Map<String, String> map = new HashMap<>();
+	public Map<String, Object> toMap() {
+		final Map<String, Object> map = new HashMap<>();
 		map.put("submodelId", submodelId);
 		map.put("submodelElementIdShortPath", submodelElementIdShortPath);
 		return map;
