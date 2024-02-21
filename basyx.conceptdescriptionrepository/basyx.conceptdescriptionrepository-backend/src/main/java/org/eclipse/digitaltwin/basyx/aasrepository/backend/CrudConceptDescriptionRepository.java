@@ -36,12 +36,12 @@ import java.util.stream.StreamSupport;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.ConceptDescription;
 import org.eclipse.digitaltwin.aas4j.v3.model.EmbeddedDataSpecification;
+import org.eclipse.digitaltwin.aas4j.v3.model.KeyTypes;
 import org.eclipse.digitaltwin.aas4j.v3.model.Reference;
 import org.eclipse.digitaltwin.basyx.conceptdescriptionrepository.ConceptDescriptionRepository;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
-import org.eclipse.digitaltwin.basyx.core.exceptions.IdentificationMismatchException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.MissingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
@@ -140,7 +140,8 @@ public class CrudConceptDescriptionRepository implements ConceptDescriptionRepos
 
 	@Override
 	public ConceptDescription getConceptDescription(String conceptDescriptionId) throws ElementDoesNotExistException {
-		return conceptDescriptionBackend.findById(conceptDescriptionId).orElseThrow(() -> new ElementDoesNotExistException(conceptDescriptionId));
+		return conceptDescriptionBackend.findById(conceptDescriptionId)
+				.orElseThrow(() -> ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.CONCEPT_DESCRIPTION).missingElement(conceptDescriptionId).build());
 	}
 
 	@Override
@@ -183,13 +184,14 @@ public class CrudConceptDescriptionRepository implements ConceptDescriptionRepos
 	private void throwIfMismatchingIds(String existingId, String newId) {
 
 		if (!existingId.equals(newId))
-			throw new IdentificationMismatchException();
+			throw ExceptionBuilderFactory.getInstance().identificationMismatchException().mismatchingIdentifier(newId).build();
 	}
 
 	private void throwIfConceptDescriptionDoesNotExist(String conceptDescriptionId) {
 
-		if (!conceptDescriptionBackend.existsById(conceptDescriptionId))
-			throw new ElementDoesNotExistException(conceptDescriptionId);
+		if (!conceptDescriptionBackend.existsById(conceptDescriptionId)) {
+			throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.CONCEPT_DESCRIPTION).missingElement(conceptDescriptionId).build();
+		}
 	}
 
 	private void throwIfConceptDescriptionExists(String conceptDescriptionId) {

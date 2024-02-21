@@ -24,8 +24,6 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.aasrepository.feature.mqtt;
 
-import jakarta.annotation.Nullable;
-
 import java.io.File;
 import java.io.InputStream;
 import java.util.List;
@@ -36,6 +34,7 @@ import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetInformation;
 import org.eclipse.digitaltwin.aas4j.v3.model.Reference;
 import org.eclipse.digitaltwin.basyx.aasrepository.AasRepository;
+import org.eclipse.digitaltwin.basyx.core.FilterParams;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
@@ -69,8 +68,8 @@ public class MqttAasRepository implements AasRepository {
 	}
 
 	@Override
-	public CursorResult<List<AssetAdministrationShell>> getAllAas(PaginationInfo pInfo, @Nullable List<String> aasIds) {
-		return decorated.getAllAas(pInfo, aasIds);
+	public CursorResult<List<AssetAdministrationShell>> getAllAas(FilterParams filterParams) {
+		return decorated.getAllAas(filterParams);
 	}
 
 	@Override

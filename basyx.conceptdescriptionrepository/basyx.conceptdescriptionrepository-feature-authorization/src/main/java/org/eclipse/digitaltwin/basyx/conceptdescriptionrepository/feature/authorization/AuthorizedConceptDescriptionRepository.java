@@ -34,7 +34,7 @@ import org.eclipse.digitaltwin.basyx.authorization.rbac.RbacPermissionResolver;
 import org.eclipse.digitaltwin.basyx.conceptdescriptionrepository.ConceptDescriptionRepository;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
-import org.eclipse.digitaltwin.basyx.core.exceptions.InsufficientPermissionException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.exceptions.MissingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
@@ -49,7 +49,7 @@ public class AuthorizedConceptDescriptionRepository implements ConceptDescriptio
 
 	private ConceptDescriptionRepository decorated;
 	private RbacPermissionResolver<ConceptDescriptionTargetInformation> permissionResolver;
-	
+
 	public AuthorizedConceptDescriptionRepository(ConceptDescriptionRepository decorated, RbacPermissionResolver<ConceptDescriptionTargetInformation> permissionResolver) {
 		this.decorated = decorated;
 		this.permissionResolver = permissionResolver;
@@ -58,79 +58,79 @@ public class AuthorizedConceptDescriptionRepository implements ConceptDescriptio
 	@Override
 	public CursorResult<List<ConceptDescription>> getAllConceptDescriptions(PaginationInfo pInfo) {
 		boolean isAuthorized = permissionResolver.hasPermission(Action.READ, new ConceptDescriptionTargetInformation("*"));
-		
+
 		throwExceptionIfInsufficientPermission(isAuthorized);
-		
+
 		return decorated.getAllConceptDescriptions(pInfo);
 	}
 
 	@Override
 	public CursorResult<List<ConceptDescription>> getAllConceptDescriptionsByIdShort(String idShort, PaginationInfo pInfo) {
 		boolean isAuthorized = permissionResolver.hasPermission(Action.READ, new ConceptDescriptionTargetInformation("*"));
-		
+
 		throwExceptionIfInsufficientPermission(isAuthorized);
-		
+
 		return decorated.getAllConceptDescriptionsByIdShort(idShort, pInfo);
 	}
 
 	@Override
 	public CursorResult<List<ConceptDescription>> getAllConceptDescriptionsByIsCaseOf(Reference isCaseOf, PaginationInfo pInfo) {
 		boolean isAuthorized = permissionResolver.hasPermission(Action.READ, new ConceptDescriptionTargetInformation("*"));
-		
+
 		throwExceptionIfInsufficientPermission(isAuthorized);
-		
+
 		return decorated.getAllConceptDescriptionsByIsCaseOf(isCaseOf, pInfo);
 	}
 
 	@Override
 	public CursorResult<List<ConceptDescription>> getAllConceptDescriptionsByDataSpecificationReference(Reference dataSpecificationReference, PaginationInfo pInfo) {
 		boolean isAuthorized = permissionResolver.hasPermission(Action.READ, new ConceptDescriptionTargetInformation("*"));
-		
+
 		throwExceptionIfInsufficientPermission(isAuthorized);
-		
+
 		return decorated.getAllConceptDescriptionsByDataSpecificationReference(dataSpecificationReference, pInfo);
 	}
 
 	@Override
 	public ConceptDescription getConceptDescription(String conceptDescriptionId) throws ElementDoesNotExistException {
 		boolean isAuthorized = permissionResolver.hasPermission(Action.READ, new ConceptDescriptionTargetInformation(conceptDescriptionId));
-		
+
 		throwExceptionIfInsufficientPermission(isAuthorized);
-		
+
 		return decorated.getConceptDescription(conceptDescriptionId);
 	}
 
 	@Override
 	public void updateConceptDescription(String conceptDescriptionId, ConceptDescription conceptDescription) throws ElementDoesNotExistException {
 		boolean isAuthorized = permissionResolver.hasPermission(Action.UPDATE, new ConceptDescriptionTargetInformation(conceptDescriptionId));
-		
+
 		throwExceptionIfInsufficientPermission(isAuthorized);
-		
+
 		decorated.updateConceptDescription(conceptDescriptionId, conceptDescription);
 	}
 
 	@Override
 	public void createConceptDescription(ConceptDescription conceptDescription) throws CollidingIdentifierException, MissingIdentifierException {
 		boolean isAuthorized = permissionResolver.hasPermission(Action.CREATE, new ConceptDescriptionTargetInformation(conceptDescription.getId()));
-		
+
 		throwExceptionIfInsufficientPermission(isAuthorized);
-		
+
 		decorated.createConceptDescription(conceptDescription);
-		
+
 	}
 
 	@Override
 	public void deleteConceptDescription(String conceptDescriptionId) throws ElementDoesNotExistException {
 		boolean isAuthorized = permissionResolver.hasPermission(Action.DELETE, new ConceptDescriptionTargetInformation(conceptDescriptionId));
-		
+
 		throwExceptionIfInsufficientPermission(isAuthorized);
-		
+
 		decorated.deleteConceptDescription(conceptDescriptionId);
 	}
-	
+
 	private void throwExceptionIfInsufficientPermission(boolean isAuthorized) {
 		if (!isAuthorized)
-			throw new InsufficientPermissionException("Insufficient Permission: The current subject does not have the required permissions for this operation.");
+			throw ExceptionBuilderFactory.getInstance().insufficientPermissionException().build();
 	}
 
 }

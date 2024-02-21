@@ -32,8 +32,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.annotation.Nullable;
-
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetInformation;
 import org.eclipse.digitaltwin.aas4j.v3.model.Reference;
@@ -41,6 +39,7 @@ import org.eclipse.digitaltwin.basyx.aasrepository.AasRepository;
 import org.eclipse.digitaltwin.basyx.authorization.rbac.Action;
 import org.eclipse.digitaltwin.basyx.authorization.rbac.RbacPermissionResolver;
 import org.eclipse.digitaltwin.basyx.authorization.rbac.RbacRule;
+import org.eclipse.digitaltwin.basyx.core.FilterParams;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
@@ -64,7 +63,7 @@ public class AuthorizedAasRepository implements AasRepository {
 	}
 
 	@Override
-	public CursorResult<List<AssetAdministrationShell>> getAllAas(PaginationInfo pInfo, @Nullable Set<String> aasIds) {
+	public CursorResult<List<AssetAdministrationShell>> getAllAas(FilterParams filterParams) {
 		Stream<RbacRule> matchingRules = permissionResolver.getMatchingRules(Action.READ, AasTargetInformation.class);
 
 		Set<AasTargetInformation> ruleTargetInfos = matchingRules.map(rbacRule -> (AasTargetInformation) rbacRule.getTargetInformation()).collect(Collectors.toUnmodifiableSet());
@@ -74,8 +73,9 @@ public class AuthorizedAasRepository implements AasRepository {
 		}
 
 		Set<String> collectedAasIds = ruleTargetInfos.parallelStream().map(AasTargetInformation::getAasId).collect(Collectors.toUnmodifiableSet());
+		filterParams.setIds(collectedAasIds);
 
-		return decorated.getAllAas(pInfo, collectedAasIds);
+		return decorated.getAllAas(filterParams);
 	}
 
 	@Override
@@ -135,7 +135,7 @@ public class AuthorizedAasRepository implements AasRepository {
 	@Override
 	public void removeSubmodelReference(String shellId, String submodelId) {
 		boolean isAuthorized = permissionResolver.hasPermission(Action.UPDATE, new AasTargetInformation(shellId));
-		
+
 		throwExceptionIfInsufficientPermission(isAuthorized);
 
 		decorated.removeSubmodelReference(shellId, submodelId);
@@ -180,7 +180,7 @@ public class AuthorizedAasRepository implements AasRepository {
 	@Override
 	public void deleteThumbnail(String aasId) {
 		boolean isAuthorized = permissionResolver.hasPermission(Action.UPDATE, new AasTargetInformation(aasId));
-		
+
 		throwExceptionIfInsufficientPermission(isAuthorized);
 
 		decorated.deleteThumbnail(aasId);

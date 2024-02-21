@@ -23,18 +23,19 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.aasservice.client;
 
 import java.util.List;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetInformation;
+import org.eclipse.digitaltwin.aas4j.v3.model.KeyTypes;
 import org.eclipse.digitaltwin.aas4j.v3.model.Reference;
 import org.eclipse.digitaltwin.basyx.aasservice.AasService;
 import org.eclipse.digitaltwin.basyx.aasservice.client.internal.AssetAdministrationShellServiceApi;
 import org.eclipse.digitaltwin.basyx.client.internal.ApiException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 import org.springframework.http.HttpStatus;
@@ -109,7 +110,7 @@ public class ConnectedAasService implements AasService {
 
 	private RuntimeException mapAasAccess(String shellId, ApiException e) {
 		if (e.getCode() == HttpStatus.NOT_FOUND.value()) {
-			return new ElementDoesNotExistException(shellId);
+			throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.ASSET_ADMINISTRATION_SHELL).missingElement(shellId).build();
 		}
 
 		return e;
@@ -117,7 +118,7 @@ public class ConnectedAasService implements AasService {
 
 	private RuntimeException mapAasAccess(ApiException e) {
 		if (e.getCode() == HttpStatus.NOT_FOUND.value()) {
-			return new ElementDoesNotExistException();
+			throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.ASSET_ADMINISTRATION_SHELL).build();
 		}
 
 		return e;

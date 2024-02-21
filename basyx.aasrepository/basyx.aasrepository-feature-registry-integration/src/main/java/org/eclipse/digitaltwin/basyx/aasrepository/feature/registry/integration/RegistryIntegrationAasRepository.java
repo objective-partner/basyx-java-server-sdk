@@ -24,8 +24,6 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.aasrepository.feature.registry.integration;
 
-import jakarta.annotation.Nullable;
-
 import java.io.File;
 import java.io.InputStream;
 import java.util.List;
@@ -38,6 +36,7 @@ import org.eclipse.digitaltwin.basyx.aasregistry.client.api.RegistryAndDiscovery
 import org.eclipse.digitaltwin.basyx.aasregistry.client.model.AssetAdministrationShellDescriptor;
 import org.eclipse.digitaltwin.basyx.aasrepository.AasRepository;
 import org.eclipse.digitaltwin.basyx.aasrepository.feature.registry.integration.mapper.AttributeMapper;
+import org.eclipse.digitaltwin.basyx.core.FilterParams;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
@@ -67,8 +66,8 @@ public class RegistryIntegrationAasRepository implements AasRepository {
 	}
 
 	@Override
-	public CursorResult<List<AssetAdministrationShell>> getAllAas(PaginationInfo pInfo, @Nullable List<String> aasIds) {
-		return decorated.getAllAas(pInfo, aasIds);
+	public CursorResult<List<AssetAdministrationShell>> getAllAas(FilterParams filterParams) {
+		return decorated.getAllAas(filterParams);
 	}
 
 	@Override
@@ -135,9 +134,9 @@ public class RegistryIntegrationAasRepository implements AasRepository {
 
 			logger.info("Shell '{}' has been automatically linked with the Registry", shell.getId());
 		} catch (ApiException e) {
-            e.printStackTrace();
-            throw ExceptionBuilderFactory.getInstance().repositoryRegistryLinkException().elementId(shell.getId()).build();
-        }
+			e.printStackTrace();
+			throw ExceptionBuilderFactory.getInstance().repositoryRegistryLinkException().elementId(shell.getId()).build();
+		}
 	}
 
 	private void deleteFromRegistry(String shellId) {
@@ -154,7 +153,7 @@ public class RegistryIntegrationAasRepository implements AasRepository {
 
 			logger.info("Shell '{}' has been automatically un-linked from the Registry.", shellId);
 		} catch (ApiException e) {
-            e.printStackTrace();
+			e.printStackTrace();
 			throw ExceptionBuilderFactory.getInstance().repositoryRegistryUnlinkException().elementId(shellId).build();
 		}
 	}

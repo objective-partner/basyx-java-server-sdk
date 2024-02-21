@@ -32,7 +32,7 @@ import org.eclipse.digitaltwin.aas4j.v3.dataformat.core.SerializationException;
 import org.eclipse.digitaltwin.basyx.aasenvironment.AasEnvironment;
 import org.eclipse.digitaltwin.basyx.authorization.rbac.Action;
 import org.eclipse.digitaltwin.basyx.authorization.rbac.RbacPermissionResolver;
-import org.eclipse.digitaltwin.basyx.core.exceptions.InsufficientPermissionException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 
 /**
  * Decorator for authorized {@link AasEnvironment}
@@ -44,7 +44,7 @@ public class AuthorizedAasEnvironment implements AasEnvironment {
 
 	private AasEnvironment decorated;
 	private RbacPermissionResolver<AasEnvironmentTargetInformation> permissionResolver;
-	
+
 	public AuthorizedAasEnvironment(AasEnvironment decorated, RbacPermissionResolver<AasEnvironmentTargetInformation> permissionResolver) {
 		this.decorated = decorated;
 		this.permissionResolver = permissionResolver;
@@ -53,33 +53,33 @@ public class AuthorizedAasEnvironment implements AasEnvironment {
 	@Override
 	public String createJSONAASEnvironmentSerialization(List<String> aasIds, List<String> submodelIds, boolean includeConceptDescriptions) throws SerializationException {
 		boolean isAuthorized = permissionResolver.hasPermission(Action.READ, new AasEnvironmentTargetInformation(aasIds, submodelIds, SerializationType.JSON));
-		
+
 		throwExceptionIfInsufficientPermission(isAuthorized);
-		
+
 		return decorated.createJSONAASEnvironmentSerialization(aasIds, submodelIds, includeConceptDescriptions);
 	}
 
 	@Override
 	public String createXMLAASEnvironmentSerialization(List<String> aasIds, List<String> submodelIds, boolean includeConceptDescriptions) throws SerializationException {
 		boolean isAuthorized = permissionResolver.hasPermission(Action.READ, new AasEnvironmentTargetInformation(aasIds, submodelIds, SerializationType.XML));
-		
+
 		throwExceptionIfInsufficientPermission(isAuthorized);
-		
+
 		return decorated.createXMLAASEnvironmentSerialization(aasIds, submodelIds, includeConceptDescriptions);
 	}
 
 	@Override
 	public byte[] createAASXAASEnvironmentSerialization(List<String> aasIds, List<String> submodelIds, boolean includeConceptDescriptions) throws SerializationException, IOException {
 		boolean isAuthorized = permissionResolver.hasPermission(Action.READ, new AasEnvironmentTargetInformation(aasIds, submodelIds, SerializationType.AASX));
-		
+
 		throwExceptionIfInsufficientPermission(isAuthorized);
-		
+
 		return decorated.createAASXAASEnvironmentSerialization(aasIds, submodelIds, includeConceptDescriptions);
 	}
-	
+
 	private void throwExceptionIfInsufficientPermission(boolean isAuthorized) {
 		if (!isAuthorized)
-			throw new InsufficientPermissionException("Insufficient Permission: The current subject does not have the required permissions for this operation.");
+			throw ExceptionBuilderFactory.getInstance().insufficientPermissionException().build();
 	}
 
 }
