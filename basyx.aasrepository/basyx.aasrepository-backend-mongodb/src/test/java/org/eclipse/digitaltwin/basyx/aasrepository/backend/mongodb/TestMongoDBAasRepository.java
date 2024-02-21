@@ -96,7 +96,9 @@ public class TestMongoDBAasRepository extends AasRepositorySuite {
 
 	@Test
 	public void getConfiguredMongoDBAasRepositoryName() {
-		AasRepository repo = new CrudAasRepository(new AasMongoDBBackendProvider(new BasyxMongoMappingContext(), COLLECTION, mongoTemplate), new InMemoryAasServiceFactory(), CONFIGURED_AAS_REPO_NAME, null);
+		String projectRoot = System.getProperty("user.dir");
+		String thumbnailFolder = projectRoot + "/target/thumbnail_storage";
+		AasRepository repo = new CrudAasRepository(new AasMongoDBBackendProvider(new BasyxMongoMappingContext(), COLLECTION, mongoTemplate), new InMemoryAasServiceFactory(), CONFIGURED_AAS_REPO_NAME, thumbnailFolder);
 
 		assertEquals(CONFIGURED_AAS_REPO_NAME, repo.getName());
 	}
