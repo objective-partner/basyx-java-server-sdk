@@ -23,11 +23,10 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.submodelservice.client;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
-import org.eclipse.digitaltwin.basyx.core.exceptions.NotInvokableException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.http.Base64UrlEncodedIdentifier;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepository;
 import org.eclipse.digitaltwin.basyx.submodelrepository.http.DummySubmodelRepositoryComponent;
@@ -102,7 +101,7 @@ public class TestConnectedSubmodelService extends SubmodelServiceSuite {
 	@Override
 	public void invokeNonOperation() {
 		// TODO Auto-generated method stub
-		throw new NotInvokableException();
+		throw ExceptionBuilderFactory.getInstance().notInvokableException().build();
 	}
 
 }

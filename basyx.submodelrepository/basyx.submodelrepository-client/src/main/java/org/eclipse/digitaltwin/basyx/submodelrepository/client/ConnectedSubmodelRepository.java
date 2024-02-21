@@ -23,13 +23,13 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.submodelrepository.client;
 
 import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 
+import org.eclipse.digitaltwin.aas4j.v3.model.KeyTypes;
 import org.eclipse.digitaltwin.aas4j.v3.model.OperationVariable;
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
 import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElement;
@@ -37,7 +37,7 @@ import org.eclipse.digitaltwin.basyx.client.internal.ApiException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementNotAFileException;
-import org.eclipse.digitaltwin.basyx.core.exceptions.FeatureNotImplementedException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.exceptions.FileDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.MissingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
@@ -49,7 +49,6 @@ import org.eclipse.digitaltwin.basyx.submodelservice.client.ConnectedSubmodelSer
 import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelElementValue;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelValueOnly;
 import org.springframework.http.HttpStatus;
-
 
 /**
  * Provides access to a Submodel Repository on a remote server
@@ -136,7 +135,13 @@ public class ConnectedSubmodelRepository implements SubmodelRepository {
 	 */
 	@Override
 	public CursorResult<List<Submodel>> getAllSubmodels(PaginationInfo pInfo) {
-		throw new FeatureNotImplementedException();
+		throw ExceptionBuilderFactory.getInstance().featureNotImplementedException().build();
+	}
+
+	@Override
+	public CursorResult<List<Submodel>> getAllSubmodelsMetadata(PaginationInfo pInfo) {
+		throw ExceptionBuilderFactory.getInstance().featureNotImplementedException().build();
+
 	}
 
 	@Override
@@ -189,7 +194,7 @@ public class ConnectedSubmodelRepository implements SubmodelRepository {
 	 */
 	@Override
 	public SubmodelValueOnly getSubmodelByIdValueOnly(String submodelId) throws ElementDoesNotExistException {
-		throw new FeatureNotImplementedException();
+		throw ExceptionBuilderFactory.getInstance().featureNotImplementedException().build();
 	}
 
 	/**
@@ -197,7 +202,7 @@ public class ConnectedSubmodelRepository implements SubmodelRepository {
 	 */
 	@Override
 	public Submodel getSubmodelByIdMetadata(String submodelId) throws ElementDoesNotExistException {
-		throw new FeatureNotImplementedException();
+		throw ExceptionBuilderFactory.getInstance().featureNotImplementedException().build();
 	}
 
 	/**
@@ -205,7 +210,7 @@ public class ConnectedSubmodelRepository implements SubmodelRepository {
 	 */
 	@Override
 	public File getFileByPathSubmodel(String submodelId, String idShortPath) throws ElementDoesNotExistException, ElementNotAFileException, FileDoesNotExistException {
-		throw new FeatureNotImplementedException();
+		throw ExceptionBuilderFactory.getInstance().featureNotImplementedException().build();
 	}
 
 	/**
@@ -213,7 +218,7 @@ public class ConnectedSubmodelRepository implements SubmodelRepository {
 	 */
 	@Override
 	public void setFileValue(String submodelId, String idShortPath, String fileName, InputStream inputStream) throws ElementDoesNotExistException, ElementNotAFileException {
-		throw new FeatureNotImplementedException();
+		throw ExceptionBuilderFactory.getInstance().featureNotImplementedException().build();
 	}
 
 	/**
@@ -221,20 +226,20 @@ public class ConnectedSubmodelRepository implements SubmodelRepository {
 	 */
 	@Override
 	public void deleteFileValue(String submodelId, String idShortPath) throws ElementDoesNotExistException, ElementNotAFileException, FileDoesNotExistException {
-		throw new FeatureNotImplementedException();
+		throw ExceptionBuilderFactory.getInstance().featureNotImplementedException().build();
 	}
 
 	private String getSubmodelUrl(String submodelId) {
 		return submodelRepoUrl + "/submodels/" + Base64UrlEncodedIdentifier.encodeIdentifier(submodelId);
 	}
-	
+
 	private RuntimeException mapExceptionSubmodelAccess(String submodelId, ApiException e) {
 		if (e.getCode() == HttpStatus.NOT_FOUND.value()) {
-			return new ElementDoesNotExistException(submodelId);
+			return ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.SUBMODEL).missingElement(submodelId).build();
 		} else if (e.getCode() == HttpStatus.CONFLICT.value()) {
-			throw new CollidingIdentifierException(submodelId);
+			throw ExceptionBuilderFactory.getInstance().collidingIdentifierException().collidingIdentifier(submodelId).build();
 		} else if (e.getCode() == HttpStatus.BAD_REQUEST.value()) {
-			throw new MissingIdentifierException();
+			throw ExceptionBuilderFactory.getInstance().missingIdentifierException().elementId(submodelId).build();
 		}
 
 		return e;

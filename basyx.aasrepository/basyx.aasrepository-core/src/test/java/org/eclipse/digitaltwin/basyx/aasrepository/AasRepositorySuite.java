@@ -51,6 +51,7 @@ import org.eclipse.digitaltwin.aas4j.v3.model.ReferenceTypes;
 import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultAssetAdministrationShell;
 import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultKey;
 import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultReference;
+import org.eclipse.digitaltwin.basyx.core.FilterParams;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.FileDoesNotExistException;
@@ -83,6 +84,7 @@ public abstract class AasRepositorySuite {
 
 		return repo;
 	}
+
 	@Test
 	public void getDefaultAasRepositoryName() {
 		assertEquals("aas-repo", getAasRepository().getName());
@@ -93,7 +95,9 @@ public abstract class AasRepositorySuite {
 		List<AssetAdministrationShell> expected = DummyAasFactory.createShells();
 		AasRepository aasRepo = getAasRepository(expected);
 		PaginationInfo pInfo = new PaginationInfo(2, null);
-		Collection<AssetAdministrationShell> coll = aasRepo.getAllAas(pInfo).getResult();
+		FilterParams filterParams = new FilterParams();
+		filterParams.setPaginationInfo(pInfo);
+		Collection<AssetAdministrationShell> coll = aasRepo.getAllAas(filterParams).getResult();
 		assertEquals(expected, coll);
 	}
 
@@ -117,13 +121,13 @@ public abstract class AasRepositorySuite {
 		AasRepository aasRepo = getAasRepository(Collections.singleton(colliding));
 		aasRepo.createAas(colliding);
 	}
-	
+
 	@Test(expected = MissingIdentifierException.class)
 	public void createWithEmptyAasIdentifier() {
 		AasRepository aasRepo = getAasRepository();
 		aasRepo.createAas(new DefaultAssetAdministrationShell.Builder().id(AAS_EMPTY_ID).build());
 	}
-	
+
 	@Test(expected = MissingIdentifierException.class)
 	public void createWithNullAasIdentifier() {
 		AasRepository aasRepo = getAasRepository();
@@ -279,7 +283,10 @@ public abstract class AasRepositorySuite {
 		List<AssetAdministrationShell> expected = DummyAasFactory.createShells();
 		AasRepository aasRepo = getAasRepository(expected);
 
-		CursorResult<List<AssetAdministrationShell>> result = aasRepo.getAllAas(new PaginationInfo(1, null));
+		PaginationInfo paginationInfo = new PaginationInfo(1, null);
+		FilterParams filterParams = new FilterParams();
+		filterParams.setPaginationInfo(paginationInfo);
+		CursorResult<List<AssetAdministrationShell>> result = aasRepo.getAllAas(filterParams);
 		List<AssetAdministrationShell> resultList = result.getResult();
 		assertEquals(1, resultList.size());
 		assertEquals(DummyAasFactory.AASWITHSUBMODELREF_ID, resultList.stream().findFirst().get().getId());
@@ -291,11 +298,15 @@ public abstract class AasRepositorySuite {
 		AasRepository aasRepo = getAasRepository(expected);
 		List<AssetAdministrationShell> retrieved = new ArrayList<>();
 
-		CursorResult<List<AssetAdministrationShell>> result = aasRepo.getAllAas(new PaginationInfo(1, null));
+		PaginationInfo paginationInfo = new PaginationInfo(1, null);
+		FilterParams filterParams = new FilterParams();
+		filterParams.setPaginationInfo(paginationInfo);
+		CursorResult<List<AssetAdministrationShell>> result = aasRepo.getAllAas(filterParams);
 		retrieved.addAll(result.getResult());
 
 		String cursor = result.getCursor();
-		result = aasRepo.getAllAas(new PaginationInfo(1, cursor));
+		filterParams.setPaginationInfo(new PaginationInfo(1, cursor));
+		result = aasRepo.getAllAas(filterParams);
 		retrieved.addAll(result.getResult());
 
 		assertEquals(expected, retrieved);
@@ -388,7 +399,7 @@ public abstract class AasRepositorySuite {
 
 		return new String(encoded, encoding);
 	}
-	
+
 	/**
 	 * @return 5 References each with value of smRef_(0-4)
 	 */

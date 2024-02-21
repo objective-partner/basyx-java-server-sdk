@@ -23,17 +23,17 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.submodelservice.client;
 
 import java.util.List;
 
+import org.eclipse.digitaltwin.aas4j.v3.model.KeyTypes;
 import org.eclipse.digitaltwin.aas4j.v3.model.OperationVariable;
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
 import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElement;
 import org.eclipse.digitaltwin.basyx.client.internal.ApiException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
-import org.eclipse.digitaltwin.basyx.core.exceptions.FeatureNotImplementedException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 import org.eclipse.digitaltwin.basyx.submodelservice.SubmodelService;
@@ -106,7 +106,7 @@ public class ConnectedSubmodelService implements SubmodelService {
 			throw mapExceptionSubmodelElementAccess(idShortPath, e);
 		}
 	}
-	
+
 	@Override
 	public void updateSubmodelElement(String idShortPath, SubmodelElement submodelElement) throws ElementDoesNotExistException {
 		try {
@@ -127,7 +127,7 @@ public class ConnectedSubmodelService implements SubmodelService {
 
 	private RuntimeException mapExceptionSubmodelElementAccess(String idShortPath, ApiException e) {
 		if (e.getCode() == HttpStatus.NOT_FOUND.value()) {
-			return new ElementDoesNotExistException(idShortPath);
+			throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.SUBMODEL_ELEMENT).missingElement(idShortPath).build();
 		}
 
 		return e;
@@ -135,12 +135,13 @@ public class ConnectedSubmodelService implements SubmodelService {
 
 	@Override
 	public CursorResult<List<SubmodelElement>> getSubmodelElements(PaginationInfo pInfo) {
-		throw new FeatureNotImplementedException();
+		throw ExceptionBuilderFactory.getInstance().featureNotImplementedException().build();
 	}
 
 	@Override
 	public OperationVariable[] invokeOperation(String idShortPath, OperationVariable[] input) throws ElementDoesNotExistException {
-		throw new FeatureNotImplementedException();
+		throw ExceptionBuilderFactory.getInstance().featureNotImplementedException().build();
+
 	}
 
 }

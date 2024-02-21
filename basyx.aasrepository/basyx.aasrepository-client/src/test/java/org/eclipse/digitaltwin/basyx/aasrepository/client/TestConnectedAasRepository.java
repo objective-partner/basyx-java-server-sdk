@@ -23,7 +23,6 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.aasrepository.client;
 
 import java.io.FileNotFoundException;
@@ -32,7 +31,8 @@ import java.io.IOException;
 import org.eclipse.digitaltwin.basyx.aasrepository.AasRepository;
 import org.eclipse.digitaltwin.basyx.aasrepository.AasRepositorySuite;
 import org.eclipse.digitaltwin.basyx.aasrepository.http.DummyAasRepositoryComponent;
-import org.eclipse.digitaltwin.basyx.core.exceptions.FileDoesNotExistException;
+import org.eclipse.digitaltwin.basyx.core.FilterParams;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -60,7 +60,8 @@ public class TestConnectedAasRepository extends AasRepositorySuite {
 	@After
 	public void removeAasFromRepo() {
 		AasRepository repo = appContext.getBean(AasRepository.class);
-		repo.getAllAas(PaginationInfo.NO_LIMIT).getResult().stream().map(s -> s.getId()).forEach(repo::deleteAas);
+		FilterParams filterParams = new FilterParams(null, PaginationInfo.NO_LIMIT, null);
+		repo.getAllAas(filterParams).getResult().stream().map(s -> s.getId()).forEach(repo::deleteAas);
 	}
 
 	@AfterClass
@@ -71,13 +72,13 @@ public class TestConnectedAasRepository extends AasRepositorySuite {
 	@Override
 	public void getNonExistingThumbnail() {
 		// TODO Auto-generated method stub
-		throw new FileDoesNotExistException();
+		throw ExceptionBuilderFactory.getInstance().fileDoesNotExistException().build();
 	}
 
 	@Override
 	public void deleteNonExistingThumbnail() throws IOException {
 		// TODO Auto-generated method stub
-		throw new FileDoesNotExistException();
+		throw ExceptionBuilderFactory.getInstance().fileDoesNotExistException().build();
 	}
 
 	@Override
@@ -100,7 +101,7 @@ public class TestConnectedAasRepository extends AasRepositorySuite {
 	@Override
 	public void deleteThumbnail() throws FileNotFoundException, IOException {
 		// TODO Auto-generated method stub
-		throw new FileDoesNotExistException();
+		throw ExceptionBuilderFactory.getInstance().fileDoesNotExistException().build();
 	}
 
 	@Override

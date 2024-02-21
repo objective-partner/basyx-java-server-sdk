@@ -32,9 +32,7 @@ import java.util.Collection;
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementNotAFileException;
-import org.eclipse.digitaltwin.basyx.core.exceptions.FileDoesNotExistException;
-import org.eclipse.digitaltwin.basyx.core.exceptions.IdentificationMismatchException;
-import org.eclipse.digitaltwin.basyx.core.exceptions.NotInvokableException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepository;
 import org.eclipse.digitaltwin.basyx.submodelrepository.core.SubmodelRepositorySuite;
@@ -137,8 +135,8 @@ public class TestConnectedSubmodelRepository extends SubmodelRepositorySuite {
 	@Override
 	public void getNonExistingFile() {
 		// TODO Auto-generated method stub
+		throw ExceptionBuilderFactory.getInstance().featureNotImplementedException().build();
 
-		throw new FileDoesNotExistException();
 	}
 
 	@Override
@@ -151,13 +149,13 @@ public class TestConnectedSubmodelRepository extends SubmodelRepositorySuite {
 	public void deleteNonExistingFile() throws IOException {
 		// TODO Auto-generated method stub
 
-		throw new FileDoesNotExistException();
+		throw ExceptionBuilderFactory.getInstance().featureNotImplementedException().build();
 	}
 
 	@Override
 	public void getFileFromNonFileSME() {
 		// TODO Auto-generated method stub
-		throw new ElementNotAFileException();
+		throw ExceptionBuilderFactory.getInstance().featureNotImplementedException().build();
 	}
 
 	@Override
@@ -170,7 +168,7 @@ public class TestConnectedSubmodelRepository extends SubmodelRepositorySuite {
 	public void invokeNonOperation() {
 		// TODO Auto-generated method stub
 
-		throw new NotInvokableException();
+		throw ExceptionBuilderFactory.getInstance().featureNotImplementedException().build();
 	}
 
 	@Override
@@ -188,7 +186,7 @@ public class TestConnectedSubmodelRepository extends SubmodelRepositorySuite {
 	@Override
 	public void updateExistingSubmodelWithMismatchId() {
 		// TODO Auto-generated method stub
-		throw new IdentificationMismatchException();
+		throw ExceptionBuilderFactory.getInstance().featureNotImplementedException().build();
 	}
 
 	@Override

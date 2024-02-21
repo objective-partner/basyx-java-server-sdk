@@ -203,7 +203,7 @@ public class CrudAasRepository implements AasRepository {
 
 	private void throwIfAasExists(AssetAdministrationShell aas) {
 		if (aasBackend.existsById(aas.getId())) {
-			throw ExceptionBuilderFactory.getInstance().collidingIdentifierException().build();
+			throw ExceptionBuilderFactory.getInstance().collidingIdentifierException().collidingIdentifier(aas.getId()).build();
 		}
 	}
 

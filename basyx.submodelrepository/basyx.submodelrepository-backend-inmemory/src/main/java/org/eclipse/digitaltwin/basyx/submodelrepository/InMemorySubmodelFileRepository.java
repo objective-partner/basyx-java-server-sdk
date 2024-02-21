@@ -35,6 +35,7 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
 
 import org.apache.commons.io.IOUtils;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.exceptions.FileDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.FileHandlingException;
 import org.eclipse.digitaltwin.basyx.core.file.FileMetadata;
@@ -53,15 +54,16 @@ public class InMemorySubmodelFileRepository implements FileRepository {
 	@Override
 	public String save(FileMetadata fileMetadata) throws FileHandlingException {
 		String filePath = createFilePath(fileMetadata.getFileName());
-		
+
 		java.io.File targetFile = new java.io.File(filePath);
 
 		try (FileOutputStream outStream = new FileOutputStream(targetFile)) {
 			IOUtils.copy(fileMetadata.getFileContent(), outStream);
 		} catch (IOException e) {
-			throw new FileHandlingException(fileMetadata.getFileName());
+			throw ExceptionBuilderFactory.getInstance().fileHandlingException().filename(fileMetadata.getFileName()).build();
+
 		}
-		
+
 		fileMetadata.setFileName(filePath);
 
 		return filePath;
@@ -69,20 +71,21 @@ public class InMemorySubmodelFileRepository implements FileRepository {
 
 	@Override
 	public InputStream find(String fileId) throws FileDoesNotExistException {
-		
+
 		try {
 			return new FileInputStream(fileId);
 		} catch (FileNotFoundException e) {
-			throw new FileDoesNotExistException();
+			throw ExceptionBuilderFactory.getInstance().fileDoesNotExistException().elementPath(fileId).build();
+
 		}
 	}
 
 	@Override
 	public void delete(String fileId) throws FileDoesNotExistException {
-		
+
 		if (!exists(fileId))
-			throw new FileDoesNotExistException();
-		
+			throw ExceptionBuilderFactory.getInstance().fileDoesNotExistException().elementPath(fileId).build();
+
 		java.io.File tmpFile = new java.io.File(fileId);
 
 		tmpFile.delete();
@@ -90,36 +93,36 @@ public class InMemorySubmodelFileRepository implements FileRepository {
 
 	@Override
 	public boolean exists(String fileId) {
-		
+
 		if (fileId.isBlank() || !isFilePathValid(fileId))
 			return false;
-		
+
 		return Files.exists(Paths.get(fileId));
 	}
-	
+
 	private boolean isFilePathValid(String filePath) {
-		
+
 		try {
 			Paths.get(filePath);
 		} catch (InvalidPathException | NullPointerException ex) {
 			return false;
 		}
-		
+
 		return true;
 	}
 
 	private String getTemporaryDirectoryPath() {
 		String tempDirectoryPath = "";
-		
+
 		try {
 			tempDirectoryPath = Files.createTempDirectory(TEMP_DIRECTORY_PREFIX).toAbsolutePath().toString();
 		} catch (IOException e) {
 			throw new RuntimeException(String.format("Unable to create the temporary directory with prefix: %s", TEMP_DIRECTORY_PREFIX));
 		}
-		
+
 		return tempDirectoryPath;
 	}
-	
+
 	private String createFilePath(String fileName) {
 		return tmpDirectory + "/" + fileName;
 	}

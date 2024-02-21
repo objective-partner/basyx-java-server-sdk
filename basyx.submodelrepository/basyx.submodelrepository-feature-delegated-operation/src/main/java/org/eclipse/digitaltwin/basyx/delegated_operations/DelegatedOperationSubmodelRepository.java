@@ -45,9 +45,12 @@ import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.eclipse.digitaltwin.aas4j.v3.model.Extension;
 import org.eclipse.digitaltwin.aas4j.v3.model.Key;
 import org.eclipse.digitaltwin.aas4j.v3.model.KeyTypes;
+import org.eclipse.digitaltwin.aas4j.v3.model.Message;
 import org.eclipse.digitaltwin.aas4j.v3.model.Operation;
+import org.eclipse.digitaltwin.aas4j.v3.model.OperationResult;
 import org.eclipse.digitaltwin.aas4j.v3.model.OperationVariable;
 import org.eclipse.digitaltwin.aas4j.v3.model.Reference;
+import org.eclipse.digitaltwin.aas4j.v3.model.Result;
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
 import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElement;
 import org.eclipse.digitaltwin.basyx.InvokableOperation;
@@ -62,9 +65,6 @@ import org.eclipse.digitaltwin.basyx.core.exceptions.NotInvokableException;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 import org.eclipse.digitaltwin.basyx.delegated_operations.mapper.AttributeMapper;
-import org.eclipse.digitaltwin.basyx.http.model.Message;
-import org.eclipse.digitaltwin.basyx.http.model.OperationResult;
-import org.eclipse.digitaltwin.basyx.http.model.Result;
 import org.eclipse.digitaltwin.basyx.submodelregistry.client.ApiException;
 import org.eclipse.digitaltwin.basyx.submodelregistry.client.model.Endpoint;
 import org.eclipse.digitaltwin.basyx.submodelregistry.client.model.SubmodelDescriptor;
@@ -126,6 +126,11 @@ public class DelegatedOperationSubmodelRepository implements SubmodelRepository 
 	@Override
 	public void createSubmodel(Submodel submodel) throws CollidingIdentifierException {
 		decorated.createSubmodel(submodel);
+	}
+
+	@Override
+	public void updateSubmodelElement(String submodelIdentifier, String idShortPath, SubmodelElement submodelElement) throws ElementDoesNotExistException {
+		decorated.updateSubmodelElement(submodelIdentifier, idShortPath, submodelElement);
 	}
 
 	@Override

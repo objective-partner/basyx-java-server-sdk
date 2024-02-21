@@ -42,15 +42,16 @@ import org.eclipse.digitaltwin.aas4j.v3.dataformat.core.SerializationException;
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.json.JsonDeserializer;
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.json.JsonSerializer;
 import org.eclipse.digitaltwin.aas4j.v3.model.File;
+import org.eclipse.digitaltwin.aas4j.v3.model.KeyTypes;
 import org.eclipse.digitaltwin.aas4j.v3.model.OperationVariable;
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
 import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElement;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementNotAFileException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.exceptions.FileDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.FileHandlingException;
-import org.eclipse.digitaltwin.basyx.core.exceptions.IdentificationMismatchException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.MissingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.file.FileMetadata;
 import org.eclipse.digitaltwin.basyx.core.file.FileRepository;
@@ -132,8 +133,13 @@ public class CrudSubmodelRepository implements SubmodelRepository {
 	}
 
 	@Override
+	public CursorResult<List<Submodel>> getAllSubmodelsMetadata(PaginationInfo pInfo) {
+		return null;
+	}
+
+	@Override
 	public Submodel getSubmodel(String submodelId) throws ElementDoesNotExistException {
-		return submodelBackend.findById(submodelId).orElseThrow(() -> new ElementDoesNotExistException(submodelId));
+		return submodelBackend.findById(submodelId).orElseThrow(() -> ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.SUBMODEL).missingElement(submodelId).build());
 	}
 
 	@Override
@@ -266,7 +272,7 @@ public class CrudSubmodelRepository implements SubmodelRepository {
 		File fileSmElement = (File) submodelElement;
 		String filePath = getFilePath(fileSmElement);
 
-		InputStream fileContent = getFileInputStream(filePath);
+		InputStream fileContent = getFileInputStream(submodelId, filePath);
 
 		return createFile(filePath, fileContent);
 	}
@@ -308,7 +314,7 @@ public class CrudSubmodelRepository implements SubmodelRepository {
 
 		setSubmodelElementValue(submodelId, idShortPath, fileValue);
 	}
-	
+
 	private void deleteAssociatedFile(String submodelId, String idShortPath) {
 		try {
 			deleteFileValue(submodelId, idShortPath);
@@ -321,13 +327,13 @@ public class CrudSubmodelRepository implements SubmodelRepository {
 		return submodelElement instanceof File;
 	}
 
-	private InputStream getFileInputStream(String filePath) {
+	private InputStream getFileInputStream(String submodelId, String filePath) {
 		InputStream fileContent;
 
 		try {
 			fileContent = fileHandlingBackend.find(filePath);
 		} catch (FileDoesNotExistException e) {
-			throw new FileDoesNotExistException(String.format("File at path '%s' could not be found.", filePath));
+			throw ExceptionBuilderFactory.getInstance().fileDoesNotExistException().shellIdentifier(submodelId).elementPath(filePath).build();
 		}
 
 		return fileContent;
@@ -343,7 +349,9 @@ public class CrudSubmodelRepository implements SubmodelRepository {
 
 			return new java.io.File(filePath);
 		} catch (IOException e) {
-			throw new FileHandlingException("Exception occurred while creating file from the InputStream." + e.getMessage());
+			FileHandlingException exception = ExceptionBuilderFactory.getInstance().fileHandlingException().filename(filePath).build();
+			logger.error("[{}] Exception occurred while creating file from the InputStream. {}", exception.getCorrelationId(), e.getMessage());
+			throw exception;
 		}
 
 	}
@@ -353,7 +361,9 @@ public class CrudSubmodelRepository implements SubmodelRepository {
 		try (OutputStream outputStream = new FileOutputStream(filePath)) {
 			outputStream.write(content);
 		} catch (IOException e) {
-			throw new FileHandlingException("Exception occurred while creating OutputStream from byte[]." + e.getMessage());
+			FileHandlingException exception = ExceptionBuilderFactory.getInstance().fileHandlingException().filename(filePath).build();
+			logger.error("[{}] Exception occurred while creating OutputStream from byte[]. {}", exception.getCorrelationId(), e.getMessage());
+			throw exception;
 		}
 
 	}
@@ -369,7 +379,7 @@ public class CrudSubmodelRepository implements SubmodelRepository {
 		Set<String> ids = new HashSet<>();
 
 		submodelsToCheck.stream().map(Submodel::getId).filter(id -> !ids.add(id)).findAny().ifPresent(id -> {
-			throw new CollidingIdentifierException(id);
+			throw ExceptionBuilderFactory.getInstance().collidingIdentifierException().collidingIdentifier(id).build();
 		});
 	}
 
@@ -397,7 +407,7 @@ public class CrudSubmodelRepository implements SubmodelRepository {
 	private void throwIfSmElementIsNotAFile(SubmodelElement submodelElement) {
 
 		if (!isFileSubmodelElement(submodelElement))
-			throw new ElementNotAFileException(submodelElement.getIdShort());
+			throw ExceptionBuilderFactory.getInstance().elementNotAFileException().submodelElementId(submodelElement.getIdShort()).build();
 	}
 
 	private String getFilePath(File fileSubmodelElement) {
@@ -409,7 +419,7 @@ public class CrudSubmodelRepository implements SubmodelRepository {
 	}
 
 	private SubmodelService getSubmodelServiceOrThrow(String submodelId) {
-		Submodel submodel = submodelBackend.findById(submodelId).orElseThrow(() -> new ElementDoesNotExistException(submodelId));
+		Submodel submodel = submodelBackend.findById(submodelId).orElseThrow(() -> ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.SUBMODEL).missingElement(submodelId).build());
 
 		return submodelServiceFactory.create(submodel);
 	}
@@ -417,25 +427,28 @@ public class CrudSubmodelRepository implements SubmodelRepository {
 	private void throwIfMismatchingIds(String existingId, String idToBeUpdated) {
 
 		if (!existingId.equals(idToBeUpdated))
-			throw new IdentificationMismatchException();
+			throw ExceptionBuilderFactory.getInstance().identificationMismatchException().mismatchingIdentifier(idToBeUpdated).build();
 	}
 
 	private void throwIfSubmodelExists(String submodelId) {
 
 		if (submodelBackend.existsById(submodelId))
-			throw new CollidingIdentifierException(submodelId);
+			throw ExceptionBuilderFactory.getInstance().collidingIdentifierException().collidingIdentifier(submodelId).build();
+
 	}
 
 	private void throwIfSubmodelIdEmptyOrNull(String submodelId) {
 
 		if (submodelId == null || submodelId.isBlank())
-			throw new MissingIdentifierException(submodelId);
+			throw ExceptionBuilderFactory.getInstance().missingIdentifierException().elementId(submodelId).build();
+
 	}
 
 	private void throwIfSubmodelDoesNotExist(String submodelId) {
 
 		if (!submodelBackend.existsById(submodelId))
-			throw new ElementDoesNotExistException(submodelId);
+			throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.SUBMODEL).missingElement(submodelId).build();
+
 	}
 
 }

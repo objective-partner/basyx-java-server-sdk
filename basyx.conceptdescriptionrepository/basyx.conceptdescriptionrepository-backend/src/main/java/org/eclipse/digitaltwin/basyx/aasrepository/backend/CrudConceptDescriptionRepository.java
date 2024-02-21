@@ -40,6 +40,7 @@ import org.eclipse.digitaltwin.aas4j.v3.model.Reference;
 import org.eclipse.digitaltwin.basyx.conceptdescriptionrepository.ConceptDescriptionRepository;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.exceptions.IdentificationMismatchException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.MissingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
@@ -68,14 +69,14 @@ public class CrudConceptDescriptionRepository implements ConceptDescriptionRepos
 
 		this.conceptDescriptionRepositoryName = conceptDescriptionRepositoryName;
 	}
-	
+
 	public CrudConceptDescriptionRepository(ConceptDescriptionBackendProvider aasBackendProvider, Collection<ConceptDescription> conceptDescriptions) {
 		this(aasBackendProvider);
-		
+
 		throwIfMissingId(conceptDescriptions);
 
 		assertIdUniqueness(conceptDescriptions);
-		
+
 		initializeRemoteCollection(conceptDescriptions);
 	}
 
@@ -100,11 +101,11 @@ public class CrudConceptDescriptionRepository implements ConceptDescriptionRepos
 	@Override
 	public CursorResult<List<ConceptDescription>> getAllConceptDescriptionsByIdShort(String idShort, PaginationInfo pInfo) {
 		Iterable<ConceptDescription> iterable = conceptDescriptionBackend.findAll();
-		
+
 		List<ConceptDescription> filtered = StreamSupport.stream(iterable.spliterator(), false).filter(conceptDescription -> conceptDescription.getIdShort().equals(idShort)).collect(Collectors.toList());
-		
+
 		TreeMap<String, ConceptDescription> conceptDescriptionMap = filtered.stream().collect(Collectors.toMap(ConceptDescription::getId, conceptDescription -> conceptDescription, (a, b) -> a, TreeMap::new));
-		
+
 		PaginationSupport<ConceptDescription> paginationSupport = new PaginationSupport<>(conceptDescriptionMap, ConceptDescription::getId);
 
 		return paginationSupport.getPaged(pInfo);
@@ -113,11 +114,11 @@ public class CrudConceptDescriptionRepository implements ConceptDescriptionRepos
 	@Override
 	public CursorResult<List<ConceptDescription>> getAllConceptDescriptionsByIsCaseOf(Reference isCaseOf, PaginationInfo pInfo) {
 		Iterable<ConceptDescription> iterable = conceptDescriptionBackend.findAll();
-		
+
 		List<ConceptDescription> filtered = StreamSupport.stream(iterable.spliterator(), false).filter(conceptDescription -> hasMatchingReference(conceptDescription, isCaseOf)).collect(Collectors.toList());
-		
+
 		TreeMap<String, ConceptDescription> conceptDescriptionMap = filtered.stream().collect(Collectors.toMap(ConceptDescription::getId, conceptDescription -> conceptDescription, (a, b) -> a, TreeMap::new));
-		
+
 		PaginationSupport<ConceptDescription> paginationSupport = new PaginationSupport<>(conceptDescriptionMap, ConceptDescription::getId);
 
 		return paginationSupport.getPaged(pInfo);
@@ -126,11 +127,12 @@ public class CrudConceptDescriptionRepository implements ConceptDescriptionRepos
 	@Override
 	public CursorResult<List<ConceptDescription>> getAllConceptDescriptionsByDataSpecificationReference(Reference dataSpecificationReference, PaginationInfo pInfo) {
 		Iterable<ConceptDescription> iterable = conceptDescriptionBackend.findAll();
-		
-		List<ConceptDescription> filtered = StreamSupport.stream(iterable.spliterator(), false).filter(conceptDescription -> hasMatchingDataSpecificationReference(conceptDescription, dataSpecificationReference)).collect(Collectors.toList());
-		
+
+		List<ConceptDescription> filtered = StreamSupport.stream(iterable.spliterator(), false).filter(conceptDescription -> hasMatchingDataSpecificationReference(conceptDescription, dataSpecificationReference))
+				.collect(Collectors.toList());
+
 		TreeMap<String, ConceptDescription> conceptDescriptionMap = filtered.stream().collect(Collectors.toMap(ConceptDescription::getId, conceptDescription -> conceptDescription, (a, b) -> a, TreeMap::new));
-		
+
 		PaginationSupport<ConceptDescription> paginationSupport = new PaginationSupport<>(conceptDescriptionMap, ConceptDescription::getId);
 
 		return paginationSupport.getPaged(pInfo);
@@ -155,56 +157,58 @@ public class CrudConceptDescriptionRepository implements ConceptDescriptionRepos
 		throwIfConceptDescriptionIdEmptyOrNull(conceptDescription.getId());
 
 		throwIfConceptDescriptionExists(conceptDescription.getId());
-		
+
 		conceptDescriptionBackend.save(conceptDescription);
 	}
 
 	@Override
 	public void deleteConceptDescription(String conceptDescriptionId) throws ElementDoesNotExistException {
 		throwIfConceptDescriptionDoesNotExist(conceptDescriptionId);
-		
+
 		conceptDescriptionBackend.deleteById(conceptDescriptionId);
 	}
-	
+
 	@Override
 	public String getName() {
 		return conceptDescriptionRepositoryName == null ? ConceptDescriptionRepository.super.getName() : conceptDescriptionRepositoryName;
 	}
-	
+
 	private void initializeRemoteCollection(Collection<ConceptDescription> conceptDescriptions) {
 		if (conceptDescriptions == null || conceptDescriptions.isEmpty())
 			return;
 
 		conceptDescriptions.stream().forEach(this::createConceptDescription);
 	}
-	
+
 	private void throwIfMismatchingIds(String existingId, String newId) {
 
 		if (!existingId.equals(newId))
 			throw new IdentificationMismatchException();
 	}
-	
+
 	private void throwIfConceptDescriptionDoesNotExist(String conceptDescriptionId) {
 
 		if (!conceptDescriptionBackend.existsById(conceptDescriptionId))
 			throw new ElementDoesNotExistException(conceptDescriptionId);
 	}
-	
+
 	private void throwIfConceptDescriptionExists(String conceptDescriptionId) {
-		
+
 		if (conceptDescriptionBackend.existsById(conceptDescriptionId))
-			throw new CollidingIdentifierException(conceptDescriptionId);
+			throw ExceptionBuilderFactory.getInstance().collidingIdentifierException().collidingIdentifier(conceptDescriptionId).build();
+
 	}
-	
+
 	private void throwIfMissingId(Collection<ConceptDescription> conceptDescriptions) {
 		conceptDescriptions.stream().map(ConceptDescription::getId).forEach(this::throwIfConceptDescriptionIdEmptyOrNull);
-    }
-	
+	}
+
 	private void throwIfConceptDescriptionIdEmptyOrNull(String id) {
 		if (id == null || id.isBlank())
-			throw new MissingIdentifierException(id);
+			throw ExceptionBuilderFactory.getInstance().collidingIdentifierException().collidingIdentifier(id).build();
+
 	}
-	
+
 	private static void assertIdUniqueness(Collection<ConceptDescription> conceptDescriptionsToCheck) {
 		Set<String> ids = new HashSet<>();
 
@@ -213,11 +217,11 @@ public class CrudConceptDescriptionRepository implements ConceptDescriptionRepos
 			boolean unique = ids.add(conceptDescriptionId);
 
 			if (!unique) {
-				throw new CollidingIdentifierException(conceptDescriptionId);
+				throw ExceptionBuilderFactory.getInstance().collidingIdentifierException().collidingIdentifier(conceptDescriptionId).build();
 			}
 		}
 	}
-	
+
 	private boolean hasMatchingReference(ConceptDescription cd, Reference reference) {
 		Optional<Reference> optionalReference = cd.getIsCaseOf().stream().filter(ref -> ref.equals(reference)).findAny();
 

@@ -40,8 +40,9 @@ public class CrudAasRepositoryTest {
 
 	@Test
 	public void getConfiguredAasRepositoryName() {
-		AasRepository repo = new CrudAasRepository(() -> null, aas -> null, CONFIGURED_AAS_REPO_NAME, null);
+		AasRepository repo = new CrudAasRepository(() -> null, aas -> null, CONFIGURED_AAS_REPO_NAME);
 
 		assertEquals(CONFIGURED_AAS_REPO_NAME, repo.getName());
 	}
+
 }

@@ -23,7 +23,6 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.aasrepository.client;
 
 import java.io.File;
@@ -32,15 +31,16 @@ import java.util.List;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetInformation;
+import org.eclipse.digitaltwin.aas4j.v3.model.KeyTypes;
 import org.eclipse.digitaltwin.aas4j.v3.model.Reference;
 import org.eclipse.digitaltwin.basyx.aasrepository.AasRepository;
 import org.eclipse.digitaltwin.basyx.aasrepository.client.internal.AssetAdministrationShellRepositoryApi;
 import org.eclipse.digitaltwin.basyx.aasservice.client.ConnectedAasService;
 import org.eclipse.digitaltwin.basyx.client.internal.ApiException;
+import org.eclipse.digitaltwin.basyx.core.FilterParams;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
-import org.eclipse.digitaltwin.basyx.core.exceptions.FeatureNotImplementedException;
-import org.eclipse.digitaltwin.basyx.core.exceptions.IdentificationMismatchException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.exceptions.MissingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
@@ -67,12 +67,9 @@ public class ConnectedAasRepository implements AasRepository {
 		this.repoApi = new AssetAdministrationShellRepositoryApi(repoUrl);
 	}
 
-	/**
-	 * Not implemented
-	 */
 	@Override
-	public CursorResult<List<AssetAdministrationShell>> getAllAas(PaginationInfo pInfo) {
-		throw new FeatureNotImplementedException();
+	public CursorResult<List<AssetAdministrationShell>> getAllAas(FilterParams filterParams) {
+		throw ExceptionBuilderFactory.getInstance().featureNotImplementedException().build();
 	}
 
 	@Override
@@ -157,7 +154,7 @@ public class ConnectedAasRepository implements AasRepository {
 	 */
 	@Override
 	public File getThumbnail(String aasId) {
-		throw new FeatureNotImplementedException();
+		throw ExceptionBuilderFactory.getInstance().featureNotImplementedException().build();
 	}
 
 	/**
@@ -165,7 +162,7 @@ public class ConnectedAasRepository implements AasRepository {
 	 */
 	@Override
 	public void setThumbnail(String aasId, String fileName, String contentType, InputStream inputStream) {
-		throw new FeatureNotImplementedException();
+		throw ExceptionBuilderFactory.getInstance().featureNotImplementedException().build();
 	}
 
 	/**
@@ -173,7 +170,7 @@ public class ConnectedAasRepository implements AasRepository {
 	 */
 	@Override
 	public void deleteThumbnail(String aasId) {
-		throw new FeatureNotImplementedException();
+		throw ExceptionBuilderFactory.getInstance().featureNotImplementedException().build();
 	}
 
 	private String getAasUrl(String aasId) {
@@ -182,7 +179,7 @@ public class ConnectedAasRepository implements AasRepository {
 
 	private RuntimeException mapExceptionAasUpdate(String aasId, ApiException e) {
 		if (e.getCode() == HttpStatus.BAD_REQUEST.value()) {
-			return new IdentificationMismatchException();
+			return ExceptionBuilderFactory.getInstance().identificationMismatchException().build();
 		}
 
 		return mapExceptionAasAccess(aasId, e);
@@ -190,11 +187,11 @@ public class ConnectedAasRepository implements AasRepository {
 
 	private RuntimeException mapExceptionAasAccess(String aasId, ApiException e) {
 		if (e.getCode() == HttpStatus.NOT_FOUND.value()) {
-			return new ElementDoesNotExistException(aasId);
+			return ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.ASSET_ADMINISTRATION_SHELL).missingElement(aasId).build();
 		} else if (e.getCode() == HttpStatus.CONFLICT.value()) {
-			return new CollidingIdentifierException(aasId);
+			return ExceptionBuilderFactory.getInstance().collidingIdentifierException().collidingIdentifier(aasId).build();
 		} else if (e.getCode() == HttpStatus.BAD_REQUEST.value()) {
-			return new MissingIdentifierException();
+			return ExceptionBuilderFactory.getInstance().missingIdentifierException().elementId(aasId).build();
 		}
 
 		return e;
