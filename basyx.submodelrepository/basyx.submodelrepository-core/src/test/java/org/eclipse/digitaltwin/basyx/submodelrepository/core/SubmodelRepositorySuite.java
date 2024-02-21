@@ -84,7 +84,7 @@ public abstract class SubmodelRepositorySuite {
 		submodels.forEach(repo::createSubmodel);
 		return repo;
 	}
-	
+
 	protected abstract boolean fileExistsInStorage(String fileValue);
 
 	@Test
@@ -197,92 +197,92 @@ public abstract class SubmodelRepositorySuite {
 
 		getSubmodelRepository(submodels);
 	}
-	
+
 	@Test
 	public void updateNonFileSME() {
 		SubmodelRepository repo = getSubmodelRepositoryWithDummySubmodels();
-		
+
 		String idShortPathPropertyInSmeCol = SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_SUBMODEL_ELEMENT_COLLECTION_ID_SHORT + "." + SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_PROPERTY_ID_SHORT;
-		
+
 		Property newProperty = SubmodelServiceHelper.createDummyProperty(SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_PROPERTY_ID_SHORT, "arbitraryValue", DataTypeDefXsd.STRING);
-		
+
 		repo.updateSubmodelElement(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol, newProperty);
-		
+
 		Property updatedProperty = (Property) repo.getSubmodelElement(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol);
-		
+
 		assertEquals(newProperty, updatedProperty);
 	}
-	
+
 	@Test
 	public void updateNonFileSMEWithFileSME() {
 		SubmodelRepository repo = getSubmodelRepositoryWithDummySubmodels();
-		
+
 		String idShortPathPropertyInSmeCol = SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_SUBMODEL_ELEMENT_COLLECTION_ID_SHORT + "." + SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_PROPERTY_ID_SHORT;
-		
+
 		org.eclipse.digitaltwin.aas4j.v3.model.File newFileSME = SubmodelServiceHelper.createDummyFile(SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_PROPERTY_ID_SHORT, "text/plain", "arbitraryFileValue");
-		
+
 		repo.updateSubmodelElement(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol, newFileSME);
-		
+
 		org.eclipse.digitaltwin.aas4j.v3.model.File updatedFile = (org.eclipse.digitaltwin.aas4j.v3.model.File) repo.getSubmodelElement(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol);
-		
+
 		assertEquals(newFileSME, updatedFile);
 	}
-	
+
 	@Test
-	public void updateFileSMEWithNonFileSME() throws FileNotFoundException, IOException {
+	public void updateFileSMEWithNonFileSME() throws IOException {
 		SubmodelRepository repo = getSubmodelRepositoryWithDummySubmodels();
-		
+
 		String idShortPathPropertyInSmeCol = SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_SUBMODEL_ELEMENT_COLLECTION_ID_SHORT + "." + SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_FILE_ID_SHORT;
-		
+
 		String fileName = "SampleJsonFile.json";
-		
+
 		repo.setFileValue(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol, fileName, getInputStreamOfFileFromClasspath(fileName));
-		
+
 		File file = repo.getFileByPathSubmodel(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol);
-		
+
 		assertFileExistsOnPath(file);
-		
+
 		Property newProperty = SubmodelServiceHelper.createDummyProperty(SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_FILE_ID_SHORT, "4005", DataTypeDefXsd.INT);
-		
+
 		repo.updateSubmodelElement(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol, newProperty);
-		
+
 		Property updatedProperty = (Property) repo.getSubmodelElement(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol);
-		
+
 		assertEquals(newProperty, updatedProperty);
 	}
-	
+
 	@Test
-	public void updateFileSMEWithFileSME() throws FileNotFoundException, IOException {
+	public void updateFileSMEWithFileSME() throws IOException {
 		SubmodelRepository repo = getSubmodelRepositoryWithDummySubmodels();
-		
+
 		String idShortPathPropertyInSmeCol = SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_SUBMODEL_ELEMENT_COLLECTION_ID_SHORT + "." + SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_FILE_ID_SHORT;
-		
+
 		String fileName = "SampleJsonFile.json";
-		
+
 		repo.setFileValue(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol, fileName, getInputStreamOfFileFromClasspath(fileName));
-		
+
 		File file = repo.getFileByPathSubmodel(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol);
-		
+
 		assertFileExistsOnPath(file);
-		
+
 		org.eclipse.digitaltwin.aas4j.v3.model.File newFileSME = SubmodelServiceHelper.createDummyFile(SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_FILE_ID_SHORT, "text/plain", "someArbitraryPlainText");
-		
+
 		repo.updateSubmodelElement(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol, newFileSME);
-		
+
 		org.eclipse.digitaltwin.aas4j.v3.model.File updatedFileSME = (org.eclipse.digitaltwin.aas4j.v3.model.File) repo.getSubmodelElement(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol);
-		
+
 		assertEquals(newFileSME, updatedFileSME);
 		assertFileExistsOnPath(file);
 	}
-	
+
 	@Test(expected = ElementDoesNotExistException.class)
 	public void updateNonExistingSME() {
 		SubmodelRepository repo = getSubmodelRepositoryWithDummySubmodels();
-		
+
 		String idShortPathPropertyInSmeCol = SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_SUBMODEL_ELEMENT_COLLECTION_ID_SHORT + ".NonExistingSMEIdShort";
-		
+
 		Property newNonExistingProperty = SubmodelServiceHelper.createDummyProperty(SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_PROPERTY_ID_SHORT, "arbitraryPropertyValue", DataTypeDefXsd.STRING);
-		
+
 		repo.updateSubmodelElement(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol, newNonExistingProperty);
 	}
 
@@ -565,7 +565,7 @@ public abstract class SubmodelRepositorySuite {
 	}
 
 	@Test
-	public void deleteFileSubmodelElementDeletesFile() throws ElementDoesNotExistException, ElementNotAFileException, FileNotFoundException, IOException {
+	public void deleteFileSubmodelElementDeletesFile() throws ElementDoesNotExistException, ElementNotAFileException, IOException {
 		SubmodelRepository repo = getSubmodelRepositoryWithDummySubmodels();
 
 		final String filename = "SampleJsonFile.json";
@@ -620,9 +620,9 @@ public abstract class SubmodelRepositorySuite {
 
 		submodelRepo.invokeOperation(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_ANNOTATED_RELATIONSHIP_ELEMENT_ID_SHORT, new OperationVariable[0]);
 	}
-	
+
 	private void assertFileExistsOnPath(File file) {
-		
+
 		assertTrue(file.exists());
 	}
 

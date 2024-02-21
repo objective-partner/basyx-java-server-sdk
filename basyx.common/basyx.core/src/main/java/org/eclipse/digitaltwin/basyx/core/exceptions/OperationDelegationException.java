@@ -25,6 +25,8 @@
 
 package org.eclipse.digitaltwin.basyx.core.exceptions;
 
+import org.springframework.stereotype.Component;
+
 /**
  * Indicates failure while delegating the operation invocation
  * 
@@ -32,14 +34,25 @@ package org.eclipse.digitaltwin.basyx.core.exceptions;
  *
  */
 @SuppressWarnings("serial")
-public class OperationDelegationException extends RuntimeException {
+public class OperationDelegationException extends BaSyxResponseException {
 
-	public OperationDelegationException() {
-		super();
-	}
-	
-	public OperationDelegationException(String message) {
-		super(message);
+	private OperationDelegationException(int httpStatusCode, String reason, String correlationId, String timestamp) {
+		super(httpStatusCode, reason, correlationId, timestamp);
 	}
 
+	@Component
+	public static class Builder extends BaSyxResponseExceptionBuilder<RepositoryRegistryLinkException.Builder> {
+
+		public Builder(ITraceableMessageSerializer serializer) {
+			super(serializer);
+			messageReference("OperationDelegationException");
+			returnCode(424);
+			technicalMessageTemplate("Operation delegation failed.");
+		}
+
+		@Override
+		public OperationDelegationException build() {
+			return new OperationDelegationException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
+		}
+	}
 }

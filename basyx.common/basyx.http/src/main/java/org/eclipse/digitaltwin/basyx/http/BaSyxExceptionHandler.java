@@ -27,11 +27,13 @@ package org.eclipse.digitaltwin.basyx.http;
 
 import java.util.UUID;
 
+import org.eclipse.digitaltwin.aas4j.v3.model.Message;
+import org.eclipse.digitaltwin.aas4j.v3.model.MessageTypeEnum;
+import org.eclipse.digitaltwin.aas4j.v3.model.Result;
+import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultMessage;
+import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultResult;
 import org.eclipse.digitaltwin.basyx.core.exceptions.BaSyxResponseException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
-import org.eclipse.digitaltwin.basyx.http.model.Message;
-import org.eclipse.digitaltwin.basyx.http.model.Message.MessageTypeEnum;
-import org.eclipse.digitaltwin.basyx.http.model.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -78,15 +80,10 @@ public class BaSyxExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 
 	private String deriveResultFromException(BaSyxResponseException exception) {
-		Message message = new Message();
-		message.code(String.valueOf(exception.getHttpStatusCode()));
-		message.correlationId(exception.getCorrelationId());
-		message.setText(exception.getMessage());
-		message.setTimestamp(exception.getTimestamp());
-		message.messageType(MessageTypeEnum.EXCEPTION);
+		Message message = new DefaultMessage.Builder().code(String.valueOf(exception.getHttpStatusCode())).correlationId(exception.getCorrelationId()).text(exception.getMessage()).timestamp(exception.getTimestamp())
+				.messageType(MessageTypeEnum.EXCEPTION).build();
 
-		Result result = new Result();
-		result.addMessagesItem(message);
+		Result result = new DefaultResult.Builder().messages(message).build();
 		return tryMarshalResult(exception, result);
 	}
 
@@ -98,10 +95,5 @@ public class BaSyxExceptionHandler extends ResponseEntityExceptionHandler {
 			logger.warn(reason, exception);
 			throw new RuntimeException(reason, exception);
 		}
-	}
-
-	@ExceptionHandler(OperationDelegationException.class)
-	public <T> ResponseEntity<T> handleNullSubjectException(OperationDelegationException exception) {
-		return new ResponseEntity<>(HttpStatus.FAILED_DEPENDENCY);
 	}
 }

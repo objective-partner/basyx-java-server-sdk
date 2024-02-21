@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import org.eclipse.digitaltwin.aas4j.v3.model.KeyTypes;
 import org.eclipse.digitaltwin.aas4j.v3.model.OperationVariable;
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
 import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElement;
@@ -37,7 +38,7 @@ import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElementList;
 import org.eclipse.digitaltwin.basyx.InvokableOperation;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
-import org.eclipse.digitaltwin.basyx.core.exceptions.NotInvokableException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationSupport;
@@ -46,7 +47,6 @@ import org.eclipse.digitaltwin.basyx.submodelservice.pathparsing.SubmodelElement
 import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelElementValue;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.factory.SubmodelElementValueMapperFactory;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.mapper.ValueMapper;
-
 
 /**
  * Implements the SubmodelService as in-memory variant
@@ -79,11 +79,9 @@ public class InMemorySubmodelService implements SubmodelService {
 	public CursorResult<List<SubmodelElement>> getSubmodelElements(PaginationInfo pInfo) {
 		List<SubmodelElement> allSubmodels = submodel.getSubmodelElements();
 
-		TreeMap<String, SubmodelElement> submodelMap = allSubmodels.stream()
-				.collect(Collectors.toMap(SubmodelElement::getIdShort, aas -> aas, (a, b) -> a, TreeMap::new));
+		TreeMap<String, SubmodelElement> submodelMap = allSubmodels.stream().collect(Collectors.toMap(SubmodelElement::getIdShort, aas -> aas, (a, b) -> a, TreeMap::new));
 
-		PaginationSupport<SubmodelElement> paginationSupport = new PaginationSupport<>(submodelMap,
-				SubmodelElement::getIdShort);
+		PaginationSupport<SubmodelElement> paginationSupport = new PaginationSupport<>(submodelMap, SubmodelElement::getIdShort);
 		CursorResult<List<SubmodelElement>> paginatedSubmodels = paginationSupport.getPaged(pInfo);
 		return paginatedSubmodels;
 	}
@@ -96,7 +94,7 @@ public class InMemorySubmodelService implements SubmodelService {
 	@Override
 	public SubmodelElementValue getSubmodelElementValue(String idShort) throws ElementDoesNotExistException {
 		SubmodelElementValueMapperFactory submodelElementValueFactory = new SubmodelElementValueMapperFactory();
-		
+
 		return submodelElementValueFactory.create(getSubmodelElement(idShort)).getValue();
 	}
 
@@ -104,26 +102,26 @@ public class InMemorySubmodelService implements SubmodelService {
 	@Override
 	public void setSubmodelElementValue(String idShort, SubmodelElementValue value) throws ElementDoesNotExistException {
 		SubmodelElementValueMapperFactory submodelElementValueFactory = new SubmodelElementValueMapperFactory();
-		
+
 		ValueMapper<SubmodelElementValue> valueMapper = submodelElementValueFactory.create(getSubmodelElement(idShort));
-		
-		valueMapper.setValue(value);	
+
+		valueMapper.setValue(value);
 	}
 
 	@Override
 	public void createSubmodelElement(SubmodelElement submodelElement) throws CollidingIdentifierException {
 		throwIfSubmodelElementExists(submodelElement.getIdShort());
-		
+
 		List<SubmodelElement> smElements = submodel.getSubmodelElements();
 		smElements.add(submodelElement);
 		submodel.setSubmodelElements(smElements);
 	}
-	
+
 	private void throwIfSubmodelElementExists(String submodelElementId) {
 		try {
 			getSubmodelElement(submodelElementId);
-			throw new CollidingIdentifierException(submodelElementId); 
-		}catch(ElementDoesNotExistException e) {
+			throw ExceptionBuilderFactory.getInstance().collidingIdentifierException().collidingIdentifier(submodelElementId).build();
+		} catch (ElementDoesNotExistException e) {
 			return;
 		}
 	}
@@ -131,9 +129,9 @@ public class InMemorySubmodelService implements SubmodelService {
 	@Override
 	public void createSubmodelElement(String idShortPath, SubmodelElement submodelElement) throws ElementDoesNotExistException, CollidingIdentifierException {
 		throwIfSubmodelElementExists(getFullIdShortPath(idShortPath, submodelElement.getIdShort()));
-		
+
 		SubmodelElement parentSme = parser.getSubmodelElementFromIdShortPath(idShortPath);
-		if(parentSme instanceof SubmodelElementList) {
+		if (parentSme instanceof SubmodelElementList) {
 			SubmodelElementList list = (SubmodelElementList) parentSme;
 			List<SubmodelElement> submodelElements = list.getValue();
 			submodelElements.add(submodelElement);
@@ -148,13 +146,13 @@ public class InMemorySubmodelService implements SubmodelService {
 			return;
 		}
 	}
-	
+
 	@Override
 	public void updateSubmodelElement(String idShortPath, SubmodelElement submodelElement) {
 		deleteSubmodelElement(idShortPath);
-		
+
 		String idShortPathParentSME = parser.getIdShortPathOfParentElement(idShortPath);
-		
+
 		createSubmodelElement(idShortPathParentSME, submodelElement);
 	}
 
@@ -169,7 +167,7 @@ public class InMemorySubmodelService implements SubmodelService {
 
 	private void deleteNestedSubmodelElement(String idShortPath) {
 		SubmodelElement sm = parser.getSubmodelElementFromIdShortPath(idShortPath);
-		if(helper.isDirectParentASubmodelElementList(idShortPath)) {
+		if (helper.isDirectParentASubmodelElementList(idShortPath)) {
 			deleteNestedSubmodelElementFromList(idShortPath, sm);
 		} else {
 			deleteNestedSubmodelElementFromCollection(idShortPath, sm);
@@ -184,8 +182,7 @@ public class InMemorySubmodelService implements SubmodelService {
 
 	private void deleteNestedSubmodelElementFromCollection(String idShortPath, SubmodelElement sm) {
 		String collectionId = helper.extractDirectParentSubmodelElementCollectionIdShort(idShortPath);
-		SubmodelElementCollection collection = (SubmodelElementCollection) parser
-				.getSubmodelElementFromIdShortPath(collectionId);
+		SubmodelElementCollection collection = (SubmodelElementCollection) parser.getSubmodelElementFromIdShortPath(collectionId);
 		collection.getValue().remove(sm);
 	}
 
@@ -195,7 +192,7 @@ public class InMemorySubmodelService implements SubmodelService {
 			submodel.getSubmodelElements().remove(index);
 			return;
 		}
-		throw new ElementDoesNotExistException();
+		throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.SUBMODEL_ELEMENT).missingElement(idShortPath).build();
 	}
 
 	private int findIndexOfElementTobeDeleted(String idShortPath) {
@@ -210,14 +207,14 @@ public class InMemorySubmodelService implements SubmodelService {
 	@Override
 	public OperationVariable[] invokeOperation(String idShortPath, OperationVariable[] input) {
 		SubmodelElement sme = getSubmodelElement(idShortPath);
-		
+
 		if (!(sme instanceof InvokableOperation))
-			throw new NotInvokableException(idShortPath);
-		
+			throw ExceptionBuilderFactory.getInstance().notInvokableException().submodelId(submodel.getId()).idShortPath(idShortPath).build();
+
 		InvokableOperation operation = (InvokableOperation) sme;
 		return operation.invoke(input);
 	}
-	
+
 	private String getFullIdShortPath(String idShortPath, String submodelElementId) {
 		return idShortPath + "." + submodelElementId;
 	}
