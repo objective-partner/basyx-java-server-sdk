@@ -27,6 +27,9 @@
  */
 package org.eclipse.digitaltwin.basyx.aasdiscoveryservice.http;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+
 import java.util.List;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.Result;
@@ -50,10 +53,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 
-@Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2023-10-10T10:16:17.046754509Z[GMT]")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2023-10-10T10:16:17.046754509Z[GMT]")
 @Validated
 public interface LookupApi {
 
