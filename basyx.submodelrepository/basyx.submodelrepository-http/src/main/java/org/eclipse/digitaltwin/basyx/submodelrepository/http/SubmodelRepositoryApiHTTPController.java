@@ -37,11 +37,13 @@ import java.util.List;
 import org.eclipse.digitaltwin.aas4j.v3.model.OperationRequest;
 import org.eclipse.digitaltwin.aas4j.v3.model.OperationResult;
 import org.eclipse.digitaltwin.aas4j.v3.model.OperationVariable;
+import org.eclipse.digitaltwin.aas4j.v3.model.Reference;
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
 import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElement;
 import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultOperationResult;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementNotAFileException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.exceptions.FileDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
@@ -66,21 +68,24 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 
 @jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2022-01-10T15:59:05.892Z[GMT]")
 @RestController
 public class SubmodelRepositoryApiHTTPController implements SubmodelRepositoryHTTPApi {
 
 	private final SubmodelRepository repository;
+	private final ObjectMapper objectMapper;
 
 	@Autowired
-	public SubmodelRepositoryApiHTTPController(SubmodelRepository repository) {
+	public SubmodelRepositoryApiHTTPController(SubmodelRepository repository, ObjectMapper objectMapper) {
 		this.repository = repository;
+		this.objectMapper = objectMapper;
 	}
 
 	@Override
@@ -118,7 +123,7 @@ public class SubmodelRepositoryApiHTTPController implements SubmodelRepositoryHT
 
 		PaginationInfo pInfo = new PaginationInfo(limit, decodedCursor);
 
-		CursorResult<List<Submodel>> cursorResult = repository.getAllSubmodels(pInfo);
+		CursorResult<List<Submodel>> cursorResult = repository.getAllSubmodels(pInfo, getReferenceFromBase64UrlEncodedIdentifier(semanticId), idShort);
 
 		GetSubmodelsResult paginatedSubmodel = new GetSubmodelsResult();
 
@@ -143,7 +148,7 @@ public class SubmodelRepositoryApiHTTPController implements SubmodelRepositoryHT
 
 		PaginationInfo pInfo = new PaginationInfo(limit, decodedCursor);
 
-		CursorResult<List<Submodel>> cursorResult = repository.getAllSubmodelsMetadata(pInfo);
+		CursorResult<List<Submodel>> cursorResult = repository.getAllSubmodelsMetadata(pInfo, getReferenceFromBase64UrlEncodedIdentifier(semanticId), idShort);
 
 		GetSubmodelsResult paginatedSubmodel = new GetSubmodelsResult();
 
@@ -324,5 +329,17 @@ public class SubmodelRepositoryApiHTTPController implements SubmodelRepositoryHT
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private Reference getReferenceFromBase64UrlEncodedIdentifier(Base64UrlEncodedIdentifier semanticId) {
+		Reference reference = null;
+		if (semanticId != null) {
+			try {
+				reference = objectMapper.readValue(semanticId.getIdentifier(), Reference.class);
+			} catch (JsonProcessingException e) {
+				throw ExceptionBuilderFactory.getInstance().baSyxResponseException().technicalMessageTemplate("could not parse the semanticId" + e.getMessage()).returnCode(HttpStatus.BAD_REQUEST.value()).build();
+			}
+		}
+		return reference;
 	}
 }

@@ -104,13 +104,13 @@ public class DelegatedOperationSubmodelRepository implements SubmodelRepository 
 	}
 
 	@Override
-	public CursorResult<List<Submodel>> getAllSubmodels(PaginationInfo paginationInfo) {
-		return decorated.getAllSubmodels(paginationInfo);
+	public CursorResult<List<Submodel>> getAllSubmodels(PaginationInfo paginationInfo, Reference semanticId, String idShort) {
+		return decorated.getAllSubmodels(paginationInfo, semanticId, idShort);
 	}
 
 	@Override
-	public CursorResult<List<Submodel>> getAllSubmodelsMetadata(PaginationInfo pInfo) {
-		return decorated.getAllSubmodelsMetadata(pInfo);
+	public CursorResult<List<Submodel>> getAllSubmodelsMetadata(PaginationInfo pInfo, Reference semanticId, String idShort) {
+		return decorated.getAllSubmodelsMetadata(pInfo, semanticId, idShort);
 	}
 
 	@Override

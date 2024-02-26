@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.OperationVariable;
+import org.eclipse.digitaltwin.aas4j.v3.model.Reference;
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
 import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElement;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
@@ -54,14 +55,14 @@ public interface SubmodelRepository {
 	 * 
 	 * @return a list of all found Submodels
 	 */
-	CursorResult<List<Submodel>> getAllSubmodels(PaginationInfo pInfo);
+	public CursorResult<List<Submodel>> getAllSubmodels(PaginationInfo pInfo, Reference reference, String idShort);
 
 	/**
 	 * Retrieves the metadata attributes of all Submodels from the repository
 	 *
 	 * @return a list of all found Submodels
 	 */
-	CursorResult<List<Submodel>> getAllSubmodelsMetadata(PaginationInfo pInfo);
+	public CursorResult<List<Submodel>> getAllSubmodelsMetadata(PaginationInfo pInfo, Reference reference, String idShort);
 
 	/**
 	 * Retrieves the Submodel with the specific id
@@ -251,7 +252,7 @@ public interface SubmodelRepository {
 	 *            the Submodel id
 	 * @param idShortPath
 	 *            the IdShort path of the file element
-	 * 
+	 *
 	 * @throws ElementDoesNotExistException
 	 * @throws ElementNotAFileException
 	 */
@@ -264,7 +265,7 @@ public interface SubmodelRepository {
 	 *            the Submodel id
 	 * @param idShortPath
 	 *            the IdShort path of the file element
-	 * 
+	 *
 	 * @throws ElementDoesNotExistException
 	 * @throws ElementNotAFileException
 	 * @throws FileDoesNotExistException
