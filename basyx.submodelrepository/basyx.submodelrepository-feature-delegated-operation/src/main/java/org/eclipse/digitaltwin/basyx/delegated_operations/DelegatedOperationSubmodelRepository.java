@@ -8,10 +8,10 @@
  * distribute, sublicense, and/or sell copies of the Software, and to
  * permit persons to whom the Software is furnished to do so, subject to
  * the following conditions:
- *
+ * 
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -102,35 +102,35 @@ public class DelegatedOperationSubmodelRepository implements SubmodelRepository 
     this.objectMapper = objectMapper;
   }
 
-  @Override
-  public CursorResult<List<Submodel>> getAllSubmodels(PaginationInfo paginationInfo) {
-    return decorated.getAllSubmodels(paginationInfo);
-  }
+	@Override
+	public CursorResult<List<Submodel>> getAllSubmodels(PaginationInfo paginationInfo, Reference semanticId, String idShort) {
+		return decorated.getAllSubmodels(paginationInfo, semanticId, idShort);
+	}
 
   @Override
-  public CursorResult<List<Submodel>> getAllSubmodelsMetadata(PaginationInfo pInfo) {
-    return decorated.getAllSubmodelsMetadata(pInfo);
+  public CursorResult<List<Submodel>> getAllSubmodelsMetadata(PaginationInfo pInfo, Reference semanticId, String idShort) {
+    return decorated.getAllSubmodelsMetadata(pInfo, semanticId, idShort);
   }
 
-  @Override
-  public Submodel getSubmodel(String submodelId) throws ElementDoesNotExistException {
-    return decorated.getSubmodel(submodelId);
-  }
+	@Override
+	public Submodel getSubmodel(String submodelId) throws ElementDoesNotExistException {
+		return decorated.getSubmodel(submodelId);
+	}
 
-  @Override
-  public void updateSubmodel(String submodelId, Submodel submodel) throws ElementDoesNotExistException {
-    decorated.updateSubmodel(submodelId, submodel);
-  }
+	@Override
+	public void updateSubmodel(String submodelId, Submodel submodel) throws ElementDoesNotExistException {
+		decorated.updateSubmodel(submodelId, submodel);
+	}
 
-  @Override
-  public void createSubmodel(Submodel submodel) throws CollidingIdentifierException {
-    decorated.createSubmodel(submodel);
-  }
+	@Override
+	public void createSubmodel(Submodel submodel) throws CollidingIdentifierException {
+		decorated.createSubmodel(submodel);
+	}
 
-  @Override
-  public void deleteSubmodel(String submodelId) throws ElementDoesNotExistException {
-    decorated.deleteSubmodel(submodelId);
-  }
+	@Override
+	public void deleteSubmodel(String submodelId) throws ElementDoesNotExistException {
+		decorated.deleteSubmodel(submodelId);
+	}
 
   @Override
   public CursorResult<List<SubmodelElement>> getSubmodelElements(String submodelId, PaginationInfo paginationInfo)

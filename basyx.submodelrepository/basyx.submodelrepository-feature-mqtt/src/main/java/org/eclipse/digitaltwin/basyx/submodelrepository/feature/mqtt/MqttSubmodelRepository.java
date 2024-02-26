@@ -3,6 +3,7 @@ package org.eclipse.digitaltwin.basyx.submodelrepository.feature.mqtt;
 import java.io.InputStream;
 import java.util.List;
 import org.eclipse.digitaltwin.aas4j.v3.model.OperationVariable;
+import org.eclipse.digitaltwin.aas4j.v3.model.Reference;
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
 import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElement;
 import org.eclipse.digitaltwin.basyx.common.mqttcore.serializer.SubmodelElementSerializer;
@@ -44,13 +45,13 @@ public class MqttSubmodelRepository implements SubmodelRepository {
   }
 
   @Override
-  public CursorResult<List<Submodel>> getAllSubmodels(PaginationInfo pInfo) {
-    return decorated.getAllSubmodels(pInfo);
+	public CursorResult<List<Submodel>> getAllSubmodels(PaginationInfo pInfo, Reference semanticId, String idShort) {
+		return decorated.getAllSubmodels(pInfo, semanticId, idShort);
   }
 
   @Override
-  public CursorResult<List<Submodel>> getAllSubmodelsMetadata(PaginationInfo pInfo) {
-    return decorated.getAllSubmodels(pInfo);
+  public CursorResult<List<Submodel>> getAllSubmodelsMetadata(PaginationInfo pInfo, Reference semanticId, String idShort) {
+		return decorated.getAllSubmodels(pInfo, semanticId, idShort);
   }
 
   @Override
