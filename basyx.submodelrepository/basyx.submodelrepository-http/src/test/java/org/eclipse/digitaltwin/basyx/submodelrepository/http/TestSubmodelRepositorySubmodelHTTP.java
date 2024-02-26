@@ -26,6 +26,7 @@
 package org.eclipse.digitaltwin.basyx.submodelrepository.http;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
@@ -53,7 +54,7 @@ public class TestSubmodelRepositorySubmodelHTTP extends SubmodelRepositorySubmod
 	@Override
 	public void resetRepository() {
 		SubmodelRepository repo = appContext.getBean(SubmodelRepository.class);
-		repo.getAllSubmodels(NO_LIMIT_PAGINATION_INFO).getResult().stream().map(s -> s.getId()).forEach(repo::deleteSubmodel);
+		repo.getAllSubmodels(NO_LIMIT_PAGINATION_INFO, null, "").getResult().stream().map(s -> s.getId()).forEach(repo::deleteSubmodel);
 	}
 
 	@Override

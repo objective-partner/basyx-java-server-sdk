@@ -36,6 +36,8 @@ import org.junit.BeforeClass;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import java.util.List;
+
 /**
  * Tests the SubmodelElement specific parts of the SubmodelRepository HTTP/REST
  * API
@@ -61,7 +63,7 @@ public class TestSubmodelRepositorySubmodelElementsHTTP extends SubmodelServiceS
 	@After
 	public void removeSubmodelFromRepo() {
 		SubmodelRepository repo = appContext.getBean(SubmodelRepository.class);
-		repo.getAllSubmodels(NO_LIMIT_PAGINATION_INFO).getResult().stream().map(s -> s.getId()).forEach(repo::deleteSubmodel);
+		repo.getAllSubmodels(NO_LIMIT_PAGINATION_INFO, null, "").getResult().stream().map(s -> s.getId()).forEach(repo::deleteSubmodel);
 	}
 
 	@AfterClass

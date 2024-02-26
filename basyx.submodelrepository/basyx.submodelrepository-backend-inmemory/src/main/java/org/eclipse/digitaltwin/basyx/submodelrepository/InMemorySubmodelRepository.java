@@ -46,11 +46,7 @@ import org.eclipse.digitaltwin.aas4j.v3.dataformat.DeserializationException;
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.SerializationException;
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.json.JsonDeserializer;
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.json.JsonSerializer;
-import org.eclipse.digitaltwin.aas4j.v3.model.File;
-import org.eclipse.digitaltwin.aas4j.v3.model.KeyTypes;
-import org.eclipse.digitaltwin.aas4j.v3.model.OperationVariable;
-import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
-import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElement;
+import org.eclipse.digitaltwin.aas4j.v3.model.*;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
@@ -147,9 +143,8 @@ public class InMemorySubmodelRepository implements SubmodelRepository {
   }
 
   @Override
-  public CursorResult<List<Submodel>> getAllSubmodels(PaginationInfo pInfo) {
-    List<Submodel> allSubmodels = submodelServices.values().stream().map(service -> service.getSubmodel())
-        .collect(Collectors.toList());
+	public CursorResult<List<Submodel>> getAllSubmodels(PaginationInfo pInfo, Reference semanticId, String idShort) {
+		List<Submodel> allSubmodels = submodelServices.values().stream().map(service -> service.getSubmodel()).collect(Collectors.toList());
 
     TreeMap<String, Submodel> submodelMap = allSubmodels.stream()
         .collect(Collectors.toMap(Submodel::getId, aas -> aas, (a, b) -> a, TreeMap::new));
@@ -160,7 +155,7 @@ public class InMemorySubmodelRepository implements SubmodelRepository {
   }
 
   @Override
-  public CursorResult<List<Submodel>> getAllSubmodelsMetadata(PaginationInfo pInfo) {
+  public CursorResult<List<Submodel>> getAllSubmodelsMetadata(PaginationInfo pInfo, Reference semanticId, String idShort) {
     List<Submodel> allSubmodels = submodelServices.values().stream().map(service -> {
       Submodel submodel = service.getSubmodel();
       submodel.setSubmodelElements(null);

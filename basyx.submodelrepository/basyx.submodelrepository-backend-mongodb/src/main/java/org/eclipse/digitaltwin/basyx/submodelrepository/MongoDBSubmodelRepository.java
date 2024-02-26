@@ -30,7 +30,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
 import org.apache.commons.io.FileUtils;
@@ -39,11 +41,7 @@ import org.apache.tika.mime.MimeTypeException;
 import org.apache.tika.mime.MimeTypes;
 import org.apache.tika.utils.StringUtils;
 import org.bson.types.ObjectId;
-import org.eclipse.digitaltwin.aas4j.v3.model.File;
-import org.eclipse.digitaltwin.aas4j.v3.model.KeyTypes;
-import org.eclipse.digitaltwin.aas4j.v3.model.OperationVariable;
-import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
-import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElement;
+import org.eclipse.digitaltwin.aas4j.v3.model.*;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
@@ -54,13 +52,14 @@ import org.eclipse.digitaltwin.basyx.submodelservice.SubmodelServiceFactory;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.FileBlobValue;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelElementValue;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelValueOnly;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
+import org.springframework.util.CollectionUtils;
 
 /**
  * MongoDB implementation of the SubmodelRepository
@@ -74,6 +73,14 @@ public class MongoDBSubmodelRepository implements SubmodelRepository {
   private static final String TEMP_DIR_PREFIX = "basyx-temp";
   private static final String GRIDFS_ID_DELIMITER = "#";
   private static final String ID_JSON_PATH = "id";
+  private static final String CUSTOM_SEMANTIC_ID_KEYS = "customSemanticIdKeys";
+  private static final String CUSTOM_SUPPLEMENTAL_ID_KEYS = "customSupplementalIdKeys";
+  private static final String SEMANTIC_ID_KEYS_VALUE = "semanticId.keys.value";
+  private static final String SEMANTIC_ID_KEYS = "semanticId.keys";
+  private static final String SUPPLEMENTAL_SEMANTIC_IDS_KEYS_VALUE = "supplementalSemanticIds.keys.value";
+  private static final String SUPPLEMENTAL_SEMANTIC_IDS_KEYS= "supplementalSemanticIds.keys";
+  private static final String ID_SHORT = "idShort";
+
 
   private final MongoTemplate mongoTemplate;
   private final String collectionName;
@@ -91,7 +98,7 @@ public class MongoDBSubmodelRepository implements SubmodelRepository {
    * @param submodelServiceFactory
    */
   public MongoDBSubmodelRepository(MongoTemplate mongoTemplate, String collectionName,
-      SubmodelServiceFactory submodelServiceFactory) {
+          SubmodelServiceFactory submodelServiceFactory) {
     this.mongoTemplate = mongoTemplate;
     this.collectionName = collectionName;
     this.submodelServiceFactory = submodelServiceFactory;
@@ -110,7 +117,7 @@ public class MongoDBSubmodelRepository implements SubmodelRepository {
    * @param smRepositoryName       Name of the SubmodelRepository
    */
   public MongoDBSubmodelRepository(MongoTemplate mongoTemplate, String collectionName,
-      SubmodelServiceFactory submodelServiceFactory, String smRepositoryName, GridFsTemplate gridFsTemplate) {
+          SubmodelServiceFactory submodelServiceFactory, String smRepositoryName, GridFsTemplate gridFsTemplate) {
     this(mongoTemplate, collectionName, submodelServiceFactory);
     this.smRepositoryName = smRepositoryName;
     this.gridFsTemplate = gridFsTemplate;
@@ -131,7 +138,7 @@ public class MongoDBSubmodelRepository implements SubmodelRepository {
    * @param submodels
    */
   public MongoDBSubmodelRepository(MongoTemplate mongoTemplate, String collectionName,
-      SubmodelServiceFactory submodelServiceFactory, Collection<Submodel> submodels) {
+          SubmodelServiceFactory submodelServiceFactory, Collection<Submodel> submodels) {
     this(mongoTemplate, collectionName, submodelServiceFactory);
     initializeRemoteCollection(submodels);
 
@@ -150,8 +157,8 @@ public class MongoDBSubmodelRepository implements SubmodelRepository {
    * @param smRepositoryName       Name of the SubmodelRepository
    */
   public MongoDBSubmodelRepository(MongoTemplate mongoTemplate, String collectionName,
-      SubmodelServiceFactory submodelServiceFactory, Collection<Submodel> submodels, String smRepositoryName,
-      GridFsTemplate gridFsTemplate) {
+          SubmodelServiceFactory submodelServiceFactory, Collection<Submodel> submodels, String smRepositoryName,
+          GridFsTemplate gridFsTemplate) {
     this(mongoTemplate, collectionName, submodelServiceFactory, submodels);
 
     this.smRepositoryName = smRepositoryName;
@@ -175,34 +182,31 @@ public class MongoDBSubmodelRepository implements SubmodelRepository {
   }
 
   @Override
-  public CursorResult<List<Submodel>> getAllSubmodels(PaginationInfo pInfo) {
-    Query query = new Query();
-    applySorting(query, pInfo);
-    applyPagination(query, pInfo);
-    List<Submodel> foundDescriptors = mongoTemplate.find(query, Submodel.class, collectionName);
+  public CursorResult<List<Submodel>> getAllSubmodels(PaginationInfo pInfo, Reference semanticId, String idShort) {
 
+    var foundDescriptors =  findSubmodelsByShortIdAndSemanticIdWithPagination(idShort, semanticId, pInfo);
     String cursor = resolveCursor(pInfo, foundDescriptors, Submodel::getId);
-    return new CursorResult<List<Submodel>>(cursor, foundDescriptors);
+    return new CursorResult<>(cursor, foundDescriptors);
   }
 
   @Override
-  public CursorResult<List<Submodel>> getAllSubmodelsMetadata(PaginationInfo pInfo) {
-    Query query = new Query();
-    applySorting(query, pInfo);
-    applyPagination(query, pInfo);
-    List<Submodel> foundSubmodels = mongoTemplate.find(query, Submodel.class, collectionName);
+  public CursorResult<List<Submodel>> getAllSubmodelsMetadata(PaginationInfo pInfo, Reference semanticId, String idShort) {
+
+    var foundSubmodels = findSubmodelsByShortIdAndSemanticIdWithPagination(idShort, semanticId, pInfo);
     foundSubmodels.forEach(submodel -> submodel.setSubmodelElements(null));
     String cursor = resolveCursor(pInfo, foundSubmodels, Submodel::getId);
-    return new CursorResult<List<Submodel>>(cursor, foundSubmodels);
+    return new CursorResult<>(cursor, foundSubmodels);
   }
+
+
 
   @Override
   public Submodel getSubmodel(String submodelId) throws ElementDoesNotExistException {
     Submodel submodel = mongoTemplate.findOne(new Query().addCriteria(Criteria.where(ID_JSON_PATH).is(submodelId)),
-        Submodel.class, collectionName);
+            Submodel.class, collectionName);
     if (submodel == null) {
       throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.SUBMODEL)
-          .missingElement(submodelId).build();
+              .missingElement(submodelId).build();
     }
     return submodel;
   }
@@ -221,7 +225,7 @@ public class MongoDBSubmodelRepository implements SubmodelRepository {
   private void throwIfSubmodelDoesNotExist(Query query, String submodelId) {
     if (!mongoTemplate.exists(query, Submodel.class, collectionName)) {
       throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.SUBMODEL)
-          .missingElement(submodelId).build();
+              .missingElement(submodelId).build();
     }
 
   }
@@ -231,7 +235,7 @@ public class MongoDBSubmodelRepository implements SubmodelRepository {
 
     if (!submodelId.equals(newSubmodelId)) {
       throw ExceptionBuilderFactory.getInstance().identificationMismatchException().mismatchingIdentifier(newSubmodelId)
-          .build();
+              .build();
     }
 
   }
@@ -244,9 +248,9 @@ public class MongoDBSubmodelRepository implements SubmodelRepository {
 
   private void throwIfCollidesWithRemoteId(Submodel submodel) {
     if (mongoTemplate.exists(new Query().addCriteria(Criteria.where(ID_JSON_PATH).is(submodel.getId())), Submodel.class,
-        collectionName)) {
+            collectionName)) {
       throw ExceptionBuilderFactory.getInstance().collidingIdentifierException().collidingIdentifier(submodel.getId())
-          .build();
+              .build();
     }
   }
 
@@ -256,25 +260,25 @@ public class MongoDBSubmodelRepository implements SubmodelRepository {
 
   @Override
   public CursorResult<List<SubmodelElement>> getSubmodelElements(String submodelId, PaginationInfo pInfo)
-      throws ElementDoesNotExistException {
+          throws ElementDoesNotExistException {
     return getSubmodelService(submodelId).getSubmodelElements(pInfo);
   }
 
   @Override
   public SubmodelElement getSubmodelElement(String submodelId, String submodelElementIdShort)
-      throws ElementDoesNotExistException {
+          throws ElementDoesNotExistException {
     return getSubmodelService(submodelId).getSubmodelElement(submodelElementIdShort);
   }
 
   @Override
   public SubmodelElementValue getSubmodelElementValue(String submodelId, String submodelElementIdShort)
-      throws ElementDoesNotExistException {
+          throws ElementDoesNotExistException {
     return getSubmodelService(submodelId).getSubmodelElementValue(submodelElementIdShort);
   }
 
   @Override
   public void setSubmodelElementValue(String submodelId, String submodelElementIdShort, SubmodelElementValue value)
-      throws ElementDoesNotExistException {
+          throws ElementDoesNotExistException {
     SubmodelService submodelService = getSubmodelService(submodelId);
     submodelService.setSubmodelElementValue(submodelElementIdShort, value);
 
@@ -284,11 +288,11 @@ public class MongoDBSubmodelRepository implements SubmodelRepository {
   @Override
   public void deleteSubmodel(String submodelId) throws ElementDoesNotExistException {
     DeleteResult result = mongoTemplate.remove(new Query().addCriteria(Criteria.where(ID_JSON_PATH).is(submodelId)),
-        Submodel.class, collectionName);
+            Submodel.class, collectionName);
 
     if (result.getDeletedCount() == 0) {
       throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.SUBMODEL)
-          .missingElement(submodelId).build();
+              .missingElement(submodelId).build();
     }
 
   }
@@ -303,7 +307,7 @@ public class MongoDBSubmodelRepository implements SubmodelRepository {
 
   @Override
   public void createSubmodelElement(String submodelId, String idShortPath, SubmodelElement submodelElement)
-      throws ElementDoesNotExistException {
+          throws ElementDoesNotExistException {
     SubmodelService submodelService = getSubmodelService(submodelId);
     submodelService.createSubmodelElement(idShortPath, submodelElement);
 
@@ -343,24 +347,12 @@ public class MongoDBSubmodelRepository implements SubmodelRepository {
     return idResolver.apply(last);
   }
 
-  private void applySorting(Query query, PaginationInfo pInfo) {
-    query.with(Sort.by(Direction.ASC, MONGO_ID));
-  }
-
-  private void applyPagination(Query query, PaginationInfo pInfo) {
-    if (pInfo.getCursor() != null) {
-      query.addCriteria(Criteria.where(MONGO_ID).gt(pInfo.getCursor()));
-    }
-    if (pInfo.getLimit() != null) {
-      query.limit(pInfo.getLimit());
-    }
-  }
 
   @Override
   public OperationVariable[] invokeOperation(String submodelId, String idShortPath, OperationVariable[] input)
-      throws ElementDoesNotExistException {
+          throws ElementDoesNotExistException {
     throw ExceptionBuilderFactory.getInstance().featureNotSupportedException().featureName("Operation Invocation")
-        .build();
+            .build();
   }
 
   @Override
@@ -424,9 +416,17 @@ public class MongoDBSubmodelRepository implements SubmodelRepository {
     ObjectId id = gridFsTemplate.store(inputStream, fileSmElement.getValue(), fileSmElement.getContentType());
 
     FileBlobValue fileValue = new FileBlobValue(fileSmElement.getContentType(),
-        appendFsIdToFileValue(fileSmElement, id));
+            appendFsIdToFileValue(fileSmElement, id));
 
     setSubmodelElementValue(submodelId, idShortPath, fileValue);
+  }
+
+  private List<Submodel> findSubmodelsByShortIdAndSemanticIdWithPagination(String idShort, Reference semanticId, PaginationInfo pInfo) {
+    List<AggregationOperation> allAggregations = new LinkedList<>();
+    applyFilter(allAggregations, idShort, semanticId);
+    applySorting(allAggregations);
+    applyPagination(pInfo, allAggregations);
+    return mongoTemplate.aggregate(Aggregation.newAggregation(allAggregations), collectionName, Submodel.class).getMappedResults();
   }
 
   private void configureDefaultGridFsTemplate(MongoTemplate mongoTemplate) {
@@ -484,7 +484,7 @@ public class MongoDBSubmodelRepository implements SubmodelRepository {
   private void throwIfFileDoesNotExist(File fileSmElement) {
     if (fileSmElement.getValue().isBlank() || fileSmElement.getValue().indexOf(GRIDFS_ID_DELIMITER) == -1) {
       throw ExceptionBuilderFactory.getInstance().fileDoesNotExistException().elementPath(fileSmElement.getIdShort())
-          .build();
+              .build();
     }
   }
 
@@ -492,7 +492,7 @@ public class MongoDBSubmodelRepository implements SubmodelRepository {
 
     if (!(submodelElement instanceof File)) {
       throw ExceptionBuilderFactory.getInstance().elementNotAFileException()
-          .submodelElementId(submodelElement.getIdShort()).build();
+              .submodelElementId(submodelElement.getIdShort()).build();
     }
   }
 
@@ -515,4 +515,39 @@ public class MongoDBSubmodelRepository implements SubmodelRepository {
     }
   }
 
+  private void applyFilter(List<AggregationOperation> allAggregation, String idShort, Reference semanticId) {
+
+    if (!StringUtils.isBlank(idShort)) {
+      allAggregation.add(Aggregation.match(Criteria.where(ID_SHORT).is(idShort)));
+    }
+    List<String> keys = new ArrayList<>();
+    if (semanticId != null) {
+      if (!CollectionUtils.isEmpty(semanticId.getKeys())) {
+        keys = semanticId.getKeys().stream().map(Key::getValue).toList();
+      }
+      allAggregation.add(Aggregation.match(new Criteria().orOperator(Criteria.where(SEMANTIC_ID_KEYS).size(keys.size()),
+              Criteria.where(SUPPLEMENTAL_SEMANTIC_IDS_KEYS).size(keys.size()))));
+      allAggregation.add(AddFieldsOperation
+              .addField(CUSTOM_SEMANTIC_ID_KEYS).withValue("$" + SEMANTIC_ID_KEYS_VALUE)
+              .addField(CUSTOM_SUPPLEMENTAL_ID_KEYS).withValue("$" + SUPPLEMENTAL_SEMANTIC_IDS_KEYS_VALUE)
+              .build());
+      Criteria criteria = new Criteria().orOperator(Criteria.where(CUSTOM_SEMANTIC_ID_KEYS).is(keys),
+              Criteria.where(CUSTOM_SUPPLEMENTAL_ID_KEYS).elemMatch(Criteria.where("$eq").is(keys)));
+      allAggregation.add(Aggregation.match(criteria));
+    }
+  }
+
+  private void applySorting(List<AggregationOperation> allAggregations) {
+    SortOperation sortOp = Aggregation.sort(Direction.ASC, MONGO_ID);
+    allAggregations.add(sortOp);
+  }
+
+  private void applyPagination(PaginationInfo pRequest, List<AggregationOperation> allAggregations) {
+    if (!StringUtils.isBlank(pRequest.getCursor())) {
+      allAggregations.add(Aggregation.match(Criteria.where(MONGO_ID).gt(pRequest.getCursor())));
+    }
+    if (pRequest.getLimit() != null) {
+      allAggregations.add(Aggregation.limit(pRequest.getLimit()));
+    }
+  }
 }
