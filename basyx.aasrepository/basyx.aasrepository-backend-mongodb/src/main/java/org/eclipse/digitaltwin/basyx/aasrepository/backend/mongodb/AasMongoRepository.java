@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
-import org.eclipse.digitaltwin.basyx.aasrepository.backend.BaSyxCrudRepository;
+import org.eclipse.digitaltwin.basyx.core.BaSyxCrudRepository;
 import org.eclipse.digitaltwin.basyx.core.FilterParams;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.springframework.data.mongodb.core.MongoTemplate;

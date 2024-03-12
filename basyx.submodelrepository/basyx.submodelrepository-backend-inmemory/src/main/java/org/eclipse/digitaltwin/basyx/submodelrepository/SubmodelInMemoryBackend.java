@@ -26,6 +26,7 @@
 package org.eclipse.digitaltwin.basyx.submodelrepository;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -33,7 +34,9 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
-import org.springframework.data.repository.CrudRepository;
+import org.eclipse.digitaltwin.basyx.core.BaSyxCrudRepository;
+import org.eclipse.digitaltwin.basyx.core.FilterParams;
+import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 
 /**
  * InMemory implementation for the Submodel backend
@@ -41,14 +44,14 @@ import org.springframework.data.repository.CrudRepository;
  * @author mateusmolina, danish
  * 
  */
-public class SubmodelInMemoryBackend implements CrudRepository<Submodel, String> {
+public class SubmodelInMemoryBackend implements BaSyxCrudRepository<Submodel, String> {
 
 	private Map<String, Submodel> inMemoryStore = new LinkedHashMap<>();
-	
+
 	@Override
 	public <S extends Submodel> S save(S entity) {
 		inMemoryStore.put(entity.getId(), entity);
-		
+
 		return entity;
 	}
 
@@ -73,6 +76,11 @@ public class SubmodelInMemoryBackend implements CrudRepository<Submodel, String>
 	@Override
 	public Iterable<Submodel> findAll() {
 		return inMemoryStore.values();
+	}
+
+	@Override
+	public CursorResult<List<Submodel>> findAll(FilterParams filterParams) {
+		return null;
 	}
 
 	@Override
@@ -113,4 +121,3 @@ public class SubmodelInMemoryBackend implements CrudRepository<Submodel, String>
 	}
 
 }
-

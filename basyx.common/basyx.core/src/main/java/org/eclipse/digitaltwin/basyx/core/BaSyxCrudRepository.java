@@ -1,8 +1,7 @@
-package org.eclipse.digitaltwin.basyx.aasrepository.backend;
+package org.eclipse.digitaltwin.basyx.core;
 
 import java.util.List;
 
-import org.eclipse.digitaltwin.basyx.core.FilterParams;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.springframework.data.repository.CrudRepository;
 

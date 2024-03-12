@@ -25,6 +25,7 @@
 package org.eclipse.digitaltwin.basyx.aasrepository.backend;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
+import org.eclipse.digitaltwin.basyx.core.BaSyxCrudRepository;
 
 /**
  * Backend provider for the AAS
