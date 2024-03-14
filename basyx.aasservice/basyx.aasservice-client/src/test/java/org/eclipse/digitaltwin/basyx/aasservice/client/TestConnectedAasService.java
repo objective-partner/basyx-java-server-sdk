@@ -26,11 +26,11 @@
 package org.eclipse.digitaltwin.basyx.aasservice.client;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
+import org.eclipse.digitaltwin.basyx.aasrepository.AasFilterParams;
 import org.eclipse.digitaltwin.basyx.aasrepository.AasRepository;
 import org.eclipse.digitaltwin.basyx.aasrepository.http.DummyAasRepositoryComponent;
 import org.eclipse.digitaltwin.basyx.aasservice.AasService;
 import org.eclipse.digitaltwin.basyx.aasservice.AasServiceSuite;
-import org.eclipse.digitaltwin.basyx.core.FilterParams;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 import org.eclipse.digitaltwin.basyx.http.Base64UrlEncodedIdentifier;
 import org.junit.After;
@@ -54,7 +54,7 @@ public class TestConnectedAasService extends AasServiceSuite {
 	@After
 	public void removeAasFromRepo() {
 		AasRepository repo = appContext.getBean(AasRepository.class);
-		FilterParams filterParams = new FilterParams();
+		AasFilterParams filterParams = new AasFilterParams();
 		filterParams.setPaginationInfo(PaginationInfo.NO_LIMIT);
 		repo.getAllAas(filterParams).getResult().stream().map(s -> s.getId()).forEach(repo::deleteAas);
 	}

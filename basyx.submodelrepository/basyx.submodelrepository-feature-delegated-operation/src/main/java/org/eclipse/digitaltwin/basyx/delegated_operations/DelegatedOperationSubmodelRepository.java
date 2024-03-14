@@ -68,6 +68,7 @@ import org.eclipse.digitaltwin.basyx.delegated_operations.mapper.AttributeMapper
 import org.eclipse.digitaltwin.basyx.submodelregistry.client.ApiException;
 import org.eclipse.digitaltwin.basyx.submodelregistry.client.model.Endpoint;
 import org.eclipse.digitaltwin.basyx.submodelregistry.client.model.SubmodelDescriptor;
+import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelFilterParams;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepository;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelElementValue;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelValueOnly;
@@ -104,13 +105,13 @@ public class DelegatedOperationSubmodelRepository implements SubmodelRepository 
 	}
 
 	@Override
-	public CursorResult<List<Submodel>> getAllSubmodels(PaginationInfo paginationInfo, Reference semanticId, String idShort) {
-		return decorated.getAllSubmodels(paginationInfo, semanticId, idShort);
+	public CursorResult<List<Submodel>> getAllSubmodels(SubmodelFilterParams filterParams) {
+		return decorated.getAllSubmodels(filterParams);
 	}
 
 	@Override
-	public CursorResult<List<Submodel>> getAllSubmodelsMetadata(PaginationInfo pInfo, Reference semanticId, String idShort) {
-		return decorated.getAllSubmodelsMetadata(pInfo, semanticId, idShort);
+	public CursorResult<List<Submodel>> getAllSubmodelsMetadata(SubmodelFilterParams filterParams) {
+		return decorated.getAllSubmodelsMetadata(filterParams);
 	}
 
 	@Override

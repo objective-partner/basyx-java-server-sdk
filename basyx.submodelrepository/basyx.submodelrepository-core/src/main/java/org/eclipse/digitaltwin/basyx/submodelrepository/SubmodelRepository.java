@@ -29,7 +29,6 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.OperationVariable;
-import org.eclipse.digitaltwin.aas4j.v3.model.Reference;
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
 import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElement;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
@@ -55,14 +54,14 @@ public interface SubmodelRepository {
 	 * 
 	 * @return a list of all found Submodels
 	 */
-	public CursorResult<List<Submodel>> getAllSubmodels(PaginationInfo pInfo, Reference reference, String idShort);
+	public CursorResult<List<Submodel>> getAllSubmodels(SubmodelFilterParams submodelFilterParams);
 
 	/**
 	 * Retrieves the metadata attributes of all Submodels from the repository
 	 *
 	 * @return a list of all found Submodels
 	 */
-	public CursorResult<List<Submodel>> getAllSubmodelsMetadata(PaginationInfo pInfo, Reference reference, String idShort);
+	public CursorResult<List<Submodel>> getAllSubmodelsMetadata(SubmodelFilterParams submodelFilterParams);
 
 	/**
 	 * Retrieves the Submodel with the specific id

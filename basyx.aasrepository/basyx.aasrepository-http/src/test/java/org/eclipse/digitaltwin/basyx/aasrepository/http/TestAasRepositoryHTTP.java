@@ -26,8 +26,8 @@
 package org.eclipse.digitaltwin.basyx.aasrepository.http;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
+import org.eclipse.digitaltwin.basyx.aasrepository.AasFilterParams;
 import org.eclipse.digitaltwin.basyx.aasrepository.AasRepository;
-import org.eclipse.digitaltwin.basyx.core.FilterParams;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -53,7 +53,7 @@ public class TestAasRepositoryHTTP extends AasRepositoryHTTPSuite {
 	@Override
 	public void resetRepository() {
 		AasRepository repo = appContext.getBean(AasRepository.class);
-		FilterParams filterParams = new FilterParams();
+		AasFilterParams filterParams = new AasFilterParams();
 		filterParams.setPaginationInfo(NO_LIMIT_PAGINATION_INFO);
 		repo.getAllAas(filterParams).getResult().stream().map(a -> a.getId()).forEach(repo::deleteAas);
 	}

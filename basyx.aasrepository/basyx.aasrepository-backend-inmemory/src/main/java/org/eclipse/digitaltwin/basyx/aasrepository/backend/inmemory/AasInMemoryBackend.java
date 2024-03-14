@@ -35,8 +35,8 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
+import org.eclipse.digitaltwin.basyx.aasrepository.AasFilterParams;
 import org.eclipse.digitaltwin.basyx.core.BaSyxCrudRepository;
-import org.eclipse.digitaltwin.basyx.core.FilterParams;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationSupport;
 
@@ -46,7 +46,7 @@ import org.eclipse.digitaltwin.basyx.core.pagination.PaginationSupport;
  * @author mateusmolina
  * 
  */
-public class AasInMemoryBackend implements BaSyxCrudRepository<AssetAdministrationShell, String> {
+public class AasInMemoryBackend implements BaSyxCrudRepository<AssetAdministrationShell, String, AasFilterParams> {
 
 	private final Map<String, AssetAdministrationShell> inMemoryStore = new LinkedHashMap<>();
 
@@ -81,7 +81,7 @@ public class AasInMemoryBackend implements BaSyxCrudRepository<AssetAdministrati
 	}
 
 	@Override
-	public CursorResult<List<AssetAdministrationShell>> findAll(FilterParams filterParams) {
+	public CursorResult<List<AssetAdministrationShell>> findAll(AasFilterParams filterParams) {
 		Iterable<AssetAdministrationShell> iterable = findAll();
 		List<AssetAdministrationShell> allAas = StreamSupport.stream(iterable.spliterator(), false).toList();
 

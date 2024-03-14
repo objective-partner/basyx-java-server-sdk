@@ -36,8 +36,6 @@ import org.eclipse.digitaltwin.basyx.submodelrepository.feature.authorization.Su
  */
 public class SubmodelTargetPermissionVerifier implements TargetPermissionVerifier<SubmodelTargetInformation> {
 
-	private static final String ALL_ALLOWED_WILDCARD = "*";
-
 	@Override
 	public boolean isVerified(RbacRule rbacRule, SubmodelTargetInformation targetInformation) {
 

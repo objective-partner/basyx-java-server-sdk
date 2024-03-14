@@ -28,6 +28,7 @@ import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultAssetInformation;
 import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultConceptDescription;
 import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultSubmodel;
 import org.eclipse.digitaltwin.basyx.aasenvironment.base.DefaultAASEnvironment;
+import org.eclipse.digitaltwin.basyx.aasrepository.AasFilterParams;
 import org.eclipse.digitaltwin.basyx.aasrepository.AasRepository;
 import org.eclipse.digitaltwin.basyx.aasrepository.backend.SimpleAasRepositoryFactory;
 import org.eclipse.digitaltwin.basyx.aasrepository.backend.SimpleConceptDescriptionRepositoryFactory;
@@ -35,8 +36,8 @@ import org.eclipse.digitaltwin.basyx.aasrepository.backend.inmemory.AasInMemoryB
 import org.eclipse.digitaltwin.basyx.aasservice.backend.InMemoryAasServiceFactory;
 import org.eclipse.digitaltwin.basyx.conceptdescriptionrepository.ConceptDescriptionInMemoryBackendProvider;
 import org.eclipse.digitaltwin.basyx.conceptdescriptionrepository.ConceptDescriptionRepository;
-import org.eclipse.digitaltwin.basyx.core.FilterParams;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
+import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelFilterParams;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelInMemoryBackendProvider;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepository;
 import org.eclipse.digitaltwin.basyx.submodelrepository.backend.SimpleSubmodelRepositoryFactory;
@@ -227,10 +228,13 @@ public class TestAASEnvironmentSerialization {
 	}
 
 	private void validateRepositoriesState() {
-		FilterParams filterParams = new FilterParams();
-		filterParams.setPaginationInfo(NO_LIMIT_PAGINATION_INFO);
-		assertTrue(aasRepository.getAllAas(filterParams).getResult().containsAll(createDummyShells()));
-		assertTrue(submodelRepository.getAllSubmodels(NO_LIMIT_PAGINATION_INFO).getResult().containsAll(createDummySubmodels()));
+		AasFilterParams aasFilterParams = new AasFilterParams();
+		aasFilterParams.setPaginationInfo(NO_LIMIT_PAGINATION_INFO);
+		assertTrue(aasRepository.getAllAas(aasFilterParams).getResult().containsAll(createDummyShells()));
+
+		SubmodelFilterParams submodelFilterParams = new SubmodelFilterParams();
+		submodelFilterParams.setPaginationInfo(NO_LIMIT_PAGINATION_INFO);
+		assertTrue(submodelRepository.getAllSubmodels(submodelFilterParams).getResult().containsAll(createDummySubmodels()));
 		assertTrue(conceptDescriptionRepository.getAllConceptDescriptions(NO_LIMIT_PAGINATION_INFO).getResult().containsAll(createDummyConceptDescriptions()));
 	}
 

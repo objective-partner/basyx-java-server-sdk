@@ -51,7 +51,6 @@ import org.eclipse.digitaltwin.aas4j.v3.model.ReferenceTypes;
 import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultAssetAdministrationShell;
 import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultKey;
 import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultReference;
-import org.eclipse.digitaltwin.basyx.core.FilterParams;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.FileDoesNotExistException;
@@ -95,7 +94,7 @@ public abstract class AasRepositorySuite {
 		List<AssetAdministrationShell> expected = DummyAasFactory.createShells();
 		AasRepository aasRepo = getAasRepository(expected);
 		PaginationInfo pInfo = new PaginationInfo(2, null);
-		FilterParams filterParams = new FilterParams();
+		AasFilterParams filterParams = new AasFilterParams();
 		filterParams.setPaginationInfo(pInfo);
 		Collection<AssetAdministrationShell> coll = aasRepo.getAllAas(filterParams).getResult();
 		assertEquals(expected, coll);
@@ -284,7 +283,7 @@ public abstract class AasRepositorySuite {
 		AasRepository aasRepo = getAasRepository(expected);
 
 		PaginationInfo paginationInfo = new PaginationInfo(1, null);
-		FilterParams filterParams = new FilterParams();
+		AasFilterParams filterParams = new AasFilterParams();
 		filterParams.setPaginationInfo(paginationInfo);
 		CursorResult<List<AssetAdministrationShell>> result = aasRepo.getAllAas(filterParams);
 		List<AssetAdministrationShell> resultList = result.getResult();
@@ -299,7 +298,7 @@ public abstract class AasRepositorySuite {
 		List<AssetAdministrationShell> retrieved = new ArrayList<>();
 
 		PaginationInfo paginationInfo = new PaginationInfo(1, null);
-		FilterParams filterParams = new FilterParams();
+		AasFilterParams filterParams = new AasFilterParams();
 		filterParams.setPaginationInfo(paginationInfo);
 		CursorResult<List<AssetAdministrationShell>> result = aasRepo.getAllAas(filterParams);
 		retrieved.addAll(result.getResult());

@@ -26,6 +26,7 @@
 package org.eclipse.digitaltwin.basyx.aasrepository.backend.mongodb;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
+import org.eclipse.digitaltwin.basyx.aasrepository.AasFilterParams;
 import org.eclipse.digitaltwin.basyx.aasrepository.backend.AasBackendProvider;
 import org.eclipse.digitaltwin.basyx.common.mongocore.BasyxMongoMappingContext;
 import org.eclipse.digitaltwin.basyx.core.BaSyxCrudRepository;
@@ -60,7 +61,7 @@ public class AasMongoDBBackendProvider implements AasBackendProvider {
 	}
 
 	@Override
-	public BaSyxCrudRepository<AssetAdministrationShell, String> getCrudRepository() {
+	public BaSyxCrudRepository<AssetAdministrationShell, String, AasFilterParams> getCrudRepository() {
 		@SuppressWarnings("unchecked")
 		MongoPersistentEntity<AssetAdministrationShell> entity = (MongoPersistentEntity<AssetAdministrationShell>) mappingContext.getPersistentEntity(AssetAdministrationShell.class);
 

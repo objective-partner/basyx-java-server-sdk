@@ -35,11 +35,11 @@ import java.util.stream.Stream;
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetInformation;
 import org.eclipse.digitaltwin.aas4j.v3.model.Reference;
+import org.eclipse.digitaltwin.basyx.aasrepository.AasFilterParams;
 import org.eclipse.digitaltwin.basyx.aasrepository.AasRepository;
 import org.eclipse.digitaltwin.basyx.authorization.rbac.Action;
 import org.eclipse.digitaltwin.basyx.authorization.rbac.RbacPermissionResolver;
 import org.eclipse.digitaltwin.basyx.authorization.rbac.RbacRule;
-import org.eclipse.digitaltwin.basyx.core.FilterParams;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
@@ -63,14 +63,13 @@ public class AuthorizedAasRepository implements AasRepository {
 	}
 
 	@Override
-	public CursorResult<List<AssetAdministrationShell>> getAllAas(FilterParams filterParams) {
+	public CursorResult<List<AssetAdministrationShell>> getAllAas(AasFilterParams filterParams) {
 		Stream<RbacRule> matchingRules = permissionResolver.getMatchingRules(Action.READ, AasTargetInformation.class);
 
 		Set<AasTargetInformation> ruleTargetInfos = matchingRules.map(rbacRule -> (AasTargetInformation) rbacRule.getTargetInformation()).collect(Collectors.toUnmodifiableSet());
 
-		if (CollectionUtils.isEmpty(ruleTargetInfos)) {
-			throwExceptionIfInsufficientPermission(false);
-		}
+		boolean isAuthorized = !CollectionUtils.isEmpty(ruleTargetInfos);
+		throwExceptionIfInsufficientPermission(isAuthorized);
 
 		Set<String> collectedAasIds = ruleTargetInfos.parallelStream().map(AasTargetInformation::getAasId).collect(Collectors.toUnmodifiableSet());
 		filterParams.setIds(collectedAasIds);

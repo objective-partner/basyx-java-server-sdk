@@ -31,6 +31,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.core.DeserializationException;
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.core.SerializationException;
 import org.eclipse.digitaltwin.basyx.aasenvironment.preconfiguration.AasEnvironmentPreconfigurationLoader;
+import org.eclipse.digitaltwin.basyx.aasrepository.AasFilterParams;
 import org.eclipse.digitaltwin.basyx.aasrepository.AasRepository;
 import org.eclipse.digitaltwin.basyx.aasrepository.backend.SimpleAasRepositoryFactory;
 import org.eclipse.digitaltwin.basyx.aasrepository.backend.SimpleConceptDescriptionRepositoryFactory;
@@ -38,10 +39,10 @@ import org.eclipse.digitaltwin.basyx.aasrepository.backend.inmemory.AasInMemoryB
 import org.eclipse.digitaltwin.basyx.aasservice.backend.InMemoryAasServiceFactory;
 import org.eclipse.digitaltwin.basyx.conceptdescriptionrepository.ConceptDescriptionInMemoryBackendProvider;
 import org.eclipse.digitaltwin.basyx.conceptdescriptionrepository.ConceptDescriptionRepository;
-import org.eclipse.digitaltwin.basyx.core.FilterParams;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
+import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelFilterParams;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelInMemoryBackendProvider;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepository;
 import org.eclipse.digitaltwin.basyx.submodelrepository.backend.SimpleSubmodelRepositoryFactory;
@@ -80,10 +81,13 @@ public class PreconfigurationLoaderTextualResourceTest {
 	public void testWithEmptyResource_NoElementsAreDeployed() throws InvalidFormatException, IOException, DeserializationException {
 		AasEnvironmentPreconfigurationLoader envLoader = new AasEnvironmentPreconfigurationLoader(rLoader, List.of());
 		envLoader.loadPreconfiguredEnvironments(aasRepository, submodelRepository, conceptDescriptionRepository);
-		FilterParams filterParams = new FilterParams();
+		AasFilterParams filterParams = new AasFilterParams();
 		filterParams.setPaginationInfo(ALL);
 		Assert.assertTrue(aasRepository.getAllAas(filterParams).getResult().isEmpty());
-		Assert.assertTrue(submodelRepository.getAllSubmodels(ALL).getResult().isEmpty());
+
+		SubmodelFilterParams submodelFilterParams = new SubmodelFilterParams();
+		submodelFilterParams.setPaginationInfo(ALL);
+		Assert.assertTrue(submodelRepository.getAllSubmodels(submodelFilterParams).getResult().isEmpty());
 		Assert.assertTrue(conceptDescriptionRepository.getAllConceptDescriptions(ALL).getResult().isEmpty());
 
 		Mockito.verify(aasRepository, Mockito.never()).createAas(Mockito.any());
@@ -97,10 +101,14 @@ public class PreconfigurationLoaderTextualResourceTest {
 	public void testWithResourceFile_AllElementsAreDeployed() throws InvalidFormatException, IOException, DeserializationException, SerializationException {
 		AasEnvironmentPreconfigurationLoader envLoader = new AasEnvironmentPreconfigurationLoader(rLoader, List.of(TEST_ENVIRONMENT_JSON));
 		envLoader.loadPreconfiguredEnvironments(aasRepository, submodelRepository, conceptDescriptionRepository);
-		FilterParams filterParams = new FilterParams();
+		AasFilterParams filterParams = new AasFilterParams();
 		filterParams.setPaginationInfo(ALL);
 		Assert.assertEquals(2, aasRepository.getAllAas(filterParams).getResult().size());
-		Assert.assertEquals(2, submodelRepository.getAllSubmodels(ALL).getResult().size());
+
+		SubmodelFilterParams submodelFilterParams = new SubmodelFilterParams();
+		submodelFilterParams.setPaginationInfo(ALL);
+		Assert.assertEquals(2, submodelRepository.getAllSubmodels(submodelFilterParams).getResult().size());
+
 		Assert.assertEquals(2, conceptDescriptionRepository.getAllConceptDescriptions(ALL).getResult().size());
 	}
 
@@ -117,10 +125,13 @@ public class PreconfigurationLoaderTextualResourceTest {
 		Mockito.verify(submodelRepository, Mockito.times(2)).createSubmodel(Mockito.any());
 		Mockito.verify(submodelRepository, Mockito.times(0)).updateSubmodel(Mockito.anyString(), Mockito.any());
 
-		FilterParams filterParams = new FilterParams();
+		AasFilterParams filterParams = new AasFilterParams();
 		filterParams.setPaginationInfo(ALL);
 		Assert.assertEquals(2, aasRepository.getAllAas(filterParams).getResult().size());
-		Assert.assertEquals(2, submodelRepository.getAllSubmodels(ALL).getResult().size());
+
+		SubmodelFilterParams submodelFilterParams = new SubmodelFilterParams();
+		submodelFilterParams.setPaginationInfo(ALL);
+		Assert.assertEquals(2, submodelRepository.getAllSubmodels(submodelFilterParams).getResult().size());
 		Assert.assertEquals(2, conceptDescriptionRepository.getAllConceptDescriptions(ALL).getResult().size());
 	}
 
@@ -137,10 +148,13 @@ public class PreconfigurationLoaderTextualResourceTest {
 		Mockito.verify(submodelRepository, Mockito.times(2)).createSubmodel(Mockito.any());
 		Mockito.verify(submodelRepository, Mockito.times(0)).updateSubmodel(Mockito.anyString(), Mockito.any());
 
-		FilterParams filterParams = new FilterParams();
+		AasFilterParams filterParams = new AasFilterParams();
 		filterParams.setPaginationInfo(ALL);
 		Assert.assertEquals(2, aasRepository.getAllAas(filterParams).getResult().size());
-		Assert.assertEquals(2, submodelRepository.getAllSubmodels(ALL).getResult().size());
+
+		SubmodelFilterParams submodelFilterParams = new SubmodelFilterParams();
+		submodelFilterParams.setPaginationInfo(ALL);
+		Assert.assertEquals(2, submodelRepository.getAllSubmodels(submodelFilterParams).getResult().size());
 		Assert.assertEquals(2, conceptDescriptionRepository.getAllConceptDescriptions(ALL).getResult().size());
 	}
 
@@ -157,10 +171,13 @@ public class PreconfigurationLoaderTextualResourceTest {
 		Mockito.verify(submodelRepository, Mockito.times(2)).createSubmodel(Mockito.any());
 		Mockito.verify(submodelRepository, Mockito.times(1)).updateSubmodel(Mockito.anyString(), Mockito.any());
 
-		FilterParams filterParams = new FilterParams();
+		AasFilterParams filterParams = new AasFilterParams();
 		filterParams.setPaginationInfo(ALL);
 		Assert.assertEquals(2, aasRepository.getAllAas(filterParams).getResult().size());
-		Assert.assertEquals(2, submodelRepository.getAllSubmodels(ALL).getResult().size());
+
+		SubmodelFilterParams submodelFilterParams = new SubmodelFilterParams();
+		submodelFilterParams.setPaginationInfo(ALL);
+		Assert.assertEquals(2, submodelRepository.getAllSubmodels(submodelFilterParams).getResult().size());
 		Assert.assertEquals(2, conceptDescriptionRepository.getAllConceptDescriptions(ALL).getResult().size());
 	}
 

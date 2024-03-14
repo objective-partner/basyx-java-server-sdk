@@ -31,7 +31,6 @@ import java.util.List;
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetInformation;
 import org.eclipse.digitaltwin.aas4j.v3.model.Reference;
-import org.eclipse.digitaltwin.basyx.core.FilterParams;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.MissingIdentifierException;
@@ -51,7 +50,7 @@ public interface AasRepository {
 	 * 
 	 * @return a list of all found Asset Administration Shells
 	 */
-	CursorResult<List<AssetAdministrationShell>> getAllAas(FilterParams filterParams);
+	CursorResult<List<AssetAdministrationShell>> getAllAas(AasFilterParams filterParams);
 
 	/**
 	 * Retrieves a specific AAS

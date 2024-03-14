@@ -26,6 +26,7 @@
 package org.eclipse.digitaltwin.basyx.submodelrepository.http;
 
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
+import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelFilterParams;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepository;
 import org.eclipse.digitaltwin.basyx.submodelservice.http.SubmodelServiceSubmodelElementsTestSuiteHTTP;
 import org.junit.After;
@@ -60,7 +61,9 @@ public class TestSubmodelRepositorySubmodelElementsHTTP extends SubmodelServiceS
 	@After
 	public void removeSubmodelFromRepo() {
 		SubmodelRepository repo = appContext.getBean(SubmodelRepository.class);
-		repo.getAllSubmodels(NO_LIMIT_PAGINATION_INFO, null, "").getResult().stream().map(s -> s.getId()).forEach(repo::deleteSubmodel);
+		SubmodelFilterParams submodelFilterParams = new SubmodelFilterParams();
+		submodelFilterParams.setPaginationInfo(NO_LIMIT_PAGINATION_INFO);
+		repo.getAllSubmodels(submodelFilterParams).getResult().stream().map(s -> s.getId()).forEach(repo::deleteSubmodel);
 	}
 
 	@AfterClass

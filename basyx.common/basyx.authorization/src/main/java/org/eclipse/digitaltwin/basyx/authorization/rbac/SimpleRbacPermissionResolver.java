@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SimpleRbacPermissionResolver<T extends TargetInformation> implements RbacPermissionResolver<T> {
 
-	private static final String ALL_ALLOWED_WILDCARD = "*";
+	private static final String ALL_ALLOWED_WILDCARD = ".*";
 
 	private final Logger logger = LoggerFactory.getLogger(SimpleRbacPermissionResolver.class);
 
@@ -78,7 +78,7 @@ public class SimpleRbacPermissionResolver<T extends TargetInformation> implement
 	}
 
 	public Stream<RbacRule> getMatchingRules(final Action action, final Class<? extends TargetInformation> targetInformation) {
-		return this.rbacStorage.getRbacRules().parallelStream().filter(rbacRule -> checkRolesMatchRbacRule(rbacRule, roleAuthenticator.getRoles())).filter(rbacRule -> checkActionMatchesRbacRule(rbacRule, action))
+		return getRbacStorage().getRbacRules().stream().filter(rbacRule -> checkRolesMatchRbacRule(rbacRule, roleAuthenticator.getRoles())).filter(rbacRule -> checkActionMatchesRbacRule(rbacRule, action))
 				.filter(rbacRule -> checkRbacRuleMatchesTargetInfoType(rbacRule, targetInformation));
 	}
 

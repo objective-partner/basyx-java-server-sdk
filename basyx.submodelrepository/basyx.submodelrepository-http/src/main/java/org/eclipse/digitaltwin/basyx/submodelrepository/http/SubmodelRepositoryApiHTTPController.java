@@ -53,6 +53,7 @@ import org.eclipse.digitaltwin.basyx.http.pagination.Base64UrlEncodedCursor;
 import org.eclipse.digitaltwin.basyx.http.pagination.PagedResult;
 import org.eclipse.digitaltwin.basyx.http.pagination.PagedResultPagingMetadata;
 import org.eclipse.digitaltwin.basyx.pagination.GetSubmodelElementsResult;
+import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelFilterParams;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepository;
 import org.eclipse.digitaltwin.basyx.submodelrepository.http.pagination.GetSubmodelsResult;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelElementValue;
@@ -123,7 +124,9 @@ public class SubmodelRepositoryApiHTTPController implements SubmodelRepositoryHT
 
 		PaginationInfo pInfo = new PaginationInfo(limit, decodedCursor);
 
-		CursorResult<List<Submodel>> cursorResult = repository.getAllSubmodels(pInfo, getReferenceFromBase64UrlEncodedIdentifier(semanticId), idShort);
+		SubmodelFilterParams filterParams = new SubmodelFilterParams(idShort, pInfo, null, getReferenceFromBase64UrlEncodedIdentifier(semanticId));
+
+		CursorResult<List<Submodel>> cursorResult = repository.getAllSubmodels(filterParams);
 
 		GetSubmodelsResult paginatedSubmodel = new GetSubmodelsResult();
 
@@ -148,7 +151,9 @@ public class SubmodelRepositoryApiHTTPController implements SubmodelRepositoryHT
 
 		PaginationInfo pInfo = new PaginationInfo(limit, decodedCursor);
 
-		CursorResult<List<Submodel>> cursorResult = repository.getAllSubmodelsMetadata(pInfo, getReferenceFromBase64UrlEncodedIdentifier(semanticId), idShort);
+		SubmodelFilterParams filterParams = new SubmodelFilterParams(idShort, pInfo, null, getReferenceFromBase64UrlEncodedIdentifier(semanticId));
+
+		CursorResult<List<Submodel>> cursorResult = repository.getAllSubmodelsMetadata(filterParams);
 
 		GetSubmodelsResult paginatedSubmodel = new GetSubmodelsResult();
 
@@ -306,9 +311,7 @@ public class SubmodelRepositoryApiHTTPController implements SubmodelRepositoryHT
 	}
 
 	private OperationResult createOperationResult(OperationVariable[] result) {
-		return new DefaultOperationResult.Builder()
-				.outputArguments(Arrays.asList(result))
-				.build();
+		return new DefaultOperationResult.Builder().outputArguments(Arrays.asList(result)).build();
 	}
 
 	private String getEncodedCursorFromCursorResult(CursorResult<?> cursorResult) {

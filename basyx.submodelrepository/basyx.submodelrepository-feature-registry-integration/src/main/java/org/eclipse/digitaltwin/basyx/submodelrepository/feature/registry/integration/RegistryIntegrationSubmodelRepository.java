@@ -29,7 +29,6 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.OperationVariable;
-import org.eclipse.digitaltwin.aas4j.v3.model.Reference;
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
 import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElement;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
@@ -42,6 +41,7 @@ import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 import org.eclipse.digitaltwin.basyx.submodelregistry.client.ApiException;
 import org.eclipse.digitaltwin.basyx.submodelregistry.client.api.SubmodelRegistryApi;
 import org.eclipse.digitaltwin.basyx.submodelregistry.client.model.SubmodelDescriptor;
+import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelFilterParams;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepository;
 import org.eclipse.digitaltwin.basyx.submodelrepository.feature.registry.integration.mapper.AttributeMapper;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelElementValue;
@@ -69,13 +69,13 @@ public class RegistryIntegrationSubmodelRepository implements SubmodelRepository
 	}
 
 	@Override
-	public CursorResult<List<Submodel>> getAllSubmodels(PaginationInfo paginationInfo, Reference semanticId, String idShort) {
-		return decorated.getAllSubmodels(paginationInfo, semanticId, idShort);
+	public CursorResult<List<Submodel>> getAllSubmodels(SubmodelFilterParams filterParams) {
+		return decorated.getAllSubmodels(filterParams);
 	}
 
 	@Override
-	public CursorResult<List<Submodel>> getAllSubmodelsMetadata(PaginationInfo pInfo, Reference semanticId, String idShort) {
-		return decorated.getAllSubmodelsMetadata(pInfo, semanticId, idShort);
+	public CursorResult<List<Submodel>> getAllSubmodelsMetadata(SubmodelFilterParams filterParams) {
+		return decorated.getAllSubmodelsMetadata(filterParams);
 	}
 
 	@Override

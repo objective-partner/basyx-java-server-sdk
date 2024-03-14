@@ -1,4 +1,4 @@
-package org.eclipse.digitaltwin.basyx.aasrepository.http;
+package org.eclipse.digitaltwin.basyx.aasrepository;
 
 import jakarta.annotation.Nullable;
 
@@ -6,9 +6,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.SpecificAssetId;
+import org.eclipse.digitaltwin.basyx.core.FilterParams;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 
-public class AasFilterParams extends org.eclipse.digitaltwin.basyx.core.FilterParams {
+public class AasFilterParams extends FilterParams {
 
 	public AasFilterParams() {
 	}
@@ -19,7 +20,7 @@ public class AasFilterParams extends org.eclipse.digitaltwin.basyx.core.FilterPa
 	}
 
 	@Nullable
-	List<SpecificAssetId> assetIds;
+	private List<SpecificAssetId> assetIds;
 
 	@Nullable
 	public List<SpecificAssetId> getAssetIds() {

@@ -33,11 +33,11 @@ import org.eclipse.digitaltwin.aas4j.v3.model.AssetInformation;
 import org.eclipse.digitaltwin.aas4j.v3.model.KeyTypes;
 import org.eclipse.digitaltwin.aas4j.v3.model.Reference;
 import org.eclipse.digitaltwin.aas4j.v3.model.Resource;
+import org.eclipse.digitaltwin.basyx.aasrepository.AasFilterParams;
 import org.eclipse.digitaltwin.basyx.aasrepository.AasRepository;
 import org.eclipse.digitaltwin.basyx.aasservice.AasService;
 import org.eclipse.digitaltwin.basyx.aasservice.AasServiceFactory;
 import org.eclipse.digitaltwin.basyx.core.BaSyxCrudRepository;
-import org.eclipse.digitaltwin.basyx.core.FilterParams;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
@@ -54,7 +54,7 @@ import org.springframework.data.repository.CrudRepository;
  */
 public class CrudAasRepository implements AasRepository {
 
-	private final BaSyxCrudRepository<AssetAdministrationShell, String> aasBackend;
+	private final BaSyxCrudRepository<AssetAdministrationShell, String, AasFilterParams> aasBackend;
 
 	private final AasServiceFactory aasServiceFactory;
 
@@ -76,7 +76,7 @@ public class CrudAasRepository implements AasRepository {
 	}
 
 	@Override
-	public CursorResult<List<AssetAdministrationShell>> getAllAas(FilterParams filterParams) {
+	public CursorResult<List<AssetAdministrationShell>> getAllAas(AasFilterParams filterParams) {
 		return aasBackend.findAll(filterParams);
 	}
 

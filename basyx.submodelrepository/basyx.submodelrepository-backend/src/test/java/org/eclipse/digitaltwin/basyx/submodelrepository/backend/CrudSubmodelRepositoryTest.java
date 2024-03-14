@@ -28,10 +28,11 @@ package org.eclipse.digitaltwin.basyx.submodelrepository.backend;
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
+import org.eclipse.digitaltwin.basyx.core.BaSyxCrudRepository;
 import org.eclipse.digitaltwin.basyx.core.file.FileRepository;
+import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelFilterParams;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepository;
 import org.junit.Test;
-import org.springframework.data.repository.CrudRepository;
 
 /**
  * Tests {@link CrudSubmodelRepository}
@@ -50,10 +51,10 @@ public class CrudSubmodelRepositoryTest {
 	}
 
 	private SubmodelBackendProvider createSubmodelProvider() {
-		
+
 		return new SubmodelBackendProvider() {
 			@Override
-			public CrudRepository<Submodel, String> getCrudRepository() {
+			public BaSyxCrudRepository<Submodel, String, SubmodelFilterParams> getCrudRepository() {
 				return null;
 			}
 

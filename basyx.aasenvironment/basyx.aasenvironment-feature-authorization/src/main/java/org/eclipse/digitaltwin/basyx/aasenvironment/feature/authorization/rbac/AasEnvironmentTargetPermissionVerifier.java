@@ -33,51 +33,51 @@ import org.eclipse.digitaltwin.basyx.authorization.rbac.RbacRule;
 import org.eclipse.digitaltwin.basyx.authorization.rbac.TargetPermissionVerifier;
 
 /**
- * Verifies the {@link AasEnvironmentTargetInformation} against the {@link RbacRule}
+ * Verifies the {@link AasEnvironmentTargetInformation} against the
+ * {@link RbacRule}
  * 
  * @author danish
  */
 public class AasEnvironmentTargetPermissionVerifier implements TargetPermissionVerifier<AasEnvironmentTargetInformation> {
 
-	private static final String ALL_ALLOWED_WILDCARD = "*";
-	
 	@Override
 	public boolean isVerified(RbacRule rbacRule, AasEnvironmentTargetInformation targetInformation) {
 		List<String> targetInformationShellIds = targetInformation.getAasIds();
 		List<String> targetInformationSubmdelIds = targetInformation.getSubmodelIds();
 		SerializationType targetInformationSerializationType = targetInformation.getSerializationType();
-		
+
 		AasEnvironmentTargetInformation rbacRuleAasEnvironmentTargetInformation = (AasEnvironmentTargetInformation) rbacRule.getTargetInformation();
-		
+
 		List<String> rbacRuleShellIds = rbacRuleAasEnvironmentTargetInformation.getAasIds();
 		List<String> rbacRuleSubmdelIds = rbacRuleAasEnvironmentTargetInformation.getSubmodelIds();
 		SerializationType rbacRuleSerializationType = rbacRuleAasEnvironmentTargetInformation.getSerializationType();
-		
-		return areShellsAllowed(rbacRuleShellIds, targetInformationShellIds) && areSubmodelsAllowed(rbacRuleSubmdelIds, targetInformationSubmdelIds) && isSerializationTypeAllowed(rbacRuleSerializationType, targetInformationSerializationType);
+
+		return areShellsAllowed(rbacRuleShellIds, targetInformationShellIds) && areSubmodelsAllowed(rbacRuleSubmdelIds, targetInformationSubmdelIds)
+				&& isSerializationTypeAllowed(rbacRuleSerializationType, targetInformationSerializationType);
 	}
-	
+
 	private boolean isSerializationTypeAllowed(SerializationType rbacRuleSerializationType, SerializationType targetInformationSerializationType) {
-		
+
 		return rbacRuleSerializationType.equals(SerializationType.ALL) || rbacRuleSerializationType.equals(targetInformationSerializationType);
 	}
 
 	private boolean areShellsAllowed(List<String> rbacRuleShellIds, List<String> targetInformationShellIds) {
-		
-		return allShellsAllowed(rbacRuleShellIds) || rbacRuleShellIds.containsAll(targetInformationShellIds);	
+
+		return allShellsAllowed(rbacRuleShellIds) || rbacRuleShellIds.containsAll(targetInformationShellIds);
 	}
-	
+
 	private boolean areSubmodelsAllowed(List<String> rbacRuleSubmdelIds, List<String> targetInformationSubmdelIds) {
-		
-		return allSubmodelsAllowed(rbacRuleSubmdelIds) || rbacRuleSubmdelIds.containsAll(targetInformationSubmdelIds);	
+
+		return allSubmodelsAllowed(rbacRuleSubmdelIds) || rbacRuleSubmdelIds.containsAll(targetInformationSubmdelIds);
 	}
 
 	private boolean allSubmodelsAllowed(List<String> rbacRuleSubmdelIds) {
-		
+
 		return rbacRuleSubmdelIds.size() == 1 && rbacRuleSubmdelIds.get(0).equals(ALL_ALLOWED_WILDCARD);
 	}
 
 	private boolean allShellsAllowed(List<String> rbacRuleShellIds) {
-		
+
 		return rbacRuleShellIds.size() == 1 && rbacRuleShellIds.get(0).equals(ALL_ALLOWED_WILDCARD);
 	}
 

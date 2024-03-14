@@ -34,6 +34,7 @@ import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistExceptio
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementNotAFileException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
+import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelFilterParams;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepository;
 import org.eclipse.digitaltwin.basyx.submodelrepository.core.SubmodelRepositorySuite;
 import org.eclipse.digitaltwin.basyx.submodelrepository.http.DummySubmodelRepositoryComponent;
@@ -64,7 +65,9 @@ public class TestConnectedSubmodelRepository extends SubmodelRepositorySuite {
 	@After
 	public void removeSubmodelFromRepo() {
 		SubmodelRepository repo = appContext.getBean(SubmodelRepository.class);
-		repo.getAllSubmodels(NO_LIMIT_PAGINATION_INFO).getResult().stream().map(s -> s.getId()).forEach(repo::deleteSubmodel);
+		SubmodelFilterParams filterParams = new SubmodelFilterParams();
+		filterParams.setPaginationInfo(NO_LIMIT_PAGINATION_INFO);
+		repo.getAllSubmodels(filterParams).getResult().stream().map(s -> s.getId()).forEach(repo::deleteSubmodel);
 	}
 
 	@AfterClass

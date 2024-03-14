@@ -28,6 +28,7 @@ package org.eclipse.digitaltwin.basyx.submodelrepository.backend;
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
 import org.eclipse.digitaltwin.basyx.core.BaSyxCrudRepository;
 import org.eclipse.digitaltwin.basyx.core.file.FileRepository;
+import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelFilterParams;
 
 /**
  * Backend provider for the {@link Submodel}
@@ -36,7 +37,7 @@ import org.eclipse.digitaltwin.basyx.core.file.FileRepository;
  */
 public interface SubmodelBackendProvider {
 
-	public BaSyxCrudRepository<Submodel, String> getCrudRepository();
+	public BaSyxCrudRepository<Submodel, String, SubmodelFilterParams> getCrudRepository();
 
 	public FileRepository getFileRepository();
 

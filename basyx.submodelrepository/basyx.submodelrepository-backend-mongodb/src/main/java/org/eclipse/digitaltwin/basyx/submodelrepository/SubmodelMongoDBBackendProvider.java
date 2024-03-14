@@ -27,6 +27,7 @@ package org.eclipse.digitaltwin.basyx.submodelrepository;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
 import org.eclipse.digitaltwin.basyx.common.mongocore.BasyxMongoMappingContext;
+import org.eclipse.digitaltwin.basyx.core.BaSyxCrudRepository;
 import org.eclipse.digitaltwin.basyx.core.file.FileRepository;
 import org.eclipse.digitaltwin.basyx.submodelrepository.backend.SubmodelBackendProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +36,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.mapping.MongoPersistentEntity;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
-import org.springframework.data.mongodb.repository.support.MappingMongoEntityInformation;
-import org.springframework.data.mongodb.repository.support.SimpleMongoRepository;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Component;
 
 /**
@@ -49,33 +47,33 @@ import org.springframework.stereotype.Component;
 @ConditionalOnExpression("'${basyx.backend}'.equals('MongoDB')")
 @Component
 public class SubmodelMongoDBBackendProvider implements SubmodelBackendProvider {
-	
+
 	private BasyxMongoMappingContext mappingContext;
-	
+
 	private MongoTemplate template;
-	
+
 	@Autowired
 	public SubmodelMongoDBBackendProvider(BasyxMongoMappingContext mappingContext, @Value("${basyx.submodelrepository.mongodb.collectionName:submodel-repo}") String collectionName, MongoTemplate template) {
 		super();
 		this.mappingContext = mappingContext;
 		this.template = template;
-		
+
 		mappingContext.addEntityMapping(Submodel.class, collectionName);
 	}
 
 	@Override
-	public CrudRepository<Submodel, String> getCrudRepository() {
+	public BaSyxCrudRepository<Submodel, String, SubmodelFilterParams> getCrudRepository() {
 		@SuppressWarnings("unchecked")
 		MongoPersistentEntity<Submodel> entity = (MongoPersistentEntity<Submodel>) mappingContext.getPersistentEntity(Submodel.class);
-		
-		return new SimpleMongoRepository<>(new MappingMongoEntityInformation<>(entity), template);
+
+		return new SubmodelMongoRepository(entity, template);
 	}
 
 	@Override
 	public FileRepository getFileRepository() {
 		return new MongoDBSubmodelFileRepository(configureDefaultGridFsTemplate(template));
 	}
-	
+
 	private GridFsTemplate configureDefaultGridFsTemplate(MongoTemplate mongoTemplate) {
 		return new GridFsTemplate(mongoTemplate.getMongoDatabaseFactory(), mongoTemplate.getConverter());
 	}

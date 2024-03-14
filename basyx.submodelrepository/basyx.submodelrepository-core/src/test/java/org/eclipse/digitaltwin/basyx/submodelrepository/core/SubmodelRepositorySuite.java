@@ -58,6 +58,7 @@ import org.eclipse.digitaltwin.basyx.core.exceptions.MissingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.NotInvokableException;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
+import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelFilterParams;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepository;
 import org.eclipse.digitaltwin.basyx.submodelservice.DummySubmodelFactory;
 import org.eclipse.digitaltwin.basyx.submodelservice.SubmodelServiceHelper;
@@ -92,7 +93,9 @@ public abstract class SubmodelRepositorySuite {
 		Collection<Submodel> expectedSubmodels = DummySubmodelFactory.getSubmodels();
 
 		SubmodelRepository repo = getSubmodelRepository(expectedSubmodels);
-		Collection<Submodel> submodels = repo.getAllSubmodels(NO_LIMIT_PAGINATION_INFO, null, "").getResult();
+		SubmodelFilterParams submodelFilterParams = new SubmodelFilterParams();
+		submodelFilterParams.setPaginationInfo(NO_LIMIT_PAGINATION_INFO);
+		Collection<Submodel> submodels = repo.getAllSubmodels(submodelFilterParams).getResult();
 
 		assertSubmodelsAreContained(expectedSubmodels, submodels);
 	}
@@ -105,7 +108,9 @@ public abstract class SubmodelRepositorySuite {
 	@Test
 	public void getAllSubmodelsEmpty() {
 		SubmodelRepository repo = getSubmodelRepository();
-		Collection<Submodel> submodels = repo.getAllSubmodels(NO_LIMIT_PAGINATION_INFO, null, "").getResult();
+		SubmodelFilterParams submodelFilterParams = new SubmodelFilterParams();
+		submodelFilterParams.setPaginationInfo(NO_LIMIT_PAGINATION_INFO);
+		Collection<Submodel> submodels = repo.getAllSubmodels(submodelFilterParams).getResult();
 
 		assertIsEmpty(submodels);
 	}
@@ -594,7 +599,9 @@ public abstract class SubmodelRepositorySuite {
 		Collection<Submodel> expectedSubmodels = DummySubmodelFactory.getSubmodels();
 
 		SubmodelRepository repo = getSubmodelRepository(expectedSubmodels);
-		CursorResult<List<Submodel>> cursorResult = repo.getAllSubmodels(new PaginationInfo(1, ""), null, "");
+		SubmodelFilterParams submodelFilterParams = new SubmodelFilterParams();
+		submodelFilterParams.setPaginationInfo(new PaginationInfo(1, ""));
+		CursorResult<List<Submodel>> cursorResult = repo.getAllSubmodels(submodelFilterParams);
 		assertEquals(1, cursorResult.getResult().size());
 	}
 

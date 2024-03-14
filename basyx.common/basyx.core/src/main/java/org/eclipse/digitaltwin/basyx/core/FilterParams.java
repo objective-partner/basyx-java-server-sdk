@@ -6,6 +6,11 @@ import java.util.Set;
 
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 
+/**
+ * Filter parameters, typically when searching all object.
+ * 
+ * @author Oweis Al-Agtash
+ */
 public class FilterParams {
 
 	public FilterParams() {
@@ -18,13 +23,13 @@ public class FilterParams {
 	}
 
 	@Nullable
-	String idShort;
+	private String idShort;
 
 	@Nullable
-	PaginationInfo paginationInfo;
+	private PaginationInfo paginationInfo;
 
 	@Nullable
-	Set<String> ids;
+	private Set<String> ids;
 
 	@Nullable
 	public String getIdShort() {

@@ -36,8 +36,6 @@ import org.eclipse.digitaltwin.basyx.authorization.rbac.TargetPermissionVerifier
  */
 public class AasTargetPermissionVerifier implements TargetPermissionVerifier<AasTargetInformation> {
 
-	private static final String ALL_ALLOWED_WILDCARD = "*";
-
 	@Override
 	public boolean isVerified(RbacRule rbacRule, AasTargetInformation targetInformation) {
 		String shellId = targetInformation.getAasId();

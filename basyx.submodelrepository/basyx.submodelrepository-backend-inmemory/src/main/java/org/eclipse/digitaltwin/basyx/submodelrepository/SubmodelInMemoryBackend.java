@@ -30,13 +30,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
 import org.eclipse.digitaltwin.basyx.core.BaSyxCrudRepository;
-import org.eclipse.digitaltwin.basyx.core.FilterParams;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
+import org.eclipse.digitaltwin.basyx.core.pagination.PaginationSupport;
 
 /**
  * InMemory implementation for the Submodel backend
@@ -44,7 +45,7 @@ import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
  * @author mateusmolina, danish
  * 
  */
-public class SubmodelInMemoryBackend implements BaSyxCrudRepository<Submodel, String> {
+public class SubmodelInMemoryBackend implements BaSyxCrudRepository<Submodel, String, SubmodelFilterParams> {
 
 	private Map<String, Submodel> inMemoryStore = new LinkedHashMap<>();
 
@@ -79,8 +80,15 @@ public class SubmodelInMemoryBackend implements BaSyxCrudRepository<Submodel, St
 	}
 
 	@Override
-	public CursorResult<List<Submodel>> findAll(FilterParams filterParams) {
-		return null;
+	public CursorResult<List<Submodel>> findAll(SubmodelFilterParams filterParams) {
+		Iterable<Submodel> iterable = findAll();
+		List<Submodel> submodels = StreamSupport.stream(iterable.spliterator(), false).collect(Collectors.toList());
+
+		TreeMap<String, Submodel> submodelMap = submodels.stream().collect(Collectors.toMap(Submodel::getId, submodel -> submodel, (a, b) -> a, TreeMap::new));
+
+		PaginationSupport<Submodel> paginationSupport = new PaginationSupport<>(submodelMap, Submodel::getId);
+
+		return paginationSupport.getPaged(filterParams.getPaginationInfo());
 	}
 
 	@Override

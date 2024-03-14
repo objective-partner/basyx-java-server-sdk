@@ -30,20 +30,19 @@ import org.eclipse.digitaltwin.basyx.authorization.rbac.TargetPermissionVerifier
 import org.eclipse.digitaltwin.basyx.conceptdescriptionrepository.feature.authorization.ConceptDescriptionTargetInformation;
 
 /**
- * Verifies the {@link ConceptDescriptionTargetInformation} against the {@link RbacRule}
+ * Verifies the {@link ConceptDescriptionTargetInformation} against the
+ * {@link RbacRule}
  * 
  * @author danish
  */
 public class ConceptDescriptionTargetPermissionVerifier implements TargetPermissionVerifier<ConceptDescriptionTargetInformation> {
 
-	private static final String ALL_ALLOWED_WILDCARD = "*";
-	
 	@Override
 	public boolean isVerified(RbacRule rbacRule, ConceptDescriptionTargetInformation targetInformation) {
 		String conceptDescriptionId = targetInformation.getConceptDescriptionId();
-		
+
 		ConceptDescriptionTargetInformation rbacRuleConceptDescriptionTargetInformation = (ConceptDescriptionTargetInformation) rbacRule.getTargetInformation();
-		
+
 		return rbacRuleConceptDescriptionTargetInformation.getConceptDescriptionId().equals(ALL_ALLOWED_WILDCARD) || rbacRuleConceptDescriptionTargetInformation.getConceptDescriptionId().equals(conceptDescriptionId);
 	}
 

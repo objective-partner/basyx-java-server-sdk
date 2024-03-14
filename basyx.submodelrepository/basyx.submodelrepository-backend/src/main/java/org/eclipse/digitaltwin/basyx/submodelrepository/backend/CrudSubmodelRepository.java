@@ -33,9 +33,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.core.DeserializationException;
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.core.SerializationException;
@@ -46,6 +43,7 @@ import org.eclipse.digitaltwin.aas4j.v3.model.KeyTypes;
 import org.eclipse.digitaltwin.aas4j.v3.model.OperationVariable;
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
 import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElement;
+import org.eclipse.digitaltwin.basyx.core.BaSyxCrudRepository;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementNotAFileException;
@@ -57,8 +55,8 @@ import org.eclipse.digitaltwin.basyx.core.file.FileMetadata;
 import org.eclipse.digitaltwin.basyx.core.file.FileRepository;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
-import org.eclipse.digitaltwin.basyx.core.pagination.PaginationSupport;
 import org.eclipse.digitaltwin.basyx.http.Base64UrlEncodedIdentifier;
+import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelFilterParams;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepository;
 import org.eclipse.digitaltwin.basyx.submodelservice.SubmodelService;
 import org.eclipse.digitaltwin.basyx.submodelservice.SubmodelServiceFactory;
@@ -80,7 +78,7 @@ public class CrudSubmodelRepository implements SubmodelRepository {
 
 	private Logger logger = LoggerFactory.getLogger(CrudSubmodelRepository.class);
 	private static final PaginationInfo NO_LIMIT_PAGINATION_INFO = new PaginationInfo(0, null);
-	private CrudRepository<Submodel, String> submodelBackend;
+	private BaSyxCrudRepository<Submodel, String, SubmodelFilterParams> submodelBackend;
 
 	private SubmodelServiceFactory submodelServiceFactory;
 	private FileRepository fileHandlingBackend;
@@ -121,20 +119,15 @@ public class CrudSubmodelRepository implements SubmodelRepository {
 	}
 
 	@Override
-	public CursorResult<List<Submodel>> getAllSubmodels(PaginationInfo pInfo) {
-		Iterable<Submodel> iterable = submodelBackend.findAll();
-		List<Submodel> submodels = StreamSupport.stream(iterable.spliterator(), false).collect(Collectors.toList());
-
-		TreeMap<String, Submodel> submodelMap = submodels.stream().collect(Collectors.toMap(Submodel::getId, submodel -> submodel, (a, b) -> a, TreeMap::new));
-
-		PaginationSupport<Submodel> paginationSupport = new PaginationSupport<>(submodelMap, Submodel::getId);
-
-		return paginationSupport.getPaged(pInfo);
+	public CursorResult<List<Submodel>> getAllSubmodels(SubmodelFilterParams filterParams) {
+		return submodelBackend.findAll(filterParams);
 	}
 
 	@Override
-	public CursorResult<List<Submodel>> getAllSubmodelsMetadata(PaginationInfo pInfo) {
-		return null;
+	public CursorResult<List<Submodel>> getAllSubmodelsMetadata(SubmodelFilterParams filterParams) {
+		CursorResult<List<Submodel>> result = submodelBackend.findAll(filterParams);
+		result.getResult().forEach(submodel -> submodel.setSubmodelElements(null));
+		return result;
 	}
 
 	@Override

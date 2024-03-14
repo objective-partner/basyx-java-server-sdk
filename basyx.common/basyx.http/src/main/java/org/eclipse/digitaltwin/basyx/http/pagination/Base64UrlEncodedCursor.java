@@ -41,7 +41,6 @@ public class Base64UrlEncodedCursor {
 	@JsonValue
 	private final String encodedCursor;
 
-
 	public Base64UrlEncodedCursor(String encodedCursor) {
 		this.encodedCursor = encodedCursor;
 	}

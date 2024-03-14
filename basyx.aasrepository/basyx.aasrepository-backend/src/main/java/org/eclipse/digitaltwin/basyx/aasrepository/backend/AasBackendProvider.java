@@ -25,6 +25,7 @@
 package org.eclipse.digitaltwin.basyx.aasrepository.backend;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
+import org.eclipse.digitaltwin.basyx.aasrepository.AasFilterParams;
 import org.eclipse.digitaltwin.basyx.core.BaSyxCrudRepository;
 
 /**
@@ -33,6 +34,6 @@ import org.eclipse.digitaltwin.basyx.core.BaSyxCrudRepository;
  * @author mateusmolina, despen
  */
 public interface AasBackendProvider {
-	BaSyxCrudRepository<AssetAdministrationShell, String> getCrudRepository();
+	BaSyxCrudRepository<AssetAdministrationShell, String, AasFilterParams> getCrudRepository();
 
 }

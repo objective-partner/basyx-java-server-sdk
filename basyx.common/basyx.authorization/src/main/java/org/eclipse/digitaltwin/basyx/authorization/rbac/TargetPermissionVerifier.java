@@ -25,8 +25,8 @@
 
 package org.eclipse.digitaltwin.basyx.authorization.rbac;
 
-import org.apache.commons.lang3.RegExUtils;
-import org.apache.commons.lang3.StringUtils;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A target permission verifier interface
@@ -35,14 +35,13 @@ import org.apache.commons.lang3.StringUtils;
  * @author danish
  */
 public interface TargetPermissionVerifier<T extends TargetInformation> {
+	String ALL_ALLOWED_WILDCARD = ".*";
 
 	boolean isVerified(RbacRule rbacRule, T targetInformation);
 
-	default boolean match(String id, String idFromRule) {
-		if (StringUtils.endsWith(idFromRule, "*")) {
-			String prefix = RegExUtils.replaceAll(idFromRule, "\\*+$", ""); // remove ending wildcard
-			return StringUtils.startsWith(id, prefix);
-		}
-		return StringUtils.equals(id, idFromRule);
+	default boolean match(String id, String idRegex) {
+		Pattern pattern = Pattern.compile(idRegex);
+		Matcher matcher = pattern.matcher(id);
+		return matcher.matches();
 	}
 }

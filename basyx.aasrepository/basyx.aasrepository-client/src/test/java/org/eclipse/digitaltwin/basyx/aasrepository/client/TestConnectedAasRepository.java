@@ -28,10 +28,10 @@ package org.eclipse.digitaltwin.basyx.aasrepository.client;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import org.eclipse.digitaltwin.basyx.aasrepository.AasFilterParams;
 import org.eclipse.digitaltwin.basyx.aasrepository.AasRepository;
 import org.eclipse.digitaltwin.basyx.aasrepository.AasRepositorySuite;
 import org.eclipse.digitaltwin.basyx.aasrepository.http.DummyAasRepositoryComponent;
-import org.eclipse.digitaltwin.basyx.core.FilterParams;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 import org.junit.After;
@@ -60,7 +60,8 @@ public class TestConnectedAasRepository extends AasRepositorySuite {
 	@After
 	public void removeAasFromRepo() {
 		AasRepository repo = appContext.getBean(AasRepository.class);
-		FilterParams filterParams = new FilterParams(null, PaginationInfo.NO_LIMIT, null);
+		AasFilterParams filterParams = new AasFilterParams();
+		filterParams.setPaginationInfo(PaginationInfo.NO_LIMIT);
 		repo.getAllAas(filterParams).getResult().stream().map(s -> s.getId()).forEach(repo::deleteAas);
 	}
 

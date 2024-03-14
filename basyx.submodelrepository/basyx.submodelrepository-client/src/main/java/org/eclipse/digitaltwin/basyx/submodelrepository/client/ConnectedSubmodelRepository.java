@@ -43,6 +43,7 @@ import org.eclipse.digitaltwin.basyx.core.exceptions.MissingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 import org.eclipse.digitaltwin.basyx.http.Base64UrlEncodedIdentifier;
+import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelFilterParams;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepository;
 import org.eclipse.digitaltwin.basyx.submodelrepository.client.internal.SubmodelRepositoryApi;
 import org.eclipse.digitaltwin.basyx.submodelservice.client.ConnectedSubmodelService;
@@ -134,12 +135,12 @@ public class ConnectedSubmodelRepository implements SubmodelRepository {
 	 * Not Implemented
 	 */
 	@Override
-	public CursorResult<List<Submodel>> getAllSubmodels(PaginationInfo pInfo) {
+	public CursorResult<List<Submodel>> getAllSubmodels(SubmodelFilterParams filterParams) {
 		throw ExceptionBuilderFactory.getInstance().featureNotImplementedException().build();
 	}
 
 	@Override
-	public CursorResult<List<Submodel>> getAllSubmodelsMetadata(PaginationInfo pInfo) {
+	public CursorResult<List<Submodel>> getAllSubmodelsMetadata(SubmodelFilterParams filterParams) {
 		throw ExceptionBuilderFactory.getInstance().featureNotImplementedException().build();
 
 	}

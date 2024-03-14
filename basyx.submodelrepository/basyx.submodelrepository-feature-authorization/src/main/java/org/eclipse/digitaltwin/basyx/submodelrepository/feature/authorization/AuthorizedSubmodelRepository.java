@@ -28,12 +28,16 @@ package org.eclipse.digitaltwin.basyx.submodelrepository.feature.authorization;
 import java.io.File;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.OperationVariable;
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
 import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElement;
 import org.eclipse.digitaltwin.basyx.authorization.rbac.Action;
 import org.eclipse.digitaltwin.basyx.authorization.rbac.RbacPermissionResolver;
+import org.eclipse.digitaltwin.basyx.authorization.rbac.RbacRule;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementNotAFileException;
@@ -41,9 +45,11 @@ import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.exceptions.FileDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
+import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelFilterParams;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepository;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelElementValue;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelValueOnly;
+import org.springframework.util.CollectionUtils;
 
 /**
  * Decorator for authorized {@link SubmodelRepository}
@@ -52,7 +58,7 @@ import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelValueOnly;
  */
 public class AuthorizedSubmodelRepository implements SubmodelRepository {
 
-	private static final String ALL_ALLOWED_WILDCARD = "*";
+	private static final String ALL_ALLOWED_WILDCARD = ".*";
 	private final SubmodelRepository decorated;
 	private final RbacPermissionResolver<SubmodelTargetInformation> permissionResolver;
 
@@ -62,21 +68,33 @@ public class AuthorizedSubmodelRepository implements SubmodelRepository {
 	}
 
 	@Override
-	public CursorResult<List<Submodel>> getAllSubmodels(PaginationInfo pInfo) {
-		boolean isAuthorized = permissionResolver.hasPermission(Action.READ, new SubmodelTargetInformation(ALL_ALLOWED_WILDCARD, ALL_ALLOWED_WILDCARD));
+	public CursorResult<List<Submodel>> getAllSubmodels(SubmodelFilterParams filterParams) {
+		Stream<RbacRule> matchingRules = permissionResolver.getMatchingRules(Action.READ, SubmodelTargetInformation.class);
 
+		Set<SubmodelTargetInformation> ruleTargetInfos = matchingRules.map(rbacRule -> (SubmodelTargetInformation) rbacRule.getTargetInformation()).collect(Collectors.toUnmodifiableSet());
+
+		boolean isAuthorized = !CollectionUtils.isEmpty(ruleTargetInfos);
 		throwExceptionIfInsufficientPermission(isAuthorized);
 
-		return decorated.getAllSubmodels(pInfo);
+		Set<String> collectedSubmodelIds = ruleTargetInfos.parallelStream().map(SubmodelTargetInformation::getSubmodelId).collect(Collectors.toUnmodifiableSet());
+		filterParams.setIds(collectedSubmodelIds);
+
+		return decorated.getAllSubmodels(filterParams);
 	}
 
 	@Override
-	public CursorResult<List<Submodel>> getAllSubmodelsMetadata(PaginationInfo pInfo) {
-		boolean isAuthorized = permissionResolver.hasPermission(Action.READ, new SubmodelTargetInformation(ALL_ALLOWED_WILDCARD, ALL_ALLOWED_WILDCARD));
+	public CursorResult<List<Submodel>> getAllSubmodelsMetadata(SubmodelFilterParams filterParams) {
+		Stream<RbacRule> matchingRules = permissionResolver.getMatchingRules(Action.READ, SubmodelTargetInformation.class);
 
+		Set<SubmodelTargetInformation> ruleTargetInfos = matchingRules.map(rbacRule -> (SubmodelTargetInformation) rbacRule.getTargetInformation()).collect(Collectors.toUnmodifiableSet());
+
+		boolean isAuthorized = !CollectionUtils.isEmpty(ruleTargetInfos);
 		throwExceptionIfInsufficientPermission(isAuthorized);
 
-		return decorated.getAllSubmodelsMetadata(pInfo);
+		Set<String> collectedSubmodelIds = ruleTargetInfos.parallelStream().map(SubmodelTargetInformation::getSubmodelId).collect(Collectors.toUnmodifiableSet());
+		filterParams.setIds(collectedSubmodelIds);
+
+		return decorated.getAllSubmodelsMetadata(filterParams);
 	}
 
 	@Override
@@ -168,13 +186,13 @@ public class AuthorizedSubmodelRepository implements SubmodelRepository {
 
 		decorated.createSubmodelElement(submodelId, idShortPath, smElement);
 	}
-	
+
 	@Override
 	public void updateSubmodelElement(String submodelId, String idShortPath, SubmodelElement submodelElement) throws ElementDoesNotExistException {
 		boolean isAuthorized = permissionResolver.hasPermission(Action.UPDATE, new SubmodelTargetInformation(submodelId, idShortPath));
-		
+
 		throwExceptionIfInsufficientPermission(isAuthorized);
-		
+
 		decorated.updateSubmodelElement(submodelId, idShortPath, submodelElement);
 	}
 
@@ -245,6 +263,10 @@ public class AuthorizedSubmodelRepository implements SubmodelRepository {
 		if (!isAuthorized) {
 			throw ExceptionBuilderFactory.getInstance().insufficientPermissionException().build();
 		}
+	}
+
+	private void evaluateAuthorizedSubmodels(SubmodelFilterParams filterParams) {
+
 	}
 
 }

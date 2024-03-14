@@ -1,4 +1,4 @@
-package org.eclipse.digitaltwin.basyx.aasrepository.backend.mongodb;
+package org.eclipse.digitaltwin.basyx.submodelrepository;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -7,13 +7,16 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
-import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
-import org.eclipse.digitaltwin.basyx.aasrepository.AasFilterParams;
+import org.apache.tika.utils.StringUtils;
+import org.eclipse.digitaltwin.aas4j.v3.model.Key;
+import org.eclipse.digitaltwin.aas4j.v3.model.Reference;
+import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
 import org.eclipse.digitaltwin.basyx.core.BaSyxCrudRepository;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.AddFieldsOperation;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.index.Index;
@@ -23,48 +26,49 @@ import org.springframework.data.mongodb.repository.support.MappingMongoEntityInf
 import org.springframework.data.mongodb.repository.support.SimpleMongoRepository;
 import org.springframework.util.CollectionUtils;
 
-public class AasMongoRepository implements BaSyxCrudRepository<AssetAdministrationShell, String, AasFilterParams> {
-	private final SimpleMongoRepository<AssetAdministrationShell, String> repo;
+public class SubmodelMongoRepository implements BaSyxCrudRepository<Submodel, String, SubmodelFilterParams> {
+	private final SimpleMongoRepository<Submodel, String> repo;
 	private final MongoTemplate template;
-	private final MappingMongoEntityInformation<AssetAdministrationShell, String> entityInformation;
+	private final MappingMongoEntityInformation<Submodel, String> entityInformation;
 	private static final String MONGO_ID = "_id";
 
-	public AasMongoRepository(MongoPersistentEntity<AssetAdministrationShell> entity, MongoTemplate template) {
-		configureIndexForAasId(template);
-		MappingMongoEntityInformation<AssetAdministrationShell, String> mongoEntityInformation = new MappingMongoEntityInformation<>(entity);
+	public SubmodelMongoRepository(MongoPersistentEntity<Submodel> entity, MongoTemplate template) {
+		configureIndexForSubmodelId(template);
+		MappingMongoEntityInformation<Submodel, String> mongoEntityInformation = new MappingMongoEntityInformation<>(entity);
 		this.entityInformation = mongoEntityInformation;
 		this.template = template;
 		this.repo = new SimpleMongoRepository<>(mongoEntityInformation, template);
+
 	}
 
-	private void configureIndexForAasId(MongoTemplate mongoTemplate) {
+	private void configureIndexForSubmodelId(MongoTemplate mongoTemplate) {
 		Index idIndex = new Index().on(MONGO_ID, Direction.ASC);
-		mongoTemplate.indexOps(AssetAdministrationShell.class).ensureIndex(idIndex);
+		mongoTemplate.indexOps(Submodel.class).ensureIndex(idIndex);
 	}
 
 	@Override
-	public CursorResult<List<AssetAdministrationShell>> findAll(AasFilterParams filterParams) {
+	public CursorResult<List<Submodel>> findAll(SubmodelFilterParams filterParams) {
 		List<AggregationOperation> allAggregations = new LinkedList<>();
-		applyFilter(allAggregations, filterParams.getIdShort(), filterParams.getIds());
+		applyFilter(allAggregations, filterParams.getIdShort(), filterParams.getSemanticId(), filterParams.getIds());
 		applyPagination(filterParams.getPaginationInfo(), allAggregations);
 		Aggregation aggregation = Aggregation.newAggregation(allAggregations);
-		List<AssetAdministrationShell> results = template.aggregate(aggregation, entityInformation.getCollectionName(), entityInformation.getJavaType()).getMappedResults();
-		String cursor = resolveCursor(filterParams.getPaginationInfo(), results, AssetAdministrationShell::getId);
+		List<Submodel> results = template.aggregate(aggregation, entityInformation.getCollectionName(), entityInformation.getJavaType()).getMappedResults();
+		String cursor = resolveCursor(filterParams.getPaginationInfo(), results, Submodel::getId);
 		return new CursorResult<>(cursor, results);
 	}
 
 	@Override
-	public <S extends AssetAdministrationShell> S save(S entity) {
+	public <S extends Submodel> S save(S entity) {
 		return repo.save(entity);
 	}
 
 	@Override
-	public <S extends AssetAdministrationShell> Iterable<S> saveAll(Iterable<S> entities) {
+	public <S extends Submodel> Iterable<S> saveAll(Iterable<S> entities) {
 		return repo.saveAll(entities);
 	}
 
 	@Override
-	public Optional<AssetAdministrationShell> findById(String s) {
+	public Optional<Submodel> findById(String s) {
 		return repo.findById(s);
 	}
 
@@ -74,12 +78,12 @@ public class AasMongoRepository implements BaSyxCrudRepository<AssetAdministrati
 	}
 
 	@Override
-	public Iterable<AssetAdministrationShell> findAll() {
+	public Iterable<Submodel> findAll() {
 		return repo.findAll();
 	}
 
 	@Override
-	public Iterable<AssetAdministrationShell> findAllById(Iterable<String> strings) {
+	public Iterable<Submodel> findAllById(Iterable<String> strings) {
 		return repo.findAllById(strings);
 	}
 
@@ -94,7 +98,7 @@ public class AasMongoRepository implements BaSyxCrudRepository<AssetAdministrati
 	}
 
 	@Override
-	public void delete(AssetAdministrationShell entity) {
+	public void delete(Submodel entity) {
 		repo.delete(entity);
 	}
 
@@ -104,7 +108,7 @@ public class AasMongoRepository implements BaSyxCrudRepository<AssetAdministrati
 	}
 
 	@Override
-	public void deleteAll(Iterable<? extends AssetAdministrationShell> entities) {
+	public void deleteAll(Iterable<? extends Submodel> entities) {
 		repo.deleteAll(entities);
 	}
 
@@ -113,15 +117,32 @@ public class AasMongoRepository implements BaSyxCrudRepository<AssetAdministrati
 		repo.deleteAll();
 	}
 
-	private void applyFilter(List<AggregationOperation> allAggregation, String idShort, Set<String> aasIds) {
+	private void applyFilter(List<AggregationOperation> allAggregation, String idShort, Reference semanticId, Set<String> submodelIds) {
+		final String CUSTOM_SEMANTIC_ID_KEYS = "customSemanticIdKeys";
+		final String CUSTOM_SUPPLEMENTAL_ID_KEYS = "customSupplementalIdKeys";
+		final String SEMANTIC_ID_KEYS_VALUE = "semanticId.keys.value";
+		final String SEMANTIC_ID_KEYS = "semanticId.keys";
+		final String SUPPLEMENTAL_SEMANTIC_IDS_KEYS_VALUE = "supplementalSemanticIds.keys.value";
+		final String SUPPLEMENTAL_SEMANTIC_IDS_KEYS = "supplementalSemanticIds.keys";
+		final String ID_SHORT = "idShort";
 
-		if (!CollectionUtils.isEmpty(aasIds)) {
-			applyRegexMatching(allAggregation, aasIds);
+		if (!CollectionUtils.isEmpty(submodelIds)) {
+			applyRegexMatching(allAggregation, submodelIds);
 		}
 
-		final String ID_SHORT = "idShort";
-		if (idShort != null && !idShort.isBlank()) {
+		if (!StringUtils.isBlank(idShort)) {
 			allAggregation.add(Aggregation.match(Criteria.where(ID_SHORT).is(idShort)));
+		}
+
+		List<String> keys = new ArrayList<>();
+		if (semanticId != null) {
+			if (!CollectionUtils.isEmpty(semanticId.getKeys())) {
+				keys = semanticId.getKeys().stream().map(Key::getValue).toList();
+			}
+			allAggregation.add(Aggregation.match(new Criteria().orOperator(Criteria.where(SEMANTIC_ID_KEYS).size(keys.size()), Criteria.where(SUPPLEMENTAL_SEMANTIC_IDS_KEYS).size(keys.size()))));
+			allAggregation.add(AddFieldsOperation.addField(CUSTOM_SEMANTIC_ID_KEYS).withValue("$" + SEMANTIC_ID_KEYS_VALUE).addField(CUSTOM_SUPPLEMENTAL_ID_KEYS).withValue("$" + SUPPLEMENTAL_SEMANTIC_IDS_KEYS_VALUE).build());
+			Criteria criteria = new Criteria().orOperator(Criteria.where(CUSTOM_SEMANTIC_ID_KEYS).is(keys), Criteria.where(CUSTOM_SUPPLEMENTAL_ID_KEYS).elemMatch(Criteria.where("$eq").is(keys)));
+			allAggregation.add(Aggregation.match(criteria));
 		}
 	}
 

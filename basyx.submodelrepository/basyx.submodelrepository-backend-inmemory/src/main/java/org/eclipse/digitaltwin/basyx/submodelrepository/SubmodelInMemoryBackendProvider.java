@@ -43,7 +43,7 @@ import org.springframework.stereotype.Component;
 public class SubmodelInMemoryBackendProvider implements SubmodelBackendProvider {
 
 	@Override
-	public BaSyxCrudRepository<Submodel, String> getCrudRepository() {
+	public BaSyxCrudRepository<Submodel, String, SubmodelFilterParams> getCrudRepository() {
 		return new SubmodelInMemoryBackend();
 	}
 
