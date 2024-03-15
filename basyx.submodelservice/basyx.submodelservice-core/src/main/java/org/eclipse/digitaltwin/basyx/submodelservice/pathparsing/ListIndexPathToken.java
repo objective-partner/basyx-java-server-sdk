@@ -36,35 +36,37 @@ import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
  */
 public class ListIndexPathToken implements PathToken {
 
-  private final String token;
+	private final String token;
 
-  public ListIndexPathToken(String token) {
-    this.token = token;
-  }
+	public ListIndexPathToken(String token) {
+		this.token = token;
+	}
 
-  @Override
-  public SubmodelElement getSubmodelElement(SubmodelElement rootElement) {
-    if (!(rootElement instanceof SubmodelElementList sml)) {
-      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException()
-          .elementType(KeyTypes.SUBMODEL_ELEMENT_LIST).missingElement(token).build();
-    }
+	@Override
+	public SubmodelElement getSubmodelElement(SubmodelElement rootElement) {
+		if (!(rootElement instanceof SubmodelElementList sml)) {
+			throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.SUBMODEL_ELEMENT_LIST).missingElement(token).build();
+		}
 
-    int index = getIndexFromToken(token);
-    if (index > sml.getValue().size() - 1) {
-      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.SUBMODEL_ELEMENT)
-          .missingElement(rootElement.getIdShort() + token).build();
-    }
+		int index = getIndexFromToken(token);
+		if (index > sml.getValue().size() - 1) {
+			throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.SUBMODEL_ELEMENT).missingElement(rootElement.getIdShort() + token).build();
+		}
 
-    return sml.getValue().get(index);
-  }
+		return sml.getValue().get(index);
+	}
 
-  private int getIndexFromToken(String token) {
-    return Integer.valueOf(token);
-  }
+	private int getIndexFromToken(String token) {
+		return Integer.valueOf(token);
+	}
 
-  @Override
-  public String getToken() {
-    return token;
-  }
+	public int getIndex() {
+		return getIndexFromToken(token);
+	}
+
+	@Override
+	public String getToken() {
+		return token;
+	}
 
 }

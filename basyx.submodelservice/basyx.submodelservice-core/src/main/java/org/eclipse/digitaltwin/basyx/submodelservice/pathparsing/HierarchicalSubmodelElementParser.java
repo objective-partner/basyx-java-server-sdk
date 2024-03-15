@@ -24,12 +24,13 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.submodelservice.pathparsing;
 
-import java.util.Stack;
 import org.eclipse.digitaltwin.aas4j.v3.model.KeyTypes;
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
 import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElement;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
+
+import java.util.Stack;
 
 /**
  * Class for getting a Hierarchical SubmodelElement in a Submodel via a idShort Path
@@ -38,47 +39,48 @@ import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
  */
 public class HierarchicalSubmodelElementParser {
 
-  private final Submodel submodel;
-  private final SubmodelElementIdShortPathParser pathParser;
+	private final Submodel submodel;
+	private final SubmodelElementIdShortPathParser pathParser;
 
-  /**
-   * Creates a HierarchicalSubmodelElementParser
-   *
-   * @param submodel the submodel
-   */
-  public HierarchicalSubmodelElementParser(Submodel submodel) {
-    this.submodel = submodel;
-    this.pathParser = new SubmodelElementIdShortPathParser();
-  }
+	/**
+	 * Creates a HierarchicalSubmodelElementParser
+	 *
+	 * @param submodel
+	 * 		the submodel
+	 */
+	public HierarchicalSubmodelElementParser(Submodel submodel) {
+		this.submodel = submodel;
+		this.pathParser = new SubmodelElementIdShortPathParser();
+	}
 
-  /**
-   * Returns the nested SubmodelElement given in the idShortPath
-   *
-   * @param idShortPath the idShortPath of the SubmodelElement
-   * @return the nested SubmodelElement
-   * @throws ElementDoesNotExistException
-   */
-  public SubmodelElement getSubmodelElementFromIdShortPath(String idShortPath) throws ElementDoesNotExistException {
-    Stack<PathToken> idShortPathTokenStack = pathParser.parsePathTokens(idShortPath);
+	/**
+	 * Returns the nested SubmodelElement given in the idShortPath
+	 *
+	 * @param idShortPath
+	 * 		the idShortPath of the SubmodelElement
+	 * @return the nested SubmodelElement
+	 * @throws ElementDoesNotExistException
+	 */
+	public SubmodelElement getSubmodelElementFromIdShortPath(String idShortPath) throws ElementDoesNotExistException {
+		Stack<PathToken> idShortPathTokenStack = pathParser.parsePathTokens(idShortPath);
 
-    return getLastElementOfStack(idShortPathTokenStack);
-  }
+		return getLastElementOfStack(idShortPathTokenStack);
+	}
 
-  private SubmodelElement getLastElementOfStack(Stack<PathToken> idShortPathTokenStack) {
-    PathToken nextToken = idShortPathTokenStack.pop();
-    SubmodelElement nextElement = getFirstSubmodelElementFromStack(nextToken.getToken());
-    while (!idShortPathTokenStack.isEmpty()) {
-      nextToken = idShortPathTokenStack.pop();
-      nextElement = nextToken.getSubmodelElement(nextElement);
-    }
+	public SubmodelElement getLastElementOfStack(Stack<PathToken> idShortPathTokenStack) {
+		PathToken nextToken = idShortPathTokenStack.pop();
+		SubmodelElement nextElement = getFirstSubmodelElementFromStack(nextToken.getToken());
+		while (!idShortPathTokenStack.isEmpty()) {
+			nextToken = idShortPathTokenStack.pop();
+			nextElement = nextToken.getSubmodelElement(nextElement);
+		}
 
-    return nextElement;
-  }
+		return nextElement;
+	}
 
-  private SubmodelElement getFirstSubmodelElementFromStack(String rootElementIdShort) {
-    return submodel.getSubmodelElements().stream().filter(sme -> sme.getIdShort().equals(rootElementIdShort))
-        .findAny().orElseThrow(() -> ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(
-            KeyTypes.SUBMODEL_ELEMENT).missingElement(rootElementIdShort).build());
-  }
+	private SubmodelElement getFirstSubmodelElementFromStack(String rootElementIdShort) {
+		return submodel.getSubmodelElements().stream().filter(sme -> sme.getIdShort().equals(rootElementIdShort)).findAny()
+				.orElseThrow(() -> ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.SUBMODEL_ELEMENT).missingElement(rootElementIdShort).build());
+	}
 
 }
