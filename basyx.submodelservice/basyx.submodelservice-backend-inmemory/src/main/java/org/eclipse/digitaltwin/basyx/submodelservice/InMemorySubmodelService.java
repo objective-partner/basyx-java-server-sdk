@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (C) 2023 the Eclipse BaSyx Authors
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
  * "Software"), to deal in the Software without restriction, including
@@ -8,10 +8,10 @@
  * distribute, sublicense, and/or sell copies of the Software, and to
  * permit persons to whom the Software is furnished to do so, subject to
  * the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -19,16 +19,20 @@
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- * 
+ *
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
 package org.eclipse.digitaltwin.basyx.submodelservice;
 
 import java.util.List;
+import java.util.Stack;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import org.eclipse.digitaltwin.aas4j.v3.model.AnnotatedRelationshipElement;
+import org.eclipse.digitaltwin.aas4j.v3.model.DataElement;
+import org.eclipse.digitaltwin.aas4j.v3.model.Entity;
 import org.eclipse.digitaltwin.aas4j.v3.model.KeyTypes;
 import org.eclipse.digitaltwin.aas4j.v3.model.OperationVariable;
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
@@ -42,27 +46,31 @@ import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationSupport;
+import org.eclipse.digitaltwin.basyx.submodelservice.pathparsing.HierarchicalSubmodelElementIdShortPathToken;
 import org.eclipse.digitaltwin.basyx.submodelservice.pathparsing.HierarchicalSubmodelElementParser;
+import org.eclipse.digitaltwin.basyx.submodelservice.pathparsing.ListIndexPathToken;
+import org.eclipse.digitaltwin.basyx.submodelservice.pathparsing.PathToken;
 import org.eclipse.digitaltwin.basyx.submodelservice.pathparsing.SubmodelElementIdShortHelper;
+import org.eclipse.digitaltwin.basyx.submodelservice.pathparsing.SubmodelElementIdShortPathParser;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelElementValue;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.factory.SubmodelElementValueMapperFactory;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.mapper.ValueMapper;
 
 /**
  * Implements the SubmodelService as in-memory variant
- * 
+ *
  * @author schnicke, danish
- * 
+ *
  */
 public class InMemorySubmodelService implements SubmodelService {
 
 	private final Submodel submodel;
-	private HierarchicalSubmodelElementParser parser;
-	private SubmodelElementIdShortHelper helper = new SubmodelElementIdShortHelper();
+	private final HierarchicalSubmodelElementParser parser;
+	private final SubmodelElementIdShortHelper helper = new SubmodelElementIdShortHelper();
 
 	/**
 	 * Creates the InMemory SubmodelService containing the passed Submodel
-	 * 
+	 *
 	 * @param submodel
 	 */
 	public InMemorySubmodelService(Submodel submodel) {
@@ -120,7 +128,7 @@ public class InMemorySubmodelService implements SubmodelService {
 	private void throwIfSubmodelElementExists(String submodelElementId) {
 		try {
 			getSubmodelElement(submodelElementId);
-			throw ExceptionBuilderFactory.getInstance().collidingIdentifierException().collidingIdentifier(submodelElementId).build();
+			throw ExceptionBuilderFactory.getInstance().collidingIdentifierException().collidingIdentifier(submodel.getId()).build();
 		} catch (ElementDoesNotExistException e) {
 			return;
 		}
@@ -128,32 +136,69 @@ public class InMemorySubmodelService implements SubmodelService {
 
 	@Override
 	public void createSubmodelElement(String idShortPath, SubmodelElement submodelElement) throws ElementDoesNotExistException, CollidingIdentifierException {
+		SubmodelElement parentElement = getSubmodelElement(idShortPath);
+		if (parentElement instanceof SubmodelElementList parentElementList) {
+			if (submodelElement.getIdShort() != null) {
+				// Throw idShort not allowed...
+			}
+		} else if (parentElement instanceof SubmodelElementCollection collection) {
+			throwIfSubmodelElementExists(idShortPath + ". " + submodelElement.getIdShort());
+		}
+
 		throwIfSubmodelElementExists(getFullIdShortPath(idShortPath, submodelElement.getIdShort()));
 
 		SubmodelElement parentSme = parser.getSubmodelElementFromIdShortPath(idShortPath);
-		if (parentSme instanceof SubmodelElementList) {
-			SubmodelElementList list = (SubmodelElementList) parentSme;
+		if (parentSme instanceof SubmodelElementList list) {
 			List<SubmodelElement> submodelElements = list.getValue();
 			submodelElements.add(submodelElement);
 			list.setValue(submodelElements);
 			return;
 		}
-		if (parentSme instanceof SubmodelElementCollection) {
-			SubmodelElementCollection collection = (SubmodelElementCollection) parentSme;
+		if (parentSme instanceof SubmodelElementCollection collection) {
 			List<SubmodelElement> submodelElements = collection.getValue();
 			submodelElements.add(submodelElement);
 			collection.setValue(submodelElements);
-			return;
 		}
 	}
 
 	@Override
 	public void updateSubmodelElement(String idShortPath, SubmodelElement submodelElement) {
-		deleteSubmodelElement(idShortPath);
+		Stack<PathToken> pathTokens = new SubmodelElementIdShortPathParser().parsePathTokens(idShortPath);
+		PathToken currentToken = pathTokens.pop();
+		String currentIdShort = null;
+		if (currentToken instanceof HierarchicalSubmodelElementIdShortPathToken) {
+			currentIdShort = currentToken.getToken();
+			assert currentIdShort.equals(submodelElement.getIdShort());
+		}
 
-		String idShortPathParentSME = parser.getIdShortPathOfParentElement(idShortPath);
+		if (pathTokens.isEmpty()) {
+			replaceSubmodelElement(submodelElement, submodel.getSubmodelElements(), idShortPath);
+		} else {
+			SubmodelElement parentElement = parser.getLastElementOfStack(pathTokens);
+			if (currentIdShort == null) {
+				ListIndexPathToken listToken = (ListIndexPathToken) currentToken;
+				SubmodelElementList list = (SubmodelElementList) parentElement;
+				list.getValue().set(listToken.getIndex(), submodelElement);
+			} else if (parentElement instanceof SubmodelElementCollection collection) {
+				List<SubmodelElement> submodelElements = collection.getValue();
+				replaceSubmodelElement(submodelElement, submodelElements, currentIdShort);
+			} else if (parentElement instanceof Entity entity) {
+				List<SubmodelElement> submodelElements = entity.getStatements();
+				replaceSubmodelElement(submodelElement, submodelElements, currentIdShort);
+			} else if (parentElement instanceof AnnotatedRelationshipElement relationship) {
+				List<DataElement> submodelElements = relationship.getAnnotations();
+				replaceSubmodelElement((DataElement) submodelElement, submodelElements, currentIdShort);
+			}
+		}
+	}
 
-		createSubmodelElement(idShortPathParentSME, submodelElement);
+	private static <T extends SubmodelElement> void replaceSubmodelElement(T submodelElement, List<T> submodelElements, String currentIdShort) {
+		for (int i = 0; i < submodelElements.size(); i++) {
+			if (submodelElements.get(i).getIdShort().equals(currentIdShort)) {
+				submodelElements.set(i, submodelElement);
+				return;
+			}
+		}
 	}
 
 	@Override

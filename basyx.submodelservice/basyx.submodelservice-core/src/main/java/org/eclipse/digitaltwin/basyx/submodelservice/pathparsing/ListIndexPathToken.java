@@ -60,6 +60,10 @@ public class ListIndexPathToken implements PathToken {
 		return Integer.valueOf(token);
 	}
 
+	public int getIndex() {
+		return getIndexFromToken(token);
+	}
+
 	@Override
 	public String getToken() {
 		return token;
