@@ -28,7 +28,7 @@
     "action": "READ",
     "targetInformation": {
       "@type": "submodel",
-      "submodelId": "https://basyx.objective-partner.com/*",
+      "submodelId": "https://basyx.objective-partner.com/.*",
       "submodelElementIdShortPath": ".*"
     }
   }

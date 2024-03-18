@@ -14,10 +14,15 @@
   },
   {
     "role": "basyx-reader",
-    "action": "READ",
+    "action": [
+      "CREATE",
+      "READ",
+      "UPDATE",
+      "DELETE"
+    ],
     "targetInformation": {
       "@type": "aas",
-      "aasId": "https://basyx.objective-partner.com/enterprise/showThisOnly/v1/r1"
+      "aasId": "https://basyx.objective-partner.com/enterprise/basyx-reader/.*"
     }
   }
 ]
