@@ -78,8 +78,8 @@ public class SimpleRbacPermissionResolver<T extends TargetInformation> implement
 	}
 
 	public Stream<RbacRule> getMatchingRules(final Action action, final Class<? extends TargetInformation> targetInformation) {
-		return getRbacStorage().getRbacRules().stream().filter(rbacRule -> checkRolesMatchRbacRule(rbacRule, roleAuthenticator.getRoles())).filter(rbacRule -> checkActionMatchesRbacRule(rbacRule, action))
-				.filter(rbacRule -> checkRbacRuleMatchesTargetInfoType(rbacRule, targetInformation));
+		return getRbacStorage().getRbacRules().stream().filter(rbacRule -> checkRolesMatchRbacRule(rbacRule, roleAuthenticator.getRoles())).filter(rbacRule -> checkRbacRuleMatchesTargetInfoType(rbacRule, targetInformation))
+				.filter(rbacRule -> checkActionMatchesRbacRule(rbacRule, action));
 	}
 
 	public Stream<RbacRule> getMatchingRules(final Action action, final T targetInformation) {
@@ -91,7 +91,7 @@ public class SimpleRbacPermissionResolver<T extends TargetInformation> implement
 	}
 
 	private boolean checkActionMatchesRbacRule(final RbacRule rbacRule, final Action action) {
-		return rbacRule.getAction().stream().anyMatch(rbacRuleAction -> rbacRuleAction.equals(action));
+		return rbacRule.getAction().stream().anyMatch(rbacRuleAction -> rbacRuleAction.equals(action) || rbacRuleAction == Action.ALL);
 	}
 
 	private boolean checkRbacRuleMatchesTargetInfoType(final RbacRule rbacRule, final Class<? extends TargetInformation> targetInformation) {
