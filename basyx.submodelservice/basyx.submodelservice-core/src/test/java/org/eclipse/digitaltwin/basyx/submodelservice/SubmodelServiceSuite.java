@@ -59,7 +59,7 @@ import org.eclipse.digitaltwin.basyx.submodelservice.value.FileBlobValue;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.MultiLanguagePropertyValue;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.PropertyValue;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.RangeValue;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -75,8 +75,8 @@ public abstract class SubmodelServiceSuite {
 
 	protected abstract SubmodelService getSubmodelService(Submodel submodel);
 
-	@Before
-	public void before() {
+	@BeforeClass
+	public static void before() {
 		TraceableMessageSerializer messageSerializer = new TraceableMessageSerializer(new ObjectMapper());
 		ExceptionBuilderFactory builderFactory = new ExceptionBuilderFactory(messageSerializer);
 		ExceptionBuilderFactory.setInstance(builderFactory);
