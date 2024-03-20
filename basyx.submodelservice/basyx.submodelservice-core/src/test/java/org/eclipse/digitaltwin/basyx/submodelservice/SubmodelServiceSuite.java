@@ -76,7 +76,7 @@ public abstract class SubmodelServiceSuite {
 	protected abstract SubmodelService getSubmodelService(Submodel submodel);
 
 	@BeforeClass
-	public static void before() {
+	public static void setUp() {
 		TraceableMessageSerializer messageSerializer = new TraceableMessageSerializer(new ObjectMapper());
 		ExceptionBuilderFactory builderFactory = new ExceptionBuilderFactory(messageSerializer);
 		ExceptionBuilderFactory.setInstance(builderFactory);

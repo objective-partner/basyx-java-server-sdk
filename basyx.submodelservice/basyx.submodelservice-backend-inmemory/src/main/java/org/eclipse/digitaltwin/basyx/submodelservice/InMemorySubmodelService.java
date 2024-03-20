@@ -163,8 +163,12 @@ public class InMemorySubmodelService implements SubmodelService {
 
 	@Override
 	public void updateSubmodelElement(String idShortPath, SubmodelElement submodelElement) {
+
 		Stack<PathToken> pathTokens = new SubmodelElementIdShortPathParser().parsePathTokens(idShortPath);
-		PathToken currentToken = pathTokens.pop();
+
+		parser.throwIfElementDoesNotExist(pathTokens);
+
+		PathToken currentToken = popFirstElement(pathTokens);
 		String currentIdShort = null;
 		if (currentToken instanceof HierarchicalSubmodelElementIdShortPathToken) {
 			currentIdShort = currentToken.getToken();
@@ -190,6 +194,12 @@ public class InMemorySubmodelService implements SubmodelService {
 				replaceSubmodelElement((DataElement) submodelElement, submodelElements, currentIdShort);
 			}
 		}
+	}
+
+	private static PathToken popFirstElement(Stack<PathToken> pathTokens) {
+		PathToken currentToken = pathTokens.firstElement();
+		pathTokens.remove(currentToken);
+		return currentToken;
 	}
 
 	private static <T extends SubmodelElement> void replaceSubmodelElement(T submodelElement, List<T> submodelElements, String currentIdShort) {
