@@ -10,6 +10,7 @@ launchSettings.json
 Properties
 .classpath
 **.flattened-pom.xml
+**.DS_Store
 
 target/
 pom.xml.tag
