@@ -16,6 +16,10 @@ public class ExceptionBuilderFactory {
 		return instance;
 	}
 
+	public static void setInstance(ExceptionBuilderFactory instance) {
+		ExceptionBuilderFactory.instance = instance;
+	}
+
 	public ITraceableMessageSerializer getSerializer() {
 		return serializer;
 	}
