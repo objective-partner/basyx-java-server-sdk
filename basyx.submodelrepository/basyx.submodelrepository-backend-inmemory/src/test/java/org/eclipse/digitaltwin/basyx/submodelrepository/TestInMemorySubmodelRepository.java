@@ -31,14 +31,18 @@ import java.util.Collection;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
+import org.eclipse.digitaltwin.basyx.http.TraceableMessageSerializer;
 import org.eclipse.digitaltwin.basyx.submodelrepository.backend.CrudSubmodelRepository;
 import org.eclipse.digitaltwin.basyx.submodelrepository.backend.SimpleSubmodelRepositoryFactory;
 import org.eclipse.digitaltwin.basyx.submodelrepository.core.SubmodelRepositorySuite;
 import org.eclipse.digitaltwin.basyx.submodelservice.DummySubmodelFactory;
 import org.eclipse.digitaltwin.basyx.submodelservice.InMemorySubmodelServiceFactory;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.Test.None;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 
 /**
@@ -51,6 +55,13 @@ public class TestInMemorySubmodelRepository extends SubmodelRepositorySuite {
 
 	private static final String CONFIGURED_SM_REPO_NAME = "configured-sm-repo-name";
 
+	@BeforeClass
+	public static void setUp() {
+		TraceableMessageSerializer messageSerializer = new TraceableMessageSerializer(new ObjectMapper());
+		ExceptionBuilderFactory builderFactory = new ExceptionBuilderFactory(messageSerializer);
+		ExceptionBuilderFactory.setInstance(builderFactory);
+	}
+
 	@Override
 	protected SubmodelRepository getSubmodelRepository() {
 		return new SimpleSubmodelRepositoryFactory(new SubmodelInMemoryBackendProvider(), new InMemorySubmodelServiceFactory()).create();
@@ -60,11 +71,11 @@ public class TestInMemorySubmodelRepository extends SubmodelRepositorySuite {
 	protected SubmodelRepository getSubmodelRepository(Collection<Submodel> submodels) {
 		return new SimpleSubmodelRepositoryFactory(new SubmodelInMemoryBackendProvider(), new InMemorySubmodelServiceFactory(), submodels).create();
 	}
-	
+
 	@Override
 	protected boolean fileExistsInStorage(String fileValue) {
 		java.io.File file = new java.io.File(fileValue);
-		
+
 		return file.exists();
 	}
 
@@ -78,14 +89,14 @@ public class TestInMemorySubmodelRepository extends SubmodelRepositorySuite {
 	@Test(expected = CollidingIdentifierException.class)
 	public void idCollisionDuringConstruction() {
 		Collection<Submodel> submodelsWithCollidingIds = createSubmodelCollectionWithCollidingIds();
-		
+
 		getSubmodelRepository(submodelsWithCollidingIds);
 	}
 
 	@Test(expected = None.class)
 	public void assertIdUniqueness() {
 		Collection<Submodel> submodelsWithUniqueIds = createSubmodelCollectionWithUniqueIds();
-		
+
 		getSubmodelRepository(submodelsWithUniqueIds);
 	}
 

@@ -26,6 +26,11 @@
 package org.eclipse.digitaltwin.basyx.submodelservice;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
+import org.eclipse.digitaltwin.basyx.http.TraceableMessageSerializer;
+import org.junit.BeforeClass;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * 
@@ -33,6 +38,13 @@ import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
  *
  */
 public class TestInMemorySubmodelService extends SubmodelServiceSuite {
+
+	@BeforeClass
+	public static void setUp() {
+		TraceableMessageSerializer messageSerializer = new TraceableMessageSerializer(new ObjectMapper());
+		ExceptionBuilderFactory builderFactory = new ExceptionBuilderFactory(messageSerializer);
+		ExceptionBuilderFactory.setInstance(builderFactory);
+	}
 
 	@Override
 	protected SubmodelService getSubmodelService(Submodel submodel) {

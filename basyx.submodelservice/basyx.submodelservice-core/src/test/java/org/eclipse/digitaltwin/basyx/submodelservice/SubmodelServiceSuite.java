@@ -50,19 +50,14 @@ import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultProperty;
 import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultSubmodelElementCollection;
 import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultSubmodelElementList;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
-import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.exceptions.NotInvokableException;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
-import org.eclipse.digitaltwin.basyx.http.TraceableMessageSerializer;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.FileBlobValue;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.MultiLanguagePropertyValue;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.PropertyValue;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.RangeValue;
-import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Testsuite for implementations of the SubmodelService interface
@@ -74,13 +69,6 @@ public abstract class SubmodelServiceSuite {
 	protected static final PaginationInfo NO_LIMIT_PAGINATION_INFO = new PaginationInfo(0, null);
 
 	protected abstract SubmodelService getSubmodelService(Submodel submodel);
-
-	@BeforeClass
-	public static void setUp() {
-		TraceableMessageSerializer messageSerializer = new TraceableMessageSerializer(new ObjectMapper());
-		ExceptionBuilderFactory builderFactory = new ExceptionBuilderFactory(messageSerializer);
-		ExceptionBuilderFactory.setInstance(builderFactory);
-	}
 
 	@Test
 	public void getSubmodel() {

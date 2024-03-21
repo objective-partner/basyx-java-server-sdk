@@ -29,6 +29,7 @@ import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
 import org.eclipse.digitaltwin.basyx.aasrepository.AasFilterParams;
 import org.eclipse.digitaltwin.basyx.aasrepository.AasRepository;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
+import org.eclipse.digitaltwin.basyx.http.serialization.BaSyxHttpTestUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.springframework.boot.SpringApplication;
@@ -47,7 +48,9 @@ public class TestAasRepositoryHTTP extends AasRepositoryHTTPSuite {
 
 	@BeforeClass
 	public static void startAasRepo() throws Exception {
+		BaSyxHttpTestUtils.prepareExceptionBuilderFactory();
 		appContext = new SpringApplication(DummyAasRepositoryComponent.class).run();
+
 	}
 
 	@Override

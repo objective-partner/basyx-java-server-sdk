@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.StreamSupport;
 
 import org.apache.tika.utils.StringUtils;
 import org.eclipse.digitaltwin.aas4j.v3.model.Key;
@@ -51,8 +52,15 @@ public class SubmodelMongoRepository implements BaSyxCrudRepository<Submodel, St
 		List<AggregationOperation> allAggregations = new LinkedList<>();
 		applyFilter(allAggregations, filterParams.getIdShort(), filterParams.getSemanticId(), filterParams.getIds());
 		applyPagination(filterParams.getPaginationInfo(), allAggregations);
+
+		if (allAggregations.isEmpty()) {
+			List<Submodel> submodels = StreamSupport.stream(findAll().spliterator(), false).toList();
+			return new CursorResult<>(null, submodels);
+		}
+
 		Aggregation aggregation = Aggregation.newAggregation(allAggregations);
 		List<Submodel> results = template.aggregate(aggregation, entityInformation.getCollectionName(), entityInformation.getJavaType()).getMappedResults();
+
 		String cursor = resolveCursor(filterParams.getPaginationInfo(), results, Submodel::getId);
 		return new CursorResult<>(cursor, results);
 	}
@@ -170,7 +178,7 @@ public class SubmodelMongoRepository implements BaSyxCrudRepository<Submodel, St
 	}
 
 	private <T> String resolveCursor(PaginationInfo pRequest, List<T> foundDescriptors, Function<T, String> idResolver) {
-		if (foundDescriptors.isEmpty() || !pRequest.isPaged()) {
+		if (pRequest == null || foundDescriptors.isEmpty() || !pRequest.isPaged()) {
 			return null;
 		}
 		T last = foundDescriptors.get(foundDescriptors.size() - 1);

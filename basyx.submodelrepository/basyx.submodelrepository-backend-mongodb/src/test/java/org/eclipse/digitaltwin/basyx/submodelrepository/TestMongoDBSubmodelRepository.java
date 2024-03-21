@@ -33,11 +33,14 @@ import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
 import org.eclipse.digitaltwin.basyx.InvokableOperation;
 import org.eclipse.digitaltwin.basyx.common.mongocore.BasyxMongoMappingContext;
 import org.eclipse.digitaltwin.basyx.common.mongocore.MongoDBUtilities;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.exceptions.NotInvokableException;
+import org.eclipse.digitaltwin.basyx.http.TraceableMessageSerializer;
 import org.eclipse.digitaltwin.basyx.submodelrepository.backend.SimpleSubmodelRepositoryFactory;
 import org.eclipse.digitaltwin.basyx.submodelrepository.backend.SubmodelBackendProvider;
 import org.eclipse.digitaltwin.basyx.submodelrepository.core.SubmodelRepositorySuite;
 import org.eclipse.digitaltwin.basyx.submodelservice.InMemorySubmodelServiceFactory;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -45,6 +48,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.gridfs.model.GridFSFile;
@@ -58,6 +62,13 @@ public class TestMongoDBSubmodelRepository extends SubmodelRepositorySuite {
 	private static final String CONFIGURED_SM_REPO_NAME = "configured-sm-repo-name";
 	private static final String MONGO_ID = "_id";
 	private static final String GRIDFS_ID_DELIMITER = "#";
+
+	@BeforeClass
+	public static void setUp() {
+		TraceableMessageSerializer messageSerializer = new TraceableMessageSerializer(new ObjectMapper());
+		ExceptionBuilderFactory builderFactory = new ExceptionBuilderFactory(messageSerializer);
+		ExceptionBuilderFactory.setInstance(builderFactory);
+	}
 
 	@Override
 	protected SubmodelRepository getSubmodelRepository() {
@@ -114,9 +125,8 @@ public class TestMongoDBSubmodelRepository extends SubmodelRepositorySuite {
 	}
 
 	private static void addSubmodelsToRepoWithoutInvokableOperations(Collection<Submodel> submodels, SubmodelRepository repo) {
-		submodels.stream()
-		.map(TestMongoDBSubmodelRepository::removeInvokableFromInvokableOperation) // TODO: Remove this after MongoDB uses AAS4J serializer
-		.forEach(repo::createSubmodel);
+		submodels.stream().map(TestMongoDBSubmodelRepository::removeInvokableFromInvokableOperation) // TODO: Remove this after MongoDB uses AAS4J serializer
+				.forEach(repo::createSubmodel);
 	}
 
 	private String getFileId(String value) {
