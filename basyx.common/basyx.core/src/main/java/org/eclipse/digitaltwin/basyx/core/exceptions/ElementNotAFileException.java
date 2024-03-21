@@ -45,7 +45,7 @@ public class ElementNotAFileException extends BaSyxResponseException {
 		public Builder(ITraceableMessageSerializer serializer) {
 			super(serializer);
 			messageReference("ElementNotAFileException");
-			returnCode(404);
+			returnCode(412);
 			technicalMessageTemplate("SubmodelElement with Id '{SubmodelElementId}' is not a File.");
 		}
 
