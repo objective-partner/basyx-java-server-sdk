@@ -75,7 +75,7 @@ services:
       - basyx-java-server-sdk
   
   aas-registry-log-mem:
-    image: registry.devinf.objective-partner.net/i40-forks/basyx-java-server-sdk/aas-registry-log-mem:2.0.0-OBE15-SNAPSHOT
+    image: eclipsebasyx/aas-registry-log-mem:2.0.0-SNAPSHOT
     container_name: aas-registry-log-mem
     ports:
       - "8050:8080"
@@ -86,7 +86,7 @@ services:
       - basyx-java-server-sdk
   
   sm-registry-log-mem:
-    image: registry.devinf.objective-partner.net/i40-forks/basyx-java-server-sdk/submodel-registry-log-mem:2.0.0-OBE15-SNAPSHOT
+    image: eclipsebasyx/submodel-registry-log-mem:2.0.0-SNAPSHOT
     container_name: sm-registry-log-mem
     environment:
       SERVER_SERVLET_CONTEXT_PATH: /
