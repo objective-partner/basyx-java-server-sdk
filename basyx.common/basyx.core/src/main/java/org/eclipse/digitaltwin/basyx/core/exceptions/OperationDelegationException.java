@@ -41,13 +41,18 @@ public class OperationDelegationException extends BaSyxResponseException {
 	}
 
 	@Component
-	public static class Builder extends BaSyxResponseExceptionBuilder<RepositoryRegistryLinkException.Builder> {
+	public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
 
 		public Builder(ITraceableMessageSerializer serializer) {
 			super(serializer);
 			messageReference("OperationDelegationException");
 			returnCode(424);
-			technicalMessageTemplate("Operation delegation failed.");
+			technicalMessageTemplate("Operation delegation failed. Reason: {Reason}");
+		}
+
+		public Builder reason(String value) {
+			param("Reason", value);
+			return this;
 		}
 
 		@Override

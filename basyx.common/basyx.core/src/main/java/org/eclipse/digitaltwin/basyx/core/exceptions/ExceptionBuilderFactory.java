@@ -99,4 +99,8 @@ public class ExceptionBuilderFactory {
 	public NullSubjectException.Builder nullSubjectException() {
 		return new NullSubjectException.Builder(serializer);
 	}
+
+	public OperationDelegationException.Builder operationDelegationException() {
+		return new OperationDelegationException.Builder(serializer);
+	}
 }
