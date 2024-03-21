@@ -54,14 +54,14 @@ public interface SubmodelRepository {
 	 * 
 	 * @return a list of all found Submodels
 	 */
-	public CursorResult<List<Submodel>> getAllSubmodels(SubmodelFilterParams submodelFilterParams);
+	CursorResult<List<Submodel>> getAllSubmodels(SubmodelFilterParams submodelFilterParams);
 
 	/**
 	 * Retrieves the metadata attributes of all Submodels from the repository
 	 *
 	 * @return a list of all found Submodels
 	 */
-	public CursorResult<List<Submodel>> getAllSubmodelsMetadata(SubmodelFilterParams submodelFilterParams);
+	CursorResult<List<Submodel>> getAllSubmodelsMetadata(SubmodelFilterParams submodelFilterParams);
 
 	/**
 	 * Retrieves the Submodel with the specific id
@@ -87,7 +87,7 @@ public interface SubmodelRepository {
 	 * @param submodel
 	 * @throws CollidingIdentifierException
 	 */
-	public void createSubmodel(Submodel submodel) throws CollidingIdentifierException, MissingIdentifierException;
+	void createSubmodel(Submodel submodel) throws CollidingIdentifierException, MissingIdentifierException;
 
 	/**
 	 * Updates a SubmodelElement
@@ -97,7 +97,7 @@ public interface SubmodelRepository {
 	 * @param submodelElement
 	 * @throws ElementDoesNotExistException
 	 */
-	public void updateSubmodelElement(String submodelIdentifier, String idShortPath, SubmodelElement submodelElement) throws ElementDoesNotExistException;
+	void updateSubmodelElement(String submodelIdentifier, String idShortPath, SubmodelElement submodelElement) throws ElementDoesNotExistException;
 
 	/**
 	 * Deletes a Submodel
