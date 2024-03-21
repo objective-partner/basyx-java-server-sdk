@@ -26,6 +26,7 @@
 package org.eclipse.digitaltwin.basyx.submodelrepository.feature.operation.delegation;
 
 import static org.junit.Assert.assertArrayEquals;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
@@ -47,6 +48,7 @@ import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 import org.eclipse.digitaltwin.basyx.http.Aas4JHTTPSerializationExtension;
 import org.eclipse.digitaltwin.basyx.http.BaSyxHTTPConfiguration;
 import org.eclipse.digitaltwin.basyx.http.SerializationExtension;
+import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelFilterParams;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelInMemoryBackendProvider;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepository;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepositoryFactory;
@@ -58,14 +60,13 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockserver.model.HttpStatusCode;
+import org.springframework.http.codec.json.Jackson2JsonDecoder;
+import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.springframework.http.codec.json.Jackson2JsonDecoder;
-import org.springframework.http.codec.json.Jackson2JsonEncoder;
 
 /**
  * Tests the {@link OperationDelegationSubmodelRepository} feature
@@ -103,7 +104,10 @@ public class TestOperationDelegationFeature {
 		if (submodelRepository == null)
 			return;
 
-		submodelRepository.getAllSubmodels(NO_LIMIT_PAGINATION_INFO).getResult().stream().forEach(sm -> submodelRepository.deleteSubmodel(sm.getId()));
+		SubmodelFilterParams submodelFilterParams = new SubmodelFilterParams();
+		submodelFilterParams.setPaginationInfo(NO_LIMIT_PAGINATION_INFO);
+
+		submodelRepository.getAllSubmodels(submodelFilterParams).getResult().stream().forEach(sm -> submodelRepository.deleteSubmodel(sm.getId()));
 	}
 
 	@Test
@@ -142,7 +146,7 @@ public class TestOperationDelegationFeature {
 
 		submodelRepository.invokeOperation(submodelId, "operationDelegationSME", inputOperationVariable);
 	}
-	
+
 	private OperationVariable[] getInputVariable() {
 		return new OperationVariable[] { createIntOperationVariable("int") };
 	}

@@ -41,6 +41,7 @@ import org.eclipse.digitaltwin.basyx.core.exceptions.FileDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.MissingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
+import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelFilterParams;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepository;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelElementValue;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelValueOnly;
@@ -62,8 +63,13 @@ public class OperationDelegationSubmodelRepository implements SubmodelRepository
 	}
 
 	@Override
-	public CursorResult<List<Submodel>> getAllSubmodels(PaginationInfo pInfo) {
-		return decorated.getAllSubmodels(pInfo);
+	public CursorResult<List<Submodel>> getAllSubmodels(SubmodelFilterParams filterParams) {
+		return decorated.getAllSubmodels(filterParams);
+	}
+
+	@Override
+	public CursorResult<List<Submodel>> getAllSubmodelsMetadata(SubmodelFilterParams filterParams) {
+		return decorated.getAllSubmodelsMetadata(filterParams);
 	}
 
 	@Override
@@ -129,12 +135,12 @@ public class OperationDelegationSubmodelRepository implements SubmodelRepository
 	@Override
 	public OperationVariable[] invokeOperation(String submodelId, String idShortPath, OperationVariable[] input) throws ElementDoesNotExistException {
 		SubmodelElement submodelElement = getSubmodelElement(submodelId, idShortPath);
-		
+
 		Optional<Qualifier> optionalQualifier = submodelElement.getQualifiers().stream().filter(qualifier -> qualifier.getType().equals(HTTPOperationDelegation.INVOCATION_DELEGATION_TYPE)).findAny();
-		
+
 		if (!optionalQualifier.isPresent())
 			return decorated.invokeOperation(submodelId, idShortPath, input);
-		
+
 		return operationDelegation.delegate(optionalQualifier.get(), input);
 	}
 
@@ -156,17 +162,17 @@ public class OperationDelegationSubmodelRepository implements SubmodelRepository
 	@Override
 	public void setFileValue(String submodelId, String idShortPath, String fileName, InputStream inputStream) throws ElementDoesNotExistException, ElementNotAFileException {
 		decorated.setFileValue(submodelId, idShortPath, fileName, inputStream);
-		
+
 	}
 
 	@Override
 	public void deleteFileValue(String submodelId, String idShortPath) throws ElementDoesNotExistException, ElementNotAFileException, FileDoesNotExistException {
 		decorated.deleteFileValue(submodelId, idShortPath);
 	}
-	
+
 	@Override
 	public String getName() {
 		return decorated.getName();
 	}
-	
+
 }
