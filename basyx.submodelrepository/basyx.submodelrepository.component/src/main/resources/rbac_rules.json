@@ -4,8 +4,8 @@
     "action": "READ",
     "targetInformation": {
       "@type": "submodel",
-      "submodelId": "*",
-      "submodelElementIdShortPath": "*"
+      "submodelId": ".*",
+      "submodelElementIdShortPath": ".*"
     }
   },
   {
@@ -19,8 +19,8 @@
     ],
     "targetInformation": {
       "@type": "submodel",
-      "submodelId": "*",
-      "submodelElementIdShortPath": "*"
+      "submodelId": ".*",
+      "submodelElementIdShortPath": ".*"
     }
   },
   {
@@ -29,7 +29,7 @@
     "targetInformation": {
       "@type": "submodel",
       "submodelId": "specificSubmodelId",
-      "submodelElementIdShortPath": "*"
+      "submodelElementIdShortPath": ".*"
     }
   },
   {
@@ -55,8 +55,8 @@
     "action": "CREATE",
     "targetInformation": {
       "@type": "submodel",
-      "submodelId": "*",
-      "submodelElementIdShortPath": "*"
+      "submodelId": ".*",
+      "submodelElementIdShortPath": ".*"
     }
   },
   {
@@ -64,8 +64,8 @@
     "action": "UPDATE",
     "targetInformation": {
       "@type": "submodel",
-      "submodelId": "*",
-      "submodelElementIdShortPath": "*"
+      "submodelId": ".*",
+      "submodelElementIdShortPath": ".*"
     }
   },
   {
@@ -74,7 +74,7 @@
     "targetInformation": {
       "@type": "submodel",
       "submodelId": "specificSubmodelId",
-      "submodelElementIdShortPath": "*"
+      "submodelElementIdShortPath": ".*"
     }
   },
   {
@@ -118,8 +118,8 @@
     "action": "DELETE",
     "targetInformation": {
       "@type": "submodel",
-      "submodelId": "*",
-      "submodelElementIdShortPath": "*"
+      "submodelId": ".*",
+      "submodelElementIdShortPath": ".*"
     }
   },
   {
@@ -128,7 +128,7 @@
     "targetInformation": {
       "@type": "submodel",
       "submodelId": "specificSubmodelId-2",
-      "submodelElementIdShortPath": "*"
+      "submodelElementIdShortPath": ".*"
     }
   },
   {
@@ -136,8 +136,8 @@
     "action": "EXECUTE",
     "targetInformation": {
       "@type": "submodel",
-      "submodelId": "*",
-      "submodelElementIdShortPath": "*"
+      "submodelId": ".*",
+      "submodelElementIdShortPath": ".*"
     }
   },
   {
