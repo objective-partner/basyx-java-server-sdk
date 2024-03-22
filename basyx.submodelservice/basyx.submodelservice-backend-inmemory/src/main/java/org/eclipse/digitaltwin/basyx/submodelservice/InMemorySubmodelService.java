@@ -166,7 +166,7 @@ public class InMemorySubmodelService implements SubmodelService {
 
 		Stack<PathToken> pathTokens = new SubmodelElementIdShortPathParser().parsePathTokens(idShortPath);
 
-		parser.throwIfElementDoesNotExist(pathTokens);
+		validateSubmodelElementExists(idShortPath);
 
 		PathToken currentToken = popFirstElement(pathTokens);
 		String currentIdShort = null;
@@ -194,6 +194,10 @@ public class InMemorySubmodelService implements SubmodelService {
 				replaceSubmodelElement((DataElement) submodelElement, submodelElements, currentIdShort);
 			}
 		}
+	}
+
+	private void validateSubmodelElementExists(String idShortPath) {
+		getSubmodelElement(idShortPath);
 	}
 
 	private static PathToken popFirstElement(Stack<PathToken> pathTokens) {

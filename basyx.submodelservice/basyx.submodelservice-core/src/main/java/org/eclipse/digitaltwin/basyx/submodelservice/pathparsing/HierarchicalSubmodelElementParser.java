@@ -109,11 +109,4 @@ public class HierarchicalSubmodelElementParser {
 		return submodel.getSubmodelElements().stream().filter(sme -> sme.getIdShort().equals(rootElementIdShort)).findAny()
 				.orElseThrow(() -> ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.SUBMODEL_ELEMENT).missingElement(rootElementIdShort).build());
 	}
-
-	public void throwIfElementDoesNotExist(Stack<PathToken> idShortPathTokenStack) {
-		PathToken nextToken = idShortPathTokenStack.firstElement();
-		submodel.getSubmodelElements().stream().filter(sme -> sme.getIdShort().equals(nextToken.getToken())).findAny()
-				.orElseThrow(() -> ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.SUBMODEL_ELEMENT).missingElement(nextToken.getToken()).build());
-	}
-
 }
