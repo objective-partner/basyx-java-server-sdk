@@ -40,7 +40,10 @@ public class CrudAasRepositoryTest {
 
 	@Test
 	public void getConfiguredAasRepositoryName() {
-		AasRepository repo = new CrudAasRepository(() -> null, aas -> null, CONFIGURED_AAS_REPO_NAME, null);
+		String projectRoot = System.getProperty("user.dir");
+		String thumbnailFolder = projectRoot + "/target/thumbnail_storage";
+
+		AasRepository repo = new CrudAasRepository(() -> null, aas -> null, CONFIGURED_AAS_REPO_NAME, thumbnailFolder);
 
 		assertEquals(CONFIGURED_AAS_REPO_NAME, repo.getName());
 	}
