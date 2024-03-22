@@ -47,15 +47,6 @@
     </dependency>
     <dependency>
       <groupId>org.eclipse.digitaltwin.basyx</groupId>
-      <artifactId>basyx.submodelrepository-feature-delegated-operation</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents.client5</groupId>
-      <artifactId>httpclient5</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.digitaltwin.basyx</groupId>
       <artifactId>basyx.submodelrepository-feature-registry-integration</artifactId>
       <classifier>tests</classifier>
       <scope>test</scope>
@@ -69,6 +60,20 @@
       <artifactId>basyx.submodelrepository-feature-authorization</artifactId>
       <classifier>tests</classifier>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.digitaltwin.basyx</groupId>
+      <artifactId>basyx.submodelrepository-feature-operation-delegation</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.digitaltwin.basyx</groupId>
+      <artifactId>basyx.submodelrepository-feature-operation-delegation</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.digitaltwin.basyx</groupId>
+      <artifactId>basyx.submodelrepository-feature-delegated-operation</artifactId>
     </dependency>
     <dependency>
       <groupId>org.eclipse.digitaltwin.basyx</groupId>
@@ -120,6 +125,11 @@
       <groupId>org.eclipse.digitaltwin.basyx</groupId>
       <artifactId>basyx.http</artifactId>
       <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents.client5</groupId>
+      <artifactId>httpclient5</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
