@@ -51,7 +51,7 @@ import org.junit.Test;
  */
 public abstract class AasServiceSuite {
 
-	private static final PaginationInfo NO_LIMIT_PAGINATION_INFO = new PaginationInfo(0, null);
+	private static final PaginationInfo NO_LIMIT_PAGINATION_INFO = new PaginationInfo(null, null);
 
 	protected abstract AasService getAasService(AssetAdministrationShell shell);
 
