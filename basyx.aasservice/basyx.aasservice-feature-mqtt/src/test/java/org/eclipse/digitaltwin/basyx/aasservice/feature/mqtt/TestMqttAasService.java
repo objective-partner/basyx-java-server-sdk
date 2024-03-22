@@ -48,9 +48,11 @@ import org.eclipse.digitaltwin.basyx.aasservice.DummyAssetAdministrationShellFac
 import org.eclipse.digitaltwin.basyx.aasservice.backend.InMemoryAasServiceFactory;
 import org.eclipse.digitaltwin.basyx.common.mqttcore.encoding.URLEncoder;
 import org.eclipse.digitaltwin.basyx.common.mqttcore.listener.MqttTestListener;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.http.Aas4JHTTPSerializationExtension;
 import org.eclipse.digitaltwin.basyx.http.BaSyxHTTPConfiguration;
 import org.eclipse.digitaltwin.basyx.http.SerializationExtension;
+import org.eclipse.digitaltwin.basyx.http.TraceableMessageSerializer;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttSecurityException;
@@ -88,6 +90,10 @@ public class TestMqttAasService extends AasServiceSuite {
 
 		aasRepository = createMqttAasRepository();
 		mqttAasServiceFactory = createMqttAasServiceFactory(mqttClient);
+
+		TraceableMessageSerializer messageSerializer = new TraceableMessageSerializer(new ObjectMapper());
+		ExceptionBuilderFactory builderFactory = new ExceptionBuilderFactory(messageSerializer);
+		ExceptionBuilderFactory.setInstance(builderFactory);
 	}
 
 	@AfterClass
