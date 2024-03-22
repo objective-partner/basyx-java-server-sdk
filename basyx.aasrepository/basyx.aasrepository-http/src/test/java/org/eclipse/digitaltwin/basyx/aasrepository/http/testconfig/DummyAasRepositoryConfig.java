@@ -45,6 +45,11 @@ public class DummyAasRepositoryConfig {
 	@Bean
 	@ConditionalOnMissingBean
 	public AasRepository createAasRepository() {
-		return new SimpleAasRepositoryFactory(new AasInMemoryBackendProvider(), new InMemoryAasServiceFactory()).create();
+		return new SimpleAasRepositoryFactory(new AasInMemoryBackendProvider(), new InMemoryAasServiceFactory(), getThumbnailFolder()).create();
+	}
+
+	protected static String getThumbnailFolder() {
+		String projectRoot = System.getProperty("user.dir");
+		return projectRoot + "/target/thumbnail_storage";
 	}
 }

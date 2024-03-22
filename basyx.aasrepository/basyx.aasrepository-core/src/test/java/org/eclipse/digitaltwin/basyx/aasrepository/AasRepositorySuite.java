@@ -84,6 +84,11 @@ public abstract class AasRepositorySuite {
 		return repo;
 	}
 
+	protected static String getThumbnailFolder() {
+		String projectRoot = System.getProperty("user.dir");
+		return projectRoot + "/target/thumbnail_storage";
+	}
+
 	@Test
 	public void getDefaultAasRepositoryName() {
 		assertEquals("aas-repo", getAasRepository().getName());

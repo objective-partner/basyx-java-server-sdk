@@ -73,7 +73,7 @@ public class PreconfigurationLoaderTextualResourceTest {
 	@Before
 	public void setUp() {
 		submodelRepository = Mockito.spy(new SimpleSubmodelRepositoryFactory(new SubmodelInMemoryBackendProvider(), new InMemorySubmodelServiceFactory()).create());
-		aasRepository = Mockito.spy(new SimpleAasRepositoryFactory(new AasInMemoryBackendProvider(), new InMemoryAasServiceFactory()).create());
+		aasRepository = Mockito.spy(new SimpleAasRepositoryFactory(new AasInMemoryBackendProvider(), new InMemoryAasServiceFactory(), getThumbnailFolder()).create());
 		conceptDescriptionRepository = Mockito.spy(new SimpleConceptDescriptionRepositoryFactory(new ConceptDescriptionInMemoryBackendProvider(), "cdRepo").create());
 	}
 
@@ -194,5 +194,10 @@ public class PreconfigurationLoaderTextualResourceTest {
 		AasEnvironmentPreconfigurationLoader envLoader = new AasEnvironmentPreconfigurationLoader(rLoader, List.of(TEST_ENVIRONMENT_SUBMODELS_ONLY_JSON, TEST_ENVIRONMENT_SUBMODELS_ONLY_JSON));
 		String expectedMsg = ExceptionBuilderFactory.getInstance().collidingIdentifierException().collidingIdentifier("sm1").build().getMessage();
 		Assert.assertThrows(expectedMsg, CollidingIdentifierException.class, () -> envLoader.loadPreconfiguredEnvironments(aasRepository, submodelRepository, conceptDescriptionRepository));
+	}
+
+	private static String getThumbnailFolder() {
+		String projectRoot = System.getProperty("user.dir");
+		return projectRoot + "/target/thumbnail_storage";
 	}
 }

@@ -169,7 +169,7 @@ public class TestMqttAasService extends AasServiceSuite {
 	}
 
 	private static AasRepository createMqttAasRepository() {
-		AasRepositoryFactory repoFactory = new SimpleAasRepositoryFactory(new AasInMemoryBackendProvider(), mqttAasServiceFactory);
+		AasRepositoryFactory repoFactory = new SimpleAasRepositoryFactory(new AasInMemoryBackendProvider(), mqttAasServiceFactory, getThumbnailFolder());
 		return repoFactory.create();
 	}
 

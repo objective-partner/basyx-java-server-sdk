@@ -23,7 +23,6 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.aasservice;
 
 import static org.junit.Assert.assertEquals;
@@ -56,6 +55,11 @@ public abstract class AasServiceSuite {
 
 	protected abstract AasService getAasService(AssetAdministrationShell shell);
 
+	protected static String getThumbnailFolder() {
+		String projectRoot = System.getProperty("user.dir");
+		return projectRoot + "/target/thumbnail_storage";
+	}
+
 	@Test
 	public void getAas() {
 		AssetAdministrationShell expected = DummyAssetAdministrationShellFactory.create();
@@ -87,8 +91,7 @@ public abstract class AasServiceSuite {
 
 		Reference submodelReference = getFirstSubmodelReference(submodelReferences);
 
-		assertTrue(
-				submodelReference.getKeys().stream().filter(ref -> ref.getValue().equals("testKey")).findAny().isPresent());
+		assertTrue(submodelReference.getKeys().stream().filter(ref -> ref.getValue().equals("testKey")).findAny().isPresent());
 	}
 
 	@Test
@@ -116,7 +119,7 @@ public abstract class AasServiceSuite {
 		AasService aasService = getAasService(shell);
 		assertEquals(shell.getAssetInformation(), aasService.getAssetInformation());
 	}
-	
+
 	@Test
 	public void setAssetInformation() {
 		AssetAdministrationShell shell = DummyAssetAdministrationShellFactory.create();
@@ -128,9 +131,7 @@ public abstract class AasServiceSuite {
 	}
 
 	private AssetInformation createDummyAssetInformation() {
-		AssetInformation assetInfo = new DefaultAssetInformation.Builder().assetKind(AssetKind.INSTANCE)
-				.globalAssetId("assetIDTestKey")
-				.build();
+		AssetInformation assetInfo = new DefaultAssetInformation.Builder().assetKind(AssetKind.INSTANCE).globalAssetId("assetIDTestKey").build();
 		return assetInfo;
 	}
 
@@ -139,9 +140,7 @@ public abstract class AasServiceSuite {
 	}
 
 	private DefaultSubmodel createDummySubmodel() {
-		return new DefaultSubmodel.Builder()
-				.semanticId(
-						new DefaultReference.Builder().keys(new DefaultKey.Builder().value("testKey").build()).build())
-				.build();
+		return new DefaultSubmodel.Builder().semanticId(new DefaultReference.Builder().keys(new DefaultKey.Builder().value("testKey").build()).build()).build();
 	}
+
 }
