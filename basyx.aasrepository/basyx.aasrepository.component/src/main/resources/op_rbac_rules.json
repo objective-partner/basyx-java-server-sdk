@@ -1,0 +1,28 @@
+[
+  {
+    "role": "basyx-admin",
+    "action": [
+      "CREATE",
+      "READ",
+      "UPDATE",
+      "DELETE"
+    ],
+    "targetInformation": {
+      "@type": "aas",
+      "aasId": ".*"
+    }
+  },
+  {
+    "role": "basyx-reader",
+    "action": [
+      "CREATE",
+      "READ",
+      "UPDATE",
+      "DELETE"
+    ],
+    "targetInformation": {
+      "@type": "aas",
+      "aasId": "https://basyx.objective-partner.com/enterprise/basyx-reader/.*"
+    }
+  }
+]
