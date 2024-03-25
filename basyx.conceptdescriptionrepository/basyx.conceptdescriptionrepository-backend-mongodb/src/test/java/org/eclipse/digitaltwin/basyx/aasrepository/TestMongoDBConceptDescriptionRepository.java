@@ -42,8 +42,13 @@ import org.eclipse.digitaltwin.basyx.conceptdescriptionrepository.ConceptDescrip
 import org.eclipse.digitaltwin.basyx.conceptdescriptionrepository.ConceptDescriptionRepository;
 import org.eclipse.digitaltwin.basyx.conceptdescriptionrepository.ConceptDescriptionRepositoryFactory;
 import org.eclipse.digitaltwin.basyx.conceptdescriptionrepository.core.ConceptDescriptionRepositorySuite;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
+import org.eclipse.digitaltwin.basyx.http.TraceableMessageSerializer;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.data.mongodb.core.MongoTemplate;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 
@@ -57,15 +62,22 @@ public class TestMongoDBConceptDescriptionRepository extends ConceptDescriptionR
 	private static final String CONFIGURED_CD_REPO_NAME = "configured-cd-repo-name";
 	private static final String COLLECTION = "conceptDescTestCollection";
 
+	@BeforeClass
+	public static void setUp() {
+		TraceableMessageSerializer messageSerializer = new TraceableMessageSerializer(new ObjectMapper());
+		ExceptionBuilderFactory builderFactory = new ExceptionBuilderFactory(messageSerializer);
+		ExceptionBuilderFactory.setInstance(builderFactory);
+	}
+
 	@Override
 	protected ConceptDescriptionRepository getConceptDescriptionRepository() {
 		MongoTemplate template = createTemplate();
 
 		MongoDBUtilities.clearCollection(template, COLLECTION);
-		
+
 		ConceptDescriptionBackendProvider cdBackendProvider = new ConceptDescriptionMongoDBBackendProvider(new BasyxMongoMappingContext(), COLLECTION, template);
 		ConceptDescriptionRepositoryFactory cdRepositoryFactory = new SimpleConceptDescriptionRepositoryFactory(cdBackendProvider);
-		
+
 		return cdRepositoryFactory.create();
 	}
 
@@ -74,10 +86,10 @@ public class TestMongoDBConceptDescriptionRepository extends ConceptDescriptionR
 		MongoTemplate template = createTemplate();
 
 		MongoDBUtilities.clearCollection(template, COLLECTION);
-		
+
 		ConceptDescriptionBackendProvider cdBackendProvider = new ConceptDescriptionMongoDBBackendProvider(new BasyxMongoMappingContext(), COLLECTION, template);
 		ConceptDescriptionRepositoryFactory cdRepositoryFactory = new SimpleConceptDescriptionRepositoryFactory(cdBackendProvider, conceptDescriptions);
-		
+
 		return cdRepositoryFactory.create();
 	}
 

@@ -207,7 +207,7 @@ public class CrudConceptDescriptionRepository implements ConceptDescriptionRepos
 
 	private void throwIfConceptDescriptionIdEmptyOrNull(String id) {
 		if (id == null || id.isBlank())
-			throw ExceptionBuilderFactory.getInstance().collidingIdentifierException().collidingIdentifier(id).build();
+			throw ExceptionBuilderFactory.getInstance().missingIdentifierException().build();
 
 	}
 
