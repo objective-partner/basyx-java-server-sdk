@@ -28,7 +28,12 @@ package org.eclipse.digitaltwin.basyx.aasxfileserver;
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.digitaltwin.basyx.aasxfileserver.core.AASXFileServerSuite;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
+import org.eclipse.digitaltwin.basyx.http.TraceableMessageSerializer;
+import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Tests the {@link InMemoryAASXFileServer}
@@ -43,6 +48,13 @@ public class TestInMemoryAASXFileServer extends AASXFileServerSuite {
 	@Override
 	protected AASXFileServer getAASXFileServer() {
 		return new InMemoryAASXFileServer();
+	}
+
+	@BeforeClass
+	public static void setUp() {
+		TraceableMessageSerializer messageSerializer = new TraceableMessageSerializer(new ObjectMapper());
+		ExceptionBuilderFactory builderFactory = new ExceptionBuilderFactory(messageSerializer);
+		ExceptionBuilderFactory.setInstance(builderFactory);
 	}
 
 	@Test
