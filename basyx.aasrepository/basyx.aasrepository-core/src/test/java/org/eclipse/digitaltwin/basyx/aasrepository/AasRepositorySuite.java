@@ -68,7 +68,7 @@ import org.springframework.core.io.ClassPathResource;
  *
  */
 public abstract class AasRepositorySuite {
-	private final PaginationInfo noLimitPaginationInfo = new PaginationInfo(0, "");
+	private final PaginationInfo noLimitPaginationInfo = new PaginationInfo(null, "");
 	private static final String AAS_EMPTY_ID = " ";
 	private static final String AAS_NULL_ID = null;
 
