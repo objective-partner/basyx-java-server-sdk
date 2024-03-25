@@ -4,15 +4,20 @@
     "action": "READ",
     "targetInformation": {
       "@type": "aas",
-      "aasId": "*"
+      "aasId": ".*"
     }
   },
   {
     "role": "admin",
-    "action": ["CREATE", "READ", "UPDATE", "DELETE"],
+    "action": [
+      "CREATE",
+      "READ",
+      "UPDATE",
+      "DELETE"
+    ],
     "targetInformation": {
       "@type": "aas",
-      "aasId": "*"
+      "aasId": ".*"
     }
   },
   {
@@ -28,7 +33,7 @@
     "action": "CREATE",
     "targetInformation": {
       "@type": "aas",
-      "aasId": "*"
+      "aasId": ".*"
     }
   },
   {
@@ -36,7 +41,7 @@
     "action": "UPDATE",
     "targetInformation": {
       "@type": "aas",
-      "aasId": "*"
+      "aasId": ".*"
     }
   },
   {
@@ -52,7 +57,7 @@
     "action": "UPDATE",
     "targetInformation": {
       "@type": "aas",
-      "aasId": "*"
+      "aasId": ".*"
     }
   },
   {
@@ -68,7 +73,7 @@
     "action": "DELETE",
     "targetInformation": {
       "@type": "aas",
-      "aasId": "*"
+      "aasId": ".*"
     }
   },
   {
@@ -84,17 +89,23 @@
     "action": "READ",
     "targetInformation": {
       "@type": "submodel",
-      "submodelId": "*",
-      "submodelElementIdShortPath": "*"
+      "submodelId": ".*",
+      "submodelElementIdShortPath": ".*"
     }
   },
   {
     "role": "admin",
-    "action": ["CREATE", "READ", "UPDATE", "DELETE", "EXECUTE"],
+    "action": [
+      "CREATE",
+      "READ",
+      "UPDATE",
+      "DELETE",
+      "EXECUTE"
+    ],
     "targetInformation": {
       "@type": "submodel",
-      "submodelId": "*",
-      "submodelElementIdShortPath": "*"
+      "submodelId": ".*",
+      "submodelElementIdShortPath": ".*"
     }
   },
   {
@@ -103,7 +114,7 @@
     "targetInformation": {
       "@type": "submodel",
       "submodelId": "specificSubmodelId",
-      "submodelElementIdShortPath": "*"
+      "submodelElementIdShortPath": ".*"
     }
   },
   {
@@ -129,8 +140,8 @@
     "action": "CREATE",
     "targetInformation": {
       "@type": "submodel",
-      "submodelId": "*",
-      "submodelElementIdShortPath": "*"
+      "submodelId": ".*",
+      "submodelElementIdShortPath": ".*"
     }
   },
   {
@@ -138,8 +149,8 @@
     "action": "UPDATE",
     "targetInformation": {
       "@type": "submodel",
-      "submodelId": "*",
-      "submodelElementIdShortPath": "*"
+      "submodelId": ".*",
+      "submodelElementIdShortPath": ".*"
     }
   },
   {
@@ -148,7 +159,7 @@
     "targetInformation": {
       "@type": "submodel",
       "submodelId": "specificSubmodelId",
-      "submodelElementIdShortPath": "*"
+      "submodelElementIdShortPath": ".*"
     }
   },
   {
@@ -192,8 +203,8 @@
     "action": "DELETE",
     "targetInformation": {
       "@type": "submodel",
-      "submodelId": "*",
-      "submodelElementIdShortPath": "*"
+      "submodelId": ".*",
+      "submodelElementIdShortPath": ".*"
     }
   },
   {
@@ -202,7 +213,7 @@
     "targetInformation": {
       "@type": "submodel",
       "submodelId": "specificSubmodelId-2",
-      "submodelElementIdShortPath": "*"
+      "submodelElementIdShortPath": ".*"
     }
   },
   {
@@ -210,8 +221,8 @@
     "action": "EXECUTE",
     "targetInformation": {
       "@type": "submodel",
-      "submodelId": "*",
-      "submodelElementIdShortPath": "*"
+      "submodelId": ".*",
+      "submodelElementIdShortPath": ".*"
     }
   },
   {
@@ -237,15 +248,20 @@
     "action": "READ",
     "targetInformation": {
       "@type": "concept-description",
-      "conceptDescriptionId": "*"
+      "conceptDescriptionId": ".*"
     }
   },
   {
     "role": "admin",
-    "action": ["CREATE", "READ", "UPDATE", "DELETE"],
+    "action": [
+      "CREATE",
+      "READ",
+      "UPDATE",
+      "DELETE"
+    ],
     "targetInformation": {
       "@type": "concept-description",
-      "conceptDescriptionId": "*"
+      "conceptDescriptionId": ".*"
     }
   },
   {
@@ -261,7 +277,7 @@
     "action": "CREATE",
     "targetInformation": {
       "@type": "concept-description",
-      "conceptDescriptionId": "*"
+      "conceptDescriptionId": ".*"
     }
   },
   {
@@ -269,7 +285,7 @@
     "action": "UPDATE",
     "targetInformation": {
       "@type": "concept-description",
-      "conceptDescriptionId": "*"
+      "conceptDescriptionId": ".*"
     }
   },
   {
@@ -285,7 +301,7 @@
     "action": "DELETE",
     "targetInformation": {
       "@type": "concept-description",
-      "conceptDescriptionId": "*"
+      "conceptDescriptionId": ".*"
     }
   },
   {
@@ -298,11 +314,16 @@
   },
   {
     "role": "admin",
-    "action": ["CREATE", "READ", "UPDATE", "DELETE"],
+    "action": [
+      "CREATE",
+      "READ",
+      "UPDATE",
+      "DELETE"
+    ],
     "targetInformation": {
       "@type": "aas-environment",
-      "aasIds": "*",
-      "submodelIds": "*",
+      "aasIds": ".*",
+      "submodelIds": ".*",
       "serializationType": "ALL"
     }
   },
@@ -311,8 +332,8 @@
     "action": "READ",
     "targetInformation": {
       "@type": "aas-environment",
-      "aasIds": "*",
-      "submodelIds": "*",
+      "aasIds": ".*",
+      "submodelIds": ".*",
       "serializationType": "ALL"
     }
   },
@@ -321,8 +342,8 @@
     "action": "READ",
     "targetInformation": {
       "@type": "aas-environment",
-      "aasIds": "*",
-      "submodelIds": "*",
+      "aasIds": ".*",
+      "submodelIds": ".*",
       "serializationType": "AASX"
     }
   },
@@ -331,7 +352,7 @@
     "action": "READ",
     "targetInformation": {
       "@type": "aas",
-      "aasId": "*"
+      "aasId": ".*"
     }
   },
   {
@@ -339,8 +360,8 @@
     "action": "READ",
     "targetInformation": {
       "@type": "submodel",
-      "submodelId": "*",
-      "submodelElementIdShortPath": "*"
+      "submodelId": ".*",
+      "submodelElementIdShortPath": ".*"
     }
   },
   {
@@ -348,7 +369,7 @@
     "action": "READ",
     "targetInformation": {
       "@type": "concept-description",
-      "conceptDescriptionId": "*"
+      "conceptDescriptionId": ".*"
     }
   },
   {
@@ -356,8 +377,8 @@
     "action": "UPDATE",
     "targetInformation": {
       "@type": "aas-environment",
-      "aasIds": "*",
-      "submodelIds": "*",
+      "aasIds": ".*",
+      "submodelIds": ".*",
       "serializationType": "XML"
     }
   },
@@ -366,8 +387,14 @@
     "action": "READ",
     "targetInformation": {
       "@type": "aas-environment",
-      "aasIds": ["shell001", "shell002"],
-      "submodelIds": ["7A7104BDAB57E184", "AC69B1CB44F07935"],
+      "aasIds": [
+        "shell001",
+        "shell002"
+      ],
+      "submodelIds": [
+        "7A7104BDAB57E184",
+        "AC69B1CB44F07935"
+      ],
       "serializationType": "AASX"
     }
   },
@@ -376,7 +403,7 @@
     "action": "READ",
     "targetInformation": {
       "@type": "aas",
-      "aasId": "*"
+      "aasId": ".*"
     }
   },
   {
@@ -384,8 +411,8 @@
     "action": "READ",
     "targetInformation": {
       "@type": "submodel",
-      "submodelId": "*",
-      "submodelElementIdShortPath": "*"
+      "submodelId": ".*",
+      "submodelElementIdShortPath": ".*"
     }
   },
   {
@@ -393,7 +420,7 @@
     "action": "READ",
     "targetInformation": {
       "@type": "concept-description",
-      "conceptDescriptionId": "*"
+      "conceptDescriptionId": ".*"
     }
   },
   {
@@ -401,8 +428,13 @@
     "action": "READ",
     "targetInformation": {
       "@type": "aas-environment",
-      "aasIds": ["shell001", "shell002"],
-      "submodelIds": ["7A7104BDAB57E184"],
+      "aasIds": [
+        "shell001",
+        "shell002"
+      ],
+      "submodelIds": [
+        "7A7104BDAB57E184"
+      ],
       "serializationType": "JSON"
     }
   }

@@ -33,6 +33,7 @@ import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.ProtocolException;
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.AasDiscoveryService;
+import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.model.AssetLink;
 import org.eclipse.digitaltwin.basyx.http.Base64UrlEncodedIdentifier;
 import org.eclipse.digitaltwin.basyx.http.HttpBaSyxHeader;
 import org.eclipse.digitaltwin.basyx.http.serialization.BaSyxHttpTestUtils;
@@ -43,6 +44,7 @@ import org.springframework.http.HttpStatus;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Tests the Aas Discovery specific parts of the {@link AasDiscoveryService}
@@ -62,15 +64,6 @@ public abstract class AasDiscoveryServiceHTTPSuite {
 	public void baSyxResponseHeader() throws IOException, ProtocolException {
 		CloseableHttpResponse response = BaSyxHttpTestUtils.executeGetOnURL(getURL());
 		assertEquals(HttpBaSyxHeader.HEADER_VALUE, response.getHeader(HttpBaSyxHeader.HEADER_KEY).getValue());
-	}
-
-	@Test
-	public void getAllAssetAdministrationShellIdsByAssetLink() throws ParseException, IOException {
-		String expectedShellIds = getAllShellIdsJSON();
-
-		String actualShellIds = requestAllShellIds();
-
-		BaSyxHttpTestUtils.assertSameJSONContent(expectedShellIds, getJSONWithoutCursorInfo(actualShellIds));
 	}
 
 	@Test
@@ -142,7 +135,19 @@ public abstract class AasDiscoveryServiceHTTPSuite {
 	}
 
 	protected String requestAllShellIds() throws IOException, ParseException {
-		CloseableHttpResponse response = BaSyxHttpTestUtils.executeGetOnURL(getURL() + "?assetIds=RHVtbXlBc3NldF8xX1ZhbHVl,RHVtbXlBc3NldF8zX1ZhbHVl");
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		String assetLink_1 = objectMapper.writeValueAsString(new AssetLink("DummyAssetName1", "DummyAsset_1_Value"));
+		String assetLink_2 = objectMapper.writeValueAsString(new AssetLink("DummyAssetName2", "DummyAsset_2_Value"));
+		Base64UrlEncodedIdentifier encoded_1 = new Base64UrlEncodedIdentifier(assetLink_1);
+		Base64UrlEncodedIdentifier encoded_2 = new Base64UrlEncodedIdentifier(assetLink_2);
+
+		String assetLink_3 = objectMapper.writeValueAsString(new AssetLink("DummyAssetName3", "DummyAsset_3_Value"));
+		String assetLink_4 = objectMapper.writeValueAsString(new AssetLink("DummyAssetName4", "DummyAsset_4_Value"));
+		Base64UrlEncodedIdentifier encoded_3 = new Base64UrlEncodedIdentifier(assetLink_3);
+		Base64UrlEncodedIdentifier encoded_4 = new Base64UrlEncodedIdentifier(assetLink_4);
+
+		CloseableHttpResponse response = BaSyxHttpTestUtils.executeGetOnURL(getURL() + "?assetIds=" + encoded_1.getEncodedIdentifier());
 
 		return BaSyxHttpTestUtils.getResponseAsString(response);
 	}

@@ -88,7 +88,7 @@ public class MongoDBAasDiscoveryService implements AasDiscoveryService {
 		Aggregation aggregation = Aggregation.newAggregation(matchOperation, projectionOperation, groupOperation);
 
 		AggregationResults<Document> results = mongoTemplate.aggregate(aggregation, collectionName, Document.class);
-		List<String> shellIds = results.getMappedResults().stream().map(doc -> doc.get("_id").toString()).collect(Collectors.toList());
+		List<String> shellIds = results.getMappedResults().stream().map(doc -> doc.get("_id").toString()).toList();
 
 		return paginateList(pInfo, shellIds);
 	}
