@@ -54,7 +54,7 @@ public class SimpleAasRepositoryFactory implements AasRepositoryFactory {
 	private final String thumbnailStorageBaseFolder;
 
 	@Autowired
-	public SimpleAasRepositoryFactory(AasBackendProvider aasBackendProvider, AasServiceFactory aasServiceFactory, @Value("${basyx.aasrepo.thumbnails.storagepath:/application/thumbnail-storage}") String thumbnailStorageBaseFolder) {
+	public SimpleAasRepositoryFactory(AasBackendProvider aasBackendProvider, AasServiceFactory aasServiceFactory, @Value("${basyx.aasrepo.thumbnails.storagepath:thumbnail-storage}") String thumbnailStorageBaseFolder) {
 		this.aasBackendProvider = aasBackendProvider;
 		this.aasServiceFactory = aasServiceFactory;
 		this.thumbnailStorageBaseFolder = thumbnailStorageBaseFolder;
