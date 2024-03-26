@@ -24,17 +24,20 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.aasdiscoveryservice.tck;
 
+import static org.junit.Assert.fail;
+
+import java.io.IOException;
 import java.util.List;
 
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.ParseException;
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
-import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.AasDiscoveryService;
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.AasDiscoveryServiceSuite;
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.http.AasDiscoveryServiceHTTPSuite;
-import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.http.DummyAasDiscoveryServiceComponent;
-import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
-import org.junit.BeforeClass;
-import org.springframework.boot.SpringApplication;
-import org.springframework.context.ConfigurableApplicationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.gson.Gson;
 
 /**
  *
@@ -43,14 +46,9 @@ import org.springframework.context.ConfigurableApplicationContext;
  *
  */
 public class AasDiscoveryServiceTestDefinedURL extends AasDiscoveryServiceHTTPSuite {
+	private static final Logger logger = LoggerFactory.getLogger(AasDiscoveryServiceTestDefinedURL.class);
 	public static String url = "http://localhost:8081/lookup/shells";
-
-	private static ConfigurableApplicationContext appContext;
-
-	@BeforeClass
-	public static void startConceptDescriptionRepo() throws Exception {
-		appContext = new SpringApplication(DummyAasDiscoveryServiceComponent.class).run(new String[] {});
-	}
+	private static Gson gson = new Gson();
 
 	@Override
 	protected String getURL() {
@@ -63,20 +61,39 @@ public class AasDiscoveryServiceTestDefinedURL extends AasDiscoveryServiceHTTPSu
 	}
 
 	private void createDummyAssetLinks() {
-		AasDiscoveryService aasDiscoveryService = appContext.getBean(AasDiscoveryService.class);
-
-		List<AssetAdministrationShell> dummyAssetLinks = AasDiscoveryServiceSuite.getMultipleDummyAasAssetLink();
-
-		dummyAssetLinks.stream().forEach(assetLink -> resetAssetLink(assetLink, aasDiscoveryService));
+		List<AssetAdministrationShell> dummyAdministrationShells = AasDiscoveryServiceSuite.getMultipleDummyAasAssetLink();
+		dummyAdministrationShells.forEach(this::createAssetLink);
 	}
 
-	private void resetAssetLink(AssetAdministrationShell shell, AasDiscoveryService aasDiscoveryService) {
-
+	private void createAssetLink(AssetAdministrationShell shell) {
 		try {
-			aasDiscoveryService.createAllAssetLinksById(shell.getId(), shell.getAssetInformation().getSpecificAssetIds());
-		} catch (CollidingIdentifierException e) {
-			aasDiscoveryService.deleteAllAssetLinksById(shell.getId());
-			aasDiscoveryService.createAllAssetLinksById(shell.getId(), shell.getAssetInformation().getSpecificAssetIds());
+			String specificAssetIdsJSON = gson.toJson(shell.getAssetInformation().getSpecificAssetIds());
+			CloseableHttpResponse creationResponse = createAssetLinks(shell.getId(), specificAssetIdsJSON);
+
+			if (creationResponse.getCode() != 409) {
+				logger.info("Creating Asset Link with shell id '{}', ResponseCode is '{}'", shell.getId(), creationResponse.getCode());
+				return;
+			}
+
+			resetAssetLink(shell);
+		} catch (IOException | ParseException e) {
+			throw new RuntimeException(e);
 		}
 	}
+
+	private void resetAssetLink(AssetAdministrationShell shell) {
+		deleteAssetLink(shell.getId());
+
+		createAssetLink(shell);
+	}
+
+	private void deleteAssetLink(String shellId) {
+		try {
+			CloseableHttpResponse deleteResponse = deleteAssetLinkById(shellId);
+			logger.info("Deleting Asset Link with shell id '{}', ResponseCode is '{}'", shellId, deleteResponse.getCode());
+		} catch (IOException e) {
+			fail(e.toString());
+		}
+	}
+
 }
