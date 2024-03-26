@@ -59,6 +59,7 @@
     <docker.host.port>8081</docker.host.port>
     <docker.container.port>8081</docker.container.port>
     <aas4j-version>1.0.0</aas4j-version>
+    <docker.mode>host</docker.mode>
   </properties>
   <distributionManagement>
     <repository>
@@ -207,7 +208,7 @@
                 </build>
                 <run>
                   <network>
-                    <mode>host</mode>
+                    <mode>${docker.mode}</mode>
                   </network>
                 </run>
               </image>
