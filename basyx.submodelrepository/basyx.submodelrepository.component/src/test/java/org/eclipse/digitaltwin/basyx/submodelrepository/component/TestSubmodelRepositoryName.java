@@ -63,7 +63,7 @@ public class TestSubmodelRepositoryName {
 		closeContext();
 	}
 
-	// @Test // no idea why failing....
+	@Test
 	public void getConfiguredRepoName() {
 		configureRepoNamePropertyAndStartContext();
 
