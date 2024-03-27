@@ -88,3 +88,5 @@ local.properties
 **/open-api/Plattform_i40-SubmodelRegistry-and-Discovery.yaml
 **/open-api/temporary-extensions-result-file.yaml
 /.env
+.run
+thumbnail-storage/
