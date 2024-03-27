@@ -38,11 +38,11 @@ import org.springframework.stereotype.Component;
  * @author danish, marie
  */
 @Component
-@ConditionalOnExpression("${" + OperationDelegationSubmodelRepositoryFeature.FEATURENAME + ".enabled:true}")
+@ConditionalOnExpression("${" + OperationDelegationSubmodelRepositoryFeature.FEATURENAME + ".enabled}")
 public class OperationDelegationSubmodelRepositoryFeature implements SubmodelRepositoryFeature {
 	public static final String FEATURENAME = "basyx.submodelrepository.feature.operation.delegation";
 
-	@Value("${" + FEATURENAME + ".enabled:true}")
+	@Value("${" + FEATURENAME + ".enabled}")
 	private boolean enabled;
 
 	private OperationDelegation operationDelegation;
