@@ -30,6 +30,7 @@ import java.util.Stack;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.digitaltwin.aas4j.v3.model.AnnotatedRelationshipElement;
 import org.eclipse.digitaltwin.aas4j.v3.model.DataElement;
 import org.eclipse.digitaltwin.aas4j.v3.model.Entity;
@@ -128,7 +129,7 @@ public class InMemorySubmodelService implements SubmodelService {
 	private void throwIfSubmodelElementExists(String submodelElementId) {
 		try {
 			getSubmodelElement(submodelElementId);
-			throw ExceptionBuilderFactory.getInstance().collidingIdentifierException().collidingIdentifier(submodel.getId()).build();
+			throw ExceptionBuilderFactory.getInstance().collidingIdShortException().withIdShortPath(submodelElementId).withSubmodelId(submodel.getId()).build();
 		} catch (ElementDoesNotExistException e) {
 			return;
 		}
@@ -136,18 +137,9 @@ public class InMemorySubmodelService implements SubmodelService {
 
 	@Override
 	public void createSubmodelElement(String idShortPath, SubmodelElement submodelElement) throws ElementDoesNotExistException, CollidingIdentifierException {
-		SubmodelElement parentElement = getSubmodelElement(idShortPath);
-		if (parentElement instanceof SubmodelElementList parentElementList) {
-			if (submodelElement.getIdShort() != null) {
-				// Throw idShort not allowed...
-			}
-		} else if (parentElement instanceof SubmodelElementCollection collection) {
-			throwIfSubmodelElementExists(idShortPath + ". " + submodelElement.getIdShort());
-		}
-
-		throwIfSubmodelElementExists(getFullIdShortPath(idShortPath, submodelElement.getIdShort()));
 
 		SubmodelElement parentSme = parser.getSubmodelElementFromIdShortPath(idShortPath);
+		checkIfSubmodelElementValid(parentSme, submodelElement, idShortPath);
 		if (parentSme instanceof SubmodelElementList list) {
 			List<SubmodelElement> submodelElements = list.getValue();
 			submodelElements.add(submodelElement);
@@ -276,5 +268,14 @@ public class InMemorySubmodelService implements SubmodelService {
 
 	private String getFullIdShortPath(String idShortPath, String submodelElementId) {
 		return idShortPath + "." + submodelElementId;
+	}
+
+	private void checkIfSubmodelElementValid(SubmodelElement parentSubmodelElement, SubmodelElement newSubmodelElement, String idShortPath) {
+		if (parentSubmodelElement instanceof SubmodelElementList && StringUtils.isNotBlank(newSubmodelElement.getIdShort())) {
+			throw ExceptionBuilderFactory.getInstance().idShortNotAllowedException().withSubmodelId(submodel.getId()).withIdShort(idShortPath).build();
+		}
+		if (parentSubmodelElement instanceof SubmodelElementCollection) {
+			throwIfSubmodelElementExists(getFullIdShortPath(idShortPath, newSubmodelElement.getIdShort()));
+		}
 	}
 }

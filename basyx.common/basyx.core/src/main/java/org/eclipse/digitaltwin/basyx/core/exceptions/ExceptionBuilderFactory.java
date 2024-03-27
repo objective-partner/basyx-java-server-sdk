@@ -103,4 +103,10 @@ public class ExceptionBuilderFactory {
 	public OperationDelegationException.Builder operationDelegationException() {
 		return new OperationDelegationException.Builder(serializer);
 	}
+	public CollidingIdShortException.Builder collidingIdShortException() {
+		return new CollidingIdShortException.Builder(serializer);
+	}
+	public IdShortNotAllowedException.Builder idShortNotAllowedException() {
+		return new IdShortNotAllowedException.Builder(serializer);
+	}
 }
