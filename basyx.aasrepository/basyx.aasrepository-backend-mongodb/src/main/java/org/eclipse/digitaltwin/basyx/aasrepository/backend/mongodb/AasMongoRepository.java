@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.StreamSupport;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
 import org.eclipse.digitaltwin.basyx.aasrepository.AasFilterParams;
@@ -46,10 +47,18 @@ public class AasMongoRepository implements BaSyxCrudRepository<AssetAdministrati
 	public CursorResult<List<AssetAdministrationShell>> findAll(AasFilterParams filterParams) {
 		List<AggregationOperation> allAggregations = new LinkedList<>();
 		applyFilter(allAggregations, filterParams.getIdShort(), filterParams.getIds());
-		applyPagination(filterParams.getPaginationInfo(), allAggregations);
+		PaginationInfo paginationInfo = filterParams.getPaginationInfo();
+		applyPagination(paginationInfo, allAggregations);
+
+		if (allAggregations.isEmpty()) {
+			List<AssetAdministrationShell> allAas = StreamSupport.stream(findAll().spliterator(), false).toList();
+			return new CursorResult<>(null, allAas);
+		}
+
 		Aggregation aggregation = Aggregation.newAggregation(allAggregations);
 		List<AssetAdministrationShell> results = template.aggregate(aggregation, entityInformation.getCollectionName(), entityInformation.getJavaType()).getMappedResults();
-		String cursor = resolveCursor(filterParams.getPaginationInfo(), results, AssetAdministrationShell::getId);
+
+		String cursor = resolveCursor(paginationInfo, results, AssetAdministrationShell::getId);
 		return new CursorResult<>(cursor, results);
 	}
 
@@ -149,7 +158,7 @@ public class AasMongoRepository implements BaSyxCrudRepository<AssetAdministrati
 	}
 
 	private <T> String resolveCursor(PaginationInfo pRequest, List<T> foundDescriptors, Function<T, String> idResolver) {
-		if (foundDescriptors.isEmpty() || !pRequest.isPaged()) {
+		if (pRequest == null || foundDescriptors.isEmpty() || !pRequest.isPaged()) {
 			return null;
 		}
 		T last = foundDescriptors.get(foundDescriptors.size() - 1);

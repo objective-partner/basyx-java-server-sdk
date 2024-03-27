@@ -276,7 +276,9 @@ public class DelegatedOperationSubmodelRepository implements SubmodelRepository 
 				.filter(ep -> !ep.getProtocolInformation().getHref().startsWith(submodelRepositoryRegistryLink.getSubmodelRepositoryBaseURL())).findFirst();
 		if (endpoint.isEmpty()) {
 			String correlationId = UUID.randomUUID().toString();
-			logger.warn("[{}] Operation '{}' in Submodel '{}' delegates to Submodel '{}', but registry holds no SUBMODEL/SUBMODEL-REPOSITORY endpoint         ", correlationId, idShortPath, submodelId, delegatedSubmodelDescriptor.getId());
+
+			logger.warn("[{}] Operation '{}' in Submodel '{}' delegates to Submodel '{}', but registry holds no SUBMODEL/SUBMODEL-REPOSITORY endpoint.", correlationId, idShortPath, submodelId, delegatedSubmodelDescriptor.getId());
+
 			throw ExceptionBuilderFactory.getInstance().notInvokableException().submodelId(submodelId).idShortPath(idShortPath).correlationId(correlationId).build();
 		}
 		return endpoint.get();

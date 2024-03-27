@@ -43,6 +43,8 @@ import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultQualifier;
 import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultSubmodel;
 import org.eclipse.digitaltwin.basyx.common.mqttcore.encoding.Base64URLEncoder;
 import org.eclipse.digitaltwin.basyx.common.mqttcore.serializer.SubmodelElementSerializer;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
+import org.eclipse.digitaltwin.basyx.http.TraceableMessageSerializer;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelInMemoryBackendProvider;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepository;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepositoryFactory;
@@ -56,6 +58,8 @@ import org.eclipse.paho.client.mqttv3.MqttSecurityException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.moquette.broker.Server;
 import io.moquette.broker.config.ClasspathResourceLoader;
@@ -83,6 +87,8 @@ public class TestMqttSubmodelObserver {
 		mqttClient = createAndConnectClient();
 
 		submodelRepository = createMqttSubmodelRepository(mqttClient);
+
+		prepareExceptionBuilderFactory();
 	}
 
 	@AfterClass
@@ -222,5 +228,11 @@ public class TestMqttSubmodelObserver {
 		broker.startServer(classPathConfig);
 
 		return broker;
+	}
+
+	private static void prepareExceptionBuilderFactory() {
+		TraceableMessageSerializer messageSerializer = new TraceableMessageSerializer(new ObjectMapper());
+		ExceptionBuilderFactory builderFactory = new ExceptionBuilderFactory(messageSerializer);
+		ExceptionBuilderFactory.setInstance(builderFactory);
 	}
 }

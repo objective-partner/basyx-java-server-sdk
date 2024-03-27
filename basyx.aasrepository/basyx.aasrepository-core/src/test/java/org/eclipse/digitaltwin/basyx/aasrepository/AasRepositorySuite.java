@@ -68,7 +68,7 @@ import org.springframework.core.io.ClassPathResource;
  *
  */
 public abstract class AasRepositorySuite {
-	private final PaginationInfo noLimitPaginationInfo = new PaginationInfo(0, "");
+	private final PaginationInfo noLimitPaginationInfo = new PaginationInfo(null, "");
 	private static final String AAS_EMPTY_ID = " ";
 	private static final String AAS_NULL_ID = null;
 
@@ -82,6 +82,11 @@ public abstract class AasRepositorySuite {
 		shells.forEach(repo::createAas);
 
 		return repo;
+	}
+
+	protected static String getThumbnailFolder() {
+		String projectRoot = System.getProperty("user.dir");
+		return projectRoot + "/target/thumbnail_storage";
 	}
 
 	@Test

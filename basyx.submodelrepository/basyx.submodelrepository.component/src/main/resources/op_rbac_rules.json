@@ -1,0 +1,35 @@
+[
+  {
+    "role": "basyx-admin",
+    "action": [
+      "CREATE",
+      "READ",
+      "UPDATE",
+      "DELETE",
+      "EXECUTE"
+    ],
+    "targetInformation": {
+      "@type": "submodel",
+      "submodelId": ".*",
+      "submodelElementIdShortPath": ".*"
+    }
+  },
+  {
+    "role": "basyx-reader",
+    "action": "READ",
+    "targetInformation": {
+      "@type": "submodel",
+      "submodelId": "https://org.eclipse.digitaltwin.basyx/namespace/errormessages/v2/r1",
+      "submodelElementIdShortPath": ".*"
+    }
+  },
+  {
+    "role": "basyx-reader",
+    "action": "READ",
+    "targetInformation": {
+      "@type": "submodel",
+      "submodelId": "https://basyx.objective-partner.com/.*",
+      "submodelElementIdShortPath": ".*"
+    }
+  }
+]

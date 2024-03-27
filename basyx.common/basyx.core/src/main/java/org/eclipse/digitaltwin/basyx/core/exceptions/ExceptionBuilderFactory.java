@@ -16,6 +16,10 @@ public class ExceptionBuilderFactory {
 		return instance;
 	}
 
+	public static void setInstance(ExceptionBuilderFactory instance) {
+		ExceptionBuilderFactory.instance = instance;
+	}
+
 	public ITraceableMessageSerializer getSerializer() {
 		return serializer;
 	}
@@ -94,5 +98,9 @@ public class ExceptionBuilderFactory {
 
 	public NullSubjectException.Builder nullSubjectException() {
 		return new NullSubjectException.Builder(serializer);
+	}
+
+	public OperationDelegationException.Builder operationDelegationException() {
+		return new OperationDelegationException.Builder(serializer);
 	}
 }

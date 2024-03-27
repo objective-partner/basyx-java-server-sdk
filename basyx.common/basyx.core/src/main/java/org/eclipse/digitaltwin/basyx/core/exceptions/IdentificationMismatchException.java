@@ -47,7 +47,7 @@ public class IdentificationMismatchException extends BaSyxResponseException {
 		public Builder(ITraceableMessageSerializer serializer) {
 			super(serializer);
 			messageReference("IdentificationMismatchException");
-			returnCode(404);
+			returnCode(400);
 			technicalMessageTemplate("The provided element '{MismatchingIdentifier}' has mismatched identifier than the existing element that needs to be updated.");
 		}
 

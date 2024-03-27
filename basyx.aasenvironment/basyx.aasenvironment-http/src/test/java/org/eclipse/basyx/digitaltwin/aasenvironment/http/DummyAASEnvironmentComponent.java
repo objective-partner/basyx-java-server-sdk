@@ -64,7 +64,7 @@ public class DummyAASEnvironmentComponent {
 	@ConditionalOnMissingBean
 	public AasEnvironment createAasEnvironment() {
 		SubmodelRepository submodelRepository = new SimpleSubmodelRepositoryFactory(new SubmodelInMemoryBackendProvider(), new InMemorySubmodelServiceFactory()).create();
-		AasRepository aasRepository = new SimpleAasRepositoryFactory(new AasInMemoryBackendProvider(), new InMemoryAasServiceFactory()).create();
+		AasRepository aasRepository = new SimpleAasRepositoryFactory(new AasInMemoryBackendProvider(), new InMemoryAasServiceFactory(), getThumbnailFolder()).create();
 		ConceptDescriptionRepository conceptDescriptionRepository = new SimpleConceptDescriptionRepositoryFactory(new ConceptDescriptionInMemoryBackendProvider(), TestAASEnvironmentSerialization.createDummyConceptDescriptions()).create();
 
 		for (Submodel submodel : createDummySubmodels()) {
@@ -83,6 +83,11 @@ public class DummyAASEnvironmentComponent {
 		submodels.add(DummySubmodelFactory.createOperationalDataSubmodel());
 		submodels.add(DummySubmodelFactory.createTechnicalDataSubmodel());
 		return submodels;
+	}
+
+	private static String getThumbnailFolder() {
+		String projectRoot = System.getProperty("user.dir");
+		return projectRoot + "/target/thumbnail_storage";
 	}
 
 	private Collection<AssetAdministrationShell> createDummyShells() {

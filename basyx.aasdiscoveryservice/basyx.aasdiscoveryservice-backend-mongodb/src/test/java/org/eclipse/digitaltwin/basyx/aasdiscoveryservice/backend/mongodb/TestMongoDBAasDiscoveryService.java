@@ -34,10 +34,14 @@ import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
 import org.eclipse.digitaltwin.aas4j.v3.model.SpecificAssetId;
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.AasDiscoveryService;
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.AasDiscoveryServiceSuite;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
+import org.eclipse.digitaltwin.basyx.http.TraceableMessageSerializer;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 
@@ -50,6 +54,13 @@ import com.mongodb.client.MongoClients;
 public class TestMongoDBAasDiscoveryService extends AasDiscoveryServiceSuite {
 	private static final String CONFIGURED_AAS_DISC_SERV_NAME = "configured-aas-discovery-service-name";
 	private final String COLLECTION = "aasDiscoveryServiceTestCollection";
+
+	@BeforeClass
+	public static void setUp() {
+		TraceableMessageSerializer messageSerializer = new TraceableMessageSerializer(new ObjectMapper());
+		ExceptionBuilderFactory builderFactory = new ExceptionBuilderFactory(messageSerializer);
+		ExceptionBuilderFactory.setInstance(builderFactory);
+	}
 
 	@Override
 	protected AasDiscoveryService getAasDiscoveryService() {

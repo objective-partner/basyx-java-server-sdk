@@ -43,7 +43,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author danish
  */
 @Configuration
-@ConditionalOnExpression("T(java.lang.Boolean).valueOf('${basyx.submodelrepository.feature.delegatedoperation.enabled:true}') && !T(org.springframework.util.StringUtils).isEmpty('${basyx.externalurl:}')")
+@ConditionalOnExpression("T(java.lang.Boolean).valueOf('${basyx.submodelrepository.feature.delegatedoperation.enabled:}') && !T(org.springframework.util.StringUtils).isEmpty('${basyx.externalurl:}')")
 public class DelegatedOperationSubmodelRepositoryConfiguration {
 
 	@Bean

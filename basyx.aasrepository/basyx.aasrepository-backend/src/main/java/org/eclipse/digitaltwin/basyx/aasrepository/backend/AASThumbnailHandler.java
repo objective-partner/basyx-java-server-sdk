@@ -40,6 +40,7 @@ import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultResource;
 import org.eclipse.digitaltwin.basyx.aasrepository.AasRepository;
 import org.eclipse.digitaltwin.basyx.core.Base64UrlEncoder;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
+import org.eclipse.digitaltwin.basyx.core.exceptions.FileHandlingException.Builder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,8 +100,9 @@ public class AASThumbnailHandler {
 		try (FileOutputStream outStream = new FileOutputStream(targetFile)) {
 			IOUtils.copy(inputStream, outStream);
 		} catch (IOException e) {
-			logger.error("Unable to copy data", e);
-			throw ExceptionBuilderFactory.getInstance().fileHandlingException().filename(fileName).build();
+			Builder exBuilder = ExceptionBuilderFactory.getInstance().fileHandlingException().filename(fileName);
+			logger.error("[{}] Unable to copy data", exBuilder.getCorrelationId(), e);
+			throw exBuilder.build();
 		}
 	}
 

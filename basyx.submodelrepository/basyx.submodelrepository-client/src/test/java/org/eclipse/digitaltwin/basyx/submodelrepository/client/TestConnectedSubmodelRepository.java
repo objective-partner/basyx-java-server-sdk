@@ -138,8 +138,8 @@ public class TestConnectedSubmodelRepository extends SubmodelRepositorySuite {
 	@Override
 	public void getNonExistingFile() {
 		// TODO Auto-generated method stub
-		throw ExceptionBuilderFactory.getInstance().featureNotImplementedException().build();
 
+		throw ExceptionBuilderFactory.getInstance().fileDoesNotExistException().build();
 	}
 
 	@Override
@@ -152,13 +152,13 @@ public class TestConnectedSubmodelRepository extends SubmodelRepositorySuite {
 	public void deleteNonExistingFile() throws IOException {
 		// TODO Auto-generated method stub
 
-		throw ExceptionBuilderFactory.getInstance().featureNotImplementedException().build();
+		throw ExceptionBuilderFactory.getInstance().fileDoesNotExistException().build();
 	}
 
 	@Override
 	public void getFileFromNonFileSME() {
 		// TODO Auto-generated method stub
-		throw ExceptionBuilderFactory.getInstance().featureNotImplementedException().build();
+		throw ExceptionBuilderFactory.getInstance().elementNotAFileException().build();
 	}
 
 	@Override
@@ -171,7 +171,7 @@ public class TestConnectedSubmodelRepository extends SubmodelRepositorySuite {
 	public void invokeNonOperation() {
 		// TODO Auto-generated method stub
 
-		throw ExceptionBuilderFactory.getInstance().featureNotImplementedException().build();
+		throw ExceptionBuilderFactory.getInstance().notInvokableException().build();
 	}
 
 	@Override
@@ -189,7 +189,7 @@ public class TestConnectedSubmodelRepository extends SubmodelRepositorySuite {
 	@Override
 	public void updateExistingSubmodelWithMismatchId() {
 		// TODO Auto-generated method stub
-		throw ExceptionBuilderFactory.getInstance().featureNotImplementedException().build();
+		throw ExceptionBuilderFactory.getInstance().identificationMismatchException().build();
 	}
 
 	@Override

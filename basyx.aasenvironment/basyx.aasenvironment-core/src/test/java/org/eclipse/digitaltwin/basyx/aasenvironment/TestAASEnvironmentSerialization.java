@@ -65,7 +65,7 @@ public class TestAASEnvironmentSerialization {
 	@Before
 	public void setup() {
 		submodelRepository = new SimpleSubmodelRepositoryFactory(new SubmodelInMemoryBackendProvider(), new InMemorySubmodelServiceFactory()).create();
-		aasRepository = new SimpleAasRepositoryFactory(new AasInMemoryBackendProvider(), new InMemoryAasServiceFactory()).create();
+		aasRepository = new SimpleAasRepositoryFactory(new AasInMemoryBackendProvider(), new InMemoryAasServiceFactory(), getThumbnailFolder()).create();
 		conceptDescriptionRepository = new SimpleConceptDescriptionRepositoryFactory(new ConceptDescriptionInMemoryBackendProvider(), createDummyConceptDescriptions(), "cdRepo").create();
 
 		for (Submodel submodel : createDummySubmodels()) {
@@ -238,4 +238,8 @@ public class TestAASEnvironmentSerialization {
 		assertTrue(conceptDescriptionRepository.getAllConceptDescriptions(NO_LIMIT_PAGINATION_INFO).getResult().containsAll(createDummyConceptDescriptions()));
 	}
 
+	private static String getThumbnailFolder() {
+		String projectRoot = System.getProperty("user.dir");
+		return projectRoot + "/target/thumbnail_storage";
+	}
 }

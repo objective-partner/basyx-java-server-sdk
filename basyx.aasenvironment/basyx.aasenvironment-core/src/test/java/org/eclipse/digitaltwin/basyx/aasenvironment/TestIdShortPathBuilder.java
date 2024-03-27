@@ -36,8 +36,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElement;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.exceptions.InvalidIdShortPathElementsException;
+import org.eclipse.digitaltwin.basyx.http.TraceableMessageSerializer;
+import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Tests the behaviour of {@link IdShortPathBuilder}
@@ -51,6 +56,13 @@ public class TestIdShortPathBuilder {
 	private static final String EXPECTED_IDSHORTPATH_SCENARIO_3 = "SML_THREE[2].SMC1.SML1[1]";
 	private static final String EXPECTED_IDSHORTPATH_SCENARIO_4 = "SMC_FOUR.SML0[1][1].File1_FOUR";
 	private static final String EXPECTED_IDSHORTPATH_SCENARIO_5 = "File1_FIVE";
+
+	@BeforeClass
+	public static void setUp() {
+		TraceableMessageSerializer messageSerializer = new TraceableMessageSerializer(new ObjectMapper());
+		ExceptionBuilderFactory builderFactory = new ExceptionBuilderFactory(messageSerializer);
+		ExceptionBuilderFactory.setInstance(builderFactory);
+	}
 
 	@Test
 	public void scenario1() {

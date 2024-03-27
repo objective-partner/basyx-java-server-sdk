@@ -4,15 +4,20 @@
     "action": "READ",
     "targetInformation": {
       "@type": "concept-description",
-      "conceptDescriptionId": "*"
+      "conceptDescriptionId": ".*"
     }
   },
   {
     "role": "admin",
-    "action": ["CREATE", "READ", "UPDATE", "DELETE"],
+    "action": [
+      "CREATE",
+      "READ",
+      "UPDATE",
+      "DELETE"
+    ],
     "targetInformation": {
       "@type": "concept-description",
-      "conceptDescriptionId": "*"
+      "conceptDescriptionId": ".*"
     }
   },
   {
@@ -28,7 +33,7 @@
     "action": "CREATE",
     "targetInformation": {
       "@type": "concept-description",
-      "conceptDescriptionId": "*"
+      "conceptDescriptionId": ".*"
     }
   },
   {
@@ -36,7 +41,7 @@
     "action": "UPDATE",
     "targetInformation": {
       "@type": "concept-description",
-      "conceptDescriptionId": "*"
+      "conceptDescriptionId": ".*"
     }
   },
   {
@@ -52,7 +57,7 @@
     "action": "DELETE",
     "targetInformation": {
       "@type": "concept-description",
-      "conceptDescriptionId": "*"
+      "conceptDescriptionId": ".*"
     }
   },
   {

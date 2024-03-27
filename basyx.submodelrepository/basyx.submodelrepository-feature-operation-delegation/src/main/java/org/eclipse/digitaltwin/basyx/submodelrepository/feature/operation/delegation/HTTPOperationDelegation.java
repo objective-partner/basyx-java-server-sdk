@@ -27,7 +27,11 @@ package org.eclipse.digitaltwin.basyx.submodelrepository.feature.operation.deleg
 
 import org.eclipse.digitaltwin.aas4j.v3.model.OperationVariable;
 import org.eclipse.digitaltwin.aas4j.v3.model.Qualifier;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.exceptions.OperationDelegationException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.OperationDelegationException.Builder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -38,11 +42,14 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
  * 
  * @author danish, marie
  */
+
 public class HTTPOperationDelegation implements OperationDelegation {
 
 	public static final String INVOCATION_DELEGATION_TYPE = "invocationDelegation";
 
 	private WebClient webClient;
+
+	private static final Logger logger = LoggerFactory.getLogger(HTTPOperationDelegation.class);
 
 	public HTTPOperationDelegation(WebClient webClient) {
 		this.webClient = webClient;
@@ -56,14 +63,22 @@ public class HTTPOperationDelegation implements OperationDelegation {
 		try {
 			return webClient.post().uri(uri).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).body(BodyInserters.fromValue(input)).exchangeToMono(response -> {
 				if (response.statusCode().isError()) {
-					throw new OperationDelegationException(String.format("Unable to delegate the invocation operation on the URI: '%s' the response code is %s", uri, response.statusCode()));
+					Builder exBuilder = ExceptionBuilderFactory.getInstance().operationDelegationException().returnCode(response.statusCode().value());
+
+					logger.error("[{}] Unable to delegate the invocation operation on the URI: '{}' the response code is {}", exBuilder.getCorrelationId(), uri, response.statusCode());
+
+					throw exBuilder.build();
 				} else {
 					return response.bodyToMono(OperationVariable[].class);
 				}
 			}).block();
 
 		} catch (WebClientResponseException e) {
-			throw new OperationDelegationException(String.format("Exception occurred while invocing operation on the URI: '%s' the error is %s", uri, e.getStackTrace()));
+			Builder exBuilder = ExceptionBuilderFactory.getInstance().operationDelegationException();
+
+			logger.error("[{}] Exception occurred while invoking operation on the URI: '{}'", exBuilder.getCorrelationId(), uri, e);
+
+			throw exBuilder.build();
 		}
 
 	}

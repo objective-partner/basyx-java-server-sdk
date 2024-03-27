@@ -45,7 +45,7 @@ public class FileDoesNotExistException extends BaSyxResponseException {
 		public Builder(ITraceableMessageSerializer serializer) {
 			super(serializer);
 			messageReference("FileDoesNotExistException");
-			returnCode(406);
+			returnCode(404);
 			technicalMessageTemplate("Requested File inside the Asset administration shell '{ShellIdentifier}' / element path '{ElementPath}' does not exist.");
 		}
 

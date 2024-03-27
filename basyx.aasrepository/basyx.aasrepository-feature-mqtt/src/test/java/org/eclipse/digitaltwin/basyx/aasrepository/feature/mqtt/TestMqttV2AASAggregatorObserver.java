@@ -135,7 +135,7 @@ public class TestMqttV2AASAggregatorObserver {
 	}
 
 	private static AasRepository createMqttAasRepository(MqttClient client) {
-		AasRepositoryFactory repoFactory = new SimpleAasRepositoryFactory(new AasInMemoryBackendProvider(), new InMemoryAasServiceFactory());
+		AasRepositoryFactory repoFactory = new SimpleAasRepositoryFactory(new AasInMemoryBackendProvider(), new InMemoryAasServiceFactory(), getThumbnailFolder());
 
 		return new MqttAasRepositoryFactory(repoFactory, client, new MqttAasRepositoryTopicFactory(new URLEncoder())).create();
 	}
@@ -161,5 +161,10 @@ public class TestMqttV2AASAggregatorObserver {
 		broker.startServer(classPathConfig);
 
 		return broker;
+	}
+
+	protected static String getThumbnailFolder() {
+		String projectRoot = System.getProperty("user.dir");
+		return projectRoot + "/target/thumbnail_storage";
 	}
 }

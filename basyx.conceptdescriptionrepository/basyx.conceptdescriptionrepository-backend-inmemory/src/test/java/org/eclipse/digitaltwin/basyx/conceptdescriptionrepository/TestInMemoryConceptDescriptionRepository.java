@@ -23,7 +23,6 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.conceptdescriptionrepository;
 
 import static org.junit.Assert.assertEquals;
@@ -38,7 +37,12 @@ import org.eclipse.digitaltwin.basyx.aasrepository.backend.SimpleConceptDescript
 import org.eclipse.digitaltwin.basyx.conceptdescriptionrepository.core.ConceptDescriptionRepositorySuite;
 import org.eclipse.digitaltwin.basyx.conceptdescriptionrepository.core.DummyConceptDescriptionFactory;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
+import org.eclipse.digitaltwin.basyx.http.TraceableMessageSerializer;
+import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Tests the {@link InMemoryConceptDescriptionRepository}
@@ -47,10 +51,17 @@ import org.junit.Test;
  *
  */
 public class TestInMemoryConceptDescriptionRepository extends ConceptDescriptionRepositorySuite {
-	
+
 	private static final String CONFIGURED_CD_REPO_NAME = "configured-cd-repo-name";
-	
+
 	private ConceptDescriptionBackendProvider backendProvider = new ConceptDescriptionInMemoryBackendProvider();
+
+	@BeforeClass
+	public static void setUp() {
+		TraceableMessageSerializer messageSerializer = new TraceableMessageSerializer(new ObjectMapper());
+		ExceptionBuilderFactory builderFactory = new ExceptionBuilderFactory(messageSerializer);
+		ExceptionBuilderFactory.setInstance(builderFactory);
+	}
 
 	@Override
 	protected ConceptDescriptionRepository getConceptDescriptionRepository() {
@@ -61,18 +72,18 @@ public class TestInMemoryConceptDescriptionRepository extends ConceptDescription
 	protected ConceptDescriptionRepository getConceptDescriptionRepository(Collection<ConceptDescription> conceptDescriptions) {
 		return new SimpleConceptDescriptionRepositoryFactory(backendProvider, conceptDescriptions).create();
 	}
-	
+
 	@Test
-    public void getConfiguredInMemoryConceptDescriptionRepositoryName() {
+	public void getConfiguredInMemoryConceptDescriptionRepositoryName() {
 		ConceptDescriptionRepository repo = new CrudConceptDescriptionRepository(backendProvider, CONFIGURED_CD_REPO_NAME);
-		
+
 		assertEquals(CONFIGURED_CD_REPO_NAME, repo.getName());
 	}
 
 	@Test(expected = CollidingIdentifierException.class)
 	public void idCollisionDuringConstruction() {
 		Collection<ConceptDescription> conceptDescriptionsWithCollidingIds = createConceptDescriptionCollectionWithCollidingIds();
-		
+
 		new CrudConceptDescriptionRepository(backendProvider, conceptDescriptionsWithCollidingIds);
 	}
 

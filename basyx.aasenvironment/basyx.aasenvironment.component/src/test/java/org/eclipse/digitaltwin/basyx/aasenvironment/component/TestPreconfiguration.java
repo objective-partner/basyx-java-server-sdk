@@ -43,6 +43,8 @@ import org.eclipse.digitaltwin.aas4j.v3.model.ConceptDescription;
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
 import org.eclipse.digitaltwin.basyx.aasrepository.AasRepository;
 import org.eclipse.digitaltwin.basyx.conceptdescriptionrepository.ConceptDescriptionRepository;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
+import org.eclipse.digitaltwin.basyx.http.TraceableMessageSerializer;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepository;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -50,6 +52,8 @@ import org.junit.Test;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.io.ClassPathResource;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Tests the Preconfiguration feature of the AAS Environment
@@ -64,6 +68,10 @@ public class TestPreconfiguration {
 
 	@BeforeClass
 	public static void startAASEnvironment() throws Exception {
+		TraceableMessageSerializer messageSerializer = new TraceableMessageSerializer(new ObjectMapper());
+		ExceptionBuilderFactory builderFactory = new ExceptionBuilderFactory(messageSerializer);
+		ExceptionBuilderFactory.setInstance(builderFactory);
+
 		appContext = new SpringApplication(AasEnvironmentComponent.class).run(new String[] {});
 		submodelRepo = appContext.getBean(SubmodelRepository.class);
 		aasRepo = appContext.getBean(AasRepository.class);

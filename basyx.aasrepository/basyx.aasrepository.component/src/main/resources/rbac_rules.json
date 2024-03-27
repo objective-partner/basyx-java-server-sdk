@@ -1,6 +1,14 @@
 [
   {
-    "role": "basyx-admin",
+    "role": "basyx-reader",
+    "action": "READ",
+    "targetInformation": {
+      "@type": "aas",
+      "aasId": ".*"
+    }
+  },
+  {
+    "role": "admin",
     "action": [
       "CREATE",
       "READ",
@@ -13,16 +21,68 @@
     }
   },
   {
-    "role": "basyx-reader",
-    "action": [
-      "CREATE",
-      "READ",
-      "UPDATE",
-      "DELETE"
-    ],
+    "role": "basyx-reader-two",
+    "action": "READ",
     "targetInformation": {
       "@type": "aas",
-      "aasId": "https://basyx.objective-partner.com/enterprise/basyx-reader/.*"
+      "aasId": "specificAasId"
+    }
+  },
+  {
+    "role": "basyx-creator",
+    "action": "CREATE",
+    "targetInformation": {
+      "@type": "aas",
+      "aasId": ".*"
+    }
+  },
+  {
+    "role": "basyx-updater",
+    "action": "UPDATE",
+    "targetInformation": {
+      "@type": "aas",
+      "aasId": ".*"
+    }
+  },
+  {
+    "role": "basyx-updater-two",
+    "action": "UPDATE",
+    "targetInformation": {
+      "@type": "aas",
+      "aasId": "specificAasId"
+    }
+  },
+  {
+    "role": "basyx-asset-updater",
+    "action": "UPDATE",
+    "targetInformation": {
+      "@type": "aas",
+      "aasId": ".*"
+    }
+  },
+  {
+    "role": "basyx-asset-updater-two",
+    "action": "UPDATE",
+    "targetInformation": {
+      "@type": "aas",
+      "aasId": "specificAasId-2"
+    }
+  },
+  {
+    "role": "basyx-deleter",
+    "action": "DELETE",
+    "targetInformation": {
+      "@type": "aas",
+      "aasId": ".*"
+    }
+  },
+  {
+    "role": "basyx-deleter-two",
+    "action": "DELETE",
+    "targetInformation": {
+      "@type": "aas",
+      "aasId": "specificAasId-2"
     }
   }
 ]
+//

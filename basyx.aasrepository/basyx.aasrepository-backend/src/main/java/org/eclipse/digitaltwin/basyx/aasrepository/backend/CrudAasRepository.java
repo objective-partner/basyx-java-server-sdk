@@ -43,7 +43,6 @@ import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistExceptio
 import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.repository.CrudRepository;
 
 /**
@@ -67,8 +66,7 @@ public class CrudAasRepository implements AasRepository {
 		this.aasServiceFactory = aasServiceFactory;
 	}
 
-	public CrudAasRepository(AasBackendProvider aasBackendProvider, AasServiceFactory aasServiceFactory, @Value("${basyx.aasrepo.name:aas-repo}") String aasRepositoryName,
-			@Value("${basyx.aasrepo.thumbnails.storagepath}") String thumbnailStorageBaseFolder) {
+	public CrudAasRepository(AasBackendProvider aasBackendProvider, AasServiceFactory aasServiceFactory, String aasRepositoryName, String thumbnailStorageBaseFolder) {
 		this(aasBackendProvider, aasServiceFactory);
 
 		this.aasRepositoryName = aasRepositoryName;

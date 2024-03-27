@@ -67,19 +67,20 @@ public class HierarchicalSubmodelElementParser {
 
 		return getLastElementOfStack(idShortPathTokenStack);
 	}
-	
+
 	/**
 	 * Returns the IdShortPath of parent SubmodelElement
-	 * 
+	 *
 	 * <pre>
-	 * e.g., 
-	 * 
+	 * e.g.,
+	 *
 	 * SubmodelElementCollection.Property -> SubmodelElementCollection
 	 * SubmodelElementList.SubmodelElementCollection.File -> SubmodelElementList.SubmodelElementCollection
 	 * Property -> Property
 	 * SubmodelElementList.SubmodelElementCollection -> SubmodelElementList
-	 * 
+	 *
 	 * </pre>
+	 * 
 	 * @param idShortPath
 	 * @return the IdShortPath of parent SubmodelElement
 	 */
@@ -93,7 +94,7 @@ public class HierarchicalSubmodelElementParser {
 		return idShortPath.substring(0, lastElementIdShortIndex);
 	}
 
-	private SubmodelElement getLastElementOfStack(Stack<PathToken> idShortPathTokenStack) {
+	public SubmodelElement getLastElementOfStack(Stack<PathToken> idShortPathTokenStack) {
 		PathToken nextToken = idShortPathTokenStack.pop();
 		SubmodelElement nextElement = getFirstSubmodelElementFromStack(nextToken.getToken());
 		while (!idShortPathTokenStack.isEmpty()) {
@@ -108,5 +109,4 @@ public class HierarchicalSubmodelElementParser {
 		return submodel.getSubmodelElements().stream().filter(sme -> sme.getIdShort().equals(rootElementIdShort)).findAny()
 				.orElseThrow(() -> ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.SUBMODEL_ELEMENT).missingElement(rootElementIdShort).build());
 	}
-
 }

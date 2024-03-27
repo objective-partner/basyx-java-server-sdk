@@ -33,7 +33,12 @@ import org.eclipse.digitaltwin.basyx.aasrepository.backend.AasBackendProvider;
 import org.eclipse.digitaltwin.basyx.aasrepository.backend.CrudAasRepository;
 import org.eclipse.digitaltwin.basyx.aasrepository.backend.SimpleAasRepositoryFactory;
 import org.eclipse.digitaltwin.basyx.aasservice.backend.InMemoryAasServiceFactory;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
+import org.eclipse.digitaltwin.basyx.http.TraceableMessageSerializer;
+import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Tests the {@link AasInMemoryBackend} name
@@ -46,9 +51,16 @@ public class TestInMemoryAasRepository extends AasRepositorySuite {
 
 	private AasBackendProvider backendProvider = new AasInMemoryBackendProvider();
 
+	@BeforeClass
+	public static void setUp() {
+		TraceableMessageSerializer messageSerializer = new TraceableMessageSerializer(new ObjectMapper());
+		ExceptionBuilderFactory builderFactory = new ExceptionBuilderFactory(messageSerializer);
+		ExceptionBuilderFactory.setInstance(builderFactory);
+	}
+
 	@Override
 	protected AasRepository getAasRepository() {
-		return new SimpleAasRepositoryFactory(backendProvider, new InMemoryAasServiceFactory()).create();
+		return new SimpleAasRepositoryFactory(backendProvider, new InMemoryAasServiceFactory(), getThumbnailFolder()).create();
 	}
 
 	@Test

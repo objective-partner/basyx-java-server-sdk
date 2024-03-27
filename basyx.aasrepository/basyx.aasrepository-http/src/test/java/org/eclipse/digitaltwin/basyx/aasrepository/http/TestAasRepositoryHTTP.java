@@ -48,6 +48,7 @@ public class TestAasRepositoryHTTP extends AasRepositoryHTTPSuite {
 	@BeforeClass
 	public static void startAasRepo() throws Exception {
 		appContext = new SpringApplication(DummyAasRepositoryComponent.class).run();
+
 	}
 
 	@Override

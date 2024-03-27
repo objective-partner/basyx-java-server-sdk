@@ -1,6 +1,15 @@
 [
   {
-    "role": "basyx-admin",
+    "role": "basyx-reader",
+    "action": "READ",
+    "targetInformation": {
+      "@type": "submodel",
+      "submodelId": ".*",
+      "submodelElementIdShortPath": ".*"
+    }
+  },
+  {
+    "role": "admin",
     "action": [
       "CREATE",
       "READ",
@@ -15,21 +24,138 @@
     }
   },
   {
-    "role": "basyx-reader",
+    "role": "basyx-reader-two",
     "action": "READ",
     "targetInformation": {
       "@type": "submodel",
-      "submodelId": "https://org.eclipse.digitaltwin.basyx/namespace/errormessages/v2/r1",
+      "submodelId": "specificSubmodelId",
       "submodelElementIdShortPath": ".*"
     }
   },
   {
-    "role": "basyx-reader",
+    "role": "basyx-sme-reader",
     "action": "READ",
     "targetInformation": {
       "@type": "submodel",
-      "submodelId": "https://basyx.objective-partner.com/.*",
+      "submodelId": "specificSubmodelId",
+      "submodelElementIdShortPath": "smc2.specificSubmodelElementIdShort"
+    }
+  },
+  {
+    "role": "basyx-sme-reader-two",
+    "action": "READ",
+    "targetInformation": {
+      "@type": "submodel",
+      "submodelId": "specificSubmodelId",
+      "submodelElementIdShortPath": "smc2.specificFileSubmodelElementIdShort"
+    }
+  },
+  {
+    "role": "basyx-creator",
+    "action": "CREATE",
+    "targetInformation": {
+      "@type": "submodel",
+      "submodelId": ".*",
       "submodelElementIdShortPath": ".*"
+    }
+  },
+  {
+    "role": "basyx-updater",
+    "action": "UPDATE",
+    "targetInformation": {
+      "@type": "submodel",
+      "submodelId": ".*",
+      "submodelElementIdShortPath": ".*"
+    }
+  },
+  {
+    "role": "basyx-updater-two",
+    "action": "UPDATE",
+    "targetInformation": {
+      "@type": "submodel",
+      "submodelId": "specificSubmodelId",
+      "submodelElementIdShortPath": ".*"
+    }
+  },
+  {
+    "role": "basyx-sme-updater",
+    "action": "UPDATE",
+    "targetInformation": {
+      "@type": "submodel",
+      "submodelId": "specificSubmodelId",
+      "submodelElementIdShortPath": "smc2.specificFileSubmodelElementIdShort"
+    }
+  },
+  {
+    "role": "basyx-sme-updater-two",
+    "action": "UPDATE",
+    "targetInformation": {
+      "@type": "submodel",
+      "submodelId": "specificSubmodelId",
+      "submodelElementIdShortPath": "smc2"
+    }
+  },
+  {
+    "role": "basyx-sme-updater-three",
+    "action": "UPDATE",
+    "targetInformation": {
+      "@type": "submodel",
+      "submodelId": "specificSubmodelId-2",
+      "submodelElementIdShortPath": "smc1.specificSubmodelElementIdShort-2"
+    }
+  },
+  {
+    "role": "basyx-file-sme-updater",
+    "action": "UPDATE",
+    "targetInformation": {
+      "@type": "submodel",
+      "submodelId": "specificSubmodelId-2",
+      "submodelElementIdShortPath": "smc2.specificFileSubmodelElementIdShort"
+    }
+  },
+  {
+    "role": "basyx-deleter",
+    "action": "DELETE",
+    "targetInformation": {
+      "@type": "submodel",
+      "submodelId": ".*",
+      "submodelElementIdShortPath": ".*"
+    }
+  },
+  {
+    "role": "basyx-deleter-two",
+    "action": "DELETE",
+    "targetInformation": {
+      "@type": "submodel",
+      "submodelId": "specificSubmodelId-2",
+      "submodelElementIdShortPath": ".*"
+    }
+  },
+  {
+    "role": "basyx-executor",
+    "action": "EXECUTE",
+    "targetInformation": {
+      "@type": "submodel",
+      "submodelId": ".*",
+      "submodelElementIdShortPath": ".*"
+    }
+  },
+  {
+    "role": "basyx-executor-two",
+    "action": "EXECUTE",
+    "targetInformation": {
+      "@type": "submodel",
+      "submodelId": "specificSubmodelId",
+      "submodelElementIdShortPath": "square"
+    }
+  },
+  {
+    "role": "basyx-file-sme-reader",
+    "action": "READ",
+    "targetInformation": {
+      "@type": "submodel",
+      "submodelId": "specificSubmodelId-2",
+      "submodelElementIdShortPath": "smc2.specificFileSubmodelElementIdShort"
     }
   }
 ]
