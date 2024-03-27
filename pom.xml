@@ -450,11 +450,11 @@
         <artifactId>basyx.submodelrepository-feature-authorization</artifactId>
         <version>${revision}</version>
       </dependency>
-      <dependency>
-        <groupId>org.eclipse.digitaltwin.basyx</groupId>
-        <artifactId>basyx.submodelrepository-feature-operation-delegation</artifactId>
-        <version>${revision}</version>
-      </dependency>
+      <!--      <dependency>-->
+      <!--        <groupId>org.eclipse.digitaltwin.basyx</groupId>-->
+      <!--        <artifactId>basyx.submodelrepository-feature-operation-delegation</artifactId>-->
+      <!--        <version>${revision}</version>-->
+      <!--      </dependency>-->
       <dependency>
         <groupId>org.eclipse.digitaltwin.basyx</groupId>
         <artifactId>basyx.submodelrepository.component</artifactId>
@@ -760,12 +760,12 @@
         <version>${revision}</version>
         <classifier>tests</classifier>
       </dependency>
-      <dependency>
-        <groupId>org.eclipse.digitaltwin.basyx</groupId>
-        <artifactId>basyx.submodelrepository-feature-operation-delegation</artifactId>
-        <version>${revision}</version>
-        <classifier>tests</classifier>
-      </dependency>
+      <!--      <dependency>-->
+      <!--        <groupId>org.eclipse.digitaltwin.basyx</groupId>-->
+      <!--        <artifactId>basyx.submodelrepository-feature-operation-delegation</artifactId>-->
+      <!--        <version>${revision}</version>-->
+      <!--        <classifier>tests</classifier>-->
+      <!--      </dependency>-->
       <!-- basyx.aasservice -->
       <dependency>
         <groupId>org.eclipse.digitaltwin.basyx</groupId>

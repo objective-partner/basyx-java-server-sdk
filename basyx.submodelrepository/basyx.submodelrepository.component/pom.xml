@@ -61,16 +61,16 @@
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.eclipse.digitaltwin.basyx</groupId>
-      <artifactId>basyx.submodelrepository-feature-operation-delegation</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.digitaltwin.basyx</groupId>
-      <artifactId>basyx.submodelrepository-feature-operation-delegation</artifactId>
-      <classifier>tests</classifier>
-      <scope>test</scope>
-    </dependency>
+    <!--    <dependency>-->
+    <!--      <groupId>org.eclipse.digitaltwin.basyx</groupId>-->
+    <!--      <artifactId>basyx.submodelrepository-feature-operation-delegation</artifactId>-->
+    <!--    </dependency>-->
+    <!--    <dependency>-->
+    <!--      <groupId>org.eclipse.digitaltwin.basyx</groupId>-->
+    <!--      <artifactId>basyx.submodelrepository-feature-operation-delegation</artifactId>-->
+    <!--      <classifier>tests</classifier>-->
+    <!--      <scope>test</scope>-->
+    <!--    </dependency>-->
     <dependency>
       <groupId>org.eclipse.digitaltwin.basyx</groupId>
       <artifactId>basyx.submodelrepository-feature-delegated-operation</artifactId>
