@@ -34,6 +34,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.core.DeserializationException;
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.core.SerializationException;
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.json.JsonDeserializer;
@@ -419,7 +420,7 @@ public class CrudSubmodelRepository implements SubmodelRepository {
 
 	private void throwIfMismatchingIds(String existingId, String idToBeUpdated) {
 
-		if (!existingId.equals(idToBeUpdated))
+		if (!StringUtils.equals(existingId, idToBeUpdated))
 			throw ExceptionBuilderFactory.getInstance().identificationMismatchException().mismatchingIdentifier(idToBeUpdated).build();
 	}
 
