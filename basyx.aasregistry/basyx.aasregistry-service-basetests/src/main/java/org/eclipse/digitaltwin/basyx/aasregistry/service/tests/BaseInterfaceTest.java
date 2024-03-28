@@ -76,7 +76,7 @@ public abstract class BaseInterfaceTest {
 	protected static final String IDENTIFICATION_1 = "identification_1";
 
 	protected static final String IDENTIFICATION_2 = "identification_2";
-	
+
 	protected static final String IDENTIFICATION_3 = "identification_3";
 
 	private RegistryEventSink eventSink = Mockito.mock(RegistryEventSink.class);
@@ -88,8 +88,7 @@ public abstract class BaseInterfaceTest {
 
 	@Rule
 	public TestResourcesLoader testResourcesLoader = new TestResourcesLoader();
-	
-	
+
 	protected RegistryEventSink getEventSink() {
 		return eventSink;
 	}
@@ -97,7 +96,7 @@ public abstract class BaseInterfaceTest {
 	protected void clearBaseStorage() {
 		baseStorage.clear();
 	}
-	
+
 	@Before
 	public void setUp() throws IOException {
 		storage = new RegistrationEventSendingAasRegistryStorage(baseStorage, eventSink);
@@ -110,19 +109,17 @@ public abstract class BaseInterfaceTest {
 		baseStorage.clear();
 	}
 
-
 	protected void assertNullPointerThrown(ThrowingCallable callable) {
 		Throwable th = Assertions.catchThrowable(callable);
 		assertThat(th).isInstanceOf(NullPointerException.class);
 		verifyNoEventSent();
 	}
 
-	
 	protected void verifyEventsSent() throws IOException {
- 		List<RegistryEvent> events = testResourcesLoader.loadEvents();
-		
+		List<RegistryEvent> events = testResourcesLoader.loadEvents();
+
 		Mockito.verify(eventSink, Mockito.times(events.size())).consumeEvent(ArgumentMatchers.any(RegistryEvent.class));
-		
+
 		InOrder inOrder = Mockito.inOrder(eventSink);
 		for (RegistryEvent eachEvent : events) {
 			inOrder.verify(eventSink).consumeEvent(eachEvent);
@@ -136,20 +133,19 @@ public abstract class BaseInterfaceTest {
 	protected List<AssetAdministrationShellDescriptor> getAllAasDescriptors() {
 		return storage.getAllAasDescriptors(new PaginationInfo(null, null), new DescriptorFilter(null, null)).getResult();
 	}
-	
 
 	protected List<AssetAdministrationShellDescriptor> getAllAasDescriptorsFiltered(AssetKind kind, String type) {
 		return storage.getAllAasDescriptors(new PaginationInfo(null, null), new DescriptorFilter(kind, type)).getResult();
 	}
-	
+
 	protected CursorResult<List<AssetAdministrationShellDescriptor>> getAllAasDescriptorsWithPagination(int limit, String cursor) {
 		return storage.getAllAasDescriptors(new PaginationInfo(limit, cursor), new DescriptorFilter(null, null));
 	}
-	
+
 	protected List<SubmodelDescriptor> getAllSubmodels(String id) {
 		return storage.getAllSubmodels(id, new PaginationInfo(null, null)).getResult();
 	}
-	
+
 	protected CursorResult<List<SubmodelDescriptor>> getAllSubmodelsWithPagination(String aasId, int limit, String cursor) {
 		return storage.getAllSubmodels(aasId, new PaginationInfo(limit, cursor));
 	}

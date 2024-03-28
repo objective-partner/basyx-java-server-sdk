@@ -25,7 +25,7 @@
 package org.eclipse.digitaltwin.basyx.aasregistry.service.storage.mongodb;
 
 public class SimpleVarNameProvider {
-	
+
 	private String currentVariable = "a";
 
 	public String next() {

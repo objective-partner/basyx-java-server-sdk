@@ -25,14 +25,11 @@
 
 package org.eclipse.digitaltwin.basyx.aasdiscoveryservice.http;
 
-import static org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.AasDiscoveryUtils.deriveAssetLinksFromShell;
-
 import java.util.List;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.AasDiscoveryService;
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.AasDiscoveryServiceSuite;
-import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.model.AssetLink;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -60,13 +57,11 @@ public class TestAasDiscoveryServiceHTTP extends AasDiscoveryServiceHTTPSuite {
 
 		List<AssetAdministrationShell> dummyAssetLinks = AasDiscoveryServiceSuite.getMultipleDummyAasAssetLink();
 
-		dummyAssetLinks.stream()
-				.forEach(assetLink -> resetAssetLink(assetLink, aasDiscoveryService));
+		dummyAssetLinks.stream().forEach(assetLink -> resetAssetLink(assetLink, aasDiscoveryService));
 	}
 
 	private void resetAssetLink(AssetAdministrationShell shell, AasDiscoveryService aasDiscoveryService) {
 
-		List<AssetLink> linksFromShell = deriveAssetLinksFromShell(shell);
 		try {
 			aasDiscoveryService.createAllAssetLinksById(shell.getId(), shell.getAssetInformation().getSpecificAssetIds());
 		} catch (CollidingIdentifierException e) {

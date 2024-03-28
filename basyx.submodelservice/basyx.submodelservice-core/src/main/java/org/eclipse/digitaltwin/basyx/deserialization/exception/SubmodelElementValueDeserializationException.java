@@ -23,7 +23,6 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.deserialization.exception;
 
 /**
@@ -33,7 +32,7 @@ package org.eclipse.digitaltwin.basyx.deserialization.exception;
  *
  */
 public class SubmodelElementValueDeserializationException extends RuntimeException {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	public SubmodelElementValueDeserializationException() {

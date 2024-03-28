@@ -4,19 +4,10 @@
  */
 package org.eclipse.digitaltwin.basyx.conceptdescriptionrepository.http;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 import org.eclipse.digitaltwin.aas4j.v3.model.ConceptDescription;
+import org.eclipse.digitaltwin.aas4j.v3.model.Result;
 import org.eclipse.digitaltwin.basyx.conceptdescriptionrepository.http.pagination.GetConceptDescriptionsResult;
 import org.eclipse.digitaltwin.basyx.http.Base64UrlEncodedIdentifier;
-import org.eclipse.digitaltwin.basyx.http.model.Result;
 import org.eclipse.digitaltwin.basyx.http.pagination.Base64UrlEncodedCursor;
 import org.eclipse.digitaltwin.basyx.http.pagination.PagedResult;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +17,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 
 @jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2023-03-21T12:35:49.719724407Z[GMT]")
 @Validated
@@ -55,11 +56,9 @@ public interface ConceptDescriptionRepositoryHTTPApi {
 
 			@ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-      @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes",
-          content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class)))})
-  @RequestMapping(value = "/concept-descriptions", produces = {"application/json"}, method = RequestMethod.GET)
-  ResponseEntity<PagedResult> getAllConceptDescriptions(
-			@Parameter(in = ParameterIn.QUERY, description = "The Concept Description’s IdShort", schema = @Schema()) @Valid @RequestParam(value = "idShort", required = false) String idShort,
+			@ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))) })
+	@RequestMapping(value = "/concept-descriptions", produces = { "application/json" }, method = RequestMethod.GET)
+	ResponseEntity<PagedResult> getAllConceptDescriptions(@Parameter(in = ParameterIn.QUERY, description = "The Concept Description’s IdShort", schema = @Schema()) @Valid @RequestParam(value = "idShort", required = false) String idShort,
 			@Parameter(in = ParameterIn.QUERY, description = "IsCaseOf reference (UTF8-BASE64-URL-encoded)", schema = @Schema()) @Valid @RequestParam(value = "isCaseOf", required = false) Base64UrlEncodedIdentifier isCaseOf,
 			@Parameter(in = ParameterIn.QUERY, description = "DataSpecification reference (UTF8-BASE64-URL-encoded)", schema = @Schema()) @Valid @RequestParam(value = "dataSpecificationRef", required = false) Base64UrlEncodedIdentifier dataSpecificationRef,
 			@Min(1) @Parameter(in = ParameterIn.QUERY, description = "The maximum number of elements in the response array", schema = @Schema(allowableValues = {
@@ -77,14 +76,10 @@ public interface ConceptDescriptionRepositoryHTTPApi {
 
 			@ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))),
 
-      @ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes",
-          content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class)))})
-  @RequestMapping(value = "/concept-descriptions/{cdIdentifier}", produces = {"application/json"},
-      method = RequestMethod.GET)
-  ResponseEntity<ConceptDescription> getConceptDescriptionById(
-      @Parameter(in = ParameterIn.PATH, description = "The Concept Description’s unique id (UTF8-BASE64-URL-encoded)",
-          required = true, schema = @Schema()) @PathVariable("cdIdentifier") Base64UrlEncodedIdentifier cdIdentifier);
-
+			@ApiResponse(responseCode = "default", description = "Default error handling for unmentioned status codes", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Result.class))) })
+	@RequestMapping(value = "/concept-descriptions/{cdIdentifier}", produces = { "application/json" }, method = RequestMethod.GET)
+	ResponseEntity<ConceptDescription> getConceptDescriptionById(
+			@Parameter(in = ParameterIn.PATH, description = "The Concept Description’s unique id (UTF8-BASE64-URL-encoded)", required = true, schema = @Schema()) @PathVariable("cdIdentifier") Base64UrlEncodedIdentifier cdIdentifier);
 
 	@Operation(summary = "Creates a new Concept Description", description = "", tags = { "Concept Description Repository API" })
 	@ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Concept Description created successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ConceptDescription.class))),

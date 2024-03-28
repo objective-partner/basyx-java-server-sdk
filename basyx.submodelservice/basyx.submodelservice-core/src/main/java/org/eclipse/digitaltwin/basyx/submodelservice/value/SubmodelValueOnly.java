@@ -25,7 +25,6 @@
 
 package org.eclipse.digitaltwin.basyx.submodelservice.value;
 
-
 import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -44,21 +43,21 @@ public class SubmodelValueOnly {
 
 	private String idShort;
 	private Map<String, SubmodelElementValue> submodelValuesMap;
-	
-	public SubmodelValueOnly(Collection<SubmodelElement> submodelElements) {		
+
+	public SubmodelValueOnly(Collection<SubmodelElement> submodelElements) {
 		submodelValuesMap = submodelElements.stream().filter(SubmodelValueOnly::hasValueOnlyDefined).map(ValueMapperUtil::toValueOnly).collect(Collectors.toMap(ValueOnly::getIdShort, ValueOnly::getSubmodelElementValue));
 	}
 
 	private static boolean hasValueOnlyDefined(SubmodelElement element) {
 		return !(element instanceof Operation);
 	}
-	
+
 	public String getIdShort() {
 		return idShort;
-	}	
-	
+	}
+
 	public Map<String, SubmodelElementValue> getValuesOnlyMap() {
 		return submodelValuesMap;
-	}	
-	
+	}
+
 }

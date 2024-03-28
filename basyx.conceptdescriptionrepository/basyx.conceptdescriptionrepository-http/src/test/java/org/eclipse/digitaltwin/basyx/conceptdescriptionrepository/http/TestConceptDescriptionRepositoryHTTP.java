@@ -50,7 +50,7 @@ public class TestConceptDescriptionRepositoryHTTP extends ConceptDescriptionRepo
 
 	@BeforeClass
 	public static void startConceptDescriptionRepo() throws Exception {
-		appContext = new SpringApplication(DummyConceptDescriptionRepositoryComponent.class).run(new String[] {});
+		appContext = new SpringApplication(DummyConceptDescriptionRepositoryComponent.class).run();
 	}
 
 	@Override
@@ -61,11 +61,7 @@ public class TestConceptDescriptionRepositoryHTTP extends ConceptDescriptionRepo
 	}
 
 	private void resetRepoToDefaultConceptDescriptions(ConceptDescriptionRepository repo, Collection<ConceptDescription> conceptDescriptions) {
-		repo.getAllConceptDescriptions(NO_LIMIT_PAGINATION_INFO)
-				.getResult()
-				.stream()
-				.map(s -> s.getId())
-				.forEach(repo::deleteConceptDescription);
+		repo.getAllConceptDescriptions(NO_LIMIT_PAGINATION_INFO).getResult().stream().map(s -> s.getId()).forEach(repo::deleteConceptDescription);
 
 		conceptDescriptions.forEach(repo::createConceptDescription);
 	}

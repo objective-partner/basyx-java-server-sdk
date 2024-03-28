@@ -32,7 +32,7 @@ public class ExtensionPathInvalidException extends ResponseStatusException {
 	private static final long serialVersionUID = 1L;
 
 	public ExtensionPathInvalidException(String path) {
-		super(HttpStatus.BAD_REQUEST ,"The query path '" + path + "' does not point to an extension value.");
+		super(HttpStatus.BAD_REQUEST, "The query path '" + path + "' does not point to an extension value.");
 	}
-	
+
 }

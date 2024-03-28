@@ -25,7 +25,6 @@
 package org.eclipse.digitaltwin.basyx.submodelservice;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.AnnotatedRelationshipElement;
@@ -58,6 +57,7 @@ import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultFile;
 import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultKey;
 import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultLangStringTextType;
 import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultMultiLanguageProperty;
+import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultOperation;
 import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultOperationVariable;
 import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultProperty;
 import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultRange;
@@ -68,6 +68,8 @@ import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultSpecificAssetId;
 import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultSubmodelElementCollection;
 import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultSubmodelElementList;
 import org.eclipse.digitaltwin.basyx.InvokableOperation;
+
+import com.google.common.collect.Lists;
 
 /**
  * Test helper class for SubmodelService
@@ -82,10 +84,10 @@ public class SubmodelServiceHelper {
 	private static final String MAX_ROTATION_SPEED = "MaxRotationSpeed";
 	public static final String SUBMODEL_TECHNICAL_DATA_ID_SHORT = "TechnicalData";
 	public static final String SUBMODEL_TECHNICAL_DATA_SEMANTIC_ID = "0173-1#01-AFZ615#016";
-	public static final List<Key> FIRST_KEYS = Arrays.asList(new DefaultKey.Builder().type(KeyTypes.DATA_ELEMENT)
+	public static final List<Key> FIRST_KEYS = Lists.newArrayList(new DefaultKey.Builder().type(KeyTypes.DATA_ELEMENT)
 			.value("DataElement")
 			.build());
-	public static final List<Key> SECOND_KEYS = Arrays.asList(new DefaultKey.Builder().type(KeyTypes.BASIC_EVENT_ELEMENT)
+	public static final List<Key> SECOND_KEYS = Lists.newArrayList(new DefaultKey.Builder().type(KeyTypes.BASIC_EVENT_ELEMENT)
 			.value("BasicEventElement")
 			.build());
 	public static final Reference FIRST_REFERENCE = createFirstReference();
@@ -108,7 +110,7 @@ public class SubmodelServiceHelper {
 	public static final String SUBMODEL_TECHNICAL_DATA_RANGE_VALUETYPE = "integer";
 
 	// SUBMODEL_ELEMENT_MULTI_LANGUAGE_DATA
-	public static final List<LangStringTextType> MULTI_LANGUAGE_VALUE = Arrays.asList(new DefaultLangStringTextType.Builder().text("Hello")
+	public static final List<LangStringTextType> MULTI_LANGUAGE_VALUE = Lists.newArrayList(new DefaultLangStringTextType.Builder().text("Hello")
 			.language("en")
 			.build(),
 			new DefaultLangStringTextType.Builder().text("Hallo")
@@ -254,7 +256,7 @@ public class SubmodelServiceHelper {
 				.build())
 				.idShort(SUBMODEL_TECHNICAL_DATA_ENTITY_ID_SHORT)
 				.category(SUBMODEL_TECHNICAL_DATA_ENTITY_CATEGORY)
-				.statements(Arrays.asList(createPropertySubmodelElement(), createRangeSubmodelElement()))
+				.statements(Lists.newArrayList(createPropertySubmodelElement(), createRangeSubmodelElement()))
 				.entityType(EntityType.CO_MANAGED_ENTITY)
 				.globalAssetId(GLOBAL_ASSET_ID)
 				.specificAssetIds(ENTITY_SPECIFIC_ASSET_ID)
@@ -296,7 +298,7 @@ public class SubmodelServiceHelper {
 				.category(SUBMODEL_TECHNICAL_DATA_ANNOTATED_RELATIONSHIP_ELEMENT_CATEGORY)
 				.first(createFirstReference())
 				.second(createSecondReference())
-				.annotations(Arrays.asList(createPropertySubmodelElement(), createRangeSubmodelElement()))
+				.annotations(Lists.newArrayList(createPropertySubmodelElement(), createRangeSubmodelElement()))
 				.build();
 	}
 
@@ -308,7 +310,7 @@ public class SubmodelServiceHelper {
 				.build())
 				.idShort(SUBMODEL_TECHNICAL_DATA_SUBMODEL_ELEMENT_COLLECTION_ID_SHORT)
 				.category(SUBMODEL_TECHNICAL_DATA_SUBMODEL_ELEMENT_COLLECTION_CATEGORY)
-				.value(Arrays.asList(createFileSubmodelElement(), createPropertySubmodelElement()))
+				.value(Lists.newArrayList(createFileSubmodelElement(), createPropertySubmodelElement()))
 				.build();
 	}
 
@@ -320,26 +322,56 @@ public class SubmodelServiceHelper {
 				.build())
 				.idShort(SUBMODEL_TECHNICAL_DATA_SUBMODEL_ELEMENT_LIST_ID_SHORT)
 				.category(SUBMODEL_TECHNICAL_DATA_SUBMODEL_ELEMENT_LIST_CATEGORY)
-				.value(Arrays.asList(createRangeSubmodelElement(), createPropertySubmodelElement()))
+				.value(Lists.newArrayList(createRangeSubmodelElement(), createPropertySubmodelElement()))
 				.build();
 	}
 
 	public static List<SubmodelElement> getAllSubmodelElements() {
 		List<SubmodelElement> list = new ArrayList<>();
 		list.addAll(
-				Arrays.asList(createPropertySubmodelElement(), createRangeSubmodelElement(), createMultiLanguagePropertySubmodelElement(), createFileSubmodelElement(), createEntitySubmodelElement(), createReferenceElementSubmodelElement(),
+				Lists.newArrayList(createPropertySubmodelElement(), createRangeSubmodelElement(), createMultiLanguagePropertySubmodelElement(), createFileSubmodelElement(), createEntitySubmodelElement(), createReferenceElementSubmodelElement(),
 						createRelationshipElementSubmodelElement(), createAnnotatedRelationshipElementSubmodelElement(), createBlobSubmodelElement(), createSubmodelElementCollection(), createSubmodelElementList(),
 						createInvokableOperation()));
 		return list;
 	}
-
+	
+	public static List<SubmodelElement> getAllSubmodelElementsWithoutInvokableOperation() {
+		List<SubmodelElement> list = new ArrayList<>();
+		list.addAll(
+				Lists.newArrayList(createPropertySubmodelElement(), createRangeSubmodelElement(), createMultiLanguagePropertySubmodelElement(), createFileSubmodelElement(), createEntitySubmodelElement(), createReferenceElementSubmodelElement(),
+						createRelationshipElementSubmodelElement(), createAnnotatedRelationshipElementSubmodelElement(), createBlobSubmodelElement(), createSubmodelElementCollection(), createSubmodelElementList(), createOperation()));
+		return list;
+	}
+	
 	public static OperationVariable createOperationVariable(Property val) {
 		return new DefaultOperationVariable.Builder().value(val).build();
+	}
+	
+	public static Property createDummyProperty(String idShort, String value, DataTypeDefXsd dataType) {
+		return new DefaultProperty.Builder().idShort(idShort)
+				.category("cat1")
+				.value(value)
+				.valueType(dataType)
+				.build();
+	}
+	
+	public static File createDummyFile(String idShort, String contentType, String value) {
+		return new DefaultFile.Builder().idShort(idShort)
+				.category("file")
+				.contentType(contentType)
+				.value(value)
+				.build();
 	}
 
 	private static Operation createInvokableOperation() {
 		return new InvokableOperation.Builder().idShort(SUBMODEL_TECHNICAL_DATA_OPERATION_ID).inputVariables(createIntOperationVariable("input")).outputVariables(createIntOperationVariable("result"))
 				.invokable(SubmodelServiceHelper::square).build();
+	}
+
+	private static Operation createOperation() {
+		return new DefaultOperation.Builder().idShort(SUBMODEL_TECHNICAL_DATA_OPERATION_ID).inputVariables(createIntOperationVariable("input")).outputVariables(createIntOperationVariable("result"))
+				.build();
+
 	}
 
 	private static OperationVariable[] square(OperationVariable[] inputs) {

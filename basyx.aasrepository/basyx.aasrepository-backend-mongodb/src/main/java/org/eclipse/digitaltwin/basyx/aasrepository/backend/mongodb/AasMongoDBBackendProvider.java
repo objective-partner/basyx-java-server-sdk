@@ -26,16 +26,15 @@
 package org.eclipse.digitaltwin.basyx.aasrepository.backend.mongodb;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
+import org.eclipse.digitaltwin.basyx.aasrepository.AasFilterParams;
 import org.eclipse.digitaltwin.basyx.aasrepository.backend.AasBackendProvider;
 import org.eclipse.digitaltwin.basyx.common.mongocore.BasyxMongoMappingContext;
+import org.eclipse.digitaltwin.basyx.core.BaSyxCrudRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.mapping.MongoPersistentEntity;
-import org.springframework.data.mongodb.repository.support.MappingMongoEntityInformation;
-import org.springframework.data.mongodb.repository.support.SimpleMongoRepository;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Component;
 
 /**
@@ -47,26 +46,26 @@ import org.springframework.stereotype.Component;
 @ConditionalOnExpression("'${basyx.backend}'.equals('MongoDB')")
 @Component
 public class AasMongoDBBackendProvider implements AasBackendProvider {
-	
-	private BasyxMongoMappingContext mappingContext;
-	
-	private MongoTemplate template;
-	
+
+	private final BasyxMongoMappingContext mappingContext;
+
+	private final MongoTemplate template;
+
 	@Autowired
-	public AasMongoDBBackendProvider(BasyxMongoMappingContext mappingContext, @Value("${basyx.aasrepository.mongodb.collectionName:aas-repo}") String collectionName, MongoTemplate template) {
+	public AasMongoDBBackendProvider(BasyxMongoMappingContext mappingContext, @Value("${basyx.aasrepository.mongodb" + ".collectionName:aas-repo}") String collectionName, MongoTemplate template) {
 		super();
 		this.mappingContext = mappingContext;
 		this.template = template;
-		
+
 		mappingContext.addEntityMapping(AssetAdministrationShell.class, collectionName);
 	}
 
 	@Override
-	public CrudRepository<AssetAdministrationShell, String> getCrudRepository() {
+	public BaSyxCrudRepository<AssetAdministrationShell, String, AasFilterParams> getCrudRepository() {
 		@SuppressWarnings("unchecked")
 		MongoPersistentEntity<AssetAdministrationShell> entity = (MongoPersistentEntity<AssetAdministrationShell>) mappingContext.getPersistentEntity(AssetAdministrationShell.class);
-		
-		return new SimpleMongoRepository<>(new MappingMongoEntityInformation<>(entity), template);
+
+		return new AasMongoRepository(entity, template);
 	}
 
 }

@@ -39,7 +39,7 @@ public class RegistryIntegrationSubmodelRepositoryFactory implements SubmodelRep
 	private SubmodelRepositoryFactory decorated;
 	private SubmodelRepositoryRegistryLink submodelRepositoryRegistryLink;
 	private AttributeMapper attributeMapper;
-	
+
 	public RegistryIntegrationSubmodelRepositoryFactory(SubmodelRepositoryFactory decorated, SubmodelRepositoryRegistryLink submodelRepositoryRegistryLink, AttributeMapper attributeMapper) {
 		this.decorated = decorated;
 		this.submodelRepositoryRegistryLink = submodelRepositoryRegistryLink;

@@ -25,7 +25,20 @@
 
 package org.eclipse.digitaltwin.basyx.submodelservice;
 
-import org.eclipse.digitaltwin.aas4j.v3.model.*;
+import java.util.List;
+import java.util.Stack;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+
+import org.eclipse.digitaltwin.aas4j.v3.model.AnnotatedRelationshipElement;
+import org.eclipse.digitaltwin.aas4j.v3.model.DataElement;
+import org.eclipse.digitaltwin.aas4j.v3.model.Entity;
+import org.eclipse.digitaltwin.aas4j.v3.model.KeyTypes;
+import org.eclipse.digitaltwin.aas4j.v3.model.OperationVariable;
+import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
+import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElement;
+import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElementCollection;
+import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElementList;
 import org.eclipse.digitaltwin.basyx.InvokableOperation;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
@@ -33,20 +46,21 @@ import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationSupport;
-import org.eclipse.digitaltwin.basyx.submodelservice.pathparsing.*;
+import org.eclipse.digitaltwin.basyx.submodelservice.pathparsing.HierarchicalSubmodelElementIdShortPathToken;
+import org.eclipse.digitaltwin.basyx.submodelservice.pathparsing.HierarchicalSubmodelElementParser;
+import org.eclipse.digitaltwin.basyx.submodelservice.pathparsing.ListIndexPathToken;
+import org.eclipse.digitaltwin.basyx.submodelservice.pathparsing.PathToken;
+import org.eclipse.digitaltwin.basyx.submodelservice.pathparsing.SubmodelElementIdShortHelper;
+import org.eclipse.digitaltwin.basyx.submodelservice.pathparsing.SubmodelElementIdShortPathParser;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelElementValue;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.factory.SubmodelElementValueMapperFactory;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.mapper.ValueMapper;
-
-import java.util.List;
-import java.util.Stack;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 /**
  * Implements the SubmodelService as in-memory variant
  *
  * @author schnicke, danish
+ *
  */
 public class InMemorySubmodelService implements SubmodelService {
 
@@ -116,6 +130,7 @@ public class InMemorySubmodelService implements SubmodelService {
 			getSubmodelElement(submodelElementId);
 			throw ExceptionBuilderFactory.getInstance().collidingIdentifierException().collidingIdentifier(submodel.getId()).build();
 		} catch (ElementDoesNotExistException e) {
+			return;
 		}
 	}
 
@@ -130,7 +145,7 @@ public class InMemorySubmodelService implements SubmodelService {
 			throwIfSubmodelElementExists(idShortPath + ". " + submodelElement.getIdShort());
 		}
 
-		throwIfSubmodelElementExists(submodelElement.getIdShort());
+		throwIfSubmodelElementExists(getFullIdShortPath(idShortPath, submodelElement.getIdShort()));
 
 		SubmodelElement parentSme = parser.getSubmodelElementFromIdShortPath(idShortPath);
 		if (parentSme instanceof SubmodelElementList list) {
@@ -146,9 +161,14 @@ public class InMemorySubmodelService implements SubmodelService {
 		}
 	}
 
-	public void updateSubmodelElement(String idShortPath, SubmodelElement submodelElement) throws ElementDoesNotExistException, CollidingIdentifierException {
+	@Override
+	public void updateSubmodelElement(String idShortPath, SubmodelElement submodelElement) {
+
 		Stack<PathToken> pathTokens = new SubmodelElementIdShortPathParser().parsePathTokens(idShortPath);
-		PathToken currentToken = pathTokens.pop();
+
+		validateSubmodelElementExists(idShortPath);
+
+		PathToken currentToken = popFirstElement(pathTokens);
 		String currentIdShort = null;
 		if (currentToken instanceof HierarchicalSubmodelElementIdShortPathToken) {
 			currentIdShort = currentToken.getToken();
@@ -174,7 +194,16 @@ public class InMemorySubmodelService implements SubmodelService {
 				replaceSubmodelElement((DataElement) submodelElement, submodelElements, currentIdShort);
 			}
 		}
+	}
 
+	private void validateSubmodelElementExists(String idShortPath) {
+		getSubmodelElement(idShortPath);
+	}
+
+	private static PathToken popFirstElement(Stack<PathToken> pathTokens) {
+		PathToken currentToken = pathTokens.firstElement();
+		pathTokens.remove(currentToken);
+		return currentToken;
 	}
 
 	private static <T extends SubmodelElement> void replaceSubmodelElement(T submodelElement, List<T> submodelElements, String currentIdShort) {
@@ -238,10 +267,14 @@ public class InMemorySubmodelService implements SubmodelService {
 	public OperationVariable[] invokeOperation(String idShortPath, OperationVariable[] input) {
 		SubmodelElement sme = getSubmodelElement(idShortPath);
 
-		if (!(sme instanceof InvokableOperation operation)) {
+		if (!(sme instanceof InvokableOperation))
 			throw ExceptionBuilderFactory.getInstance().notInvokableException().submodelId(submodel.getId()).idShortPath(idShortPath).build();
-		}
 
+		InvokableOperation operation = (InvokableOperation) sme;
 		return operation.invoke(input);
+	}
+
+	private String getFullIdShortPath(String idShortPath, String submodelElementId) {
+		return idShortPath + "." + submodelElementId;
 	}
 }

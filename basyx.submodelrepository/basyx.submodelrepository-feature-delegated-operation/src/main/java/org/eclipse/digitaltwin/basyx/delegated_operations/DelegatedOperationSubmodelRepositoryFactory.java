@@ -25,10 +25,11 @@
 
 package org.eclipse.digitaltwin.basyx.delegated_operations;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.digitaltwin.basyx.delegated_operations.mapper.AttributeMapper;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepository;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepositoryFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Factory for creating {@link DelegatedOperationSubmodelRepository}

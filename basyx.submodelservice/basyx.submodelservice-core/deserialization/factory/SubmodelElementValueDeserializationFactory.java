@@ -25,6 +25,9 @@
 
 package org.eclipse.digitaltwin.basyx.submodelrepository.http.deserialization.factory;
 
+import static org.eclipse.digitaltwin.basyx.submodelrepository.http.deserialization.util.SubmodelElementValueDeserializationUtil.*;
+
+import org.eclipse.digitaltwin.basyx.submodelrepository.http.deserialization.exception.SubmodelElementValueDeserializationException;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.AnnotatedRelationshipElementValue;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.EntityValue;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.FileBlobValue;
@@ -39,10 +42,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static org.eclipse.digitaltwin.basyx.submodelrepository.http.deserialization.util.SubmodelElementValueDeserializationUtil.*;
-
-import org.eclipse.digitaltwin.basyx.submodelrepository.http.deserialization.exception.SubmodelElementValueDeserializationException;
-
 /**
  * Factory class to create deserialized {@link SubmodelElementValue} based on
  * the content
@@ -53,12 +52,12 @@ import org.eclipse.digitaltwin.basyx.submodelrepository.http.deserialization.exc
 public class SubmodelElementValueDeserializationFactory {
 
 	/**
-	 * Deserializes the corresponding {@link SubmodelElementValue} based on the
-	 * JSON content
+	 * Deserializes the corresponding {@link SubmodelElementValue} based on the JSON
+	 * content
 	 * 
 	 * @return SubmodelELementValue
 	 * 
-	 * @throws JsonProcessingException 
+	 * @throws JsonProcessingException
 	 * @throws SubmodelElementValueDeserializationException
 	 */
 	public SubmodelElementValue create(ObjectMapper mapper, JsonNode node) throws JsonProcessingException {

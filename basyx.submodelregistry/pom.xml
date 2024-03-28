@@ -4,6 +4,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>basyx.submodelregistry</artifactId>
+	<name>BaSyx submodelregistry</name>
+	<description>BaSyx submodelregistry</description>
 	<packaging>pom</packaging>
 
 	<parent>
@@ -14,21 +16,19 @@
 
 	<properties>
 		<lombok.maven-plugin.version>1.18.20.0</lombok.maven-plugin.version>
-		<java.version>17</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<generated.folder>src/generated</generated.folder>
 		<swagger.codegen.version>3.0.42</swagger.codegen.version>
 		<spring.fox.version>3.0.0</spring.fox.version>
 		<openapi.folder.name>open-api</openapi.folder.name>
-		<openapi.base.name>Plattform_i40-SubmodelRegistryServiceSpecification-V3.0.1_SSP-001-resolved.yaml</openapi.base.name>
+		<openapi.base.name>
+			Plattform_i40-SubmodelRegistryServiceSpecification-V3.0.1_SSP-001-resolved.yaml</openapi.base.name>
 		<openapi.name>Plattform_i40-SubmodelRegistry-and-Discovery.yaml</openapi.name>
-		<guava.version>31.0.1-jre</guava.version>
+		<guava.version>32.0.0-jre</guava.version>
 		<maven-plugin.version>3.6.0</maven-plugin.version>
 		<maven-project.version>3.0-alpha-2</maven-project.version>
 		<mustache.compiler.version>0.9.4</mustache.compiler.version>
-		<snakeyaml.version>2.2</snakeyaml.version>
 		<docker.image.name>${project.artifactId}</docker.image.name>
 		<openapitools.version>6.6.0</openapitools.version>
 		<openapitools.jacksonnullable.version>0.2.6</openapitools.jacksonnullable.version>
@@ -45,11 +45,11 @@
 		<module>basyx.submodelregistry-service-release-log-mem</module>
 		<module>basyx.submodelregistry-client-native</module>
 		<module>basyx.submodelregistry-service-mongodb-storage</module>
-<!--		<module>basyx.submodelregistry-service-kafka-events</module>-->
+		<module>basyx.submodelregistry-service-kafka-events</module>
 		<module>basyx.submodelregistry-service-basetests</module>
-<!--		<module>basyx.submodelregistry-service-release-kafka-mem</module>-->
+		<module>basyx.submodelregistry-service-release-kafka-mem</module>
 		<module>basyx.submodelregistry-service-release-log-mongodb</module>
-<!--		<module>basyx.submodelregistry-service-release-kafka-mongodb</module>-->
+		<module>basyx.submodelregistry-service-release-kafka-mongodb</module>
 	</modules>
 
 	<developers>
@@ -231,7 +231,8 @@
 		<profile>
 			<id>dockerbuild</id>
 			<activation>
-				<!-- This profile is always active if there is a Dockerfile and docker.namespace property is given -->
+				<!-- This profile is always active if there is a Dockerfile and
+				docker.namespace property is given -->
 				<file>
 					<exists>src/main/docker/Dockerfile</exists>
 				</file>
@@ -261,19 +262,23 @@
 					<plugin>
 						<groupId>io.fabric8</groupId>
 						<artifactId>docker-maven-plugin</artifactId>
-            <configuration>
-              <images>
-                <image>
-                  <build>
-                    <assembly>
-                      <descriptorRef>artifact</descriptorRef>
-                    </assembly>
-                    <dockerFile>Dockerfile</dockerFile>
-                    <contextDir>${project.basedir}/src/main/docker</contextDir>
-                  </build>
-                </image>
-              </images>
-            </configuration>
+						<configuration>
+							<images>
+								<image>
+									<build>
+										<assembly>
+											<descriptorRef>artifact</descriptorRef>
+										</assembly>
+										<dockerFile>Dockerfile</dockerFile>
+										<contextDir>
+											${project.basedir}/src/main/docker</contextDir>
+										<buildx>
+											<platforms>${docker.target.platforms}</platforms>
+										</buildx>
+									</build>
+								</image>
+							</images>
+						</configuration>
 						<executions>
 							<execution>
 								<id>build-docker</id>

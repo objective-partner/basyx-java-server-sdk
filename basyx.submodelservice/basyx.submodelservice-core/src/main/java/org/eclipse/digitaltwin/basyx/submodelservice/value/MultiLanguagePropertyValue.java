@@ -37,12 +37,12 @@ import org.eclipse.digitaltwin.aas4j.v3.model.MultiLanguageProperty;
  */
 public class MultiLanguagePropertyValue implements SubmodelElementValue {
 	private List<LangStringTextType> value;
-	
+
 	@SuppressWarnings("unused")
 	private MultiLanguagePropertyValue() {
 		super();
 	}
-	
+
 	public MultiLanguagePropertyValue(List<LangStringTextType> list) {
 		this.value = list;
 	}

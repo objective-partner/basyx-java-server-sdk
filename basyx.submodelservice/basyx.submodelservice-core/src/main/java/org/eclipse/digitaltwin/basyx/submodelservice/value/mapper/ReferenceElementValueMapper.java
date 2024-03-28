@@ -30,14 +30,14 @@ import org.eclipse.digitaltwin.basyx.submodelservice.value.ReferenceElementValue
 import org.eclipse.digitaltwin.basyx.submodelservice.value.ReferenceValue;
 
 /**
- * Maps {@link ReferenceElement} value to {@link ReferenceElementValue} 
+ * Maps {@link ReferenceElement} value to {@link ReferenceElementValue}
  * 
  * @author danish
  *
  */
 public class ReferenceElementValueMapper implements ValueMapper<ReferenceElementValue> {
 	private ReferenceElement referenceElement;
-	
+
 	public ReferenceElementValueMapper(ReferenceElement referenceElement) {
 		this.referenceElement = referenceElement;
 	}
@@ -56,7 +56,7 @@ public class ReferenceElementValueMapper implements ValueMapper<ReferenceElement
 		Reference reference = referenceElement.getValue();
 		reference.setType(referenceElementValue.getReferenceValue().getType());
 		reference.setKeys(referenceElementValue.getReferenceValue().getKeys());
-		
+
 		return referenceElement.getValue();
 	}
 }

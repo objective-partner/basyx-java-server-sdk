@@ -23,7 +23,6 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.serialization;
 
 import java.io.IOException;
@@ -36,7 +35,8 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
 /**
- * Serializes a {@link SubmodelElementCollectionValue} as described in DotAAS Part 2
+ * Serializes a {@link SubmodelElementCollectionValue} as described in DotAAS
+ * Part 2
  * 
  * @author danish
  *

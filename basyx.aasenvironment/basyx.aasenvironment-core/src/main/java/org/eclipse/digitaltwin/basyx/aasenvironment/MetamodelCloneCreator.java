@@ -27,8 +27,8 @@ package org.eclipse.digitaltwin.basyx.aasenvironment;
 
 import java.util.List;
 
-import org.eclipse.digitaltwin.aas4j.v3.dataformat.DeserializationException;
-import org.eclipse.digitaltwin.aas4j.v3.dataformat.SerializationException;
+import org.eclipse.digitaltwin.aas4j.v3.dataformat.core.DeserializationException;
+import org.eclipse.digitaltwin.aas4j.v3.dataformat.core.SerializationException;
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.json.JsonDeserializer;
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.json.JsonSerializer;
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
@@ -42,10 +42,10 @@ import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
  *
  */
 public class MetamodelCloneCreator {
-	
+
 	private JsonSerializer jsonSerializer = new JsonSerializer();
 	private JsonDeserializer jsonDeserializer = new JsonDeserializer();
-	
+
 	/**
 	 * Creates clone of the provided list of {@link AssetAdministrationShell}
 	 * 
@@ -54,10 +54,10 @@ public class MetamodelCloneCreator {
 	 */
 	public List<AssetAdministrationShell> cloneAssetAdministrationShells(List<AssetAdministrationShell> originalShells) {
 		String serializedAASs = getSerializedShells(originalShells);
-		
+
 		return getDeserializedShells(serializedAASs);
 	}
-	
+
 	/**
 	 * Creates clone of the provided list of {@link Submodel}
 	 * 
@@ -66,10 +66,10 @@ public class MetamodelCloneCreator {
 	 */
 	public List<Submodel> cloneSubmodels(List<Submodel> originalSubmodels) {
 		String serializedSubmodels = getSerializedSubmodels(originalSubmodels);
-		
+
 		return getDeserializedSubmodels(serializedSubmodels);
 	}
-	
+
 	/**
 	 * Creates clone of the provided list of {@link ConceptDescription}
 	 * 
@@ -78,7 +78,7 @@ public class MetamodelCloneCreator {
 	 */
 	public List<ConceptDescription> cloneConceptDescriptions(List<ConceptDescription> originalConceptDescriptions) {
 		String serializedCDs = getSerializedCDs(originalConceptDescriptions);
-		
+
 		return getDeserializedCDs(serializedCDs);
 	}
 
@@ -90,16 +90,16 @@ public class MetamodelCloneCreator {
 			throw new RuntimeException("Unable to serialize the AASs");
 		}
 	}
-	
+
 	private List<AssetAdministrationShell> getDeserializedShells(String serializedShells) {
 		try {
-			return jsonDeserializer.readReferables(serializedShells, AssetAdministrationShell.class);
+			return jsonDeserializer.readList(serializedShells, AssetAdministrationShell.class);
 		} catch (DeserializationException e) {
 			e.printStackTrace();
 			throw new RuntimeException("Unable to deserialize the AASs");
 		}
 	}
-	
+
 	private String getSerializedSubmodels(List<Submodel> originalSubmodels) {
 		try {
 			return jsonSerializer.write(originalSubmodels);
@@ -108,16 +108,16 @@ public class MetamodelCloneCreator {
 			throw new RuntimeException("Unable to serialize the Submodels");
 		}
 	}
-	
+
 	private List<Submodel> getDeserializedSubmodels(String serializedSubmodels) {
 		try {
-			return jsonDeserializer.readReferables(serializedSubmodels, Submodel.class);
+			return jsonDeserializer.readList(serializedSubmodels, Submodel.class);
 		} catch (DeserializationException e) {
 			e.printStackTrace();
 			throw new RuntimeException("Unable to deserialize the Submodels");
 		}
 	}
-	
+
 	private String getSerializedCDs(List<ConceptDescription> originalCDs) {
 		try {
 			return jsonSerializer.write(originalCDs);
@@ -126,10 +126,10 @@ public class MetamodelCloneCreator {
 			throw new RuntimeException("Unable to serialize the Concept descriptions");
 		}
 	}
-	
+
 	private List<ConceptDescription> getDeserializedCDs(String serializedCDs) {
 		try {
-			return jsonDeserializer.readReferables(serializedCDs, ConceptDescription.class);
+			return jsonDeserializer.readList(serializedCDs, ConceptDescription.class);
 		} catch (DeserializationException e) {
 			e.printStackTrace();
 			throw new RuntimeException("Unable to deserialize the Concept descriptions");

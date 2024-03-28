@@ -35,7 +35,6 @@ import org.junit.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 
-
 public abstract class ExtensionsTest extends BaseInterfaceTest {
 
 	@Test
@@ -47,5 +46,5 @@ public abstract class ExtensionsTest extends BaseInterfaceTest {
 		Mockito.verify(getEventSink(), Mockito.times(idsOfRemovedDescriptors.size())).consumeEvent(ArgumentMatchers.any(RegistryEvent.class));
 		List<SubmodelDescriptor> newState = getAllSubmodels();
 		assertThat(newState).isEmpty();
-	}	
+	}
 }

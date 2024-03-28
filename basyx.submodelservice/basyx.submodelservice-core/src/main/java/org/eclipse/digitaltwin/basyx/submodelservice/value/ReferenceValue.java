@@ -40,12 +40,12 @@ import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultReference;
 public class ReferenceValue {
 	private ReferenceTypes type;
 	private List<Key> keys;
-	
+
 	@SuppressWarnings("unused")
 	private ReferenceValue() {
 		super();
 	}
-	
+
 	public ReferenceValue(ReferenceTypes type, List<Key> keys) {
 		this.type = type;
 		this.keys = keys;

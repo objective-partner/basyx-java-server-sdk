@@ -35,28 +35,28 @@ import org.springframework.stereotype.Component;
 @SuppressWarnings("serial")
 public class ElementNotAFileException extends BaSyxResponseException {
 
-  private ElementNotAFileException(int httpStatusCode, String reason, String correlationId, String timestamp) {
-    super(httpStatusCode, reason, correlationId, timestamp);
-  }
+	private ElementNotAFileException(int httpStatusCode, String reason, String correlationId, String timestamp) {
+		super(httpStatusCode, reason, correlationId, timestamp);
+	}
 
-  @Component
-  public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
+	@Component
+	public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
 
-    public Builder(ITraceableMessageSerializer serializer) {
-      super(serializer);
-      messageReference("ElementNotAFileException");
-      returnCode(404);
-      technicalMessageTemplate("SubmodelElement with Id '{SubmodelElementId}' is not a File.");
-    }
+		public Builder(ITraceableMessageSerializer serializer) {
+			super(serializer);
+			messageReference("ElementNotAFileException");
+			returnCode(412);
+			technicalMessageTemplate("SubmodelElement with Id '{SubmodelElementId}' is not a File.");
+		}
 
-    public Builder submodelElementId(String value) {
-      param("SubmodelElementId", value);
-      return this;
-    }
+		public Builder submodelElementId(String value) {
+			param("SubmodelElementId", value);
+			return this;
+		}
 
-    @Override
-    public ElementNotAFileException build() {
-      return new ElementNotAFileException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
-    }
-  }
+		@Override
+		public ElementNotAFileException build() {
+			return new ElementNotAFileException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
+		}
+	}
 }

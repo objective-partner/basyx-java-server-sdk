@@ -35,21 +35,21 @@ import org.eclipse.digitaltwin.aas4j.v3.model.Range;
 public class RangeValue implements SubmodelElementValue {
 	private int min;
 	private int max;
-	
+
 	@SuppressWarnings("unused")
 	private RangeValue() {
 		super();
 	}
-	
+
 	public RangeValue(int min, int max) {
 		this.min = min;
 		this.max = max;
 	}
-	
+
 	public int getMin() {
 		return min;
 	}
-	
+
 	public int getMax() {
 		return max;
 	}

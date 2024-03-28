@@ -25,24 +25,27 @@
 
 package org.eclipse.digitaltwin.basyx.aasdiscoveryservice.backend.inmemory;
 
-import java.util.*;
+import static org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.AasDiscoveryUtils.deriveAssetLinksFromSpecificAssetIds;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
 import org.eclipse.digitaltwin.aas4j.v3.model.SpecificAssetId;
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.AasDiscoveryService;
-import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.AasDiscoveryUtils;
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.model.AssetLink;
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.model.ElementCount;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationSupport;
-
-import static org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.AasDiscoveryUtils.deriveAssetLinksFromSpecificAssetIds;
-import static org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.AasDiscoveryUtils.deriveShellFromIdAndSpecificAssetIds;
 
 /**
  * In-memory implementation of the {@link AasDiscoveryService}
@@ -68,7 +71,7 @@ public class InMemoryAasDiscoveryService implements AasDiscoveryService {
 	 * Creates the {@link InMemoryAasDiscoveryService}
 	 * 
 	 * @param aasDiscoveryServiceName
-	 *            of the Aas Discovery Service
+	 *            name of the Aas Discovery Service
 	 */
 	public InMemoryAasDiscoveryService(String aasDiscoveryServiceName) {
 		this.aasDiscoveryServiceName = aasDiscoveryServiceName;
@@ -115,7 +118,8 @@ public class InMemoryAasDiscoveryService implements AasDiscoveryService {
 
 	@Override
 	public List<ElementCount> getAssetLinkValues(String assetLinkName, String prefix, Integer minCount) {
-		Stream<Map.Entry<String, Long>> assetNameValuesCounted = assetLinks.values().stream().flatMap(Set::stream).filter(e -> assetLinkName.equals(e.getName())).map(AssetLink::getValue).collect(Collectors.groupingBy(Function.identity(), Collectors.counting())).entrySet().stream();
+		Stream<Map.Entry<String, Long>> assetNameValuesCounted = assetLinks.values().stream().flatMap(Set::stream).filter(e -> assetLinkName.equals(e.getName())).map(AssetLink::getValue)
+				.collect(Collectors.groupingBy(Function.identity(), Collectors.counting())).entrySet().stream();
 		if (prefix != null && !prefix.isBlank()) {
 			assetNameValuesCounted = assetNameValuesCounted.filter(e -> e.getKey().startsWith(prefix));
 		}
@@ -141,8 +145,7 @@ public class InMemoryAasDiscoveryService implements AasDiscoveryService {
 	}
 
 	private CursorResult<List<String>> paginateList(PaginationInfo pInfo, List<String> shellIdentifiers) {
-		TreeMap<String, String> shellIdentifierMap = shellIdentifiers.stream()
-				.collect(Collectors.toMap(Function.identity(), Function.identity(), (a, b) -> a, TreeMap::new));
+		TreeMap<String, String> shellIdentifierMap = shellIdentifiers.stream().collect(Collectors.toMap(Function.identity(), Function.identity(), (a, b) -> a, TreeMap::new));
 
 		PaginationSupport<String> paginationSupport = new PaginationSupport<>(shellIdentifierMap, Function.identity());
 

@@ -37,12 +37,13 @@ import org.eclipse.digitaltwin.basyx.submodelservice.value.ValueOnly;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.factory.SubmodelElementValueMapperFactory;
 
 /**
- * Maps {@link AnnotatedRelationshipElement} value to {@link AnnotatedRelationshipElementValue}
+ * Maps {@link AnnotatedRelationshipElement} value to
+ * {@link AnnotatedRelationshipElementValue}
  * 
  * @author danish
  *
  */
-public class AnnotatedRelationshipElementValueMapper implements ValueMapper<AnnotatedRelationshipElementValue>{
+public class AnnotatedRelationshipElementValueMapper implements ValueMapper<AnnotatedRelationshipElementValue> {
 	private AnnotatedRelationshipElement annotatedRelationshipElement;
 
 	public AnnotatedRelationshipElementValueMapper(AnnotatedRelationshipElement relationshipElement) {
@@ -51,8 +52,7 @@ public class AnnotatedRelationshipElementValueMapper implements ValueMapper<Anno
 
 	@Override
 	public AnnotatedRelationshipElementValue getValue() {
-		return new AnnotatedRelationshipElementValue(createReferenceValue(annotatedRelationshipElement.getFirst()),
-				createReferenceValue(annotatedRelationshipElement.getSecond()),
+		return new AnnotatedRelationshipElementValue(createReferenceValue(annotatedRelationshipElement.getFirst()), createReferenceValue(annotatedRelationshipElement.getSecond()),
 				createValueOnly(annotatedRelationshipElement.getAnnotations()));
 	}
 
@@ -62,14 +62,14 @@ public class AnnotatedRelationshipElementValueMapper implements ValueMapper<Anno
 		setReferenceValue(annotatedRelationshipElement.getSecond(), annotatedRelationshipElementValue.getSecond());
 		setDataElementValue(annotatedRelationshipElement.getAnnotations(), annotatedRelationshipElementValue.getAnnotation());
 	}
-	
+
 	private void setDataElementValue(List<DataElement> annotations, List<ValueOnly> valueOnlies) {
 		annotations.stream().forEach(annotation -> setValue(annotation, valueOnlies));
 	}
-	
+
 	private void setValue(DataElement dataElement, List<ValueOnly> valueOnlies) {
 		ValueMapper<SubmodelElementValue> valueMapper = new SubmodelElementValueMapperFactory().create(dataElement);
-		
+
 		valueMapper.setValue(ValueMapperUtil.getSubmodelElementValue(dataElement, valueOnlies));
 	}
 

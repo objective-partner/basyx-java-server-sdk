@@ -1,38 +1,49 @@
 package org.eclipse.digitaltwin.basyx.delegated_operations;
 
-import ch.qos.logback.core.read.ListAppender;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.eclipse.digitaltwin.aas4j.v3.model.*;
-import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultExtension;
-import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultKey;
-import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultOperation;
-import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultReference;
-import org.eclipse.digitaltwin.basyx.InvokableOperation;
-import org.eclipse.digitaltwin.basyx.core.exceptions.NotInvokableException;
-import org.eclipse.digitaltwin.basyx.delegated_operations.mapper.AttributeMapper;
-import org.eclipse.digitaltwin.basyx.submodelregistry.client.api.SubmodelRegistryApi;
-import org.eclipse.digitaltwin.basyx.submodelregistry.client.model.Endpoint;
-import org.eclipse.digitaltwin.basyx.submodelregistry.client.model.ProtocolInformation;
-import org.eclipse.digitaltwin.basyx.submodelregistry.client.model.SubmodelDescriptor;
-import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepository;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.read.ListAppender;
-import org.slf4j.LoggerFactory;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.Mockito.*;
+import org.eclipse.digitaltwin.aas4j.v3.model.Extension;
+import org.eclipse.digitaltwin.aas4j.v3.model.Key;
+import org.eclipse.digitaltwin.aas4j.v3.model.KeyTypes;
+import org.eclipse.digitaltwin.aas4j.v3.model.Operation;
+import org.eclipse.digitaltwin.aas4j.v3.model.OperationVariable;
+import org.eclipse.digitaltwin.aas4j.v3.model.Reference;
+import org.eclipse.digitaltwin.aas4j.v3.model.ReferenceTypes;
+import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultExtension;
+import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultKey;
+import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultOperation;
+import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultReference;
+import org.eclipse.digitaltwin.basyx.InvokableOperation;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
+import org.eclipse.digitaltwin.basyx.core.exceptions.NotInvokableException;
+import org.eclipse.digitaltwin.basyx.delegated_operations.mapper.AttributeMapper;
+import org.eclipse.digitaltwin.basyx.http.TraceableMessageSerializer;
+import org.eclipse.digitaltwin.basyx.submodelregistry.client.model.Endpoint;
+import org.eclipse.digitaltwin.basyx.submodelregistry.client.model.ProtocolInformation;
+import org.eclipse.digitaltwin.basyx.submodelregistry.client.model.SubmodelDescriptor;
+import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepository;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DelegatedOperationSubmodelRepositoryTests {
@@ -48,9 +59,11 @@ public class DelegatedOperationSubmodelRepositoryTests {
 
 	private static ObjectMapper objectMapper;
 
-	@BeforeAll
+	@BeforeClass
 	public static void setup() {
 		objectMapper = new ObjectMapper();
+
+		prepareExceptionBuilderFactory();
 	}
 
 	@Before
@@ -83,17 +96,11 @@ public class DelegatedOperationSubmodelRepositoryTests {
 		String expectedDelegatedShellId = "delegatedShellId";
 		String expectedDelegatedSubmodelId = "delegatedSubmodelId";
 		String expectedDelegatedOperationIdShort = "delegatedOperationIdShort";
-		List<Key> keys = Arrays.asList(
-				new DefaultKey.Builder().type(KeyTypes.ASSET_ADMINISTRATION_SHELL).value(expectedDelegatedShellId).build(),
-				new DefaultKey.Builder().type(KeyTypes.SUBMODEL).value(expectedDelegatedSubmodelId).build(),
-				new DefaultKey.Builder().type(KeyTypes.OPERATION).value(expectedDelegatedOperationIdShort).build()
-		);
+		List<Key> keys = Arrays.asList(new DefaultKey.Builder().type(KeyTypes.ASSET_ADMINISTRATION_SHELL).value(expectedDelegatedShellId).build(), new DefaultKey.Builder().type(KeyTypes.SUBMODEL).value(expectedDelegatedSubmodelId).build(),
+				new DefaultKey.Builder().type(KeyTypes.OPERATION).value(expectedDelegatedOperationIdShort).build());
 		Reference reference = new DefaultReference.Builder().type(ReferenceTypes.EXTERNAL_REFERENCE).keys(keys).build();
 		Extension extension = new DefaultExtension.Builder().name(DelegatedOperationSubmodelRepository.DELEGATED_OPERATION).refersTo(reference).build();
-		Operation operation = new DefaultOperation.Builder()
-				.idShort("operationIdShort")
-				.extensions(Collections.singletonList(extension))
-				.build();
+		Operation operation = new DefaultOperation.Builder().idShort("operationIdShort").extensions(Collections.singletonList(extension)).build();
 
 		DelegatedOperationSubmodelRepository testee = new DelegatedOperationSubmodelRepository(null, null, null, null);
 
@@ -126,7 +133,7 @@ public class DelegatedOperationSubmodelRepositoryTests {
 			repository.selectSubmodelEndpoint("submodelId", "idShortPath", submodelDescriptor);
 			fail("Not valid endpoint type");
 		} catch (NotInvokableException e) {
-			assertEquals("No endpoint found for submodelId/idShortPath", e.getMessage());
+			assertTrue(e.getMessage().contains("is not invokable"));
 		}
 	}
 
@@ -148,5 +155,11 @@ public class DelegatedOperationSubmodelRepositoryTests {
 		SubmodelDescriptor submodelDescriptor = new SubmodelDescriptor();
 		submodelDescriptor.setEndpoints(endpoints);
 		return submodelDescriptor;
+	}
+
+	private static void prepareExceptionBuilderFactory() {
+		TraceableMessageSerializer messageSerializer = new TraceableMessageSerializer(objectMapper);
+		ExceptionBuilderFactory builderFactory = new ExceptionBuilderFactory(messageSerializer);
+		ExceptionBuilderFactory.setInstance(builderFactory);
 	}
 }

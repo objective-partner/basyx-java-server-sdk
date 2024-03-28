@@ -34,12 +34,11 @@ import org.eclipse.digitaltwin.basyx.submodelregistry.service.events.RegistryEve
 
 import lombok.NonNull;
 
-
 public class RegistrationEventSendingSubmodelRegistryStorage extends SubmodelRegistryStorageDecorator {
 
 	@NonNull
 	private final RegistryEventSink eventSink;
-	
+
 	public RegistrationEventSendingSubmodelRegistryStorage(SubmodelRegistryStorage storage, RegistryEventSink sink) {
 		super(storage);
 		this.eventSink = sink;
@@ -50,7 +49,7 @@ public class RegistrationEventSendingSubmodelRegistryStorage extends SubmodelReg
 		storage.insertSubmodelDescriptor(descr);
 		submodelRegistered(descr);
 	}
-	
+
 	@Override
 	public void removeSubmodelDescriptor(String submodelId) throws SubmodelNotFoundException {
 		storage.removeSubmodelDescriptor(submodelId);
@@ -66,7 +65,6 @@ public class RegistrationEventSendingSubmodelRegistryStorage extends SubmodelReg
 		submodelRegistered(descr);
 	}
 
-	
 	@Override
 	public Set<String> clear() {
 		Set<String> removed = storage.clear();

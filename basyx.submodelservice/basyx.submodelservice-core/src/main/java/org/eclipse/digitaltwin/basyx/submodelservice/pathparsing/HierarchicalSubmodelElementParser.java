@@ -24,16 +24,17 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.submodelservice.pathparsing;
 
+import java.util.Stack;
+
 import org.eclipse.digitaltwin.aas4j.v3.model.KeyTypes;
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
 import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElement;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 
-import java.util.Stack;
-
 /**
- * Class for getting a Hierarchical SubmodelElement in a Submodel via a idShort Path
+ * Class for getting a Hierarchical SubmodelElement in a Submodel via a idShort
+ * Path
  *
  * @author fried
  */
@@ -46,7 +47,7 @@ public class HierarchicalSubmodelElementParser {
 	 * Creates a HierarchicalSubmodelElementParser
 	 *
 	 * @param submodel
-	 * 		the submodel
+	 *            the submodel
 	 */
 	public HierarchicalSubmodelElementParser(Submodel submodel) {
 		this.submodel = submodel;
@@ -57,7 +58,7 @@ public class HierarchicalSubmodelElementParser {
 	 * Returns the nested SubmodelElement given in the idShortPath
 	 *
 	 * @param idShortPath
-	 * 		the idShortPath of the SubmodelElement
+	 *            the idShortPath of the SubmodelElement
 	 * @return the nested SubmodelElement
 	 * @throws ElementDoesNotExistException
 	 */
@@ -65,6 +66,32 @@ public class HierarchicalSubmodelElementParser {
 		Stack<PathToken> idShortPathTokenStack = pathParser.parsePathTokens(idShortPath);
 
 		return getLastElementOfStack(idShortPathTokenStack);
+	}
+
+	/**
+	 * Returns the IdShortPath of parent SubmodelElement
+	 *
+	 * <pre>
+	 * e.g.,
+	 *
+	 * SubmodelElementCollection.Property -> SubmodelElementCollection
+	 * SubmodelElementList.SubmodelElementCollection.File -> SubmodelElementList.SubmodelElementCollection
+	 * Property -> Property
+	 * SubmodelElementList.SubmodelElementCollection -> SubmodelElementList
+	 *
+	 * </pre>
+	 * 
+	 * @param idShortPath
+	 * @return the IdShortPath of parent SubmodelElement
+	 */
+	public String getIdShortPathOfParentElement(String idShortPath) {
+
+		int lastElementIdShortIndex = idShortPath.lastIndexOf(".");
+
+		if (lastElementIdShortIndex == -1)
+			return idShortPath;
+
+		return idShortPath.substring(0, lastElementIdShortIndex);
 	}
 
 	public SubmodelElement getLastElementOfStack(Stack<PathToken> idShortPathTokenStack) {
@@ -82,5 +109,4 @@ public class HierarchicalSubmodelElementParser {
 		return submodel.getSubmodelElements().stream().filter(sme -> sme.getIdShort().equals(rootElementIdShort)).findAny()
 				.orElseThrow(() -> ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.SUBMODEL_ELEMENT).missingElement(rootElementIdShort).build());
 	}
-
 }

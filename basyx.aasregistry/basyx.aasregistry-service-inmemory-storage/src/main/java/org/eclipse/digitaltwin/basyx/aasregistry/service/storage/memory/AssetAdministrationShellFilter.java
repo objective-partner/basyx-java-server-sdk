@@ -110,7 +110,7 @@ public class AssetAdministrationShellFilter {
 
 		SubmodelFilterVisitor visitor = new SubmodelFilterVisitor(smList, pathToPredicate);
 		for (Entry<String, List<BiPredicate<Object[], String>>> eachEntry : pathToPredicate.entrySet()) {
-			processor.visitValuesAtPath(eachEntry.getKey(), visitor);	
+			processor.visitValuesAtPath(eachEntry.getKey(), visitor);
 		}
 		List<SubmodelDescriptor> matchingSubmodels = visitor.getMatchingSubmodels();
 		if (matchingSubmodels.isEmpty()) {

@@ -27,232 +27,221 @@ package org.eclipse.digitaltwin.basyx.aasrepository.backend;
 import java.io.File;
 import java.io.InputStream;
 import java.util.List;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetInformation;
 import org.eclipse.digitaltwin.aas4j.v3.model.KeyTypes;
 import org.eclipse.digitaltwin.aas4j.v3.model.Reference;
 import org.eclipse.digitaltwin.aas4j.v3.model.Resource;
+import org.eclipse.digitaltwin.basyx.aasrepository.AasFilterParams;
 import org.eclipse.digitaltwin.basyx.aasrepository.AasRepository;
 import org.eclipse.digitaltwin.basyx.aasservice.AasService;
 import org.eclipse.digitaltwin.basyx.aasservice.AasServiceFactory;
+import org.eclipse.digitaltwin.basyx.core.BaSyxCrudRepository;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
-import org.eclipse.digitaltwin.basyx.core.pagination.PaginationSupport;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.repository.CrudRepository;
 
 /**
- * Default Implementation for the {@link AasRepository} based on Spring {@link CrudRepository}
+ * Default Implementation for the {@link AasRepository} based on Spring
+ * {@link CrudRepository}
  *
- * @author mateusmolina, despen, zhangzai
+ * @author mateusmolina, despen, zhangzai, kammognie
  */
 public class CrudAasRepository implements AasRepository {
 
-  private final CrudRepository<AssetAdministrationShell, String> aasBackend;
+	private final BaSyxCrudRepository<AssetAdministrationShell, String, AasFilterParams> aasBackend;
 
-  private final AasServiceFactory aasServiceFactory;
+	private final AasServiceFactory aasServiceFactory;
 
-  private String aasRepositoryName = null;
+	private String aasRepositoryName = null;
 
-  private AASThumbnailHandler thumbnailHandler = null;
+	private AASThumbnailHandler thumbnailHandler = null;
 
-  public CrudAasRepository(AasBackendProvider aasBackendProvider, AasServiceFactory aasServiceFactory) {
-    this.aasBackend = aasBackendProvider.getCrudRepository();
-    this.aasServiceFactory = aasServiceFactory;
-  }
+	public CrudAasRepository(AasBackendProvider aasBackendProvider, AasServiceFactory aasServiceFactory) {
+		this.aasBackend = aasBackendProvider.getCrudRepository();
+		this.aasServiceFactory = aasServiceFactory;
+	}
 
-  public CrudAasRepository(AasBackendProvider aasBackendProvider, AasServiceFactory aasServiceFactory,
-      @Value("${basyx.aasrepo.name:aas-repo}") String aasRepositoryName,
-      @Value("${basyx.aasrepo.thumbnails.storagepath}") String thumbnailStorageBaseFolder) {
-    this(aasBackendProvider, aasServiceFactory);
+	public CrudAasRepository(AasBackendProvider aasBackendProvider, AasServiceFactory aasServiceFactory, String aasRepositoryName, String thumbnailStorageBaseFolder) {
+		this(aasBackendProvider, aasServiceFactory);
 
-    this.aasRepositoryName = aasRepositoryName;
-    thumbnailHandler = new AASThumbnailHandler(thumbnailStorageBaseFolder);
-  }
+		this.aasRepositoryName = aasRepositoryName;
+		this.thumbnailHandler = new AASThumbnailHandler(thumbnailStorageBaseFolder);
+	}
 
-  @Override
-  public CursorResult<List<AssetAdministrationShell>> getAllAas(PaginationInfo pInfo) {
+	@Override
+	public CursorResult<List<AssetAdministrationShell>> getAllAas(AasFilterParams filterParams) {
+		return aasBackend.findAll(filterParams);
+	}
 
-    Iterable<AssetAdministrationShell> iterable = aasBackend.findAll();
-    List<AssetAdministrationShell> allAas = StreamSupport.stream(iterable.spliterator(), false)
-        .collect(Collectors.toList());
+	@Override
+	public AssetAdministrationShell getAas(String aasId) throws ElementDoesNotExistException {
+		return aasBackend.findById(aasId).orElseThrow(() -> {
+			throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.ASSET_ADMINISTRATION_SHELL).missingElement(aasId).build();
+		});
+	}
 
-    TreeMap<String, AssetAdministrationShell> aasMap = allAas.stream()
-        .collect(Collectors.toMap(AssetAdministrationShell::getId, aas -> aas, (a, b) -> a, TreeMap::new));
+	@Override
+	public void createAas(AssetAdministrationShell aas) throws CollidingIdentifierException {
+		throwIfAasIdEmptyOrNull(aas.getId());
 
-    PaginationSupport<AssetAdministrationShell> paginationSupport = new PaginationSupport<>(aasMap,
-        AssetAdministrationShell::getId);
+		throwIfAasExists(aas);
 
-    return paginationSupport.getPaged(pInfo);
-  }
+		aasBackend.save(aas);
+	}
 
-  @Override
-  public AssetAdministrationShell getAas(String aasId) throws ElementDoesNotExistException {
-    return aasBackend.findById(aasId).orElseThrow(() -> {
-      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException()
-          .elementType(KeyTypes.ASSET_ADMINISTRATION_SHELL).missingElement(aasId).build();
-    });
-  }
+	@Override
+	public void deleteAas(String aasId) {
+		throwIfAasDoesNotExist(aasId);
 
-  @Override
-  public void createAas(AssetAdministrationShell aas) throws CollidingIdentifierException {
-    throwIfAasExists(aas);
+		aasBackend.deleteById(aasId);
+	}
 
-    aasBackend.save(aas);
-  }
+	@Override
+	public void updateAas(String aasId, AssetAdministrationShell aas) {
+		throwIfAasDoesNotExist(aasId);
 
-  @Override
-  public void deleteAas(String aasId) {
-    throwIfAasDoesNotExist(aasId);
+		throwIfMismatchingIds(aasId, aas);
 
-    aasBackend.deleteById(aasId);
-  }
+		aasBackend.save(aas);
+	}
 
-  @Override
-  public void updateAas(String aasId, AssetAdministrationShell aas) {
-    throwIfAasDoesNotExist(aasId);
+	@Override
+	public CursorResult<List<Reference>> getSubmodelReferences(String aasId, PaginationInfo pInfo) {
+		return getAasServiceOrThrow(aasId).getSubmodelReferences(pInfo);
+	}
 
-    throwIfMismatchingIds(aasId, aas);
+	@Override
+	public void addSubmodelReference(String aasId, Reference submodelReference) {
+		AasService aasService = getAasServiceOrThrow(aasId);
 
-    aasBackend.save(aas);
-  }
+		aasService.addSubmodelReference(submodelReference);
 
-  @Override
-  public CursorResult<List<Reference>> getSubmodelReferences(String aasId, PaginationInfo pInfo) {
-    return getAasServiceOrThrow(aasId).getSubmodelReferences(pInfo);
-  }
+		updateAas(aasId, aasService.getAAS());
+	}
 
-  @Override
-  public void addSubmodelReference(String aasId, Reference submodelReference) {
-    AasService aasService = getAasServiceOrThrow(aasId);
+	@Override
+	public void removeSubmodelReference(String aasId, String submodelId) {
+		AasService aasService = getAasServiceOrThrow(aasId);
 
-    aasService.addSubmodelReference(submodelReference);
+		aasService.removeSubmodelReference(submodelId);
 
-    updateAas(aasId, aasService.getAAS());
-  }
+		updateAas(aasId, aasService.getAAS());
+	}
 
-  @Override
-  public void removeSubmodelReference(String aasId, String submodelId) {
-    AasService aasService = getAasServiceOrThrow(aasId);
+	@Override
+	public void setAssetInformation(String aasId, AssetInformation aasInfo) throws ElementDoesNotExistException {
+		AasService aasService = getAasServiceOrThrow(aasId);
 
-    aasService.removeSubmodelReference(submodelId);
+		aasService.setAssetInformation(aasInfo);
 
-    updateAas(aasId, aasService.getAAS());
-  }
+		updateAas(aasId, aasService.getAAS());
+	}
 
-  @Override
-  public void setAssetInformation(String aasId, AssetInformation aasInfo) throws ElementDoesNotExistException {
-    AasService aasService = getAasServiceOrThrow(aasId);
+	@Override
+	public AssetInformation getAssetInformation(String aasId) throws ElementDoesNotExistException {
+		return getAasServiceOrThrow(aasId).getAssetInformation();
+	}
 
-    aasService.setAssetInformation(aasInfo);
+	@Override
+	public String getName() {
+		return aasRepositoryName == null ? AasRepository.super.getName() : aasRepositoryName;
+	}
 
-    updateAas(aasId, aasService.getAAS());
-  }
+	@Override
+	public File getThumbnail(String aasId) {
+		Resource resource = getAssetInformation(aasId).getDefaultThumbnail();
 
-  @Override
-  public AssetInformation getAssetInformation(String aasId) throws ElementDoesNotExistException {
-    return getAasServiceOrThrow(aasId).getAssetInformation();
-  }
+		thumbnailHandler.throwIfFileDoesNotExist(aasId, resource);
+		String filePath = resource.getPath();
+		return new File(filePath);
+	}
 
-  @Override
-  public String getName() {
-    return aasRepositoryName == null ? AasRepository.super.getName() : aasRepositoryName;
-  }
+	@Override
+	public void setThumbnail(String aasId, String fileName, String contentType, InputStream inputStream) {
+		Resource thumbnail = getAssetInformation(aasId).getDefaultThumbnail();
 
-  @Override
-  public File getThumbnail(String aasId) {
-    Resource resource = getAssetInformation(aasId).getDefaultThumbnail();
+		if (thumbnail != null) {
+			updateThumbnailFile(aasId, fileName, contentType, inputStream, thumbnail);
+			return;
+		}
 
-    thumbnailHandler.throwIfFileDoesNotExist(aasId, resource);
-    String filePath = resource.getPath();
-    return new File(filePath);
-  }
+		String filePath = createFile(aasId, fileName, inputStream);
+		thumbnailHandler.setNewThumbnail(this, aasId, contentType, filePath);
+	}
 
-  @Override
-  public void setThumbnail(String aasId, String fileName, String contentType, InputStream inputStream) {
-    Resource thumbnail = getAssetInformation(aasId).getDefaultThumbnail();
+	@Override
+	public void deleteThumbnail(String aasId) {
+		Resource thumbnail = getAssetInformation(aasId).getDefaultThumbnail();
+		thumbnailHandler.throwIfFileDoesNotExist(aasId, thumbnail);
 
-    if (thumbnail != null) {
-      updateThumbnailFile(aasId, fileName, contentType, inputStream, thumbnail);
-      return;
-    }
+		deleteThumbnailFile(thumbnail);
 
-    String filePath = createFile(aasId, fileName, inputStream);
-    thumbnailHandler.setNewThumbnail(this, aasId, contentType, filePath);
-  }
+		updateThumbnailInAssetInformation(aasId);
+	}
 
-  @Override
-  public void deleteThumbnail(String aasId) {
-    Resource thumbnail = getAssetInformation(aasId).getDefaultThumbnail();
-    thumbnailHandler.throwIfFileDoesNotExist(aasId, thumbnail);
+	private AasService getAasServiceOrThrow(String aasId) {
+		AssetAdministrationShell aas = aasBackend.findById(aasId).orElseThrow(() -> {
+			throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.ASSET_ADMINISTRATION_SHELL).missingElement(aasId).build();
+		});
 
-    deleteThumbnailFile(thumbnail);
+		return aasServiceFactory.create(aas);
+	}
 
-    updateThumbnailInAssetInformation(aasId);
-  }
+	private void throwIfMismatchingIds(String aasId, AssetAdministrationShell newAas) {
+		String newAasId = newAas.getId();
 
-  private AasService getAasServiceOrThrow(String aasId) {
-    AssetAdministrationShell aas = aasBackend.findById(aasId).orElseThrow(() -> {
-      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException()
-          .elementType(KeyTypes.ASSET_ADMINISTRATION_SHELL).missingElement(aasId).build();
-    });
+		if (!aasId.equals(newAasId)) {
+			throw ExceptionBuilderFactory.getInstance().identificationMismatchException().mismatchingIdentifier(newAasId).build();
+		}
+	}
 
-    return aasServiceFactory.create(aas);
-  }
+	private void throwIfAasExists(AssetAdministrationShell aas) {
+		if (aasBackend.existsById(aas.getId())) {
+			throw ExceptionBuilderFactory.getInstance().collidingIdentifierException().collidingIdentifier(aas.getId()).build();
+		}
+	}
 
-  private void throwIfMismatchingIds(String aasId, AssetAdministrationShell newAas) {
-    String newAasId = newAas.getId();
+	private void throwIfAasIdEmptyOrNull(String aasId) {
+		if (aasId == null || aasId.isBlank()) {
+			throw ExceptionBuilderFactory.getInstance().missingIdentifierException().elementId(aasId).build();
+		}
+	}
 
-    if (!aasId.equals(newAasId)) {
-      throw ExceptionBuilderFactory.getInstance().identificationMismatchException().mismatchingIdentifier(newAasId)
-          .build();
-    }
-  }
+	private void throwIfAasDoesNotExist(String aasId) {
+		if (!aasBackend.existsById(aasId)) {
+			throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException().elementType(KeyTypes.ASSET_ADMINISTRATION_SHELL).missingElement(aasId).build();
+		}
+	}
 
-  private void throwIfAasExists(AssetAdministrationShell aas) {
-    if (aasBackend.existsById(aas.getId())) {
-      throw ExceptionBuilderFactory.getInstance().collidingIdentifierException().build();
-    }
-  }
+	private void updateThumbnailInAssetInformation(String aasId) {
+		AssetInformation assetInfor = getAssetInformation(aasId);
+		assetInfor.getDefaultThumbnail().setContentType("");
+		assetInfor.getDefaultThumbnail().setPath("");
+		setAssetInformation(aasId, assetInfor);
+	}
 
-  private void throwIfAasDoesNotExist(String aasId) {
-    if (!aasBackend.existsById(aasId)) {
-      throw ExceptionBuilderFactory.getInstance().elementDoesNotExistException()
-          .elementType(KeyTypes.ASSET_ADMINISTRATION_SHELL).missingElement(aasId).build();
-    }
-  }
+	private void deleteThumbnailFile(Resource thumbnail) {
+		String filePath = thumbnail.getPath();
+		java.io.File tmpFile = new java.io.File(filePath);
+		tmpFile.delete();
+	}
 
-  private void updateThumbnailInAssetInformation(String aasId) {
-    AssetInformation assetInfor = getAssetInformation(aasId);
-    assetInfor.getDefaultThumbnail().setContentType("");
-    assetInfor.getDefaultThumbnail().setPath("");
-    setAssetInformation(aasId, assetInfor);
-  }
+	private void updateThumbnailFile(String aasId, String fileName, String contentType, InputStream inputStream, Resource thumbnail) {
+		String path = thumbnail.getPath();
+		thumbnailHandler.deleteExistingFile(path);
+		String filePath = createFile(aasId, fileName, inputStream);
+		thumbnailHandler.updateThumbnail(this, aasId, contentType, filePath);
+	}
 
-  private void deleteThumbnailFile(Resource thumbnail) {
-    String filePath = thumbnail.getPath();
-    java.io.File tmpFile = new java.io.File(filePath);
-    tmpFile.delete();
-  }
-
-  private void updateThumbnailFile(String aasId, String fileName, String contentType, InputStream inputStream,
-      Resource thumbnail) {
-    String path = thumbnail.getPath();
-    thumbnailHandler.deleteExistingFile(path);
-    String filePath = createFile(aasId, fileName, inputStream);
-    thumbnailHandler.updateThumbnail(this, aasId, contentType, filePath);
-  }
-
-  private String createFile(String aasId, String fileName, InputStream inputStream) {
-    String filePath = thumbnailHandler.createFilePath(aasId, fileName);
-    thumbnailHandler.createFileAtSpecifiedPath(fileName, inputStream, filePath);
-    return filePath;
-  }
+	private String createFile(String aasId, String fileName, InputStream inputStream) {
+		String filePath = thumbnailHandler.createFilePath(aasId, fileName);
+		thumbnailHandler.createFileAtSpecifiedPath(fileName, inputStream, filePath);
+		return filePath;
+	}
 
 }

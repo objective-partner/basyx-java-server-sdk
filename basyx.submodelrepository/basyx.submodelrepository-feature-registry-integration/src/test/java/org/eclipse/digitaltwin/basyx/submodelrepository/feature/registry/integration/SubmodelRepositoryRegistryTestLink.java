@@ -57,14 +57,14 @@ import org.springframework.http.HttpStatus;
  * @author danish
  */
 public class SubmodelRepositoryRegistryTestLink {
-	
+
 	private static final String SUBMODEL_REPOSITORY_PATH = "/submodels";
 
 	private static final String SUMMY_SUBMODEL_IDSHORT = "TechnicalData";
 	private static final String DUMMY_SUBMODEL_ID = "7A7104BDAB57E184";
 
 	public static String submodelRepoBaseUrl = "http://localhost:8081";
-	public static String submodelRegistryUrl = "http://localhost:8060/api/v3.0";
+	public static String submodelRegistryUrl = "http://localhost:8060";
 
 	private static final SubmodelDescriptor DUMMY_DESCRIPTOR = createExpectedDescriptor();
 
@@ -94,7 +94,7 @@ public class SubmodelRepositoryRegistryTestLink {
 
 		assertDescriptionDeletionAtRegistry();
 	}
-	
+
 	private SubmodelDescriptor retrieveDescriptorFromRegistry() throws ApiException {
 		SubmodelRegistryApi api = new SubmodelRegistryApi(submodelRegistryUrl);
 
@@ -178,7 +178,7 @@ public class SubmodelRepositoryRegistryTestLink {
 			throw new RuntimeException();
 		}
 	}
-	
+
 	private static String createSubmodelRepositoryUrl(String smRepositoryBaseURL) {
 
 		try {

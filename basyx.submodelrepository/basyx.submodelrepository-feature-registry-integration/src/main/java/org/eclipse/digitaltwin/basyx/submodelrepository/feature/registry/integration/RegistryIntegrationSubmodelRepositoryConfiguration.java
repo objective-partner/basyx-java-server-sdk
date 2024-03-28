@@ -37,7 +37,8 @@ import org.springframework.context.annotation.Configuration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Configuration for integrating {@link SubmodelRepository} with SubmodelRegistry
+ * Configuration for integrating {@link SubmodelRepository} with
+ * SubmodelRegistry
  * 
  * @author danish
  */
@@ -48,14 +49,14 @@ public class RegistryIntegrationSubmodelRepositoryConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public SubmodelRepositoryRegistryLink getSubmodelRepositoryRegistryLink(@Value("${basyx.submodelrepository.feature.registryintegration}") String registryBasePath, @Value("${basyx.externalurl}") String submodelRepositoryBaseURL) {
-	
+
 		return new SubmodelRepositoryRegistryLink(new SubmodelRegistryApi(registryBasePath), submodelRepositoryBaseURL);
 	}
-	
+
 	@Bean
 	@ConditionalOnMissingBean
 	public AttributeMapper getSubmodelAttributeMapper(ObjectMapper objectMapper) {
-		
+
 		return new AttributeMapper(objectMapper);
 	}
 

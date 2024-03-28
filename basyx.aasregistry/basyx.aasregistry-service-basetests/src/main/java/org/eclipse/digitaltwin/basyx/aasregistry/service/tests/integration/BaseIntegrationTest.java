@@ -132,7 +132,7 @@ public abstract class BaseIntegrationTest {
 	private int port;
 
 	private ObjectMapper mapper = new ObjectMapper();
-	
+
 	@Rule
 	public TestResourcesLoader resourceLoader = new TestResourcesLoader(BaseIntegrationTest.class.getPackageName(), mapper);
 
@@ -177,7 +177,7 @@ public abstract class BaseIntegrationTest {
 			RegistryEvent evt = queue().poll();
 			assertThat(evt.getId()).isEqualTo(descriptor.getId());
 			assertThat(Integer.parseInt(evt.getSubmodelId())).isGreaterThanOrEqualTo(0).isLessThan(300);
-			
+
 		}
 	}
 
@@ -351,7 +351,8 @@ public abstract class BaseIntegrationTest {
 		initialize();
 		SubmodelDescriptor descr = new SubmodelDescriptor().id(SUBMODEL_9).addEndpointsItem(defaultEndpoint());
 		ApiResponse<Void> putResult = api.putSubmodelDescriptorByIdThroughSuperpathWithHttpInfo(IDENTIFICATION_5, SUBMODEL_0, descr);
-		assertThatEventWasSend(new RegistryEvent(IDENTIFICATION_5, SUBMODEL_0, EventType.SUBMODEL_UNREGISTERED, null, null));;
+		assertThatEventWasSend(new RegistryEvent(IDENTIFICATION_5, SUBMODEL_0, EventType.SUBMODEL_UNREGISTERED, null, null));
+		;
 		assertThatEventWasSend(new RegistryEvent(IDENTIFICATION_5, SUBMODEL_9, EventType.SUBMODEL_REGISTERED, null, convert(descr)));
 		assertThat(putResult.getStatusCode()).isEqualTo(NO_CONTENT);
 
@@ -361,7 +362,6 @@ public abstract class BaseIntegrationTest {
 		assertThat(descr).isEqualTo(getResult.getData());
 	}
 
-	
 	@Test
 	public void whenPutShellDescriptorSameId_thenUpdated() throws IOException, InterruptedException, TimeoutException, ApiException {
 		initialize();
@@ -369,7 +369,7 @@ public abstract class BaseIntegrationTest {
 		ApiResponse<Void> putResult = api.putAssetAdministrationShellDescriptorByIdWithHttpInfo(descr.getId(), descr);
 		assertThat(putResult.getStatusCode()).isEqualTo(NO_CONTENT);
 		assertThatEventWasSend(RegistryEvent.builder().id(IDENTIFICATION_5).aasDescriptor(convert(descr)).type(EventType.AAS_REGISTERED).build());
-		
+
 		ApiResponse<AssetAdministrationShellDescriptor> getResult = api.getAssetAdministrationShellDescriptorByIdWithHttpInfo(descr.getId());
 		assertThat(getResult.getStatusCode()).isEqualTo(OK);
 		assertThat(descr).isEqualTo(getResult.getData());
@@ -530,14 +530,14 @@ public abstract class BaseIntegrationTest {
 		api.searchShellDescriptors(new ShellDescriptorSearchRequest());
 	}
 
-	@Test 
+	@Test
 	public void whenInvalidExtensionSettings_thenException() throws Exception {
 		initialize();
 		ShellDescriptorQuery query1 = new ShellDescriptorQuery().extensionName("TAG").path(AasRegistryPaths.extensions().value()).value("A");
 		ShellDescriptorQuery query2 = new ShellDescriptorQuery().extensionName("TAG").path(AasRegistryPaths.submodelDescriptors().endpoints().protocolInformation().endpointProtocolVersion()).value("B");
-		
+
 		ShellDescriptorSearchRequest request = new ShellDescriptorSearchRequest().query(query1.combinedWith(query2));
-		assertThrowsApiException(()->api.searchShellDescriptors(request), BAD_REQUEST);
+		assertThrowsApiException(() -> api.searchShellDescriptors(request), BAD_REQUEST);
 	}
 
 	@Test
@@ -564,54 +564,53 @@ public abstract class BaseIntegrationTest {
 				.addSpecificAssetIdsItem(saId).administration(aInfo).assetKind(AssetKind.TYPE).assetType("tp1").globalAssetId("global1").addSubmodelDescriptorsItem(sm);
 
 		AssetAdministrationShellDescriptor descr = api.postAssetAdministrationShellDescriptor(descriptor);
-		assertThat(descr).isEqualTo(descriptor); 
+		assertThat(descr).isEqualTo(descriptor);
 		RegistryEvent evt = RegistryEvent.builder().id(descriptor.getId()).aasDescriptor(convert(descriptor)).type(EventType.AAS_REGISTERED).build();
 		assertThatEventWasSend(evt);
 	}
-	
+
 	@Test
 	public void whenPostShellDescriptor_LocationIsReturned() throws ApiException, IOException {
 		AssetAdministrationShellDescriptor descr = new AssetAdministrationShellDescriptor().id("https://test.id");
-		ApiResponse<AssetAdministrationShellDescriptor>  response = api.postAssetAdministrationShellDescriptorWithHttpInfo(descr);
+		ApiResponse<AssetAdministrationShellDescriptor> response = api.postAssetAdministrationShellDescriptorWithHttpInfo(descr);
 		List<String> locations = response.getHeaders().get("Location");
 		assertThat(locations).hasSize(1);
 		assertThatEventWasSend(RegistryEvent.builder().id(descr.getId()).aasDescriptor(convert(descr)).type(EventType.AAS_REGISTERED).build());
 		String location = locations.get(0);
-		
-		String expectedSuffix = "/api/v3.0/shell-descriptors/aHR0cHM6Ly90ZXN0Lmlk";
+
+		String expectedSuffix = "/shell-descriptors/aHR0cHM6Ly90ZXN0Lmlk";
 		assertThat(location).endsWith(expectedSuffix);
 		assertRestResourceAvailable(location);
 	}
-	
+
 	@Test
 	public void whenPostSubmodelDescriptor_LocationIsReturned() throws ApiException, IOException {
 		AssetAdministrationShellDescriptor shell = new AssetAdministrationShellDescriptor().id("https://shell.id");
 		api.postAssetAdministrationShellDescriptor(shell);
-		
+
 		assertThatEventWasSend(RegistryEvent.builder().id(shell.getId()).aasDescriptor(convert(shell)).type(EventType.AAS_REGISTERED).build());
-		
-		SubmodelDescriptor sm =  new SubmodelDescriptor().id("https://sm.id").addEndpointsItem(defaultEndpoint());
-		ApiResponse<SubmodelDescriptor>  response = api.postSubmodelDescriptorThroughSuperpathWithHttpInfo(shell.getId(), sm);
+
+		SubmodelDescriptor sm = new SubmodelDescriptor().id("https://sm.id").addEndpointsItem(defaultEndpoint());
+		ApiResponse<SubmodelDescriptor> response = api.postSubmodelDescriptorThroughSuperpathWithHttpInfo(shell.getId(), sm);
 		List<String> locations = response.getHeaders().get("Location");
 		assertThat(locations).hasSize(1);
 		String location = locations.get(0);
-		
+
 		assertThatEventWasSend(RegistryEvent.builder().id(shell.getId()).submodelId(sm.getId()).submodelDescriptor(convert(sm)).type(EventType.SUBMODEL_REGISTERED).build());
-		
-		String expectedSuffix = "/api/v3.0/shell-descriptors/aHR0cHM6Ly9zaGVsbC5pZA==/submodel-descriptors/aHR0cHM6Ly9zbS5pZA==";
+
+		String expectedSuffix = "/shell-descriptors/aHR0cHM6Ly9zaGVsbC5pZA==/submodel-descriptors/aHR0cHM6Ly9zbS5pZA==";
 		assertThat(location).endsWith(expectedSuffix);
 		assertRestResourceAvailable(location);
 	}
-	
 
 	private void assertRestResourceAvailable(String location) throws IOException {
 		URL url = new URL(location);
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
 		con.setRequestMethod("GET");
 		int status = con.getResponseCode();
-		assertThat(status).isEqualTo(200);		
-	}	
-	
+		assertThat(status).isEqualTo(200);
+	}
+
 	private void deleteAdminAssetShellDescriptor(String aasId) throws ApiException {
 		queue().reset();
 
@@ -658,16 +657,15 @@ public abstract class BaseIntegrationTest {
 		}
 	}
 
-	private  org.eclipse.digitaltwin.basyx.aasregistry.model.SubmodelDescriptor convert(SubmodelDescriptor clientSm) throws JsonProcessingException {
+	private org.eclipse.digitaltwin.basyx.aasregistry.model.SubmodelDescriptor convert(SubmodelDescriptor clientSm) throws JsonProcessingException {
 		return convert(clientSm, SubmodelDescriptor.class, org.eclipse.digitaltwin.basyx.aasregistry.model.SubmodelDescriptor.class);
 	}
-	
-	private  org.eclipse.digitaltwin.basyx.aasregistry.model.AssetAdministrationShellDescriptor convert(AssetAdministrationShellDescriptor clientShellDescr) throws JsonProcessingException {
+
+	private org.eclipse.digitaltwin.basyx.aasregistry.model.AssetAdministrationShellDescriptor convert(AssetAdministrationShellDescriptor clientShellDescr) throws JsonProcessingException {
 		return convert(clientShellDescr, AssetAdministrationShellDescriptor.class, org.eclipse.digitaltwin.basyx.aasregistry.model.AssetAdministrationShellDescriptor.class);
 	}
-	
-	
-	private <O,I> O convert(I in, Class<I> inCls, Class<O> outCls) throws JsonProcessingException {
+
+	private <O, I> O convert(I in, Class<I> inCls, Class<O> outCls) throws JsonProcessingException {
 		String data = mapper.writerFor(inCls).writeValueAsString(in);
 		return mapper.readerFor(outCls).readValue(data);
 	}

@@ -43,8 +43,8 @@ import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElementCollection;
 import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElementList;
 
 /**
- * Finds and collects all the element paths as a list of {@link SubmodelElement} leading to the
- * {@link File} element of a {@link Submodel}
+ * Finds and collects all the element paths as a list of {@link SubmodelElement}
+ * leading to the {@link File} element of a {@link Submodel}
  * 
  * @author danish
  *
@@ -62,8 +62,8 @@ public class FileElementPathCollector implements AssetAdministrationShellElement
 	}
 
 	/**
-	 * Finds and collects all the element paths as a list of {@link SubmodelElement} leading to the
-	 * {@link File} element of a {@link Submodel}
+	 * Finds and collects all the element paths as a list of {@link SubmodelElement}
+	 * leading to the {@link File} element of a {@link Submodel}
 	 * 
 	 * @return list containing all the file elements paths
 	 */

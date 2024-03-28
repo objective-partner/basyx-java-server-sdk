@@ -50,8 +50,7 @@ public class AasEnvironmentApiDocumentationConfiguration extends RepositoryApiDo
 
 	@Override
 	protected Info apiInfo() {
-		return new Info().title(TITLE).description(DESCRIPTION).version(VERSION).contact(apiContact())
-				.license(apiLicence());
+		return new Info().title(TITLE).description(DESCRIPTION).version(VERSION).contact(apiContact()).license(apiLicence());
 	}
 
 }

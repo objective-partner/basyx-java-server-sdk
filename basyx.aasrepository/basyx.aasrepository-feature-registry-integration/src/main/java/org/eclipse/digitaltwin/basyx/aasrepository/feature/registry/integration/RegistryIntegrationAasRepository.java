@@ -27,12 +27,14 @@ package org.eclipse.digitaltwin.basyx.aasrepository.feature.registry.integration
 import java.io.File;
 import java.io.InputStream;
 import java.util.List;
+
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetInformation;
 import org.eclipse.digitaltwin.aas4j.v3.model.Reference;
 import org.eclipse.digitaltwin.basyx.aasregistry.client.ApiException;
 import org.eclipse.digitaltwin.basyx.aasregistry.client.api.RegistryAndDiscoveryInterfaceApi;
 import org.eclipse.digitaltwin.basyx.aasregistry.client.model.AssetAdministrationShellDescriptor;
+import org.eclipse.digitaltwin.basyx.aasrepository.AasFilterParams;
 import org.eclipse.digitaltwin.basyx.aasrepository.AasRepository;
 import org.eclipse.digitaltwin.basyx.aasrepository.feature.registry.integration.mapper.AttributeMapper;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
@@ -50,139 +52,135 @@ import org.slf4j.LoggerFactory;
  */
 public class RegistryIntegrationAasRepository implements AasRepository {
 
-  private static final Logger logger = LoggerFactory.getLogger(RegistryIntegrationAasRepository.class);
+	private static final Logger logger = LoggerFactory.getLogger(RegistryIntegrationAasRepository.class);
 
-  private final AasRepository decorated;
+	private final AasRepository decorated;
 
-  private final AasRepositoryRegistryLink aasRepositoryRegistryLink;
-  private final AttributeMapper attributeMapper;
+	private final AasRepositoryRegistryLink aasRepositoryRegistryLink;
+	private final AttributeMapper attributeMapper;
 
-  public RegistryIntegrationAasRepository(AasRepository decorated, AasRepositoryRegistryLink aasRepositoryRegistryLink,
-      AttributeMapper attributeMapper) {
-    this.decorated = decorated;
-    this.aasRepositoryRegistryLink = aasRepositoryRegistryLink;
-    this.attributeMapper = attributeMapper;
-  }
+	public RegistryIntegrationAasRepository(AasRepository decorated, AasRepositoryRegistryLink aasRepositoryRegistryLink, AttributeMapper attributeMapper) {
+		this.decorated = decorated;
+		this.aasRepositoryRegistryLink = aasRepositoryRegistryLink;
+		this.attributeMapper = attributeMapper;
+	}
 
-  @Override
-  public CursorResult<List<AssetAdministrationShell>> getAllAas(PaginationInfo pInfo) {
-    return decorated.getAllAas(pInfo);
-  }
+	@Override
+	public CursorResult<List<AssetAdministrationShell>> getAllAas(AasFilterParams filterParams) {
+		return decorated.getAllAas(filterParams);
+	}
 
-  @Override
-  public AssetAdministrationShell getAas(String shellId) throws ElementDoesNotExistException {
-    return decorated.getAas(shellId);
-  }
+	@Override
+	public AssetAdministrationShell getAas(String shellId) throws ElementDoesNotExistException {
+		return decorated.getAas(shellId);
+	}
 
-  @Override
-  public void createAas(AssetAdministrationShell shell) throws CollidingIdentifierException {
-    decorated.createAas(shell);
+	@Override
+	public void createAas(AssetAdministrationShell shell) throws CollidingIdentifierException {
+		decorated.createAas(shell);
 
-    integrateAasWithRegistry(shell, aasRepositoryRegistryLink.getAasRepositoryBaseURL());
-  }
+		integrateAasWithRegistry(shell, aasRepositoryRegistryLink.getAasRepositoryBaseURL());
+	}
 
-  @Override
-  public void updateAas(String shellId, AssetAdministrationShell shell) {
-    decorated.updateAas(shellId, shell);
-  }
+	@Override
+	public void updateAas(String shellId, AssetAdministrationShell shell) {
+		decorated.updateAas(shellId, shell);
+	}
 
-  @Override
-  public void deleteAas(String shellId) {
-    deleteFromRegistry(shellId);
+	@Override
+	public void deleteAas(String shellId) {
+		deleteFromRegistry(shellId);
 
-    decorated.deleteAas(shellId);
-  }
+		decorated.deleteAas(shellId);
+	}
 
-  @Override
-  public String getName() {
-    return decorated.getName();
-  }
+	@Override
+	public String getName() {
+		return decorated.getName();
+	}
 
-  @Override
-  public CursorResult<List<Reference>> getSubmodelReferences(String shellId, PaginationInfo paginationInfo) {
-    return decorated.getSubmodelReferences(shellId, paginationInfo);
-  }
+	@Override
+	public CursorResult<List<Reference>> getSubmodelReferences(String shellId, PaginationInfo paginationInfo) {
+		return decorated.getSubmodelReferences(shellId, paginationInfo);
+	}
 
-  @Override
-  public void addSubmodelReference(String shellId, Reference submodelReference) {
-    decorated.addSubmodelReference(shellId, submodelReference);
-  }
+	@Override
+	public void addSubmodelReference(String shellId, Reference submodelReference) {
+		decorated.addSubmodelReference(shellId, submodelReference);
+	}
 
-  @Override
-  public void removeSubmodelReference(String shellId, String submodelId) {
-    decorated.removeSubmodelReference(shellId, submodelId);
-  }
+	@Override
+	public void removeSubmodelReference(String shellId, String submodelId) {
+		decorated.removeSubmodelReference(shellId, submodelId);
+	}
 
-  @Override
-  public void setAssetInformation(String shellId, AssetInformation shellInfo) throws ElementDoesNotExistException {
-    decorated.setAssetInformation(shellId, shellInfo);
-  }
+	@Override
+	public void setAssetInformation(String shellId, AssetInformation shellInfo) throws ElementDoesNotExistException {
+		decorated.setAssetInformation(shellId, shellInfo);
+	}
 
-  @Override
-  public AssetInformation getAssetInformation(String shellId) throws ElementDoesNotExistException {
-    return decorated.getAssetInformation(shellId);
-  }
+	@Override
+	public AssetInformation getAssetInformation(String shellId) throws ElementDoesNotExistException {
+		return decorated.getAssetInformation(shellId);
+	}
 
-  private void integrateAasWithRegistry(AssetAdministrationShell shell, String aasRepositoryURL) {
-    AssetAdministrationShellDescriptor descriptor = new AasDescriptorFactory(shell, aasRepositoryURL,
-        attributeMapper).create();
+	private void integrateAasWithRegistry(AssetAdministrationShell shell, String aasRepositoryURL) {
+		AssetAdministrationShellDescriptor descriptor = new AasDescriptorFactory(shell, aasRepositoryURL, attributeMapper).create();
 
-    RegistryAndDiscoveryInterfaceApi registryApi = aasRepositoryRegistryLink.getRegistryApi();
+		RegistryAndDiscoveryInterfaceApi registryApi = aasRepositoryRegistryLink.getRegistryApi();
 
-    try {
-      registryApi.postAssetAdministrationShellDescriptor(descriptor);
+		try {
+			registryApi.postAssetAdministrationShellDescriptor(descriptor);
 
-      logger.info("Shell '{}' has been automatically linked with the Registry", shell.getId());
-    } catch (ApiException e) {
-      e.printStackTrace();
-      throw ExceptionBuilderFactory.getInstance().repositoryRegistryLinkException().elementId(shell.getId()).build();
-    }
-  }
+			logger.info("Shell '{}' has been automatically linked with the Registry", shell.getId());
+		} catch (ApiException e) {
+			e.printStackTrace();
+			throw ExceptionBuilderFactory.getInstance().repositoryRegistryLinkException().elementId(shell.getId()).build();
+		}
+	}
 
-  private void deleteFromRegistry(String shellId) {
-    RegistryAndDiscoveryInterfaceApi registryApi = aasRepositoryRegistryLink.getRegistryApi();
+	private void deleteFromRegistry(String shellId) {
+		RegistryAndDiscoveryInterfaceApi registryApi = aasRepositoryRegistryLink.getRegistryApi();
 
-    if (!shellExistsOnRegistry(shellId, registryApi)) {
-      logger.error(
-          "Unable to un-link the AAS descriptor '{}' from the Registry because it does not exist on the Registry.",
-          shellId);
+		if (!shellExistsOnRegistry(shellId, registryApi)) {
+			logger.error("Unable to un-link the AAS descriptor '{}' from the Registry because it does not exist on the Registry.", shellId);
 
-      return;
-    }
+			return;
+		}
 
-    try {
-      registryApi.deleteAssetAdministrationShellDescriptorById(shellId);
+		try {
+			registryApi.deleteAssetAdministrationShellDescriptorById(shellId);
 
-      logger.info("Shell '{}' has been automatically un-linked from the Registry.", shellId);
-    } catch (ApiException e) {
-      e.printStackTrace();
-      throw ExceptionBuilderFactory.getInstance().repositoryRegistryUnlinkException().elementId(shellId).build();
-    }
-  }
+			logger.info("Shell '{}' has been automatically un-linked from the Registry.", shellId);
+		} catch (ApiException e) {
+			e.printStackTrace();
+			throw ExceptionBuilderFactory.getInstance().repositoryRegistryUnlinkException().elementId(shellId).build();
+		}
+	}
 
-  private boolean shellExistsOnRegistry(String shellId, RegistryAndDiscoveryInterfaceApi registryApi) {
-    try {
-      registryApi.getAssetAdministrationShellDescriptorById(shellId);
+	private boolean shellExistsOnRegistry(String shellId, RegistryAndDiscoveryInterfaceApi registryApi) {
+		try {
+			registryApi.getAssetAdministrationShellDescriptorById(shellId);
 
-      return true;
-    } catch (ApiException e) {
-      return false;
-    }
-  }
+			return true;
+		} catch (ApiException e) {
+			return false;
+		}
+	}
 
-  @Override
-  public File getThumbnail(String aasId) {
-    return decorated.getThumbnail(aasId);
-  }
+	@Override
+	public File getThumbnail(String aasId) {
+		return decorated.getThumbnail(aasId);
+	}
 
-  @Override
-  public void setThumbnail(String aasId, String fileName, String contentType, InputStream inputStream) {
-    decorated.setThumbnail(aasId, fileName, contentType, inputStream);
-  }
+	@Override
+	public void setThumbnail(String aasId, String fileName, String contentType, InputStream inputStream) {
+		decorated.setThumbnail(aasId, fileName, contentType, inputStream);
+	}
 
-  @Override
-  public void deleteThumbnail(String aasId) {
-    decorated.deleteThumbnail(aasId);
-  }
+	@Override
+	public void deleteThumbnail(String aasId) {
+		decorated.deleteThumbnail(aasId);
+	}
 
 }

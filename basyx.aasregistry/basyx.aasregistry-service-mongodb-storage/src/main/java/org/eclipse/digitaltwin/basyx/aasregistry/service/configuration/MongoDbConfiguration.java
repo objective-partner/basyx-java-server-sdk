@@ -69,14 +69,14 @@ public class MongoDbConfiguration {
 
 	private void initializeShellExtensionIndices(IndexOperations ops) {
 		initializeSingleAscIndex(ops, AasRegistryPaths.extensions().name());
-		initializeSingleAscIndex(ops, AasRegistryPaths.extensions().value());	
+		initializeSingleAscIndex(ops, AasRegistryPaths.extensions().value());
 	}
 
 	private void initializeSubmodelExtensionIndices(IndexOperations ops) {
 		initializeSingleAscIndex(ops, AasRegistryPaths.submodelDescriptors().extensions().name());
 		initializeSingleAscIndex(ops, AasRegistryPaths.submodelDescriptors().extensions().value());
 	}
-	
+
 	private void initializeSingleAscIndex(IndexOperations ops, String path) {
 		Index smValueIndex = new Index(path, Direction.ASC);
 		ops.ensureIndex(smValueIndex);

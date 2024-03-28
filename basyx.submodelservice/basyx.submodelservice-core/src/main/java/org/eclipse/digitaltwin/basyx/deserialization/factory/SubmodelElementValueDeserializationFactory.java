@@ -61,12 +61,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class SubmodelElementValueDeserializationFactory {
 
 	/**
-	 * Deserializes the corresponding {@link SubmodelElementValue} based on the
-	 * JSON content
+	 * Deserializes the corresponding {@link SubmodelElementValue} based on the JSON
+	 * content
 	 * 
 	 * @return SubmodelELementValue
 	 * 
-	 * @throws JsonProcessingException 
+	 * @throws JsonProcessingException
 	 * @throws SubmodelElementValueDeserializationException
 	 */
 	public SubmodelElementValue create(ObjectMapper mapper, JsonNode node) throws JsonProcessingException {

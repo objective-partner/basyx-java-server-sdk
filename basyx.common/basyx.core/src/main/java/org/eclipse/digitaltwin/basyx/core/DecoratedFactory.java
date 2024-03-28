@@ -23,7 +23,6 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.core;
 
 import java.util.List;
@@ -43,7 +42,7 @@ public class DecoratedFactory<FactoryToDecorate, Feature extends BaSyxFeature<Fa
 
 	/**
 	 * Initializes the factory by decorating the passed component with all passed
-	 * features that are enabled. Additionally, all passed & enabled features are
+	 * features that are enabled. Additionally, all passed and enabled features are
 	 * initialized
 	 * 
 	 * @param toDecorate

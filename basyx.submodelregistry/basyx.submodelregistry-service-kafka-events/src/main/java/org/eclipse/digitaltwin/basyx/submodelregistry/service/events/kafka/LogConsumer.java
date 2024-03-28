@@ -37,10 +37,9 @@ import lombok.extern.log4j.Log4j2;
 @ConditionalOnProperty(prefix = "events", name = "sink", havingValue = "kafka")
 public class LogConsumer {
 
-	
 	@KafkaListener(topics = "submodel-registry", groupId = "log", autoStartup = "true")
 	public void consume(String message) throws IOException {
 		log.debug("Kafka Event received -> " + message);
 	}
-	
+
 }

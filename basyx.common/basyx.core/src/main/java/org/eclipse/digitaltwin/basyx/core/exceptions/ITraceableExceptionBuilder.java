@@ -4,9 +4,9 @@ import org.eclipse.digitaltwin.aas4j.v3.model.Reference;
 
 public interface ITraceableExceptionBuilder {
 
-  String getTechnicalMessageTemplate();
+	String getTechnicalMessageTemplate();
 
-  Reference getMessageReference();
+	Reference getMessageReference();
 
-  String getNamespace();
+	String getNamespace();
 }

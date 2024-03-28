@@ -36,39 +36,38 @@ import org.springframework.stereotype.Component;
 @SuppressWarnings("serial")
 public class ElementDoesNotExistException extends BaSyxResponseException {
 
+	private ElementDoesNotExistException(int httpStatusCode, String reason, String correlationId, String timestamp) {
+		super(httpStatusCode, reason, correlationId, timestamp);
+	}
 
-  private ElementDoesNotExistException(int httpStatusCode, String reason, String correlationId, String timestamp) {
-    super(httpStatusCode, reason, correlationId, timestamp);
-  }
+	@Component
+	public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
 
-  @Component
-  public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
+		public Builder(ITraceableMessageSerializer serializer) {
+			super(serializer);
+			messageReference("ElementDoesNotExistException");
+			returnCode(404);
+			technicalMessageTemplate("{ElementType} with id '{MissingElementId}' does not exist.");
+		}
 
-    public Builder(ITraceableMessageSerializer serializer) {
-      super(serializer);
-      messageReference("ElementDoesNotExistException");
-      returnCode(404);
-      technicalMessageTemplate("{ElementType} with id '{MissingElementId}' does not exist.");
-    }
+		public Builder elementType(KeyTypes type) {
+			param("ElementType", type.name());
+			return this;
+		}
 
-    public Builder elementType(KeyTypes type) {
-      param("ElementType", type.name());
-      return this;
-    }
+		public Builder elementType(String type) {
+			param("ElementType", type);
+			return this;
+		}
 
-    public Builder elementType(String type) {
-      param("ElementType", type);
-      return this;
-    }
+		public Builder missingElement(String value) {
+			param("MissingElementId", value);
+			return this;
+		}
 
-    public Builder missingElement(String value) {
-      param("MissingElementId", value);
-      return this;
-    }
-
-    @Override
-    public ElementDoesNotExistException build() {
-      return new ElementDoesNotExistException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
-    }
-  }
+		@Override
+		public ElementDoesNotExistException build() {
+			return new ElementDoesNotExistException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
+		}
+	}
 }

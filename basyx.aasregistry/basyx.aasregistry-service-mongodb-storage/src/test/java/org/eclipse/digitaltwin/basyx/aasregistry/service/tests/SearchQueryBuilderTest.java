@@ -40,24 +40,24 @@ public class SearchQueryBuilderTest {
 
 	@Test
 	public void testUnknownLeafPaths() {
-		assertThrows(UnknownLeafPathException.class, ()-> AasRegistryPathProcessor.visitPath("unknown", null));
-		assertThrows(UnknownLeafPathException.class, ()-> AasRegistryPathProcessor.visitPath(EMPTY_STRING, null));
-		assertThrows(UnknownLeafPathException.class, ()-> AasRegistryPathProcessor.visitPath(".", null));
-		assertThrows(UnknownLeafPathException.class, ()-> AasRegistryPathProcessor.visitPath("...", null));
-		assertThrows(UnknownLeafPathException.class, ()-> AasRegistryPathProcessor.visitPath(".unknown..", null));
+		assertThrows(UnknownLeafPathException.class, () -> AasRegistryPathProcessor.visitPath("unknown", null));
+		assertThrows(UnknownLeafPathException.class, () -> AasRegistryPathProcessor.visitPath(EMPTY_STRING, null));
+		assertThrows(UnknownLeafPathException.class, () -> AasRegistryPathProcessor.visitPath(".", null));
+		assertThrows(UnknownLeafPathException.class, () -> AasRegistryPathProcessor.visitPath("...", null));
+		assertThrows(UnknownLeafPathException.class, () -> AasRegistryPathProcessor.visitPath(".unknown..", null));
 	}
-	
+
 	@Test
 	public void testIdPath() {
 		AssetAdministrationShellDescriptorPathVisitor mvisitor = Mockito.mock(AssetAdministrationShellDescriptorPathVisitor.class);
 		String targetPath = AasRegistryPaths.id();
 		AasRegistryPathProcessor.visitPath(targetPath, mvisitor);
 		Mockito.verify(mvisitor, Mockito.times(1)).startObjectSegment(targetPath, EMPTY_STRING, EMPTY_STRING);
-		Mockito.verify(mvisitor, Mockito.times(1)).visitPrimitiveSegment(targetPath, targetPath , AasRegistryPaths.SEGMENT_ID, STRING);		
+		Mockito.verify(mvisitor, Mockito.times(1)).visitPrimitiveSegment(targetPath, targetPath, AasRegistryPaths.SEGMENT_ID, STRING);
 		Mockito.verify(mvisitor, Mockito.times(1)).endObjectSegment(targetPath, EMPTY_STRING, EMPTY_STRING);
 		Mockito.verifyNoMoreInteractions(mvisitor);
 	}
-	
+
 	@Test
 	public void testAdministrationRevision() {
 		AssetAdministrationShellDescriptorPathVisitor mvisitor = Mockito.mock(AssetAdministrationShellDescriptorPathVisitor.class);
@@ -67,11 +67,11 @@ public class SearchQueryBuilderTest {
 		Mockito.verify(mvisitor, Mockito.times(1)).startObjectSegment(targetPath, EMPTY_STRING, EMPTY_STRING);
 		Mockito.verify(mvisitor, Mockito.times(1)).startObjectSegment(targetPath, administrationPath, AasRegistryPaths.SEGMENT_ADMINISTRATION);
 		Mockito.verify(mvisitor, Mockito.times(1)).visitPrimitiveSegment(targetPath, targetPath, AasRegistryPaths.SEGMENT_REVISION, STRING);
-		Mockito.verify(mvisitor, Mockito.times(1)).endObjectSegment(targetPath, administrationPath, AasRegistryPaths.SEGMENT_ADMINISTRATION);		
+		Mockito.verify(mvisitor, Mockito.times(1)).endObjectSegment(targetPath, administrationPath, AasRegistryPaths.SEGMENT_ADMINISTRATION);
 		Mockito.verify(mvisitor, Mockito.times(1)).endObjectSegment(targetPath, EMPTY_STRING, EMPTY_STRING);
-		Mockito.verifyNoMoreInteractions(mvisitor);	
+		Mockito.verifyNoMoreInteractions(mvisitor);
 	}
-	
+
 	@Test
 	public void testSubmodelId() {
 		AssetAdministrationShellDescriptorPathVisitor mvisitor = Mockito.mock(AssetAdministrationShellDescriptorPathVisitor.class);
@@ -81,10 +81,9 @@ public class SearchQueryBuilderTest {
 		Mockito.verify(mvisitor, Mockito.times(1)).startObjectSegment(targetPath, EMPTY_STRING, EMPTY_STRING);
 		Mockito.verify(mvisitor, Mockito.times(1)).startObjectListSegment(targetPath, submodelPath, AasRegistryPaths.SEGMENT_SUBMODEL_DESCRIPTORS);
 		Mockito.verify(mvisitor, Mockito.times(1)).visitPrimitiveSegment(targetPath, targetPath, AasRegistryPaths.SEGMENT_ID, STRING);
-		Mockito.verify(mvisitor, Mockito.times(1)).endObjectListSegment(targetPath, submodelPath, AasRegistryPaths.SEGMENT_SUBMODEL_DESCRIPTORS);		
+		Mockito.verify(mvisitor, Mockito.times(1)).endObjectListSegment(targetPath, submodelPath, AasRegistryPaths.SEGMENT_SUBMODEL_DESCRIPTORS);
 		Mockito.verify(mvisitor, Mockito.times(1)).endObjectSegment(targetPath, EMPTY_STRING, EMPTY_STRING);
-		Mockito.verifyNoMoreInteractions(mvisitor);	
+		Mockito.verifyNoMoreInteractions(mvisitor);
 	}
-	
-	
+
 }

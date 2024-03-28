@@ -83,11 +83,11 @@ public class IdShortPathTestHelper {
 
 		SubmodelElementCollection smc0 = createSubmodelElementCollection("SMC_ROOT");
 		smc0.setValue(Arrays.asList(smc1, smc3, fileSME2, smc4, createPropertySubmodelElement("DummyProperty1")));
-		
+
 		List<SubmodelElement> fileElementPath1 = Arrays.asList(smc0, smc3, fileSME1);
 		List<SubmodelElement> fileElementPath2 = Arrays.asList(smc0, fileSME2);
 		List<SubmodelElement> fileElementPath3 = Arrays.asList(smc0, smc4, smc5, fileSME3);
-		
+
 		return Arrays.asList(fileElementPath1, fileElementPath2, fileElementPath3);
 	}
 

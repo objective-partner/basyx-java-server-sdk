@@ -28,32 +28,31 @@ package org.eclipse.digitaltwin.basyx.core.exceptions;
 import org.springframework.stereotype.Component;
 
 /**
- * Indicates that the provided list of SubmodelElements for building IdShortPath is invalid
+ * Indicates that the provided list of SubmodelElements for building IdShortPath
+ * is invalid
  *
  * @author danish
  */
 @SuppressWarnings("serial")
 public class InvalidIdShortPathElementsException extends BaSyxResponseException {
 
-  private InvalidIdShortPathElementsException(int httpStatusCode, String reason, String correlationId,
-      String timestamp) {
-    super(httpStatusCode, reason, correlationId, timestamp);
-  }
+	private InvalidIdShortPathElementsException(int httpStatusCode, String reason, String correlationId, String timestamp) {
+		super(httpStatusCode, reason, correlationId, timestamp);
+	}
 
-  @Component
-  public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
+	@Component
+	public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
 
-    public Builder(ITraceableMessageSerializer serializer) {
-      super(serializer);
-      messageReference("InvalidIdShortPathElementsException");
-      returnCode(400);
-      technicalMessageTemplate("List of SubmodelElements for creating IdShortPath should not be null or empty.");
-    }
+		public Builder(ITraceableMessageSerializer serializer) {
+			super(serializer);
+			messageReference("InvalidIdShortPathElementsException");
+			returnCode(400);
+			technicalMessageTemplate("List of SubmodelElements for creating IdShortPath should not be null or empty.");
+		}
 
-    @Override
-    public InvalidIdShortPathElementsException build() {
-      return new InvalidIdShortPathElementsException(getReturnCode(), composeMessage(), getCorrelationId(),
-          getTimestamp());
-    }
-  }
+		@Override
+		public InvalidIdShortPathElementsException build() {
+			return new InvalidIdShortPathElementsException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
+		}
+	}
 }

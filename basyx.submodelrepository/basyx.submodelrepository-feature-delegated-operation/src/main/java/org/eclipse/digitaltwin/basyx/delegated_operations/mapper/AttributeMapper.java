@@ -25,14 +25,19 @@
 
 package org.eclipse.digitaltwin.basyx.delegated_operations.mapper;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
+
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
 import org.eclipse.digitaltwin.basyx.http.CustomTypeCloneFactory;
-import org.eclipse.digitaltwin.basyx.submodelregistry.client.model.*;
+import org.eclipse.digitaltwin.basyx.submodelregistry.client.model.AdministrativeInformation;
+import org.eclipse.digitaltwin.basyx.submodelregistry.client.model.Extension;
+import org.eclipse.digitaltwin.basyx.submodelregistry.client.model.LangStringNameType;
+import org.eclipse.digitaltwin.basyx.submodelregistry.client.model.LangStringTextType;
+import org.eclipse.digitaltwin.basyx.submodelregistry.client.model.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Maps the models defined in AAS4J to the SubmodelRegistry client models
@@ -119,7 +124,7 @@ public class AttributeMapper {
 	}
 
 	/**
-	 * Maps {@link Submodel#getSemanticID()} from AAS4J to SubmodelRegistry client
+	 * Maps {@link Submodel#getSemanticId()} from AAS4J to SubmodelRegistry client
 	 * 
 	 * @param semanticId
 	 * @return the mapped semanticId

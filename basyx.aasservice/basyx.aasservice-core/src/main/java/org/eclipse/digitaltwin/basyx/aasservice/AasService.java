@@ -45,34 +45,34 @@ public interface AasService {
 	 * 
 	 * @return
 	 */
-	public AssetAdministrationShell getAAS();
+	AssetAdministrationShell getAAS();
 
 	/**
 	 * Retrieves all Submodel References
 	 * 
 	 * @return A List containing all Submodel References
 	 */
-	public CursorResult<List<Reference>> getSubmodelReferences(PaginationInfo pInfo);
+	CursorResult<List<Reference>> getSubmodelReferences(PaginationInfo pInfo);
 
 	/**
 	 * Adds a Submodel Reference
 	 */
-	public void addSubmodelReference(Reference submodelReference);
+	void addSubmodelReference(Reference submodelReference);
 
 	/**
 	 * Removes a Submodel Reference
 	 */
-	public void removeSubmodelReference(String submodelId);
-	
+	void removeSubmodelReference(String submodelId);
+
 	/**
 	 * Sets the asset-information of the AAS contained in the server
 	 */
-	public void setAssetInformation(AssetInformation aasInfo);
-	
+	void setAssetInformation(AssetInformation aasInfo);
+
 	/**
 	 * Retrieves the asset-information of the AAS contained in the server
 	 * 
 	 * @return the Asset-Information of the AAS
 	 */
-	public AssetInformation getAssetInformation();	
+	AssetInformation getAssetInformation();
 }

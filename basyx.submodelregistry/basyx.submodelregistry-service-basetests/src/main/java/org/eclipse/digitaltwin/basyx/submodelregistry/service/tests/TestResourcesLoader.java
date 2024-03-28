@@ -42,7 +42,7 @@ public class TestResourcesLoader extends TestName {
 	private static final String JSON_FILE_ENDING = ".json";
 
 	private String packageName;
-	
+
 	private ObjectMapper mapper;
 
 	public TestResourcesLoader(String packageName, ObjectMapper mapper) {
@@ -71,10 +71,10 @@ public class TestResourcesLoader extends TestName {
 		return loadList(cls, null);
 	}
 
-	public <T> List<T> loadList(Class<T> cls, String suffix) throws IOException {		
+	public <T> List<T> loadList(Class<T> cls, String suffix) throws IOException {
 		return load(mapper.readerForListOf(cls), suffix != null ? "_" + suffix : "");
 	}
-	
+
 	public <T> T load(Class<T> cls) throws IOException {
 		return load(cls, null);
 	}
@@ -82,7 +82,7 @@ public class TestResourcesLoader extends TestName {
 	public <T> T load(Class<T> cls, String suffix) throws IOException {
 		return load(mapper.readerFor(cls), suffix != null ? "_" + suffix : "");
 	}
-	
+
 	public List<RegistryEvent> loadEvents() throws IOException {
 		return load(mapper.readerForListOf(RegistryEvent.class), "_events");
 	}
@@ -111,10 +111,10 @@ public class TestResourcesLoader extends TestName {
 			return reader.readValue(bIn);
 		}
 	}
-	
+
 	public String loadJsonAsString() throws IOException {
 		String suffixPath = getMethodName() + JSON_FILE_ENDING;
-		String path = basedOnPackageName(suffixPath);		
+		String path = basedOnPackageName(suffixPath);
 		try (InputStream in = getClass().getResourceAsStream(path); BufferedInputStream bIn = new BufferedInputStream(in)) {
 			byte[] allBytes = bIn.readAllBytes();
 			return new String(allBytes, StandardCharsets.UTF_8);

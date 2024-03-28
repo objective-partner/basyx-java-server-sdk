@@ -29,13 +29,14 @@ import org.eclipse.digitaltwin.basyx.submodelservice.value.ReferenceElementValue
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 /**
- * A mixin to indicate that {@link ReferenceElementValue} should be serialized "unwrapped" 
+ * A mixin to indicate that {@link ReferenceElementValue} should be serialized
+ * "unwrapped"
  * 
  * @author danish
  *
  */
 public interface ReferenceElementValueMixIn {
-	
+
 	@JsonUnwrapped
 	public ReferenceElementValue getReferenceValue();
 }

@@ -3,7 +3,7 @@ Here, a list of features, components and general updates that are planned in the
 
 ## BaSyx AAS Core
 - Implementation of AAS API Spec as well as upcoming features (continous)
-- RBAC Security (Q4/2023)
+- RBAC Security (Q1/2024)
 - AASX Upload at runtime (Q1/2024)
 - AASX File Server with MongoDB and InMemory Persistency (Q1/2024)
 - AAS Client SDK (Q1/2024)
@@ -17,7 +17,3 @@ For more details, see [basyx-databridge](https://github.com/eclipse-basyx/basyx-
 - Support for Asset Interface Description Submodel and Asset Interface Mapping Description Submodel (Q1/2024)
 - GUI-based Configuration (Q2/2024)
 - Integration of more complex data transformation, e.g., data aggregation of historic data (Q2/2024)
-
-### System of Record Integration
-For more details, see [basyx-applications](https://github.com/eclipse-basyx/basyx-applications/tree/main/dataintegrator)
-- Release of first prototype (Q4/2023)

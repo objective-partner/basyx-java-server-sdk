@@ -25,10 +25,10 @@
 package org.eclipse.digitaltwin.basyx.aasregistry.service.storage.memory;
 
 import jakarta.validation.Valid;
+
 import java.util.List;
 import java.util.Set;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+
 import org.eclipse.digitaltwin.basyx.aasregistry.model.AssetAdministrationShellDescriptor;
 import org.eclipse.digitaltwin.basyx.aasregistry.model.ShellDescriptorSearchRequest;
 import org.eclipse.digitaltwin.basyx.aasregistry.model.ShellDescriptorSearchResponse;
@@ -40,6 +40,9 @@ import org.eclipse.digitaltwin.basyx.aasregistry.service.storage.AasRegistryStor
 import org.eclipse.digitaltwin.basyx.aasregistry.service.storage.DescriptorFilter;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
+
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class ThreadSafeAasRegistryStorageDecorator implements AasRegistryStorage {

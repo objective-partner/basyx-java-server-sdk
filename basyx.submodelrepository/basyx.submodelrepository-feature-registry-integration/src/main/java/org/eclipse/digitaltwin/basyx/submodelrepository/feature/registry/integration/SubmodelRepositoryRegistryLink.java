@@ -29,15 +29,16 @@ import org.eclipse.digitaltwin.basyx.submodelregistry.client.api.SubmodelRegistr
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepository;
 
 /**
- * Represents information for linking {@link SubmodelRepository} with SubmodelRegistry
+ * Represents information for linking {@link SubmodelRepository} with
+ * SubmodelRegistry
  * 
  * @author danish
  */
 public class SubmodelRepositoryRegistryLink {
-	
+
 	private SubmodelRegistryApi registryApi;
 	private String submodelRepositoryBaseURL;
-	
+
 	public SubmodelRepositoryRegistryLink(SubmodelRegistryApi registryApi, String submodelRepositoryBaseURL) {
 		super();
 		this.registryApi = registryApi;

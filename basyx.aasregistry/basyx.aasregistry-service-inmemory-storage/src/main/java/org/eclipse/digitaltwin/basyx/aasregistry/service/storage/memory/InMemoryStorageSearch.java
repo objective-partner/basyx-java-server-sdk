@@ -85,7 +85,7 @@ class InMemoryStorageSearch {
 	}
 
 	private Sorting getDefaultSorting() {
-		 return new Sorting(List.of(SortingPath.ID)).direction(SortDirection.ASC);
+		return new Sorting(List.of(SortingPath.ID)).direction(SortDirection.ASC);
 	}
 
 	private List<AssetAdministrationShellDescriptor> applyPagination(List<AssetAdministrationShellDescriptor> descriptors, Page page) {

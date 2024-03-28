@@ -25,7 +25,8 @@
 package org.eclipse.digitaltwin.basyx.submodelservice.value.exception;
 
 /**
- * Indicates that the submodel element value not available for the specified submodel element
+ * Indicates that the submodel element value not available for the specified
+ * submodel element
  * 
  * @author danish
  *

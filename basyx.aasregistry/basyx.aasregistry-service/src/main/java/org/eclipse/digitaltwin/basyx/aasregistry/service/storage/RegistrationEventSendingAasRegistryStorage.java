@@ -25,8 +25,9 @@
 package org.eclipse.digitaltwin.basyx.aasregistry.service.storage;
 
 import jakarta.validation.Valid;
+
 import java.util.Set;
-import lombok.NonNull;
+
 import org.eclipse.digitaltwin.basyx.aasregistry.model.AssetAdministrationShellDescriptor;
 import org.eclipse.digitaltwin.basyx.aasregistry.model.SubmodelDescriptor;
 import org.eclipse.digitaltwin.basyx.aasregistry.service.errors.AasDescriptorAlreadyExistsException;
@@ -35,6 +36,8 @@ import org.eclipse.digitaltwin.basyx.aasregistry.service.errors.SubmodelNotFound
 import org.eclipse.digitaltwin.basyx.aasregistry.service.events.RegistryEvent;
 import org.eclipse.digitaltwin.basyx.aasregistry.service.events.RegistryEvent.EventType;
 import org.eclipse.digitaltwin.basyx.aasregistry.service.events.RegistryEventSink;
+
+import lombok.NonNull;
 
 public class RegistrationEventSendingAasRegistryStorage extends AasRegistryStorageDelegate {
 

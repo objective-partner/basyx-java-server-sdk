@@ -80,11 +80,11 @@ public abstract class BaseEventListener {
 			throw new EventListenerException(e);
 		}
 	}
-	
+
 	public static final class EventListenerException extends RuntimeException {
 
 		private static final long serialVersionUID = 1L;
-		
+
 		public EventListenerException(Throwable e) {
 			super(e);
 		}

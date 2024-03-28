@@ -33,12 +33,13 @@ import java.util.Objects;
  * @author danish
  */
 public class CloneFactorySecondTestModel {
-	
+
 	private String name;
 	private String type;
-	
-	public CloneFactorySecondTestModel() {}
-	
+
+	public CloneFactorySecondTestModel() {
+	}
+
 	public CloneFactorySecondTestModel(String name, String type) {
 		super();
 		this.name = name;

@@ -30,7 +30,6 @@ import java.nio.charset.StandardCharsets;
 import org.eclipse.digitaltwin.basyx.aasregistry.service.api.LocationBuilder;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-
 class DefaultLocationBuilder implements LocationBuilder {
 
 	private static final String SM_ID_PARAM = "/{sm-id}";

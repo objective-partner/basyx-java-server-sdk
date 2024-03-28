@@ -31,6 +31,7 @@ import org.eclipse.digitaltwin.aas4j.v3.model.ConceptDescription;
 import org.eclipse.digitaltwin.aas4j.v3.model.Reference;
 import org.eclipse.digitaltwin.basyx.core.exceptions.CollidingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ElementDoesNotExistException;
+import org.eclipse.digitaltwin.basyx.core.exceptions.MissingIdentifierException;
 import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 
@@ -47,7 +48,7 @@ public interface ConceptDescriptionRepository {
 	 * 
 	 * @return a list of all found ConceptDescriptions
 	 */
-	public CursorResult<List<ConceptDescription>> getAllConceptDescriptions(PaginationInfo pInfo);
+	CursorResult<List<ConceptDescription>> getAllConceptDescriptions(PaginationInfo pInfo);
 
 	/**
 	 * Retrieves all ConceptDescriptions from the repository matching the passed
@@ -56,7 +57,7 @@ public interface ConceptDescriptionRepository {
 	 * @param idShort
 	 * @return a list of all matched ConceptDescriptions
 	 */
-	public CursorResult<List<ConceptDescription>> getAllConceptDescriptionsByIdShort(String idShort, PaginationInfo pInfo);
+	CursorResult<List<ConceptDescription>> getAllConceptDescriptionsByIdShort(String idShort, PaginationInfo pInfo);
 
 	/**
 	 * Retrieves all ConceptDescriptions from the repository matching the passed
@@ -65,7 +66,7 @@ public interface ConceptDescriptionRepository {
 	 * @param isCaseOf
 	 * @return a list of all matched ConceptDescriptions
 	 */
-	public CursorResult<List<ConceptDescription>> getAllConceptDescriptionsByIsCaseOf(Reference isCaseOf, PaginationInfo pInfo);
+	CursorResult<List<ConceptDescription>> getAllConceptDescriptionsByIsCaseOf(Reference isCaseOf, PaginationInfo pInfo);
 
 	/**
 	 * Retrieves all ConceptDescriptions from the repository matching the passed
@@ -74,7 +75,7 @@ public interface ConceptDescriptionRepository {
 	 * @param dataSpecificationReference
 	 * @return a list of all matched ConceptDescriptions
 	 */
-	public CursorResult<List<ConceptDescription>> getAllConceptDescriptionsByDataSpecificationReference(Reference dataSpecificationReference, PaginationInfo pInfo);
+	CursorResult<List<ConceptDescription>> getAllConceptDescriptionsByDataSpecificationReference(Reference dataSpecificationReference, PaginationInfo pInfo);
 
 	/**
 	 * Retrieves the ConceptDescription with the specific id
@@ -83,7 +84,7 @@ public interface ConceptDescriptionRepository {
 	 * @return the requested ConceptDescription
 	 * @throws ElementDoesNotExistException
 	 */
-	public ConceptDescription getConceptDescription(String conceptDescriptionId) throws ElementDoesNotExistException;
+	ConceptDescription getConceptDescription(String conceptDescriptionId) throws ElementDoesNotExistException;
 
 	/**
 	 * Updates an existing ConceptDescription
@@ -92,15 +93,16 @@ public interface ConceptDescriptionRepository {
 	 * @param conceptDescription
 	 * @throws ElementDoesNotExistException
 	 */
-	public void updateConceptDescription(String conceptDescriptionId, ConceptDescription conceptDescription) throws ElementDoesNotExistException;
+	void updateConceptDescription(String conceptDescriptionId, ConceptDescription conceptDescription) throws ElementDoesNotExistException;
 
 	/**
 	 * Creates a new ConceptDescription
 	 * 
 	 * @param conceptDescription
 	 * @throws CollidingIdentifierException
+	 * @throws MissingIdentifierException
 	 */
-	public void createConceptDescription(ConceptDescription conceptDescription) throws CollidingIdentifierException;
+	void createConceptDescription(ConceptDescription conceptDescription) throws CollidingIdentifierException, MissingIdentifierException;
 
 	/**
 	 * Deletes a ConceptDescription
@@ -108,15 +110,15 @@ public interface ConceptDescriptionRepository {
 	 * @param conceptDescriptionId
 	 * @throws ElementDoesNotExistException
 	 */
-	public void deleteConceptDescription(String conceptDescriptionId) throws ElementDoesNotExistException;
-	
+	void deleteConceptDescription(String conceptDescriptionId) throws ElementDoesNotExistException;
+
 	/**
 	 * Returns the name of the repository
 	 * 
 	 * @return repoName
 	 */
-	public default String getName() {
+	default String getName() {
 		return "cd-repo";
 	}
-  
+
 }

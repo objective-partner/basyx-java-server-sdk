@@ -23,12 +23,12 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.serialization;
 
 import java.io.IOException;
 
 import org.eclipse.digitaltwin.basyx.submodelservice.value.PropertyValue;
+
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;

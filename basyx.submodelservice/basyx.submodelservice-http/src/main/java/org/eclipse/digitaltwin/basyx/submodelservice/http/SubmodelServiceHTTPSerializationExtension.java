@@ -25,8 +25,8 @@
 
 package org.eclipse.digitaltwin.basyx.submodelservice.http;
 
-import org.eclipse.digitaltwin.basyx.deserialization.SubmodelElementValueJsonDeserializer;
 import org.eclipse.digitaltwin.basyx.deserialization.SpecificAssetIdValueJsonDeserializer;
+import org.eclipse.digitaltwin.basyx.deserialization.SubmodelElementValueJsonDeserializer;
 import org.eclipse.digitaltwin.basyx.deserialization.ValueOnlyJsonDeserializer;
 import org.eclipse.digitaltwin.basyx.http.SerializationExtension;
 import org.eclipse.digitaltwin.basyx.mixins.ReferenceElementValueMixIn;

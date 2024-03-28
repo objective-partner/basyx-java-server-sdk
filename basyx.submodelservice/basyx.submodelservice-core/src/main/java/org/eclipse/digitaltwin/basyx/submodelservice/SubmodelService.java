@@ -59,9 +59,11 @@ public interface SubmodelService {
 	/**
 	 * Retrieve specific SubmodelElement of the Submodel
 	 *
-	 * @param idShortPath the SubmodelElement IdShort
+	 * @param idShortPath
+	 *            the SubmodelElement IdShort
 	 * @return the SubmodelElement
-	 * @throws ElementDoesNotExistException if the SubmodelElement does not exist
+	 * @throws ElementDoesNotExistException
+	 *             if the SubmodelElement does not exist
 	 */
 	public SubmodelElement getSubmodelElement(String idShortPath) throws ElementDoesNotExistException;
 
@@ -79,16 +81,18 @@ public interface SubmodelService {
 	/**
 	 * Sets the value of a specific SubmodelElement of the Submodel
 	 * 
-	 * @param idShortPath the SubmodelElement IdShortPath
-	 * @param value       the new value
-	 * @throws ElementDoesNotExistException if the SubmodelElement does not exist
+	 * @param idShortPath
+	 *            the SubmodelElement IdShortPath
+	 * @param value
+	 *            the new value
+	 * @throws ElementDoesNotExistException
+	 *             if the SubmodelElement does not exist
 	 */
 	public void setSubmodelElementValue(String idShortPath, SubmodelElementValue value) throws ElementDoesNotExistException;
 
 	/**
 	 * Creates a Submodel Element
 	 * 
-	 * @return
 	 */
 	public void createSubmodelElement(SubmodelElement submodelElement);
 
@@ -103,11 +107,21 @@ public interface SubmodelService {
 	 *             If the submodel element defined in the path does not exist
 	 */
 	public void createSubmodelElement(String idShortPath, SubmodelElement submodelElement) throws ElementDoesNotExistException;
+	
+	/**
+	 * Updates a submodel element
+	 * 
+	 * @param idShortPath
+	 * @param submodelElement
+	 * @throws ElementDoesNotExistException
+	 *             If the submodel element defined in the path does not exist
+	 */
+	public void updateSubmodelElement(String idShortPath, SubmodelElement submodelElement) throws ElementDoesNotExistException;
 
 	/**
 	 * Delete a submodel element in a submodel
 	 * 
-	 * @param idshortPath
+	 * @param idShortPath
 	 *            the SubmodelElement IdShortPath
 	 * @throws ElementDoesNotExistException
 	 *             If the submodel element defined in the path does not exist

@@ -51,62 +51,49 @@ import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultReference;
  */
 public class ConceptDescriptionRepositorySuiteHelper {
 
-	//CONCEPT_DESCRIPTION
+	// CONCEPT_DESCRIPTION
 	public static final String CONCEPT_DESCRIPTION_ID_SHORT = "ConceptDescription";
 	public static final String CONCEPT_DESCRIPTION_ID = "7A7104BDAB57E184";
-	
+
 	public static final String CD_REVISION = "2";
 	public static final String CD_VERSION = "1.2";
 
-	public final List<Key> CD_FIRST_KEYS = Arrays
-			.asList(new DefaultKey.Builder().type(KeyTypes.DATA_ELEMENT).value("DataElement").build());
-	public final List<Key> CD_SECOND_KEYS = Arrays
-			.asList(new DefaultKey.Builder().type(KeyTypes.BASIC_EVENT_ELEMENT).value("BasicEventElement").build());
-	public final Reference CD_FIRST_REFERENCE = new DefaultReference.Builder().type(ReferenceTypes.MODEL_REFERENCE)
-			.keys(CD_FIRST_KEYS).build();
-	public final Reference CD_SECOND_REFERENCE = new DefaultReference.Builder()
-			.type(ReferenceTypes.EXTERNAL_REFERENCE).keys(CD_SECOND_KEYS).build();
+	public final List<Key> CD_FIRST_KEYS = Arrays.asList(new DefaultKey.Builder().type(KeyTypes.DATA_ELEMENT).value("DataElement").build());
+	public final List<Key> CD_SECOND_KEYS = Arrays.asList(new DefaultKey.Builder().type(KeyTypes.BASIC_EVENT_ELEMENT).value("BasicEventElement").build());
+	public final Reference CD_FIRST_REFERENCE = new DefaultReference.Builder().type(ReferenceTypes.MODEL_REFERENCE).keys(CD_FIRST_KEYS).build();
+	public final Reference CD_SECOND_REFERENCE = new DefaultReference.Builder().type(ReferenceTypes.EXTERNAL_REFERENCE).keys(CD_SECOND_KEYS).build();
 
-	public final AdministrativeInformation CD_ADMINISTRATIVE_INFORMATION = new DefaultAdministrativeInformation.Builder()
-			.revision(CD_REVISION).version(CD_VERSION).build();
+	public final AdministrativeInformation CD_ADMINISTRATIVE_INFORMATION = new DefaultAdministrativeInformation.Builder().revision(CD_REVISION).version(CD_VERSION).build();
 
 	public final List<LangStringTextType> CD_DESCRIPTIONS = new ArrayList<>(
 			Arrays.asList(new DefaultLangStringTextType.Builder().text("Hello").language("en").build(), new DefaultLangStringTextType.Builder().text("Hallo").language("de").build()));
 
-	public final List<LangStringNameType> CD_DISPLAY_NAME = new ArrayList<>(Arrays.asList(
-			new DefaultLangStringNameType.Builder().text("Concept Description").language("en").build(), new DefaultLangStringNameType.Builder().text("Konzeptbeschreibung").language("de").build()));
-	
-	//BASIC_CONCEPT_DESCRIPTION
+	public final List<LangStringNameType> CD_DISPLAY_NAME = new ArrayList<>(
+			Arrays.asList(new DefaultLangStringNameType.Builder().text("Concept Description").language("en").build(), new DefaultLangStringNameType.Builder().text("Konzeptbeschreibung").language("de").build()));
+
+	// BASIC_CONCEPT_DESCRIPTION
 	public static final String BASIC_CONCEPT_DESCRIPTION_ID_SHORT = "BasicConceptDescription";
 	public static final String BASIC_CONCEPT_DESCRIPTION_ID = "7A7104BDAH56TH2";
-	
-	public final List<Key> BCD_FIRST_KEYS = Arrays
-			.asList(new DefaultKey.Builder().type(KeyTypes.CONCEPT_DESCRIPTION).value("ConceptDescriptionKey").build());
-	public final List<Key> BCD_SECOND_KEYS = Arrays
-			.asList(new DefaultKey.Builder().type(KeyTypes.CAPABILITY).value("CapabilityKey").build());
-	public final Reference BCD_FIRST_REFERENCE = new DefaultReference.Builder().type(ReferenceTypes.EXTERNAL_REFERENCE)
-			.keys(BCD_FIRST_KEYS).build();
-	public final Reference BCD_SECOND_REFERENCE = new DefaultReference.Builder()
-			.type(ReferenceTypes.MODEL_REFERENCE).keys(BCD_SECOND_KEYS).build();
-	
-	//BASIC_CONCEPT_DESCRIPTION_WITH_COMMON_ISCASEOF
+
+	public final List<Key> BCD_FIRST_KEYS = Arrays.asList(new DefaultKey.Builder().type(KeyTypes.CONCEPT_DESCRIPTION).value("ConceptDescriptionKey").build());
+	public final List<Key> BCD_SECOND_KEYS = Arrays.asList(new DefaultKey.Builder().type(KeyTypes.CAPABILITY).value("CapabilityKey").build());
+	public final Reference BCD_FIRST_REFERENCE = new DefaultReference.Builder().type(ReferenceTypes.EXTERNAL_REFERENCE).keys(BCD_FIRST_KEYS).build();
+	public final Reference BCD_SECOND_REFERENCE = new DefaultReference.Builder().type(ReferenceTypes.MODEL_REFERENCE).keys(BCD_SECOND_KEYS).build();
+
+	// BASIC_CONCEPT_DESCRIPTION_WITH_COMMON_ISCASEOF
 	public static final String BASIC_CONCEPT_DESCRIPTION_COMMON_IS_CASEOF_ID_SHORT = "BasicConDescCommonIsCaseOf";
 	public static final String BASIC_CONCEPT_DESCRIPTION_COMMON_IS_CASEOF_ID = "7A7104BDA6544322";
-	
-	public final List<Key> NOT_COMMON_KEYS = Arrays
-			.asList(new DefaultKey.Builder().type(KeyTypes.ENTITY).value("EntityKey").build());
-	public final Reference NOT_COMMON_REFERENCE = new DefaultReference.Builder()
-			.type(ReferenceTypes.EXTERNAL_REFERENCE).keys(NOT_COMMON_KEYS).build();
-	
-	//CONCEPT_DESCRIPTION_WITH_DATA_SPECIFICATION
+
+	public final List<Key> NOT_COMMON_KEYS = Arrays.asList(new DefaultKey.Builder().type(KeyTypes.ENTITY).value("EntityKey").build());
+	public final Reference NOT_COMMON_REFERENCE = new DefaultReference.Builder().type(ReferenceTypes.EXTERNAL_REFERENCE).keys(NOT_COMMON_KEYS).build();
+
+	// CONCEPT_DESCRIPTION_WITH_DATA_SPECIFICATION
 	public static final String CONCEPT_DESCRIPTION_WITH_DS_ID_SHORT = "ConDescWithDataSpec";
 	public static final String CONCEPT_DESCRIPTION_WITH_DS_ID = "7A7104IHTREFN4322";
-	
-	public final List<Key> CD_WITH_DS_KEYS = Arrays
-			.asList(new DefaultKey.Builder().type(KeyTypes.REFERENCE_ELEMENT).value("ReferenceElementKey").build());
-	public final Reference CD_WITH_DS_REFERENCE = new DefaultReference.Builder().type(ReferenceTypes.EXTERNAL_REFERENCE)
-			.keys(CD_WITH_DS_KEYS).build();
-	
+
+	public final List<Key> CD_WITH_DS_KEYS = Arrays.asList(new DefaultKey.Builder().type(KeyTypes.REFERENCE_ELEMENT).value("ReferenceElementKey").build());
+	public final Reference CD_WITH_DS_REFERENCE = new DefaultReference.Builder().type(ReferenceTypes.EXTERNAL_REFERENCE).keys(CD_WITH_DS_KEYS).build();
+
 	public final EmbeddedDataSpecification embeddedDataSpecification = new DefaultEmbeddedDataSpecification.Builder().dataSpecification(CD_WITH_DS_REFERENCE).build();
-		
+
 }

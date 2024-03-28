@@ -1,11 +1,10 @@
 package org.eclipse.digitaltwin.basyx.aasdiscoveryservice.backend.mongodb;
 
-import org.eclipse.digitaltwin.aas4j.v3.model.SpecificAssetId;
-import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.model.AssetLink;
-import org.springframework.data.mongodb.core.mapping.Document;
-
 import java.util.List;
 import java.util.Set;
+
+import org.eclipse.digitaltwin.aas4j.v3.model.SpecificAssetId;
+import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.model.AssetLink;
 
 public class AasDiscoveryDocument {
 	private String shellIdentifier;

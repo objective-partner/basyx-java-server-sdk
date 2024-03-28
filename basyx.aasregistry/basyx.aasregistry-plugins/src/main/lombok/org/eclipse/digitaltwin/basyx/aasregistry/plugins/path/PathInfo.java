@@ -105,7 +105,7 @@ public class PathInfo {
 			this.attributeNameUpper = ConstantGenerator.generateConstant(attributeName);
 		}
 
-		public abstract String getGetterPrefix() ;
+		public abstract String getGetterPrefix();
 
 		private String toUpperFirst(String name) {
 			if (name.length() < 1) {
@@ -121,18 +121,17 @@ public class PathInfo {
 
 		@Getter
 		private String typeName;
-		
+
 		public PrimitiveRangeRelationInfo(String methodName, String attributeName, String typeName, boolean isListRange) {
 			super(methodName, attributeName, isListRange);
 			this.typeName = typeName;
 		}
-		
-		
+
 		@Override
 		public String getGetterPrefix() {
 			if ("Boolean".equals(typeName)) {
 				return "is";
-			} 
+			}
 			return "get";
 		}
 	}
@@ -148,7 +147,7 @@ public class PathInfo {
 			super(methodName, attributeName, isListRange);
 			this.modelName = rangeName;
 		}
-		
+
 		@Override
 		public String getGetterPrefix() {
 			return "get";
@@ -178,7 +177,7 @@ public class PathInfo {
 
 		private List<ComplexRangeRelationInfo> complexRangeRelations = new LinkedList<>();
 
-		private PathInfo info; // backpointer for global access in templates		
+		private PathInfo info; // backpointer for global access in templates
 
 		public ModelInfo(String name) {
 			this.name = name;
@@ -188,9 +187,9 @@ public class PathInfo {
 
 	private static final class ConstantGenerator {
 
-		private ConstantGenerator() {			
+		private ConstantGenerator() {
 		}
-		
+
 		public static String generateConstant(String name) {
 			StringBuilder builder = new StringBuilder();
 			for (int i = 0, len = name.length(); i < len; i++) {

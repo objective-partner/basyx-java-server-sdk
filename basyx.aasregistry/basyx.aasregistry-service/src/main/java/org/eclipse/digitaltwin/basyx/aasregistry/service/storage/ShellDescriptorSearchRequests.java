@@ -34,7 +34,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-
 public class ShellDescriptorSearchRequests {
 
 	private ShellDescriptorSearchRequests() {
@@ -53,19 +52,15 @@ public class ShellDescriptorSearchRequests {
 		}
 		return new GroupedQueries(rootQueries, submodelQueries);
 	}
-	
-	
+
 	@Getter
 	@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 	public static class GroupedQueries {
-		
-		
+
 		private final List<ShellDescriptorQuery> queriesOutsideSubmodel;
-		
+
 		private final List<ShellDescriptorQuery> queriesInsideSubmodel;
-		
-		
+
 	}
-	
-	
+
 }

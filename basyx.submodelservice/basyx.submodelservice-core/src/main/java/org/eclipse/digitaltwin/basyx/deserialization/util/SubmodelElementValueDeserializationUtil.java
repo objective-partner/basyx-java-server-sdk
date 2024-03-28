@@ -36,6 +36,7 @@ import org.eclipse.digitaltwin.basyx.submodelservice.value.FileBlobValue;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.RangeValue;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.ReferenceValue;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.RelationshipElementValue;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -86,7 +87,7 @@ public class SubmodelElementValueDeserializationUtil {
 	public static boolean isTypeOfSubmodelElementCollectionValue(JsonNode node) {
 		return node.isArray() && hasStructureOfSubmodelElementCollectionValue(node);
 	}
-	
+
 	public static boolean isTypeOfSubmodelElementListValue(JsonNode node) {
 		return node.isArray() && hasStructureOfSubmodelElementListValue(node);
 	}
@@ -112,8 +113,7 @@ public class SubmodelElementValueDeserializationUtil {
 		return true;
 	}
 
-	private static boolean isSizeOfAttributesValid(int nodeSize, int countOfOptionalAttributes,
-			int totalCountOfAttributes) {
+	private static boolean isSizeOfAttributesValid(int nodeSize, int countOfOptionalAttributes, int totalCountOfAttributes) {
 		if (countOfOptionalAttributes == 0)
 			return nodeSize == totalCountOfAttributes;
 
@@ -162,7 +162,7 @@ public class SubmodelElementValueDeserializationUtil {
 
 		return true;
 	}
-	
+
 	private static boolean hasStructureOfSubmodelElementListValue(JsonNode node) {
 		for (JsonNode element : node) {
 			if (!isInstanceOfSubmodelElementValue(element))
@@ -179,11 +179,8 @@ public class SubmodelElementValueDeserializationUtil {
 	}
 
 	private static boolean isInstanceOfSubmodelElementValue(JsonNode node) {
-		return Stream.of(isTypeOfRangeValue(node), isTypeOfMultiLanguagePropertyValue(node),
-				isTypeOfFileBlobValue(node), isTypeOfPropertyValue(node), isTypeOfEntityValue(node),
-				isTypeOfReferenceElementValue(node), isTypeOfRelationshipElementValue(node),
-				isTypeOfAnnotatedRelationshipElementValue(node), isTypeOfSubmodelElementCollectionValue(node), isTypeOfSubmodelElementListValue(node))
-				.anyMatch(result -> result);
+		return Stream.of(isTypeOfRangeValue(node), isTypeOfMultiLanguagePropertyValue(node), isTypeOfFileBlobValue(node), isTypeOfPropertyValue(node), isTypeOfEntityValue(node), isTypeOfReferenceElementValue(node),
+				isTypeOfRelationshipElementValue(node), isTypeOfAnnotatedRelationshipElementValue(node), isTypeOfSubmodelElementCollectionValue(node), isTypeOfSubmodelElementListValue(node)).anyMatch(result -> result);
 	}
 
 	private static boolean isValidLanguagePropertyValue(JsonNode element) {

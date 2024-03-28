@@ -28,7 +28,7 @@ package org.eclipse.digitaltwin.basyx.aasenvironment.preconfiguration;
 import java.io.IOException;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.eclipse.digitaltwin.aas4j.v3.dataformat.DeserializationException;
+import org.eclipse.digitaltwin.aas4j.v3.dataformat.core.DeserializationException;
 import org.eclipse.digitaltwin.basyx.aasrepository.AasRepository;
 import org.eclipse.digitaltwin.basyx.conceptdescriptionrepository.ConceptDescriptionRepository;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepository;
@@ -54,8 +54,7 @@ public class PreconfigurationLoaderInitializer implements InitializingBean {
 	private AasEnvironmentPreconfigurationLoader preconfigurationLoader;
 
 	@Autowired
-	public PreconfigurationLoaderInitializer(AasRepository aasRepository, SubmodelRepository submodelRepository, ConceptDescriptionRepository conceptDescriptionRepository,
-			AasEnvironmentPreconfigurationLoader preconfigurationLoader) {
+	public PreconfigurationLoaderInitializer(AasRepository aasRepository, SubmodelRepository submodelRepository, ConceptDescriptionRepository conceptDescriptionRepository, AasEnvironmentPreconfigurationLoader preconfigurationLoader) {
 		super();
 		this.aasRepository = aasRepository;
 		this.submodelRepository = submodelRepository;
@@ -73,7 +72,7 @@ public class PreconfigurationLoaderInitializer implements InitializingBean {
 			return;
 		}
 
-		preconfigurationLoader.loadPreconfiguredEnvironment(aasRepository, submodelRepository, conceptDescriptionRepository);
+		preconfigurationLoader.loadPreconfiguredEnvironments(aasRepository, submodelRepository, conceptDescriptionRepository);
 	}
 
 }

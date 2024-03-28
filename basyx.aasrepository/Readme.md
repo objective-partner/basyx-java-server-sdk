@@ -15,7 +15,7 @@ The Swagger UI for the endpoint is available at:
 
 	http://{host}:{port}/swagger-ui/index.html
 
-It supports DotAAS Part 1 V3 and the following HTTP/REST endpoints defined in [DotAAS Part 2 V3 - AssetAdministrationShell Repository](https://app.swaggerhub.com/apis/Plattform_i40/AssetAdministrationShellRepositoryServiceSpecification/V3.0_SSP-001):
+It supports DotAAS Part 1 V3 and the following HTTP/REST endpoints defined in [DotAAS Part 2 V3 - AssetAdministrationShell Repository](https://app.swaggerhub.com/apis/Plattform_i40/AssetAdministrationShellRepositoryServiceSpecification/V3.0.1_SSP-001):
 
 * AAS Repository:
   * PostAssetAdministrationShell
@@ -41,7 +41,9 @@ In addition, it supports the following backends:
 
 Furthermore, the following features are provided:
 * [AAS Repository MQTT eventing](basyx.aasrepository-feature-mqtt/)
-* [AAS Service MQTT eventing](../basyx.aasservice/basyx.aasservice-feature-mqtt/Rea)
+* [AAS Service MQTT eventing](../basyx.aasservice/basyx.aasservice-feature-mqtt/)
+* [AAS Repository Authorization](basyx.aasrepository-feature-authorization)
+* [AAS Registry Integration](basyx.aasrepository-feature-registry-integration)
 
 For a configuration example, see [application.properties](basyx.aasrepository.component/src/main/resources/application.properties)
 

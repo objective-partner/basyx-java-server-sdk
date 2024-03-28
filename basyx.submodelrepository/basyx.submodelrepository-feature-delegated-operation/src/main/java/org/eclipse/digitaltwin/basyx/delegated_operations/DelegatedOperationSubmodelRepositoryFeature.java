@@ -25,7 +25,6 @@
 
 package org.eclipse.digitaltwin.basyx.delegated_operations;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.digitaltwin.basyx.delegated_operations.mapper.AttributeMapper;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepositoryFactory;
 import org.eclipse.digitaltwin.basyx.submodelrepository.feature.SubmodelRepositoryFeature;
@@ -34,8 +33,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @Component
-@ConditionalOnExpression("T(java.lang.Boolean).valueOf('${basyx.submodelrepository.feature.delegatedoperation.enabled:true}') && !T(org.springframework.util.StringUtils).isEmpty('${basyx.externalurl:}')")
+@ConditionalOnExpression("T(java.lang.Boolean).valueOf('${basyx.submodelrepository.feature.delegatedoperation.enabled:}') && !T(org.springframework.util.StringUtils).isEmpty('${basyx.externalurl:}')")
 public class DelegatedOperationSubmodelRepositoryFeature implements SubmodelRepositoryFeature {
 	public static final String FEATURENAME = "basyx.submodelrepository.feature.delegatedoperation";
 	public static final String ENABLED = FEATURENAME + ".enabled";
@@ -48,7 +49,7 @@ public class DelegatedOperationSubmodelRepositoryFeature implements SubmodelRepo
 
 	@Value("${" + SUBMODEL_REGISTRY_URL + ":}")
 	private String registryBaseURL;
-	
+
 	private AttributeMapper attributeMapper;
 	private final ObjectMapper objectMapper;
 

@@ -27,7 +27,6 @@ package org.eclipse.digitaltwin.basyx.aasrepository.backend;
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.digitaltwin.basyx.aasrepository.AasRepository;
-import org.eclipse.digitaltwin.basyx.aasrepository.backend.CrudAasRepository;
 import org.junit.Test;
 
 /**
@@ -41,8 +40,12 @@ public class CrudAasRepositoryTest {
 
 	@Test
 	public void getConfiguredAasRepositoryName() {
-		AasRepository repo = new CrudAasRepository(() -> null, aas -> null, CONFIGURED_AAS_REPO_NAME, null);
+		String projectRoot = System.getProperty("user.dir");
+		String thumbnailFolder = projectRoot + "/target/thumbnail_storage";
+
+		AasRepository repo = new CrudAasRepository(() -> null, aas -> null, CONFIGURED_AAS_REPO_NAME, thumbnailFolder);
 
 		assertEquals(CONFIGURED_AAS_REPO_NAME, repo.getName());
 	}
+
 }

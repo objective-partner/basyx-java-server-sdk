@@ -34,7 +34,7 @@ import org.eclipse.digitaltwin.aas4j.v3.model.Property;
  */
 public class PropertyValue implements SubmodelElementValue {
 	private String value;
-	
+
 	@SuppressWarnings("unused")
 	private PropertyValue() {
 		super();

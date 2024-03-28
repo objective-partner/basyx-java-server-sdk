@@ -132,7 +132,7 @@ class PojoClassWalker {
 
 	private static void getFields(Class<?> cls, List<Field> fields, Set<String> duplicateFieldNameFilter) {
 		if (cls != null) {
-			for (Field eachField: cls.getDeclaredFields()) {
+			for (Field eachField : cls.getDeclaredFields()) {
 				if (duplicateFieldNameFilter.add(eachField.getName())) {
 					fields.add(eachField);
 				}

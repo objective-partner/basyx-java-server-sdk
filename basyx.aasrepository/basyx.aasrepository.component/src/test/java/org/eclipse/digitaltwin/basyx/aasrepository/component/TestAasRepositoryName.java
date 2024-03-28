@@ -55,34 +55,34 @@ public class TestAasRepositoryName {
 	@Test
 	public void getDefaultRepoName() {
 		startContext();
-		
+
 		AasRepository repo = appContext.getBean(AasRepository.class);
-		
+
 		assertEquals("aas-repo", repo.getName());
-		
+
 		closeContext();
 	}
 
 	@Test
 	public void getConfiguredRepoName() {
 		configureRepoNamePropertyAndStartContext();
-		
+
 		AasRepository repo = appContext.getBean(AasRepository.class);
-		
+
 		assertEquals(CONFIGURED_AAS_REPO_NAME, repo.getName());
-		
+
 		resetRepoNamePropertyAndCloseContext();
 	}
 
 	private void resetRepoNamePropertyAndCloseContext() {
 		System.clearProperty(BASYX_AASREPO_NAME_KEY);
-		
+
 		closeContext();
 	}
 
 	private void configureRepoNamePropertyAndStartContext() {
 		System.setProperty(BASYX_AASREPO_NAME_KEY, CONFIGURED_AAS_REPO_NAME);
-		
+
 		startContext();
 	}
 

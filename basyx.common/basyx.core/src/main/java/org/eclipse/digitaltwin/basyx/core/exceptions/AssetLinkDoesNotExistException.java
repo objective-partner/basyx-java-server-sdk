@@ -35,29 +35,29 @@ import org.springframework.stereotype.Component;
 @SuppressWarnings("serial")
 public class AssetLinkDoesNotExistException extends BaSyxResponseException {
 
-  private AssetLinkDoesNotExistException(int httpStatusCode, String reason, String correlationId, String timestamp) {
-    super(httpStatusCode, reason, correlationId, timestamp);
-  }
+	private AssetLinkDoesNotExistException(int httpStatusCode, String reason, String correlationId, String timestamp) {
+		super(httpStatusCode, reason, correlationId, timestamp);
+	}
 
-  @Component
-  public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
+	@Component
+	public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
 
-    public Builder(ITraceableMessageSerializer serializer) {
-      super(serializer);
-      messageReference("AssetLinkDoesNotExistException");
-      returnCode(404);
-      technicalMessageTemplate("Object corresponding with identifier '{MissingIdentifier}' does not exist.");
-    }
+		public Builder(ITraceableMessageSerializer serializer) {
+			super(serializer);
+			messageReference("AssetLinkDoesNotExistException");
+			returnCode(404);
+			technicalMessageTemplate("Object corresponding with identifier '{MissingIdentifier}' does not exist.");
+		}
 
-    public Builder missingIdentifier(String identifier) {
-      param("MissingIdentifier", identifier);
-      return this;
-    }
+		public Builder missingIdentifier(String identifier) {
+			param("MissingIdentifier", identifier);
+			return this;
+		}
 
-    @Override
-    public AssetLinkDoesNotExistException build() {
-      return new AssetLinkDoesNotExistException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
-    }
-  }
+		@Override
+		public AssetLinkDoesNotExistException build() {
+			return new AssetLinkDoesNotExistException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
+		}
+	}
 
 }

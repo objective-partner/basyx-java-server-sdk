@@ -25,9 +25,10 @@
 
 package org.eclipse.digitaltwin.basyx.http.pagination;
 
+import org.eclipse.digitaltwin.basyx.http.Base64UrlEncoder;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
-import org.eclipse.digitaltwin.basyx.http.Base64UrlEncoder;
 
 /**
  * Represents a Base64URL encoded cursor
@@ -37,10 +38,8 @@ import org.eclipse.digitaltwin.basyx.http.Base64UrlEncoder;
  */
 public class Base64UrlEncodedCursor {
 
-
 	@JsonValue
 	private final String encodedCursor;
-
 
 	public Base64UrlEncodedCursor(String encodedCursor) {
 		this.encodedCursor = encodedCursor;

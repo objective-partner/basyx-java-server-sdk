@@ -34,12 +34,12 @@ import org.eclipse.digitaltwin.aas4j.v3.model.ReferenceElement;
  */
 public class ReferenceElementValue implements SubmodelElementValue {
 	private ReferenceValue referenceValue;
-	
+
 	@SuppressWarnings("unused")
 	private ReferenceElementValue() {
 		super();
 	}
-	
+
 	public ReferenceElementValue(ReferenceValue referenceValue) {
 		this.referenceValue = referenceValue;
 	}

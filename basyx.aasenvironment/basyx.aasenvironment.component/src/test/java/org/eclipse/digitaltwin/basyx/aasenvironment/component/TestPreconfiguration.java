@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -42,6 +43,8 @@ import org.eclipse.digitaltwin.aas4j.v3.model.ConceptDescription;
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
 import org.eclipse.digitaltwin.basyx.aasrepository.AasRepository;
 import org.eclipse.digitaltwin.basyx.conceptdescriptionrepository.ConceptDescriptionRepository;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
+import org.eclipse.digitaltwin.basyx.http.TraceableMessageSerializer;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepository;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -49,6 +52,8 @@ import org.junit.Test;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.io.ClassPathResource;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Tests the Preconfiguration feature of the AAS Environment
@@ -63,6 +68,10 @@ public class TestPreconfiguration {
 
 	@BeforeClass
 	public static void startAASEnvironment() throws Exception {
+		TraceableMessageSerializer messageSerializer = new TraceableMessageSerializer(new ObjectMapper());
+		ExceptionBuilderFactory builderFactory = new ExceptionBuilderFactory(messageSerializer);
+		ExceptionBuilderFactory.setInstance(builderFactory);
+
 		appContext = new SpringApplication(AasEnvironmentComponent.class).run(new String[] {});
 		submodelRepo = appContext.getBean(SubmodelRepository.class);
 		aasRepo = appContext.getBean(AasRepository.class);
@@ -176,26 +185,26 @@ public class TestPreconfiguration {
 		assertNotNull(submodel1);
 		assertNotNull(submodel2);
 	}
-	
+
 	@Test
 	public void aasxPDFFileIntegrationInSubmodelRepository() throws FileNotFoundException, IOException {
 		InputStream expectedFile = getInputStreamOfFileFromClasspath("testFiles/OperatingManual.pdf");
 		String expectedFileExtension = "pdf";
-		
+
 		File actualFile = submodelRepo.getFileByPathSubmodel("http://i40.customer.com/type/1/1/1A7B62B529F19152", "OperatingManual.DigitalFile_PDF");
-		
+
 		assertEquals(expectedFileExtension, getExtension(actualFile.getName()));
 		assertTrue(IOUtils.contentEquals(expectedFile, FileUtils.openInputStream(actualFile)));
 	}
-	
+
 	@Test
 	public void aasxPNGFileIntegrationInSubmodelRepository() throws FileNotFoundException, IOException {
 		String expectedFilePath = "testFiles/verwaltungsschale-detail-part1.png";
 		String expectedFileExtension = "png";
-		
+
 		File actualFile1 = submodelRepo.getFileByPathSubmodel("7A7104BDAB57E184aasx", "FileData");
 		File actualFile2 = submodelRepo.getFileByPathSubmodel("7A7104BDAB57E184aasx", "SubmodelElementCollection.FileData");
-		
+
 		assertFileContents(expectedFilePath, expectedFileExtension, actualFile1, actualFile2);
 	}
 
@@ -203,22 +212,22 @@ public class TestPreconfiguration {
 	public static void shutdownAASEnvironment() {
 		appContext.close();
 	}
-	
+
 	private void assertFileContents(String expectedFilePath, String expectedFileExtension, File actualFile1, File actualFile2) throws IOException {
 		assertEquals(expectedFileExtension, getExtension(actualFile1.getName()));
 		assertEquals(expectedFileExtension, getExtension(actualFile2.getName()));
 		assertTrue(IOUtils.contentEquals(getInputStreamOfFileFromClasspath(expectedFilePath), FileUtils.openInputStream(actualFile1)));
 		assertTrue(IOUtils.contentEquals(getInputStreamOfFileFromClasspath(expectedFilePath), FileUtils.openInputStream(actualFile2)));
 	}
-	
+
 	private InputStream getInputStreamOfFileFromClasspath(String fileName) throws FileNotFoundException, IOException {
 		ClassPathResource classPathResource = new ClassPathResource(fileName);
-		
+
 		return classPathResource.getInputStream();
 	}
-	
+
 	private String getExtension(String filename) {
-	    return FilenameUtils.getExtension(filename);
+		return FilenameUtils.getExtension(filename);
 	}
 
 }

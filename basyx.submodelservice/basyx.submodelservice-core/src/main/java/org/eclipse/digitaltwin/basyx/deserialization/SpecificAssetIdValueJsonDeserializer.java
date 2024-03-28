@@ -58,8 +58,7 @@ public class SpecificAssetIdValueJsonDeserializer extends JsonDeserializer<Speci
 			Entry<String, JsonNode> nameValueMap = jsnonFields.next();
 
 			String name = nameValueMap.getKey();
-			String value = nameValueMap.getValue()
-					.asText();
+			String value = nameValueMap.getValue().asText();
 			ReferenceValue externalSubjectIdValue = null;
 
 			if (jsonContainsExternalSubjectId(node)) {

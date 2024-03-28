@@ -23,16 +23,29 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.aasservice;
 
+import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
 import org.eclipse.digitaltwin.basyx.aasservice.backend.InMemoryAasServiceFactory;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ITraceableMessageSerializer;
+import org.eclipse.digitaltwin.basyx.http.TraceableMessageSerializer;
+import org.junit.BeforeClass;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class TestInMemoryAasService extends AasServiceSuite {
 
+	@BeforeClass
+	public static void setUp() {
+		ITraceableMessageSerializer messageSerializer = new TraceableMessageSerializer(new ObjectMapper());
+		ExceptionBuilderFactory builderFactory = new ExceptionBuilderFactory(messageSerializer);
+		ExceptionBuilderFactory.setInstance(builderFactory);
+	}
+
 	@Override
-	protected AasServiceFactory getAASServiceFactory() {
-		return new InMemoryAasServiceFactory();
+	protected AasService getAasService(AssetAdministrationShell shell) {
+		return new InMemoryAasServiceFactory().create(shell);
 	}
 
 }

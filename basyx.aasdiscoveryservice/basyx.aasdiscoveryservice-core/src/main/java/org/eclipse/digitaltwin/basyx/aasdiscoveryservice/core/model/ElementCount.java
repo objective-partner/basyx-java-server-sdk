@@ -6,7 +6,7 @@ public class ElementCount {
 
 	private Long count;
 
-	protected  ElementCount() {
+	protected ElementCount() {
 	}
 
 	public ElementCount(String element, Long count) {

@@ -44,28 +44,27 @@ import lombok.RequiredArgsConstructor;
 public class PaginationSupport<T extends Object> {
 
 	private final TreeMap<String, T> sortedDescriptorMap;
-	
-	private final Function<T, String> idResolver; 
+
+	private final Function<T, String> idResolver;
 
 	public CursorResult<List<T>> getDescriptorsPaged(PaginationInfo pInfo) {
 		return getDescriptorsPagedAndFiltered(pInfo, null, null);
 	}
-	
+
 	public CursorResult<List<T>> getDescriptorsPagedAndFiltered(PaginationInfo pInfo, DescriptorFilter filter, Predicate<T> filterMethod) {
-				
+
 		Map<String, T> cursorView = getCursorView(pInfo);
 		Stream<Entry<String, T>> eStream = cursorView.entrySet().stream();
-		
+
 		eStream = applyFilter(filter, e -> filterMethod.test(e.getValue()), eStream);
 		Stream<T> tStream = eStream.map(Entry::getValue);
 		tStream = applyLimit(pInfo, tStream);
-		
+
 		List<T> descriptorList = tStream.collect(Collectors.toList());
-		
+
 		String cursor = computeNextCursor(descriptorList);
 		return new CursorResult<>(cursor, Collections.unmodifiableList(descriptorList));
 	}
-
 
 	private Stream<Entry<String, T>> applyFilter(DescriptorFilter filter, Predicate<Entry<String, T>> filterMethod, Stream<Entry<String, T>> aStream) {
 		if (filter != null && filter.isFiltered()) {
@@ -83,7 +82,7 @@ public class PaginationSupport<T extends Object> {
 
 	private String computeNextCursor(List<T> descriptorList) {
 		if (!descriptorList.isEmpty()) {
-			T last = descriptorList.get(descriptorList.size()-1);
+			T last = descriptorList.get(descriptorList.size() - 1);
 			String lastId = idResolver.apply(last);
 			return sortedDescriptorMap.higherKey(lastId);
 		}

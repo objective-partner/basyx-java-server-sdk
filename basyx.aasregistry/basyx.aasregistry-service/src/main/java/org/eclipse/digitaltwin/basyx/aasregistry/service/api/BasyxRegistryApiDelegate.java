@@ -25,8 +25,10 @@
 package org.eclipse.digitaltwin.basyx.aasregistry.service.api;
 
 import jakarta.validation.Valid;
+
 import java.net.URI;
 import java.util.List;
+
 import org.eclipse.digitaltwin.basyx.aasregistry.model.AssetAdministrationShellDescriptor;
 import org.eclipse.digitaltwin.basyx.aasregistry.model.AssetKind;
 import org.eclipse.digitaltwin.basyx.aasregistry.model.GetAssetAdministrationShellDescriptorsResult;

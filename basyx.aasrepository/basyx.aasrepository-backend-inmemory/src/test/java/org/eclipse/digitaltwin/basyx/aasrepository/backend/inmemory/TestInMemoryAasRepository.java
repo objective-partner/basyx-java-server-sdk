@@ -23,7 +23,6 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.aasrepository.backend.inmemory;
 
 import static org.junit.Assert.assertEquals;
@@ -34,35 +33,42 @@ import org.eclipse.digitaltwin.basyx.aasrepository.backend.AasBackendProvider;
 import org.eclipse.digitaltwin.basyx.aasrepository.backend.CrudAasRepository;
 import org.eclipse.digitaltwin.basyx.aasrepository.backend.SimpleAasRepositoryFactory;
 import org.eclipse.digitaltwin.basyx.aasservice.backend.InMemoryAasServiceFactory;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
+import org.eclipse.digitaltwin.basyx.http.TraceableMessageSerializer;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
- * Tests the {@link InMemoryAasRepository} name
+ * Tests the {@link AasInMemoryBackend} name
  * 
  * @author schnicke, kammognie, mateusmolina
  *
  */
 public class TestInMemoryAasRepository extends AasRepositorySuite {
 	private static final String CONFIGURED_AAS_REPO_NAME = "configured-aas-repo-name";
-	
+
 	private AasBackendProvider backendProvider = new AasInMemoryBackendProvider();
+
+	@BeforeClass
+	public static void setUp() {
+		TraceableMessageSerializer messageSerializer = new TraceableMessageSerializer(new ObjectMapper());
+		ExceptionBuilderFactory builderFactory = new ExceptionBuilderFactory(messageSerializer);
+		ExceptionBuilderFactory.setInstance(builderFactory);
+	}
 
 	@Override
 	protected AasRepository getAasRepository() {
-		return new SimpleAasRepositoryFactory(backendProvider, new InMemoryAasServiceFactory()).create();
-	}
-
-	@Override
-	protected void sanitizeRepository() {
-		backendProvider.getCrudRepository().deleteAll();
+		return new SimpleAasRepositoryFactory(backendProvider, new InMemoryAasServiceFactory(), getThumbnailFolder()).create();
 	}
 
 	@Test
-    public void getConfiguredInMemoryAasRepositoryName() {
+	public void getConfiguredInMemoryAasRepositoryName() {
 		String projectRoot = System.getProperty("user.dir");
 		String thumbnailFolder = projectRoot + "/target/thumbnail_storage";
 		AasRepository repo = new CrudAasRepository(backendProvider, new InMemoryAasServiceFactory(), CONFIGURED_AAS_REPO_NAME, thumbnailFolder);
-		
+
 		assertEquals(CONFIGURED_AAS_REPO_NAME, repo.getName());
 	}
 

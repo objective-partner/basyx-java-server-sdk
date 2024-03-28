@@ -55,34 +55,34 @@ public class TestSubmodelRepositoryName {
 	@Test
 	public void getDefaultRepoName() {
 		startContext();
-		
+
 		SubmodelRepository repo = appContext.getBean(SubmodelRepository.class);
-		
+
 		assertEquals("sm-repo", repo.getName());
-		
+
 		closeContext();
 	}
 
 	@Test
 	public void getConfiguredRepoName() {
 		configureRepoNamePropertyAndStartContext();
-		
+
 		SubmodelRepository repo = appContext.getBean(SubmodelRepository.class);
-		
+
 		assertEquals(CONFIGURED_SM_REPO_NAME, repo.getName());
-		
+
 		resetRepoNamePropertyAndCloseContext();
 	}
 
 	private void resetRepoNamePropertyAndCloseContext() {
 		System.clearProperty(BASYX_SMREPO_NAME_KEY);
-		
+
 		closeContext();
 	}
 
 	private void configureRepoNamePropertyAndStartContext() {
 		System.setProperty(BASYX_SMREPO_NAME_KEY, CONFIGURED_SM_REPO_NAME);
-		
+
 		startContext();
 	}
 

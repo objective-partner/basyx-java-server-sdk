@@ -34,8 +34,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Component;
 
 /**
- * Simple AAS repository factory that creates a {@link CrudAasRepository} with
- * a backend provider and a service factory
+ * Simple AAS repository factory that creates a {@link CrudAasRepository} with a
+ * backend provider and a service factory
  * 
  * @author mateusmolina
  * 
@@ -44,20 +44,20 @@ import org.springframework.stereotype.Component;
 @ConditionalOnExpression("!T(org.springframework.util.StringUtils).isEmpty('${basyx.backend:}')")
 public class SimpleAasRepositoryFactory implements AasRepositoryFactory {
 
-	private AasBackendProvider aasBackendProvider;
+	private final AasBackendProvider aasBackendProvider;
 
-	private AasServiceFactory aasServiceFactory;
+	private final AasServiceFactory aasServiceFactory;
 
 	@Value("${basyx.aasrepo.name:aas-repo}")
 	private String aasRepositoryName;
 
-	@Value("${basyx.aasrepo.thumbnails.storagepath:/application/thumbnail-storage}")
-	private String thumbnailStorageBaseFolder;
+	private final String thumbnailStorageBaseFolder;
 
 	@Autowired
-	public SimpleAasRepositoryFactory(AasBackendProvider aasBackendProvider, AasServiceFactory aasServiceFactory) {
+	public SimpleAasRepositoryFactory(AasBackendProvider aasBackendProvider, AasServiceFactory aasServiceFactory, @Value("${basyx.aasrepo.thumbnails.storagepath:thumbnail-storage}") String thumbnailStorageBaseFolder) {
 		this.aasBackendProvider = aasBackendProvider;
 		this.aasServiceFactory = aasServiceFactory;
+		this.thumbnailStorageBaseFolder = thumbnailStorageBaseFolder;
 	}
 
 	@Override

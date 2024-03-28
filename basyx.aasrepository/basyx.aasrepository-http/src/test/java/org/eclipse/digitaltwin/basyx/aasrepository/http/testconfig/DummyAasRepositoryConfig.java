@@ -33,7 +33,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-
 /**
  * Configuration for tests
  * 
@@ -44,8 +43,13 @@ import org.springframework.context.annotation.Configuration;
 public class DummyAasRepositoryConfig {
 
 	@Bean
-    @ConditionalOnMissingBean
-    public AasRepository createAasRepository() {
-		return new SimpleAasRepositoryFactory(new AasInMemoryBackendProvider(), new InMemoryAasServiceFactory()).create();
-    }
+	@ConditionalOnMissingBean
+	public AasRepository createAasRepository() {
+		return new SimpleAasRepositoryFactory(new AasInMemoryBackendProvider(), new InMemoryAasServiceFactory(), getThumbnailFolder()).create();
+	}
+
+	protected static String getThumbnailFolder() {
+		String projectRoot = System.getProperty("user.dir");
+		return projectRoot + "/target/thumbnail_storage";
+	}
 }

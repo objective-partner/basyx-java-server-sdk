@@ -26,10 +26,10 @@
 package org.eclipse.digitaltwin.basyx.submodelrepository.http;
 
 import java.util.Collection;
-import java.util.List;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
+import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelFilterParams;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepository;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -48,13 +48,15 @@ public class TestSubmodelRepositorySubmodelHTTP extends SubmodelRepositorySubmod
 
 	@BeforeClass
 	public static void startAASRepo() throws Exception {
-		appContext = new SpringApplication(DummySubmodelRepositoryComponent.class).run(new String[] {});
+		appContext = new SpringApplication(DummySubmodelRepositoryComponent.class).run();
 	}
 
 	@Override
 	public void resetRepository() {
 		SubmodelRepository repo = appContext.getBean(SubmodelRepository.class);
-		repo.getAllSubmodels(NO_LIMIT_PAGINATION_INFO, null, "").getResult().stream().map(s -> s.getId()).forEach(repo::deleteSubmodel);
+		SubmodelFilterParams submodelFilterParams = new SubmodelFilterParams();
+		submodelFilterParams.setPaginationInfo(NO_LIMIT_PAGINATION_INFO);
+		repo.getAllSubmodels(submodelFilterParams).getResult().stream().map(s -> s.getId()).forEach(repo::deleteSubmodel);
 	}
 
 	@Override

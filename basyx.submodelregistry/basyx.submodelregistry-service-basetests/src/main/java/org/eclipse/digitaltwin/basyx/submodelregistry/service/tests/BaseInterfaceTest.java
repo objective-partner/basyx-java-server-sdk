@@ -58,8 +58,8 @@ public abstract class BaseInterfaceTest {
 	protected static final String SM_ID_3 = "sm3";
 	protected static final String SM_ID_2 = "sm2";
 	protected static final String UNKNOWN_SM_ID = "unknown";
-	
-	private RegistryEventSink eventSink = Mockito.mock(RegistryEventSink.class);
+
+	private final RegistryEventSink eventSink = Mockito.mock(RegistryEventSink.class);
 
 	@Autowired
 	public SubmodelRegistryStorage baseStorage;

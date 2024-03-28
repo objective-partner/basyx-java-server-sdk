@@ -51,13 +51,7 @@ public class MqttAasServiceTopicFactory extends AbstractMqttTopicFactory {
 	 * @return
 	 */
 	public String createSetAssetInformationTopic(String repoId, String shellId) {
-		return new StringJoiner("/", "", "").add(AASREPOSITORY)
-				.add(repoId)
-				.add(SHELLS)
-				.add(encodeId(shellId))
-				.add(ASSET_INFORMATION)
-				.add(UPDATED)
-				.toString();
+		return new StringJoiner("/", "", "").add(AASREPOSITORY).add(repoId).add(SHELLS).add(encodeId(shellId)).add(ASSET_INFORMATION).add(UPDATED).toString();
 	}
 
 	/**
@@ -67,13 +61,7 @@ public class MqttAasServiceTopicFactory extends AbstractMqttTopicFactory {
 	 * @return
 	 */
 	public String createAddSubmodelReferenceTopic(String repoId, String shellId) {
-		return new StringJoiner("/", "", "").add(AASREPOSITORY)
-				.add(repoId)
-				.add(SHELLS)
-				.add(encodeId(shellId))
-				.add(SUBMODEL_REFERENCES)
-				.add(CREATED)
-				.toString();
+		return new StringJoiner("/", "", "").add(AASREPOSITORY).add(repoId).add(SHELLS).add(encodeId(shellId)).add(SUBMODEL_REFERENCES).add(CREATED).toString();
 	}
 
 	/**
@@ -83,13 +71,7 @@ public class MqttAasServiceTopicFactory extends AbstractMqttTopicFactory {
 	 * @return
 	 */
 	public String createRemoveSubmodelReferenceTopic(String repoId, String shellId) {
-		return new StringJoiner("/", "", "").add(AASREPOSITORY)
-				.add(repoId)
-				.add(SHELLS)
-				.add(encodeId(shellId))
-				.add(SUBMODEL_REFERENCES)
-				.add(DELETED)
-				.toString();
+		return new StringJoiner("/", "", "").add(AASREPOSITORY).add(repoId).add(SHELLS).add(encodeId(shellId)).add(SUBMODEL_REFERENCES).add(DELETED).toString();
 	}
 
 }

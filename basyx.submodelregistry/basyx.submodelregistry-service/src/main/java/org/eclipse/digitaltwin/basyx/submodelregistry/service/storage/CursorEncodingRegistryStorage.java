@@ -32,14 +32,13 @@ import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 import org.eclipse.digitaltwin.basyx.submodelregistry.model.SubmodelDescriptor;
 
 import lombok.NonNull;
- 
 
 public class CursorEncodingRegistryStorage extends SubmodelRegistryStorageDecorator {
 
 	public CursorEncodingRegistryStorage(SubmodelRegistryStorage storage) {
 		super(storage);
 	}
-	
+
 	@Override
 	public CursorResult<List<SubmodelDescriptor>> getAllSubmodelDescriptors(@NonNull PaginationInfo pRequest) {
 		PaginationInfo decoded = decodeCursor(pRequest);
@@ -47,12 +46,11 @@ public class CursorEncodingRegistryStorage extends SubmodelRegistryStorageDecora
 		return encodeCursor(result);
 	}
 
-
 	private CursorResult<List<SubmodelDescriptor>> encodeCursor(CursorResult<List<SubmodelDescriptor>> result) {
 		String encodedCursor = encodeCursor(result.getCursor());
 		return new CursorResult<List<SubmodelDescriptor>>(encodedCursor, result.getResult());
 	}
-	
+
 	private PaginationInfo decodeCursor(PaginationInfo info) {
 		String cursor = decodeCursor(info.getCursor());
 		return new PaginationInfo(info.getLimit(), cursor);
@@ -69,6 +67,6 @@ public class CursorEncodingRegistryStorage extends SubmodelRegistryStorageDecora
 		if (cursor == null) {
 			return null;
 		}
-		return new String(java.util.Base64.getUrlEncoder().encode(cursor.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);		
-	}	
+		return new String(java.util.Base64.getUrlEncoder().encode(cursor.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);
+	}
 }

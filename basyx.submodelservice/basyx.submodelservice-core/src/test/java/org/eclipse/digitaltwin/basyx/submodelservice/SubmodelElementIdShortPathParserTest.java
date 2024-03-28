@@ -47,11 +47,9 @@ public class SubmodelElementIdShortPathParserTest {
 	private static final int INDEX_TWO = 23;
 	private static final String ID_SHORT_PATH_SECOND_PART_ID_SHORT = "SubmodelElementList";
 	private static final String ID_SHORT_PATH_SECOND_PART_INDICES = "[" + INDEX_ONE + "][" + INDEX_TWO + "]";
-	private static final String ID_SHORT_PATH_SECOND_PART = ID_SHORT_PATH_SECOND_PART_ID_SHORT
-			+ ID_SHORT_PATH_SECOND_PART_INDICES;
+	private static final String ID_SHORT_PATH_SECOND_PART = ID_SHORT_PATH_SECOND_PART_ID_SHORT + ID_SHORT_PATH_SECOND_PART_INDICES;
 	private static final String ID_SHORT_PATH_THIRD_PART = "SubmodelElementProperty";
-	private static final String ID_SHORT_PATH = ID_SHORT_PATH_FIRST_PART + "." + ID_SHORT_PATH_SECOND_PART + "."
-			+ ID_SHORT_PATH_THIRD_PART;
+	private static final String ID_SHORT_PATH = ID_SHORT_PATH_FIRST_PART + "." + ID_SHORT_PATH_SECOND_PART + "." + ID_SHORT_PATH_THIRD_PART;
 	private static final String ID_SHORT_WITH_SPECIAL_CHARACTERS = "doesNotMatter-,;_'*+~?=)({}&%$§!";
 	private static final String INVALID_ID_SHORT_PATH = "test[0].hallo[9.hello";
 

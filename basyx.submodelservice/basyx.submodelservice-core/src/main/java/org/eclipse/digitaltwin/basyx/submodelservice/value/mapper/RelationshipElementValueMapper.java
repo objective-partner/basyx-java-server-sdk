@@ -30,14 +30,14 @@ import org.eclipse.digitaltwin.basyx.submodelservice.value.ReferenceValue;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.RelationshipElementValue;
 
 /**
- * Maps {@link RelationshipElement} value to {@link RelationshipElementValue} 
+ * Maps {@link RelationshipElement} value to {@link RelationshipElementValue}
  * 
  * @author danish
  *
  */
 public class RelationshipElementValueMapper implements ValueMapper<RelationshipElementValue> {
 	private RelationshipElement relationshipElement;
-	
+
 	public RelationshipElementValueMapper(RelationshipElement relationshipElement) {
 		this.relationshipElement = relationshipElement;
 	}
@@ -57,7 +57,7 @@ public class RelationshipElementValueMapper implements ValueMapper<RelationshipE
 		reference.setType(referenceValue.getType());
 		reference.setKeys(referenceValue.getKeys());
 	}
-	
+
 	private ReferenceValue createReferenceValue(Reference reference) {
 		return new ReferenceValue(reference.getType(), reference.getKeys());
 	}

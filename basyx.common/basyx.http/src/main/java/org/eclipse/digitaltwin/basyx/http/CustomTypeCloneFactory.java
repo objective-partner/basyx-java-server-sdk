@@ -36,25 +36,27 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * Factory for creating clones for the defined Input and Output type
  * 
- * @param <I> the Input type
- * @param <O> the Output type
+ * @param <I>
+ *            the Input type
+ * @param <O>
+ *            the Output type
  * 
  * @author danish
  */
 public class CustomTypeCloneFactory<I, O> {
-	
+
 	private Logger logger = LoggerFactory.getLogger(CustomTypeCloneFactory.class);
-	
+
 	private ObjectMapper mapper;
-	
+
 	private Class<O> elementType;
-	
+
 	public CustomTypeCloneFactory(Class<O> outputElementType, ObjectMapper mapper) {
 		super();
 		this.elementType = outputElementType;
 		this.mapper = mapper;
 	}
-	
+
 	/**
 	 * Creates clone for the provided input of {@link List} type
 	 * 
@@ -62,26 +64,26 @@ public class CustomTypeCloneFactory<I, O> {
 	 * @return the cloned result
 	 */
 	public List<O> create(List<I> input) {
-	    String serializedLangString = "";
-	    
-	    try {
-	        serializedLangString = mapper.writeValueAsString(input);
-	    } catch (JsonProcessingException e) {
-	        e.printStackTrace();
-	    }
+		String serializedLangString = "";
 
-	    try {
-	        return mapper.readValue(serializedLangString, mapper.getTypeFactory().constructCollectionType(List.class, elementType));
-	    } catch (JsonProcessingException e) {
-	        e.printStackTrace();
-	        
-	        logger.error("Failure occurred while creating the clone");
-			
+		try {
+			serializedLangString = mapper.writeValueAsString(input);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			return mapper.readValue(serializedLangString, mapper.getTypeFactory().constructCollectionType(List.class, elementType));
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+
+			logger.error("Failure occurred while creating the clone");
+
 			return null;
-	    }
+		}
 
 	}
-	
+
 	/**
 	 * Creates clone for the provided input
 	 * 
@@ -95,16 +97,16 @@ public class CustomTypeCloneFactory<I, O> {
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
-		
+
 		try {
 			return mapper.readValue(serializedLangString, elementType);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
-			
+
 			logger.error("Failure occurred while creating the clone");
-			
+
 			return null;
 		}
 	}
-	
+
 }

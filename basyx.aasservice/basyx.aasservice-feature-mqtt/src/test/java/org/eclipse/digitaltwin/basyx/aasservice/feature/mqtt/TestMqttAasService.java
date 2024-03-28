@@ -31,7 +31,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.digitaltwin.aas4j.v3.dataformat.DeserializationException;
+import org.eclipse.digitaltwin.aas4j.v3.dataformat.core.DeserializationException;
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetInformation;
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetKind;
@@ -41,20 +41,22 @@ import org.eclipse.digitaltwin.basyx.aasrepository.AasRepository;
 import org.eclipse.digitaltwin.basyx.aasrepository.AasRepositoryFactory;
 import org.eclipse.digitaltwin.basyx.aasrepository.backend.SimpleAasRepositoryFactory;
 import org.eclipse.digitaltwin.basyx.aasrepository.backend.inmemory.AasInMemoryBackendProvider;
+import org.eclipse.digitaltwin.basyx.aasservice.AasService;
 import org.eclipse.digitaltwin.basyx.aasservice.AasServiceFactory;
 import org.eclipse.digitaltwin.basyx.aasservice.AasServiceSuite;
-import org.eclipse.digitaltwin.basyx.aasservice.DummyAssetAdministrationShell;
+import org.eclipse.digitaltwin.basyx.aasservice.DummyAssetAdministrationShellFactory;
 import org.eclipse.digitaltwin.basyx.aasservice.backend.InMemoryAasServiceFactory;
 import org.eclipse.digitaltwin.basyx.common.mqttcore.encoding.URLEncoder;
 import org.eclipse.digitaltwin.basyx.common.mqttcore.listener.MqttTestListener;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.http.Aas4JHTTPSerializationExtension;
 import org.eclipse.digitaltwin.basyx.http.BaSyxHTTPConfiguration;
 import org.eclipse.digitaltwin.basyx.http.SerializationExtension;
+import org.eclipse.digitaltwin.basyx.http.TraceableMessageSerializer;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttSecurityException;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -77,8 +79,6 @@ public class TestMqttAasService extends AasServiceSuite {
 	private static AasRepository aasRepository;
 	private static AasServiceFactory mqttAasServiceFactory;
 
-	private MqttAasService mqttAasService;
-	private AssetAdministrationShell shell;
 	private static ObjectMapper objectMapper;
 
 	@BeforeClass
@@ -90,12 +90,10 @@ public class TestMqttAasService extends AasServiceSuite {
 
 		aasRepository = createMqttAasRepository();
 		mqttAasServiceFactory = createMqttAasServiceFactory(mqttClient);
-	}
 
-	@Before
-	public void setUp() {
-		shell = DummyAssetAdministrationShell.getDummyShell();
-		mqttAasService = (MqttAasService) getAASServiceFactory().create(shell);
+		TraceableMessageSerializer messageSerializer = new TraceableMessageSerializer(new ObjectMapper());
+		ExceptionBuilderFactory builderFactory = new ExceptionBuilderFactory(messageSerializer);
+		ExceptionBuilderFactory.setInstance(builderFactory);
 	}
 
 	@AfterClass
@@ -105,22 +103,24 @@ public class TestMqttAasService extends AasServiceSuite {
 	}
 
 	@Override
-	protected AasServiceFactory getAASServiceFactory() {
-		return mqttAasServiceFactory;
+	protected AasService getAasService(AssetAdministrationShell shell) {
+		return mqttAasServiceFactory.create(shell);
 	}
 
 	private static AasServiceFactory createMqttAasServiceFactory(MqttClient client) {
 		AasServiceFactory serviceFactory = new InMemoryAasServiceFactory();
 		MqttAasServiceFeature mqttFeature = new MqttAasServiceFeature(client, aasRepository, objectMapper);
-		
+
 		return mqttFeature.decorate(serviceFactory);
 	}
 
 	@Override
 	@Test
 	public void setAssetInformation() {
+		AssetAdministrationShell shell = DummyAssetAdministrationShellFactory.create();
+		AasService aasService = getAasService(shell);
 		AssetInformation assetInfo = createDummyAssetInformation();
-		mqttAasService.setAssetInformation(assetInfo);
+		aasService.setAssetInformation(assetInfo);
 		String repoId = aasRepository.getName();
 
 		assertEquals(topicFactory.createSetAssetInformationTopic(repoId, shell.getId()), listener.lastTopic);
@@ -128,16 +128,17 @@ public class TestMqttAasService extends AasServiceSuite {
 	}
 
 	private AssetInformation createDummyAssetInformation() {
-		AssetInformation assetInfo = new DefaultAssetInformation.Builder().assetKind(AssetKind.INSTANCE)
-				.globalAssetId("assetIDTestKey")
-				.build();
+		AssetInformation assetInfo = new DefaultAssetInformation.Builder().assetKind(AssetKind.INSTANCE).globalAssetId("assetIDTestKey").build();
 		return assetInfo;
 	}
 
 	@Test
 	public void addSubmodelReferenceEvent() throws DeserializationException, JsonProcessingException {
-		Reference submodelReference = DummyAssetAdministrationShell.submodelReference;
-		mqttAasService.addSubmodelReference(submodelReference);
+		AssetAdministrationShell shell = DummyAssetAdministrationShellFactory.create();
+		AasService aasService = getAasService(shell);
+
+		Reference submodelReference = DummyAssetAdministrationShellFactory.submodelReference;
+		aasService.addSubmodelReference(submodelReference);
 		String repoId = aasRepository.getName();
 
 		assertEquals(topicFactory.createAddSubmodelReferenceTopic(repoId, shell.getId()), listener.lastTopic);
@@ -155,15 +156,18 @@ public class TestMqttAasService extends AasServiceSuite {
 
 	@Test
 	public void removeSubmodelReferenceEvent() throws DeserializationException, JsonProcessingException {
+		AssetAdministrationShell shell = DummyAssetAdministrationShellFactory.create();
+
+		AasService aasService = getAasService(shell);
 		String repoId = aasRepository.getName();
 
-		DummyAssetAdministrationShell.addDummySubmodelReference(mqttAasService.getAAS());
-		mqttAasService.removeSubmodelReference(DummyAssetAdministrationShell.SUBMODEL_ID);
+		DummyAssetAdministrationShellFactory.addDummySubmodelReference(aasService.getAAS());
+		aasService.removeSubmodelReference(DummyAssetAdministrationShellFactory.SUBMODEL_ID);
 
 		assertEquals(topicFactory.createRemoveSubmodelReferenceTopic(repoId, shell.getId()), listener.lastTopic);
-		assertEquals(serialize(DummyAssetAdministrationShell.submodelReference), listener.lastPayload);
+		assertEquals(serialize(DummyAssetAdministrationShellFactory.submodelReference), listener.lastPayload);
 	}
-	
+
 	private static ObjectMapper configureObjectMapper() {
 		List<SerializationExtension> extensions = Arrays.asList(new Aas4JHTTPSerializationExtension());
 
@@ -171,7 +175,7 @@ public class TestMqttAasService extends AasServiceSuite {
 	}
 
 	private static AasRepository createMqttAasRepository() {
-		AasRepositoryFactory repoFactory = new SimpleAasRepositoryFactory(new AasInMemoryBackendProvider(), mqttAasServiceFactory);
+		AasRepositoryFactory repoFactory = new SimpleAasRepositoryFactory(new AasInMemoryBackendProvider(), mqttAasServiceFactory, getThumbnailFolder());
 		return repoFactory.create();
 	}
 

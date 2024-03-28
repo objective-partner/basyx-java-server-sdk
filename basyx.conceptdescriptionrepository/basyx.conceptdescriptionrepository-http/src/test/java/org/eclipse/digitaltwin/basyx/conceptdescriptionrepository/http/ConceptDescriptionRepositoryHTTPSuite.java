@@ -31,10 +31,12 @@ import java.io.IOException;
 
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.core5.http.ParseException;
+import org.apache.hc.core5.http.ProtocolException;
 import org.eclipse.digitaltwin.basyx.conceptdescriptionrepository.ConceptDescriptionRepository;
 import org.eclipse.digitaltwin.basyx.conceptdescriptionrepository.core.ConceptDescriptionRepositorySuiteHelper;
 import org.eclipse.digitaltwin.basyx.conceptdescriptionrepository.core.DummyConceptDescriptionFactory;
 import org.eclipse.digitaltwin.basyx.http.Base64UrlEncodedIdentifier;
+import org.eclipse.digitaltwin.basyx.http.HttpBaSyxHeader;
 import org.eclipse.digitaltwin.basyx.http.pagination.Base64UrlEncodedCursor;
 import org.eclipse.digitaltwin.basyx.http.serialization.BaSyxHttpTestUtils;
 import org.junit.After;
@@ -61,6 +63,12 @@ public abstract class ConceptDescriptionRepositoryHTTPSuite {
 	@Before
 	@After
 	public abstract void resetRepository();
+
+	@Test
+	public void baSyxResponseHeader() throws IOException, ProtocolException {
+		CloseableHttpResponse response = BaSyxHttpTestUtils.executeGetOnURL(getURL());
+		assertEquals(HttpBaSyxHeader.HEADER_VALUE, response.getHeader(HttpBaSyxHeader.HEADER_KEY).getValue());
+	}
 
 	@Test
 	public void getAllConceptDescriptionsPreconfigured() throws IOException, ParseException {
@@ -92,8 +100,7 @@ public abstract class ConceptDescriptionRepositoryHTTPSuite {
 
 	@Test
 	public void getSpecificConceptDescription() throws ParseException, IOException {
-		String actualConceptDescriptionJSON = requestSpecificConceptDescriptionJSON(DummyConceptDescriptionFactory.createConceptDescription()
-				.getId());
+		String actualConceptDescriptionJSON = requestSpecificConceptDescriptionJSON(DummyConceptDescriptionFactory.createConceptDescription().getId());
 		String expectedConceptDescriptionJSON = getSingleConceptDescriptionJSON();
 
 		BaSyxHttpTestUtils.assertSameJSONContent(expectedConceptDescriptionJSON, actualConceptDescriptionJSON);
@@ -173,9 +180,24 @@ public abstract class ConceptDescriptionRepositoryHTTPSuite {
 	}
 
 	@Test
+	public void createSubmodelEmptyId() throws IOException {
+		String conceptDescriptionJSON = getSingleConceptDescriptionWithEmptyIdJSON();
+		CloseableHttpResponse creationResponse = createConceptDescription(conceptDescriptionJSON);
+
+		assertEquals(HttpStatus.BAD_REQUEST.value(), creationResponse.getCode());
+	}
+
+	@Test
+	public void createSubmodelNullId() throws IOException {
+		String conceptDescriptionJSON = getSingleConceptDescriptionWithNullIdJSON();
+		CloseableHttpResponse creationResponse = createConceptDescription(conceptDescriptionJSON);
+
+		assertEquals(HttpStatus.BAD_REQUEST.value(), creationResponse.getCode());
+	}
+
+	@Test
 	public void deleteConceptDescription() throws IOException {
-		String existingConceptDescriptionId = DummyConceptDescriptionFactory.createConceptDescription()
-				.getId();
+		String existingConceptDescriptionId = DummyConceptDescriptionFactory.createConceptDescription().getId();
 
 		CloseableHttpResponse deletionResponse = deleteConceptDescriptionById(existingConceptDescriptionId);
 		assertEquals(HttpStatus.NO_CONTENT.value(), deletionResponse.getCode());
@@ -199,7 +221,7 @@ public abstract class ConceptDescriptionRepositoryHTTPSuite {
 
 		assertEquals(HttpStatus.NOT_FOUND.value(), deletionResponse.getCode());
 	}
-	
+
 	private String getJSONWithoutCursorInfo(String response) throws JsonMappingException, JsonProcessingException {
 		return BaSyxHttpTestUtils.removeCursorFromJSON(response);
 	}
@@ -284,6 +306,14 @@ public abstract class ConceptDescriptionRepositoryHTTPSuite {
 
 	private String getSingleConceptDescriptionJSON() throws IOException {
 		return BaSyxHttpTestUtils.readJSONStringFromClasspath("SingleConceptDescription.json");
+	}
+
+	private String getSingleConceptDescriptionWithNullIdJSON() throws IOException {
+		return BaSyxHttpTestUtils.readJSONStringFromClasspath("SingleConceptDescriptionWithNullId.json");
+	}
+
+	private String getSingleConceptDescriptionWithEmptyIdJSON() throws IOException {
+		return BaSyxHttpTestUtils.readJSONStringFromClasspath("SingleConceptDescriptionWithEmptyId.json");
 	}
 
 	private String getAllConceptDescriptionJSON() throws IOException {

@@ -67,8 +67,6 @@ public class AasRepositoryTestDefinedURL extends AasRepositoryHTTPSuite {
 		try {
 			String url = getSpecificAasAccessURL(id);
 			CloseableHttpResponse deleteResponse = BaSyxHttpTestUtils.executeDeleteOnURL(url);
-
-			System.out.println("Deleting aas with id " + id + ", ResponseCode is " + deleteResponse.getCode());
 		} catch (IOException e) {
 			fail(e.toString());
 		}
@@ -78,7 +76,7 @@ public class AasRepositoryTestDefinedURL extends AasRepositoryHTTPSuite {
 		try {
 			CloseableHttpResponse response = getAllAas();
 			String jsonResponse = getJsonResponse(response);
-			List<AssetAdministrationShell> shells = deserializer.readReferables(jsonResponse, AssetAdministrationShell.class);
+			List<AssetAdministrationShell> shells = deserializer.readList(jsonResponse, AssetAdministrationShell.class);
 			return shells.stream().map(AssetAdministrationShell::getId).collect(Collectors.toList());
 		} catch (Exception e) {
 			throw new RuntimeException(e);

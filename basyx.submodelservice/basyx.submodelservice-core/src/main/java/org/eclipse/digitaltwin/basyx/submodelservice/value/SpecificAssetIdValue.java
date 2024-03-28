@@ -23,7 +23,6 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.submodelservice.value;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.Reference;
@@ -37,11 +36,11 @@ import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultSpecificAssetId;
  *
  */
 public class SpecificAssetIdValue {
-	
+
 	private String name;
 	private String value;
 	private ReferenceValue externalSubjectId;
-	
+
 	@SuppressWarnings("unused")
 	private SpecificAssetIdValue() {
 		super();
@@ -72,7 +71,7 @@ public class SpecificAssetIdValue {
 	public Reference getExternalSubjectId() {
 		if (externalSubjectId == null)
 			return null;
-		
+
 		return externalSubjectId.toReference();
 	}
 

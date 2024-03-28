@@ -25,12 +25,14 @@
 package org.eclipse.digitaltwin.basyx.aasregistry.service.events;
 
 import jakarta.annotation.Nullable;
+
+import org.eclipse.digitaltwin.basyx.aasregistry.model.AssetAdministrationShellDescriptor;
+import org.eclipse.digitaltwin.basyx.aasregistry.model.SubmodelDescriptor;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.eclipse.digitaltwin.basyx.aasregistry.model.AssetAdministrationShellDescriptor;
-import org.eclipse.digitaltwin.basyx.aasregistry.model.SubmodelDescriptor;
 
 @Data
 @Builder
@@ -38,14 +40,13 @@ import org.eclipse.digitaltwin.basyx.aasregistry.model.SubmodelDescriptor;
 @AllArgsConstructor
 public class RegistryEvent {
 
-  private String id;
-  private @Nullable String submodelId;
-  private EventType type;
-  private @Nullable AssetAdministrationShellDescriptor aasDescriptor;
-  private @Nullable SubmodelDescriptor submodelDescriptor;
+	private String id;
+	private @Nullable String submodelId;
+	private EventType type;
+	private @Nullable AssetAdministrationShellDescriptor aasDescriptor;
+	private @Nullable SubmodelDescriptor submodelDescriptor;
 
-
-  public enum EventType {
-    AAS_REGISTERED, AAS_UNREGISTERED, SUBMODEL_REGISTERED, SUBMODEL_UNREGISTERED
-  }
+	public enum EventType {
+		AAS_REGISTERED, AAS_UNREGISTERED, SUBMODEL_REGISTERED, SUBMODEL_UNREGISTERED
+	}
 }

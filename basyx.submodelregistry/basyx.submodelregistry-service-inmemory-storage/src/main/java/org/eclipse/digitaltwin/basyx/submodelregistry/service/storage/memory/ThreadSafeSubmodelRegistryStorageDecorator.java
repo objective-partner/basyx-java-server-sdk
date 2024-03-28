@@ -42,35 +42,35 @@ public class ThreadSafeSubmodelRegistryStorageDecorator implements SubmodelRegis
 	private final SubmodelRegistryStorage storage;
 
 	private final ThreadSafeAccess access = new ThreadSafeAccess();
-	
+
 	@Override
 	public CursorResult<List<SubmodelDescriptor>> getAllSubmodelDescriptors(PaginationInfo pRequest) {
 		return access.read(storage::getAllSubmodelDescriptors, pRequest);
 	}
-	
+
 	@Override
 	public Set<String> clear() {
 		return access.write(storage::clear);
 	}
-	
+
 	@Override
-	public SubmodelDescriptor getSubmodelDescriptor( String submodelId) throws SubmodelNotFoundException {
+	public SubmodelDescriptor getSubmodelDescriptor(String submodelId) throws SubmodelNotFoundException {
 		return access.read(storage::getSubmodelDescriptor, submodelId);
 	}
-	
+
 	@Override
 	public void insertSubmodelDescriptor(SubmodelDescriptor descr) throws SubmodelAlreadyExistsException {
 		access.write(storage::insertSubmodelDescriptor, descr);
 	}
-	
+
 	@Override
 	public void removeSubmodelDescriptor(String submodelId) throws SubmodelNotFoundException {
 		access.write(storage::removeSubmodelDescriptor, submodelId);
 	}
-	
+
 	@Override
 	public void replaceSubmodelDescriptor(String submodelId, SubmodelDescriptor descr) throws SubmodelNotFoundException {
 		access.write(storage::replaceSubmodelDescriptor, submodelId, descr);
 	}
-		
+
 }

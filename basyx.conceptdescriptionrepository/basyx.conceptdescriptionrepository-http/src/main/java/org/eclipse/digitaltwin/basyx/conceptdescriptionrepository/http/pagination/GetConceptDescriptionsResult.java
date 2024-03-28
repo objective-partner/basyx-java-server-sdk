@@ -25,20 +25,24 @@
 
 package org.eclipse.digitaltwin.basyx.conceptdescriptionrepository.http.pagination;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
 import org.eclipse.digitaltwin.aas4j.v3.model.ConceptDescription;
 import org.eclipse.digitaltwin.basyx.conceptdescriptionrepository.ConceptDescriptionRepository;
 import org.eclipse.digitaltwin.basyx.http.pagination.PagedResult;
 import org.springframework.validation.annotation.Validated;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * Paginated wrapper for
- * {@link ConceptDescriptionRepository#getAllConceptDescriptions()}
+ * {@link ConceptDescriptionRepository#getAllConceptDescriptions(org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo)}
  */
 @Validated
 @jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2023-05-22T07:02:56.105163402Z[GMT]")

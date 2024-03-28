@@ -43,9 +43,7 @@ import org.springframework.test.context.TestPropertySource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
-@TestPropertySource(properties = { "spring.profiles.active=kafkaEvents,mongoDbStorage",
-		"spring.kafka.bootstrap-servers=PLAINTEXT_HOST://localhost:9092", "spring.data.mongodb.database=aasregistry",
+@TestPropertySource(properties = { "spring.profiles.active=kafkaEvents,mongoDbStorage", "spring.kafka.bootstrap-servers=PLAINTEXT_HOST://localhost:9092", "spring.data.mongodb.database=aasregistry",
 		"spring.data.mongodb.uri=mongodb://mongoAdmin:mongoPassword@localhost:27017/" })
 public class KafkaEventsMongoDbStorageIntegrationTest extends BaseIntegrationTest {
 
@@ -56,43 +54,42 @@ public class KafkaEventsMongoDbStorageIntegrationTest extends BaseIntegrationTes
 	public void awaitAssignment() throws InterruptedException {
 		listener.awaitTopicAssignment();
 	}
-	
+
 	@Override
 	public EventQueue queue() {
 		return listener.queue;
 	}
-	
-	@KafkaListener(topics = "submodel-registry", batch = "false", groupId = "kafka-test", autoStartup = "true" )
+
+	@KafkaListener(topics = "submodel-registry", batch = "false", groupId = "kafka-test", autoStartup = "true")
 	@Component
 	private static class RegistrationEventKafkaListener implements ConsumerSeekAware {
-				
+
 		private final EventQueue queue;
 		private final CountDownLatch latch = new CountDownLatch(1);
-		
+
 		@Value("${spring.kafka.template.default-topic}")
 		private String topicName;
-		
+
 		@SuppressWarnings("unused")
 		public RegistrationEventKafkaListener(ObjectMapper mapper) {
 			this.queue = new EventQueue(mapper);
 		}
-		
+
 		@KafkaHandler
 		public void receiveMessage(String content) {
 			queue.offer(content);
 		}
 
 		@Override
-		public void onPartitionsAssigned(Map<TopicPartition, Long> assignments,
-					ConsumerSeekCallback callback) {
+		public void onPartitionsAssigned(Map<TopicPartition, Long> assignments, ConsumerSeekCallback callback) {
 			for (TopicPartition eachPartition : assignments.keySet()) {
 				if (topicName.equals(eachPartition.topic())) {
 					callback.seekToEnd(List.of(eachPartition));
 					latch.countDown();
 				}
-			}		
+			}
 		}
-		
+
 		public void awaitTopicAssignment() throws InterruptedException {
 			if (!latch.await(5, TimeUnit.MINUTES)) {
 				throw new RuntimeException("Timeout occured while waiting for partition assignment. Is Kafka running?");

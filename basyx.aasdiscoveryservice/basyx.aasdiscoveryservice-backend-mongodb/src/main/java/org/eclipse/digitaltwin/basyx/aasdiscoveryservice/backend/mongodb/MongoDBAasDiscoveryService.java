@@ -24,10 +24,15 @@
 
 package org.eclipse.digitaltwin.basyx.aasdiscoveryservice.backend.mongodb;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.bson.Document;
 import org.eclipse.digitaltwin.aas4j.v3.model.SpecificAssetId;
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.AasDiscoveryService;
 import org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.AasDiscoveryUtils;
@@ -39,9 +44,13 @@ import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationSupport;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.*;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.GroupOperation;
+import org.springframework.data.mongodb.core.aggregation.MatchOperation;
+import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
 import org.springframework.data.mongodb.core.index.Index;
-import org.bson.Document;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
@@ -79,7 +88,7 @@ public class MongoDBAasDiscoveryService implements AasDiscoveryService {
 		Aggregation aggregation = Aggregation.newAggregation(matchOperation, projectionOperation, groupOperation);
 
 		AggregationResults<Document> results = mongoTemplate.aggregate(aggregation, collectionName, Document.class);
-		List<String> shellIds = results.getMappedResults().stream().map(doc -> doc.get("_id").toString()).collect(Collectors.toList());
+		List<String> shellIds = results.getMappedResults().stream().map(doc -> doc.get("_id").toString()).toList();
 
 		return paginateList(pInfo, shellIds);
 	}
@@ -118,7 +127,7 @@ public class MongoDBAasDiscoveryService implements AasDiscoveryService {
 			aggregationOperations.add(Aggregation.match(Criteria.where("assetLinks.name").regex("^" + prefix)));
 		}
 		aggregationOperations.add(Aggregation.group("assetLinks.name").count().as("count"));
-		aggregationOperations.add( Aggregation.project().andExpression("_id").as("element").andInclude("count"));
+		aggregationOperations.add(Aggregation.project().andExpression("_id").as("element").andInclude("count"));
 		Aggregation aggregation = Aggregation.newAggregation(aggregationOperations);
 		AggregationResults<ElementCount> results = mongoTemplate.aggregate(aggregation, collectionName, ElementCount.class);
 		return results.getMappedResults();
@@ -133,7 +142,7 @@ public class MongoDBAasDiscoveryService implements AasDiscoveryService {
 			aggregationOperations.add(Aggregation.match(Criteria.where("assetLinks.value").regex("^" + prefix)));
 		}
 		aggregationOperations.add(Aggregation.group("assetLinks.value").count().as("count"));
-		aggregationOperations.add( Aggregation.project().andExpression("_id").as("element").andInclude("count"));
+		aggregationOperations.add(Aggregation.project().andExpression("_id").as("element").andInclude("count"));
 		Aggregation aggregation = Aggregation.newAggregation(aggregationOperations);
 		AggregationResults<ElementCount> results = mongoTemplate.aggregate(aggregation, collectionName, ElementCount.class);
 		return results.getMappedResults();
@@ -159,8 +168,7 @@ public class MongoDBAasDiscoveryService implements AasDiscoveryService {
 	}
 
 	private CursorResult<List<String>> paginateList(PaginationInfo pInfo, List<String> shellIdentifiers) {
-		TreeMap<String, String> shellIdentifierMap = shellIdentifiers.stream()
-				.collect(Collectors.toMap(Function.identity(), Function.identity(), (a, b) -> a, TreeMap::new));
+		TreeMap<String, String> shellIdentifierMap = shellIdentifiers.stream().collect(Collectors.toMap(Function.identity(), Function.identity(), (a, b) -> a, TreeMap::new));
 
 		PaginationSupport<String> paginationSupport = new PaginationSupport<>(shellIdentifierMap, Function.identity());
 
@@ -168,16 +176,12 @@ public class MongoDBAasDiscoveryService implements AasDiscoveryService {
 	}
 
 	private boolean containsMatchingAssetId(List<SpecificAssetId> containedSpecificAssetIds, List<String> queryAssetIds) {
-		return queryAssetIds.stream()
-				.anyMatch(queryAssetId -> containedSpecificAssetIds.stream()
-						.anyMatch(containedAssetId -> containedAssetId.getValue()
-								.equals(queryAssetId)));
+		return queryAssetIds.stream().anyMatch(queryAssetId -> containedSpecificAssetIds.stream().anyMatch(containedAssetId -> containedAssetId.getValue().equals(queryAssetId)));
 	}
 
 	private void configureIndexForConceptDescriptionId(MongoTemplate mongoTemplate) {
 		Index idIndex = new Index().on(SHELL_IDENTIFIER, Direction.ASC);
-		mongoTemplate.indexOps(AssetLink.class)
-				.ensureIndex(idIndex);
+		mongoTemplate.indexOps(AssetLink.class).ensureIndex(idIndex);
 	}
 
 }

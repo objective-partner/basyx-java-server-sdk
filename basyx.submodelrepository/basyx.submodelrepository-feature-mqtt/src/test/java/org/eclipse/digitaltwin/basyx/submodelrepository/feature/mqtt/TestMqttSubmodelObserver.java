@@ -32,7 +32,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.digitaltwin.aas4j.v3.dataformat.DeserializationException;
+import org.eclipse.digitaltwin.aas4j.v3.dataformat.core.DeserializationException;
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.json.JsonDeserializer;
 import org.eclipse.digitaltwin.aas4j.v3.model.Property;
 import org.eclipse.digitaltwin.aas4j.v3.model.Qualifier;
@@ -43,9 +43,12 @@ import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultQualifier;
 import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultSubmodel;
 import org.eclipse.digitaltwin.basyx.common.mqttcore.encoding.Base64URLEncoder;
 import org.eclipse.digitaltwin.basyx.common.mqttcore.serializer.SubmodelElementSerializer;
-import org.eclipse.digitaltwin.basyx.submodelrepository.InMemorySubmodelRepositoryFactory;
+import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
+import org.eclipse.digitaltwin.basyx.http.TraceableMessageSerializer;
+import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelInMemoryBackendProvider;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepository;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepositoryFactory;
+import org.eclipse.digitaltwin.basyx.submodelrepository.backend.SimpleSubmodelRepositoryFactory;
 import org.eclipse.digitaltwin.basyx.submodelservice.InMemorySubmodelServiceFactory;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.PropertyValue;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelElementValue;
@@ -55,6 +58,8 @@ import org.eclipse.paho.client.mqttv3.MqttSecurityException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.moquette.broker.Server;
 import io.moquette.broker.config.ClasspathResourceLoader;
@@ -82,6 +87,8 @@ public class TestMqttSubmodelObserver {
 		mqttClient = createAndConnectClient();
 
 		submodelRepository = createMqttSubmodelRepository(mqttClient);
+
+		prepareExceptionBuilderFactory();
 	}
 
 	@AfterClass
@@ -179,11 +186,11 @@ public class TestMqttSubmodelObserver {
 	}
 
 	private Submodel deserializeSubmodelPayload(String payload) throws DeserializationException {
-		return new JsonDeserializer().readReferable(payload, Submodel.class);
+		return new JsonDeserializer().read(payload, Submodel.class);
 	}
 
 	private SubmodelElement deserializeSubmodelElementPayload(String payload) throws DeserializationException {
-		return new JsonDeserializer().readReferable(payload, SubmodelElement.class);
+		return new JsonDeserializer().read(payload, SubmodelElement.class);
 	}
 
 	private Submodel createSubmodelDummy(String submodelId) {
@@ -195,7 +202,7 @@ public class TestMqttSubmodelObserver {
 	}
 
 	private static SubmodelRepository createMqttSubmodelRepository(MqttClient client) {
-		SubmodelRepositoryFactory repoFactory = new InMemorySubmodelRepositoryFactory(new InMemorySubmodelServiceFactory());
+		SubmodelRepositoryFactory repoFactory = new SimpleSubmodelRepositoryFactory(new SubmodelInMemoryBackendProvider(), new InMemorySubmodelServiceFactory());
 
 		return new MqttSubmodelRepositoryFactory(repoFactory, client, new MqttSubmodelRepositoryTopicFactory(new Base64URLEncoder())).create();
 	}
@@ -221,5 +228,11 @@ public class TestMqttSubmodelObserver {
 		broker.startServer(classPathConfig);
 
 		return broker;
+	}
+
+	private static void prepareExceptionBuilderFactory() {
+		TraceableMessageSerializer messageSerializer = new TraceableMessageSerializer(new ObjectMapper());
+		ExceptionBuilderFactory builderFactory = new ExceptionBuilderFactory(messageSerializer);
+		ExceptionBuilderFactory.setInstance(builderFactory);
 	}
 }

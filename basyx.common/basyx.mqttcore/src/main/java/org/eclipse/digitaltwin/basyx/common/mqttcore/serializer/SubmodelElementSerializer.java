@@ -27,8 +27,8 @@ package org.eclipse.digitaltwin.basyx.common.mqttcore.serializer;
 
 import java.util.Optional;
 
-import org.eclipse.digitaltwin.aas4j.v3.dataformat.DeserializationException;
-import org.eclipse.digitaltwin.aas4j.v3.dataformat.SerializationException;
+import org.eclipse.digitaltwin.aas4j.v3.dataformat.core.DeserializationException;
+import org.eclipse.digitaltwin.aas4j.v3.dataformat.core.SerializationException;
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.json.JsonDeserializer;
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.json.JsonSerializer;
 import org.eclipse.digitaltwin.aas4j.v3.model.Blob;
@@ -84,7 +84,7 @@ public class SubmodelElementSerializer {
 	private static SubmodelElement getSubmodelElementWithoutValue(SubmodelElement submodelElement) throws SerializationException, DeserializationException {
 		// Copy the SubmodelElement to not modify the original.
 		String jsonToCopy = new JsonSerializer().write(submodelElement);
-		SubmodelElement localElement = new JsonDeserializer().readReferable(jsonToCopy, SubmodelElement.class);
+		SubmodelElement localElement = new JsonDeserializer().read(jsonToCopy, SubmodelElement.class);
 
 		if (submodelElement instanceof Blob) {
 			((Blob) localElement).setValue(null);

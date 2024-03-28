@@ -36,12 +36,12 @@ import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElementCollection;
  */
 public class SubmodelElementCollectionValue implements SubmodelElementValue {
 	private List<ValueOnly> value;
-	
+
 	@SuppressWarnings("unused")
 	private SubmodelElementCollectionValue() {
 		super();
 	}
-	
+
 	public SubmodelElementCollectionValue(List<ValueOnly> value) {
 		this.value = value;
 	}

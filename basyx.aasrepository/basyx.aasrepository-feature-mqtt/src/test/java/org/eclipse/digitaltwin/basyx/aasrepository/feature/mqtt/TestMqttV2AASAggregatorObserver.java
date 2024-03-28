@@ -31,14 +31,14 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.digitaltwin.aas4j.v3.dataformat.DeserializationException;
+import org.eclipse.digitaltwin.aas4j.v3.dataformat.core.DeserializationException;
 import org.eclipse.digitaltwin.aas4j.v3.dataformat.json.JsonDeserializer;
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
 import org.eclipse.digitaltwin.aas4j.v3.model.Reference;
 import org.eclipse.digitaltwin.aas4j.v3.model.impl.DefaultAssetAdministrationShell;
 import org.eclipse.digitaltwin.basyx.aasrepository.AasRepository;
 import org.eclipse.digitaltwin.basyx.aasrepository.AasRepositoryFactory;
-import org.eclipse.digitaltwin.basyx.aasrepository.AasRepositorySuite;
+import org.eclipse.digitaltwin.basyx.aasrepository.DummyAasFactory;
 import org.eclipse.digitaltwin.basyx.aasrepository.backend.SimpleAasRepositoryFactory;
 import org.eclipse.digitaltwin.basyx.aasrepository.backend.inmemory.AasInMemoryBackendProvider;
 import org.eclipse.digitaltwin.basyx.aasservice.backend.InMemoryAasServiceFactory;
@@ -122,21 +122,20 @@ public class TestMqttV2AASAggregatorObserver {
 	}
 
 	private AssetAdministrationShell deserializePayload(String payload) throws DeserializationException {
-		return new JsonDeserializer().readReferable(payload, AssetAdministrationShell.class);
+		return new JsonDeserializer().read(payload, AssetAdministrationShell.class);
 	}
 
 	private void addSubmodelReferenceToAas(AssetAdministrationShell shell) {
-		List<Reference> submodelReferences = Arrays.asList(AasRepositorySuite.createDummyReference("dummySubmodelId1"));
+		List<Reference> submodelReferences = Arrays.asList(DummyAasFactory.createDummyReference("dummySubmodelId1"));
 		shell.setSubmodels(submodelReferences);
 	}
 
 	private AssetAdministrationShell createAasDummy(String aasId) {
-		return new DefaultAssetAdministrationShell.Builder().id(aasId)
-				.build();
+		return new DefaultAssetAdministrationShell.Builder().id(aasId).build();
 	}
 
 	private static AasRepository createMqttAasRepository(MqttClient client) {
-		AasRepositoryFactory repoFactory = new SimpleAasRepositoryFactory(new AasInMemoryBackendProvider(), new InMemoryAasServiceFactory());
+		AasRepositoryFactory repoFactory = new SimpleAasRepositoryFactory(new AasInMemoryBackendProvider(), new InMemoryAasServiceFactory(), getThumbnailFolder());
 
 		return new MqttAasRepositoryFactory(repoFactory, client, new MqttAasRepositoryTopicFactory(new URLEncoder())).create();
 	}
@@ -162,5 +161,10 @@ public class TestMqttV2AASAggregatorObserver {
 		broker.startServer(classPathConfig);
 
 		return broker;
+	}
+
+	protected static String getThumbnailFolder() {
+		String projectRoot = System.getProperty("user.dir");
+		return projectRoot + "/target/thumbnail_storage";
 	}
 }

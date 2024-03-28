@@ -39,7 +39,7 @@ import lombok.RequiredArgsConstructor;
 public class SubmodelRegistryStorageDecorator implements SubmodelRegistryStorage {
 
 	protected final SubmodelRegistryStorage storage;
-	
+
 	@Override
 	public CursorResult<List<SubmodelDescriptor>> getAllSubmodelDescriptors(PaginationInfo pRequest) {
 		return storage.getAllSubmodelDescriptors(pRequest);

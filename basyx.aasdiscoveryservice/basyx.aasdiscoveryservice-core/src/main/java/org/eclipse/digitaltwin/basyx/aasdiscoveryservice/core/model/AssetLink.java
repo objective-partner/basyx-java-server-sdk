@@ -25,10 +25,10 @@
 
 package org.eclipse.digitaltwin.basyx.aasdiscoveryservice.core.model;
 
+import java.util.Objects;
+
 import org.eclipse.digitaltwin.aas4j.v3.model.AssetAdministrationShell;
 import org.eclipse.digitaltwin.aas4j.v3.model.SpecificAssetId;
-
-import java.util.Objects;
 
 /**
  * Represents the link between {@link AssetAdministrationShell} and

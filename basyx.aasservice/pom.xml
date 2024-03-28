@@ -9,11 +9,14 @@
 	</parent>
 
 	<artifactId>basyx.aasservice</artifactId>
+	<name>BaSyx aasservice</name>
+	<description>BaSyx aasservice</description>
 	<packaging>pom</packaging>
 
 	<modules>
 		<module>basyx.aasservice-core</module>
 		<module>basyx.aasservice-backend-inmemory</module>
 		<module>basyx.aasservice-feature-mqtt</module>
+		<module>basyx.aasservice-client</module>
 	</modules>
 </project>

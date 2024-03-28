@@ -30,8 +30,8 @@ import org.junit.runner.Result;
 
 /**
  * Application for testing the {@link RegistryIntegrationAasRepository} feature.
- * The first argument is the AAS Repository Base URL, the second argument is the AAS
- * Registry URL.
+ * The first argument is the AAS Repository Base URL, the second argument is the
+ * AAS Registry URL.
  * 
  * @author schnicke, danish
  *

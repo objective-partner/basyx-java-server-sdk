@@ -25,14 +25,15 @@
 
 package org.eclipse.digitaltwin.basyx.submodelrepository.http.pagination;
 
+import jakarta.validation.Valid;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import jakarta.validation.Valid;
-
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
 import org.eclipse.digitaltwin.basyx.http.pagination.PagedResult;
+import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelFilterParams;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepository;
 import org.springframework.validation.annotation.Validated;
 
@@ -41,7 +42,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
- * Paginated wrapper for {@link SubmodelRepository#getAllSubmodels()}
+ * Paginated wrapper for
+ * {@link SubmodelRepository#getAllSubmodels(SubmodelFilterParams)}
  */
 @Validated
 @jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2023-05-22T07:02:56.105163402Z[GMT]")

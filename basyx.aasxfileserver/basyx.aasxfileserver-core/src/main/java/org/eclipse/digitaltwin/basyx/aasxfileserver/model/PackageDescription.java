@@ -25,9 +25,9 @@
 
 package org.eclipse.digitaltwin.basyx.aasxfileserver.model;
 
-import java.util.Objects;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.eclipse.digitaltwin.basyx.aasxfileserver.AASXFileServer;
 import org.springframework.validation.annotation.Validated;

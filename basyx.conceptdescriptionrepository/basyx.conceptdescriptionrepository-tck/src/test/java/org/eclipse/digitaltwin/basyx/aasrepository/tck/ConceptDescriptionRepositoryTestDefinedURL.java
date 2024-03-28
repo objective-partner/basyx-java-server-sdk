@@ -38,6 +38,7 @@ import org.eclipse.digitaltwin.aas4j.v3.dataformat.json.JsonDeserializer;
 import org.eclipse.digitaltwin.aas4j.v3.model.ConceptDescription;
 import org.eclipse.digitaltwin.basyx.conceptdescriptionrepository.core.DummyConceptDescriptionFactory;
 import org.eclipse.digitaltwin.basyx.conceptdescriptionrepository.http.ConceptDescriptionRepositoryHTTPSuite;
+
 import com.google.gson.Gson;
 
 /**
@@ -96,7 +97,7 @@ public class ConceptDescriptionRepositoryTestDefinedURL extends ConceptDescripti
 	private List<String> getAllConceptDescriptionIds() {
 		try {
 			String jsonResponse = getJsonResultList(requestAllConceptDescriptions());
-			List<ConceptDescription> conceptDescriptions = deserializer.readReferables(jsonResponse, ConceptDescription.class);
+			List<ConceptDescription> conceptDescriptions = deserializer.readList(jsonResponse, ConceptDescription.class);
 			return conceptDescriptions.stream().map(ConceptDescription::getId).collect(Collectors.toList());
 		} catch (Exception e) {
 			throw new RuntimeException(e);

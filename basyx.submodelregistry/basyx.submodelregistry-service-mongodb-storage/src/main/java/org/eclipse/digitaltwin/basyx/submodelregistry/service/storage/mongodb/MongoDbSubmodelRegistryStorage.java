@@ -70,7 +70,7 @@ public class MongoDbSubmodelRegistryStorage implements SubmodelRegistryStorage {
 		String cursor = resolveCursor(pRequest, foundDescriptors);
 		return new CursorResult<List<SubmodelDescriptor>>(cursor, foundDescriptors);
 	}
-	
+
 	@Override
 	public Set<String> clear() {
 		Query query = Query.query(Criteria.where(ID).exists(true));
@@ -78,7 +78,7 @@ public class MongoDbSubmodelRegistryStorage implements SubmodelRegistryStorage {
 		List<SubmodelDescriptor> list = template.findAllAndRemove(query, SubmodelDescriptor.class);
 		return list.stream().map(SubmodelDescriptor::getId).collect(Collectors.toSet());
 	}
-	
+
 	@Override
 	public SubmodelDescriptor getSubmodelDescriptor(@NonNull String submodelId) throws SubmodelNotFoundException {
 		SubmodelDescriptor descriptor = template.findById(submodelId, SubmodelDescriptor.class);
@@ -87,7 +87,7 @@ public class MongoDbSubmodelRegistryStorage implements SubmodelRegistryStorage {
 		}
 		return descriptor;
 	}
-	
+
 	@Override
 	public void insertSubmodelDescriptor(@NonNull SubmodelDescriptor descr) throws SubmodelAlreadyExistsException {
 		try {
@@ -118,7 +118,7 @@ public class MongoDbSubmodelRegistryStorage implements SubmodelRegistryStorage {
 			throw new SubmodelNotFoundException(submodelId);
 		}
 	}
-	
+
 	private void moveInTransaction(String submodelId, SubmodelDescriptor descriptor) {
 		SessionScoped scoped = template.withSession(ClientSessionOptions.builder().build());
 		boolean removed = scoped.execute(operations -> {

@@ -23,10 +23,10 @@
  * SPDX-License-Identifier: MIT
  ******************************************************************************/
 
-
 package org.eclipse.digitaltwin.basyx.submodelrepository.http.deserialization;
 
 import java.io.IOException;
+
 import org.eclipse.digitaltwin.basyx.submodelrepository.http.deserialization.factory.SubmodelElementValueDeserializationFactory;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelElementValue;
 
@@ -43,7 +43,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  */
 public class SubmodelElementValueJsonDeserializer extends JsonDeserializer<SubmodelElementValue> {
-	
+
 	private SubmodelElementValueDeserializationFactory submodelElementValueDeserializationFactory = new SubmodelElementValueDeserializationFactory();
 
 	@Override
