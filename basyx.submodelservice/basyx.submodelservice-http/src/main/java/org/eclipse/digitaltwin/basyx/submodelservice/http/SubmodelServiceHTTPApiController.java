@@ -25,17 +25,15 @@
 
 package org.eclipse.digitaltwin.basyx.submodelservice.http;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+
 import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.digitaltwin.aas4j.v3.model.OperationRequest;
 import org.eclipse.digitaltwin.aas4j.v3.model.OperationResult;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
-
-import java.util.Arrays;
-import java.util.List;
-
 import org.eclipse.digitaltwin.aas4j.v3.model.OperationVariable;
 import org.eclipse.digitaltwin.aas4j.v3.model.Submodel;
 import org.eclipse.digitaltwin.aas4j.v3.model.SubmodelElement;
@@ -60,8 +58,6 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 
 @jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2023-07-20T09:38:58.667119080Z[GMT]")
 @RestController
@@ -202,7 +198,7 @@ public class SubmodelServiceHTTPApiController implements SubmodelServiceHTTPApi 
 
 	@Override
 	public ResponseEntity<SubmodelElement> postSubmodelElementByPath(
-			@Parameter(in = ParameterIn.PATH, description = "IdShort path to the submodel element (dot-separated)", required = true, schema = @Schema()) @PathVariable("idShortPath") String idShortPath,
+			@Parameter(in = ParameterIn.PATH, description = "IdShort path to the submodel element (dot-separated)", required = true, schema = @Schema()) @PathVariable("idShortPath") @NotBlank(message = "idShortPath must not be blank") String idShortPath,
 			@Parameter(in = ParameterIn.DEFAULT, description = "Requested submodel element", required = true, schema = @Schema()) @Valid @RequestBody SubmodelElement body) {
 		service.createSubmodelElement(idShortPath, body);
 		return new ResponseEntity<SubmodelElement>(HttpStatus.CREATED);
@@ -231,9 +227,7 @@ public class SubmodelServiceHTTPApiController implements SubmodelServiceHTTPApi 
 	}
 
 	private OperationResult createOperationResult(OperationVariable[] result) {
-		return new DefaultOperationResult.Builder()
-				.outputArguments(Arrays.asList(result))
-				.build();
+		return new DefaultOperationResult.Builder().outputArguments(Arrays.asList(result)).build();
 	}
 
 	private String getEncodedCursorFromCursorResult(CursorResult<?> cursorResult) {

@@ -375,13 +375,13 @@ public abstract class SubmodelServiceSubmodelElementsTestSuiteHTTP {
 		assertEquals(HttpStatus.CREATED.value(), createdResponse.getCode());
 		BaSyxHttpTestUtils.assertSameJSONContent(element, BaSyxHttpTestUtils.getResponseAsString(fetchedResponse));
 	}
-	
+
 	@Test
 	public void updateNonFileSME() throws FileNotFoundException, IOException, ParseException {
 		String element = getJSONValueAsString("PropertySubmodelElementUpdate.json");
-		
+
 		String idShortPathPropertyInSmeCol = SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_SUBMODEL_ELEMENT_COLLECTION_ID_SHORT + "." + SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_PROPERTY_ID_SHORT;
-		
+
 		CloseableHttpResponse updatedResponse = updateElement(createSpecificSubmodelElementURL(idShortPathPropertyInSmeCol), element);
 		assertEquals(HttpStatus.NO_CONTENT.value(), updatedResponse.getCode());
 
@@ -392,22 +392,22 @@ public abstract class SubmodelServiceSubmodelElementsTestSuiteHTTP {
 	@Test
 	public void updateNonFileSMEWithFileSME() throws FileNotFoundException, IOException, ParseException {
 		String element = getJSONValueAsString("FileSubmodelElementUpdate.json");
-		
+
 		String idShortPathPropertyInSmeCol = SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_SUBMODEL_ELEMENT_COLLECTION_ID_SHORT + "." + SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_PROPERTY_ID_SHORT;
-		
+
 		CloseableHttpResponse updatedResponse = updateElement(createSpecificSubmodelElementURL(idShortPathPropertyInSmeCol), element);
 		assertEquals(HttpStatus.NO_CONTENT.value(), updatedResponse.getCode());
-		
+
 		CloseableHttpResponse fetchedResponse = requestSubmodelElement(idShortPathPropertyInSmeCol);
 		BaSyxHttpTestUtils.assertSameJSONContent(element, BaSyxHttpTestUtils.getResponseAsString(fetchedResponse));
 	}
-	
+
 	@Test
 	public void updateNonExistingSME() throws FileNotFoundException, IOException, ParseException {
 		String element = getJSONValueAsString("PropertySubmodelElementUpdate.json");
-		
+
 		String idShortPathPropertyInSmeCol = SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_SUBMODEL_ELEMENT_COLLECTION_ID_SHORT + ".NonExistingSMEIdShort";
-		
+
 		CloseableHttpResponse updatedResponse = updateElement(createSpecificSubmodelElementURL(idShortPathPropertyInSmeCol), element);
 		assertEquals(HttpStatus.NOT_FOUND.value(), updatedResponse.getCode());
 	}
@@ -433,7 +433,7 @@ public abstract class SubmodelServiceSubmodelElementsTestSuiteHTTP {
 
 	@Test
 	public void createNestedSubmodelElementInSubmodelElementList() throws IOException, JsonProcessingException, JsonMappingException, ParseException {
-		String element = getJSONValueAsString("SubmodelElementNew.json");
+		String element = getJSONValueAsString("SubmodelElementNewInList.json");
 		CloseableHttpResponse createdInListResponse = BaSyxHttpTestUtils.executePostOnURL(createSpecificSubmodelElementURL(DummySubmodelFactory.SUBMODEL_ELEMENT_LIST_SIMPLE), element);
 		assertEquals(HttpStatus.CREATED.value(), createdInListResponse.getCode());
 		CloseableHttpResponse fetchedNestedInListResponse = requestSubmodelElement(createListNestedIdShortPath(1));
@@ -489,12 +489,12 @@ public abstract class SubmodelServiceSubmodelElementsTestSuiteHTTP {
 		BaSyxHttpTestUtils.assertSameJSONContent(expectedValue, BaSyxHttpTestUtils.getResponseAsString(response));
 
 	}
-	
+
 	private CloseableHttpResponse updateElement(String url, String element) throws IOException {
 		return BaSyxHttpTestUtils.executePutOnURL(url, element);
 	}
-	
-	private String getJSONWithoutCursorInfo(String response) throws JsonMappingException, JsonProcessingException  {
+
+	private String getJSONWithoutCursorInfo(String response) throws JsonMappingException, JsonProcessingException {
 		return BaSyxHttpTestUtils.removeCursorFromJSON(response);
 	}
 

@@ -103,10 +103,20 @@ public class ExceptionBuilderFactory {
 	public OperationDelegationException.Builder operationDelegationException() {
 		return new OperationDelegationException.Builder(serializer);
 	}
+
 	public CollidingIdShortException.Builder collidingIdShortException() {
 		return new CollidingIdShortException.Builder(serializer);
 	}
+
 	public IdShortNotAllowedException.Builder idShortNotAllowedException() {
 		return new IdShortNotAllowedException.Builder(serializer);
+	}
+
+	public ElementNotADataElementException.Builder elementNotADataElementException() {
+		return new ElementNotADataElementException.Builder(serializer);
+	}
+
+	public ParentElementNotHierarchicalException.Builder parentElementNotHierarchicalException() {
+		return new ParentElementNotHierarchicalException.Builder(serializer);
 	}
 }

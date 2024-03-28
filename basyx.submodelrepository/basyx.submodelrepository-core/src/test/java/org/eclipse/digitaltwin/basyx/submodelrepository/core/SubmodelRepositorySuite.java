@@ -524,10 +524,10 @@ public abstract class SubmodelRepositorySuite {
 	}
 
 	@Test
-	public void createNestedSubmodelELement() {
+	public void createNestedSubmodelElement() {
 		SubmodelRepository repo = getSubmodelRepositoryWithDummySubmodels();
 		Property propertyInCollection = new DefaultProperty.Builder().idShort("test654").category("cat1").value("305").valueType(DataTypeDefXsd.INTEGER).build();
-		Property propertyInList = new DefaultProperty.Builder().idShort("test987").category("cat1").value("305").valueType(DataTypeDefXsd.INTEGER).build();
+		Property propertyInList = new DefaultProperty.Builder().category("cat1").value("305").valueType(DataTypeDefXsd.INTEGER).build();
 
 		String idShortPathPropertyInSmeCol = DummySubmodelFactory.SUBMODEL_ELEMENT_COLLECTION_SIMPLE;
 		String idShortPathPropertyInSmeList = DummySubmodelFactory.SUBMODEL_ELEMENT_LIST_SIMPLE;
@@ -540,7 +540,8 @@ public abstract class SubmodelRepositorySuite {
 
 		idShortPathPropertyInSmeList = idShortPathPropertyInSmeList.concat("[1]");
 		SubmodelElement propertyInSmeListCreated = repo.getSubmodelElement(DummySubmodelFactory.SUBMODEL_SIMPLE_DATA_ID, idShortPathPropertyInSmeList);
-		assertEquals("test987", propertyInSmeListCreated.getIdShort());
+		assertTrue(propertyInSmeListCreated instanceof Property);
+		assertEquals(propertyInList.getValue(), ((Property) propertyInSmeListCreated).getValue());
 	}
 
 	@Test

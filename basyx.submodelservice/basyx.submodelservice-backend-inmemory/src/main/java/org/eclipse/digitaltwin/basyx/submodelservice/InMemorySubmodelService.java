@@ -139,18 +139,34 @@ public class InMemorySubmodelService implements SubmodelService {
 	public void createSubmodelElement(String idShortPath, SubmodelElement submodelElement) throws ElementDoesNotExistException, CollidingIdentifierException {
 
 		SubmodelElement parentSme = parser.getSubmodelElementFromIdShortPath(idShortPath);
+
 		checkIfSubmodelElementValid(parentSme, submodelElement, idShortPath);
+
 		if (parentSme instanceof SubmodelElementList list) {
 			List<SubmodelElement> submodelElements = list.getValue();
 			submodelElements.add(submodelElement);
-			list.setValue(submodelElements);
 			return;
 		}
 		if (parentSme instanceof SubmodelElementCollection collection) {
 			List<SubmodelElement> submodelElements = collection.getValue();
 			submodelElements.add(submodelElement);
-			collection.setValue(submodelElements);
+			return;
 		}
+		if (parentSme instanceof Entity entity) {
+			List<SubmodelElement> statements = entity.getStatements();
+			statements.add(submodelElement);
+			return;
+		}
+		if (parentSme instanceof AnnotatedRelationshipElement annotatedRelationshipElement) {
+			if (submodelElement instanceof DataElement newDataElement) {
+				List<DataElement> annotations = annotatedRelationshipElement.getAnnotations();
+				annotations.add(newDataElement);
+				return;
+			} else {
+				throw ExceptionBuilderFactory.getInstance().elementNotADataElementException().submodelElementId(submodelElement.getIdShort()).parentIdShortPath(idShortPath).submodelId(submodel.getId()).build();
+			}
+		}
+		throw ExceptionBuilderFactory.getInstance().parentElementNotHierarchicalException().submodelElementId(submodelElement.getIdShort()).parentIdShortPath(idShortPath).submodelId(submodel.getId()).build();
 	}
 
 	@Override
@@ -272,9 +288,9 @@ public class InMemorySubmodelService implements SubmodelService {
 
 	private void checkIfSubmodelElementValid(SubmodelElement parentSubmodelElement, SubmodelElement newSubmodelElement, String idShortPath) {
 		if (parentSubmodelElement instanceof SubmodelElementList && StringUtils.isNotBlank(newSubmodelElement.getIdShort())) {
-			throw ExceptionBuilderFactory.getInstance().idShortNotAllowedException().withSubmodelId(submodel.getId()).withIdShort(idShortPath).build();
+			throw ExceptionBuilderFactory.getInstance().idShortNotAllowedException().submodelId(submodel.getId()).idShort(newSubmodelElement.getIdShort()).parentIdShortPath(idShortPath).build();
 		}
-		if (parentSubmodelElement instanceof SubmodelElementCollection) {
+		if (parentSubmodelElement instanceof SubmodelElementCollection || parentSubmodelElement instanceof Entity || parentSubmodelElement instanceof AnnotatedRelationshipElement) {
 			throwIfSubmodelElementExists(getFullIdShortPath(idShortPath, newSubmodelElement.getIdShort()));
 		}
 	}

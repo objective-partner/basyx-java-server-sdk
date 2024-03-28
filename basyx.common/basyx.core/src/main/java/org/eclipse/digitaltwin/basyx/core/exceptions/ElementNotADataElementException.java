@@ -28,45 +28,45 @@ package org.eclipse.digitaltwin.basyx.core.exceptions;
 import org.springframework.stereotype.Component;
 
 /**
- * Indicates that a submodelElement is not allowed to have an idShort in
- * submodelElementList
+ * Indicates that the requested submodel element is not a File SubmodelElement
  *
+ * @author danish, Al-Agtash
  */
 @SuppressWarnings("serial")
-public class IdShortNotAllowedException extends BaSyxResponseException {
+public class ElementNotADataElementException extends BaSyxResponseException {
 
-    private IdShortNotAllowedException(int httpStatusCode, String reason, String correlationId, String timestamp) {
-        super(httpStatusCode, reason, correlationId, timestamp);
-    }
+	private ElementNotADataElementException(int httpStatusCode, String reason, String correlationId, String timestamp) {
+		super(httpStatusCode, reason, correlationId, timestamp);
+	}
 
-    @Component
-    public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
+	@Component
+	public static class Builder extends BaSyxResponseExceptionBuilder<Builder> {
 
-        public Builder(ITraceableMessageSerializer serializer) {
-            super(serializer);
-            messageReference("IdShortNotAllowedException");
-            returnCode(400);
-            technicalMessageTemplate("IdShort '{IdShort}' is not allowed in a list submodel element '{ParentIdShortPath}' in submodel '{SubmodelId}'");
-        }
+		public Builder(ITraceableMessageSerializer serializer) {
+			super(serializer);
+			messageReference("ElementNotADataElementException");
+			returnCode(400);
+			technicalMessageTemplate("SubmodelElement with Id '{SubmodelElementId}' and Path '{ParentIdShortPath}' in SubmodelId '{SubmodelId}' is not a data element.");
+		}
 
-        public Builder idShort(String value) {
-            param("IdShort", value);
-            return this;
-        }
+		public Builder submodelElementId(String value) {
+			param("SubmodelElementId", value);
+			return this;
+		}
 
-        public Builder parentIdShortPath(String value) {
-            param("ParentIdShortPath", value);
-            return this;
-        }
+		public Builder parentIdShortPath(String value) {
+			param("ParentIdShortPath", value);
+			return this;
+		}
 
-        public Builder submodelId(String value) {
-            param("SubmodelId", value);
-            return this;
-        }
+		public Builder submodelId(String value) {
+			param("SubmodelId", value);
+			return this;
+		}
 
-        @Override
-        public IdShortNotAllowedException build() {
-            return new IdShortNotAllowedException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
-        }
-    }
+		@Override
+		public ElementNotADataElementException build() {
+			return new ElementNotADataElementException(getReturnCode(), composeMessage(), getCorrelationId(), getTimestamp());
+		}
+	}
 }

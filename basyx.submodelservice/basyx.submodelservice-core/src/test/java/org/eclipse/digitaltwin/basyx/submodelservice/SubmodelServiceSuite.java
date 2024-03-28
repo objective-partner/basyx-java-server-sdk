@@ -309,21 +309,21 @@ public abstract class SubmodelServiceSuite {
 
 		Property propertyInSmeCol = new DefaultProperty.Builder().idShort("test123").category("cat1").value("305").valueType(DataTypeDefXsd.INTEGER).build();
 
-		Property propertyInSmeList = new DefaultProperty.Builder().idShort("test456").category("cat1").value("305").valueType(DataTypeDefXsd.INTEGER).build();
-
 		String idShortPathPropertyInSmeCol = DummySubmodelFactory.SUBMODEL_OPERATIONAL_DATA_ELEMENT_COLLECTION_ID_SHORT;
 		submodelService.createSubmodelElement(idShortPathPropertyInSmeCol, propertyInSmeCol);
-
-		String idShortPathPropertyInSmeList = DummySubmodelFactory.SUBMODEL_OPERATIONAL_DATA_ELEMENT_COLLECTION_ID_SHORT + "." + DummySubmodelFactory.SUBMODEL_OPERATIONAL_DATA_ELEMENT_LIST_ID_SHORT;
-		submodelService.createSubmodelElement(idShortPathPropertyInSmeList, propertyInSmeList);
 
 		idShortPathPropertyInSmeCol = idShortPathPropertyInSmeCol.concat(".test123");
 		SubmodelElement propertyInCollectionCreated = submodelService.getSubmodelElement(idShortPathPropertyInSmeCol);
 		assertEquals("test123", propertyInCollectionCreated.getIdShort());
 
+		String idShortPathPropertyInSmeList = DummySubmodelFactory.SUBMODEL_OPERATIONAL_DATA_ELEMENT_COLLECTION_ID_SHORT + "." + DummySubmodelFactory.SUBMODEL_OPERATIONAL_DATA_ELEMENT_LIST_ID_SHORT;
+		Property propertyInSmeList = new DefaultProperty.Builder().category("cat1").value("305").valueType(DataTypeDefXsd.INTEGER).build();
+		submodelService.createSubmodelElement(idShortPathPropertyInSmeList, propertyInSmeList);
+
 		idShortPathPropertyInSmeList = idShortPathPropertyInSmeList.concat("[1]");
 		SubmodelElement propertyInSmeListCreated = submodelService.getSubmodelElement(idShortPathPropertyInSmeList);
-		assertEquals("test456", propertyInSmeListCreated.getIdShort());
+		assertTrue(propertyInSmeListCreated instanceof Property);
+		assertEquals(propertyInSmeList.getValue(), ((Property) propertyInSmeListCreated).getValue());
 	}
 
 	@Test
