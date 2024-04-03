@@ -31,6 +31,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.exceptions.FileDoesNotExistException;
@@ -114,7 +115,7 @@ public class MongoDBSubmodelFileRepository implements FileRepository {
 
 	private String getFileId(String value) {
 
-		if (value.isBlank())
+		if (StringUtils.isBlank(value))
 			return "";
 
 		String fileName = Paths.get(value).getFileName().toString();
