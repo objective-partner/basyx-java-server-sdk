@@ -204,7 +204,7 @@ public class AasEnvironmentPreconfigurationLoader {
 			return;
 		}
 
-		submodelRepository.setFileValue(submodelId, fileSMEIdShortPath, getFileName(inMemoryFile.getPath()), new ByteArrayInputStream(inMemoryFile.getFileContent()));
+		submodelRepository.setFileValue(submodelId, fileSMEIdShortPath, getFileName(inMemoryFile.getPath()), new ByteArrayInputStream(inMemoryFile.getFileContent()), fileSME.getContentType());
 	}
 
 	private String getFileName(String path) {

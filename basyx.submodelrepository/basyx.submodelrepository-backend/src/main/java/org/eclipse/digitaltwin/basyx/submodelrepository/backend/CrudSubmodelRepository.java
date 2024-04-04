@@ -272,7 +272,7 @@ public class CrudSubmodelRepository implements SubmodelRepository {
 	}
 
 	@Override
-	public void setFileValue(String submodelId, String idShortPath, String fileName, InputStream inputStream) throws ElementDoesNotExistException, ElementNotAFileException {
+	public void setFileValue(String submodelId, String idShortPath, String fileName, InputStream inputStream, String contentType) throws ElementDoesNotExistException, ElementNotAFileException {
 		SubmodelElement submodelElement = getSubmodelElement(submodelId, idShortPath);
 
 		throwIfSmElementIsNotAFile(submodelElement);
@@ -284,11 +284,11 @@ public class CrudSubmodelRepository implements SubmodelRepository {
 
 		String uniqueFileName = createUniqueFileName(submodelId, idShortPath, fileName);
 
-		FileMetadata fileMetadata = new FileMetadata(uniqueFileName, fileSmElement.getContentType(), inputStream);
+		FileMetadata fileMetadata = new FileMetadata(uniqueFileName, contentType, inputStream);
 
 		String filePath = fileHandlingBackend.save(fileMetadata);
 
-		FileBlobValue fileValue = new FileBlobValue(fileSmElement.getContentType(), filePath);
+		FileBlobValue fileValue = new FileBlobValue(fileMetadata.getContentType(), filePath);
 
 		setSubmodelElementValue(submodelId, idShortPath, fileValue);
 	}

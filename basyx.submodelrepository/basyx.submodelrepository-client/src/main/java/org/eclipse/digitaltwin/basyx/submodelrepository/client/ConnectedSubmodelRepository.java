@@ -218,7 +218,7 @@ public class ConnectedSubmodelRepository implements SubmodelRepository {
 	 * Not Implemented
 	 */
 	@Override
-	public void setFileValue(String submodelId, String idShortPath, String fileName, InputStream inputStream) throws ElementDoesNotExistException, ElementNotAFileException {
+	public void setFileValue(String submodelId, String idShortPath, String fileName, InputStream inputStream, String contentType) throws ElementDoesNotExistException, ElementNotAFileException {
 		throw ExceptionBuilderFactory.getInstance().featureNotImplementedException().build();
 	}
 

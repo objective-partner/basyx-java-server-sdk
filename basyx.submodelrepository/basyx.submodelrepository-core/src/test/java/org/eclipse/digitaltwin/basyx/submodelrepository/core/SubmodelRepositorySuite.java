@@ -42,6 +42,7 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.entity.ContentType;
 import org.eclipse.digitaltwin.aas4j.v3.model.DataTypeDefXsd;
 import org.eclipse.digitaltwin.aas4j.v3.model.OperationVariable;
 import org.eclipse.digitaltwin.aas4j.v3.model.Property;
@@ -241,7 +242,7 @@ public abstract class SubmodelRepositorySuite {
 
 		String fileName = "SampleJsonFile.json";
 
-		repo.setFileValue(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol, fileName, getInputStreamOfFileFromClasspath(fileName));
+		repo.setFileValue(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol, fileName, getInputStreamOfFileFromClasspath(fileName), ContentType.APPLICATION_JSON.getMimeType());
 
 		File file = repo.getFileByPathSubmodel(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol);
 
@@ -264,7 +265,7 @@ public abstract class SubmodelRepositorySuite {
 
 		String fileName = "SampleJsonFile.json";
 
-		repo.setFileValue(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol, fileName, getInputStreamOfFileFromClasspath(fileName));
+		repo.setFileValue(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol, fileName, getInputStreamOfFileFromClasspath(fileName), ContentType.APPLICATION_JSON.getMimeType());
 
 		File file = repo.getFileByPathSubmodel(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol);
 
@@ -384,7 +385,8 @@ public abstract class SubmodelRepositorySuite {
 
 		// Set the value of the file-submodelelement for the first time
 		try {
-			repo.setFileValue(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_FILE_ID_SHORT, "SampleJsonFile.json", getInputStreamOfFileFromClasspath("SampleJsonFile.json"));
+			repo.setFileValue(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_FILE_ID_SHORT, "SampleJsonFile.json", getInputStreamOfFileFromClasspath("SampleJsonFile.json"),
+					ContentType.APPLICATION_JSON.getMimeType());
 		} catch (IOException e1) {
 			fail();
 			e1.printStackTrace();
@@ -392,7 +394,7 @@ public abstract class SubmodelRepositorySuite {
 
 		// Set the value of the file-submodel element again with a dummy text file
 		try {
-			repo.setFileValue(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_FILE_ID_SHORT, "newFile.txt", getInputStreamOfDummyFile());
+			repo.setFileValue(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_FILE_ID_SHORT, "newFile.txt", getInputStreamOfDummyFile(), ContentType.APPLICATION_JSON.getMimeType());
 		} catch (IOException e1) {
 			fail();
 			e1.printStackTrace();
@@ -422,7 +424,8 @@ public abstract class SubmodelRepositorySuite {
 		}
 
 		try {
-			repo.setFileValue(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_FILE_ID_SHORT, "SampleJsonFile.json", getInputStreamOfFileFromClasspath("SampleJsonFile.json"));
+			repo.setFileValue(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_FILE_ID_SHORT, "SampleJsonFile.json", getInputStreamOfFileFromClasspath("SampleJsonFile.json"),
+					ContentType.APPLICATION_JSON.getMimeType());
 		} catch (IOException e) {
 			fail();
 			e.printStackTrace();
@@ -458,7 +461,8 @@ public abstract class SubmodelRepositorySuite {
 	public void deleteFile() throws ElementDoesNotExistException, ElementNotAFileException, IOException {
 		SubmodelRepository repo = getSubmodelRepositoryWithDummySubmodels();
 
-		repo.setFileValue(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_FILE_ID_SHORT, "SampleJsonFile.json", getInputStreamOfFileFromClasspath("SampleJsonFile.json"));
+		repo.setFileValue(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_FILE_ID_SHORT, "SampleJsonFile.json", getInputStreamOfFileFromClasspath("SampleJsonFile.json"),
+				ContentType.APPLICATION_JSON.getMimeType());
 
 		repo.deleteFileValue(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_FILE_ID_SHORT);
 
@@ -575,7 +579,7 @@ public abstract class SubmodelRepositorySuite {
 
 		final String filename = "SampleJsonFile.json";
 
-		repo.setFileValue(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_FILE_ID_SHORT, filename, getInputStreamOfFileFromClasspath(filename));
+		repo.setFileValue(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_FILE_ID_SHORT, filename, getInputStreamOfFileFromClasspath(filename), ContentType.APPLICATION_JSON.getMimeType());
 
 		SubmodelElement submodelElement = repo.getSubmodelElement(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_FILE_ID_SHORT);
 		String fileValue = ((org.eclipse.digitaltwin.aas4j.v3.model.File) submodelElement).getValue();
