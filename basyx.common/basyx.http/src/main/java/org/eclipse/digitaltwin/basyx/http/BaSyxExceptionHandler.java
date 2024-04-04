@@ -57,8 +57,16 @@ public class BaSyxExceptionHandler extends ResponseEntityExceptionHandler {
 	private static final Logger logger = LoggerFactory.getLogger(BaSyxExceptionHandler.class);
 	private final ObjectMapper objectMapper = new ObjectMapper();
 
-	@ExceptionHandler(IllegalArgumentException.class)
-	public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException exception) {
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<String> handleAllOtherExceptions(Exception exception) {
+		String correlationId = UUID.randomUUID().toString();
+		logger.debug("[{}] {}", correlationId, exception.getMessage(), exception);
+		String resultJson = deriveResultFromException(exception, HttpStatus.INTERNAL_SERVER_ERROR, correlationId);
+		return new ResponseEntity<>(resultJson, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	@ExceptionHandler({ IllegalArgumentException.class, IllegalStateException.class })
+	public ResponseEntity<String> handleIllegalArgumentException(RuntimeException exception) {
 		String correlationId = UUID.randomUUID().toString();
 		logger.debug("[{}] {}", correlationId, exception.getMessage(), exception);
 		String resultJson = deriveResultFromException(exception, HttpStatus.BAD_REQUEST, correlationId);
