@@ -77,12 +77,12 @@ import org.springframework.data.repository.CrudRepository;
  */
 public class CrudSubmodelRepository implements SubmodelRepository {
 
-	private Logger logger = LoggerFactory.getLogger(CrudSubmodelRepository.class);
+	private final Logger logger = LoggerFactory.getLogger(CrudSubmodelRepository.class);
 	private static final PaginationInfo NO_LIMIT_PAGINATION_INFO = new PaginationInfo(0, null);
-	private BaSyxCrudRepository<Submodel, String, SubmodelFilterParams> submodelBackend;
+	private final BaSyxCrudRepository<Submodel, String, SubmodelFilterParams> submodelBackend;
 
-	private SubmodelServiceFactory submodelServiceFactory;
-	private FileRepository fileHandlingBackend;
+	private final SubmodelServiceFactory submodelServiceFactory;
+	private final FileRepository fileHandlingBackend;
 
 	private String submodelRepositoryName = null;
 
@@ -279,12 +279,16 @@ public class CrudSubmodelRepository implements SubmodelRepository {
 
 		File fileSmElement = (File) submodelElement;
 
+		if (!StringUtils.equals(fileSmElement.getContentType(), contentType)) {
+			logger.warn("The content type of the file attachment '{}' is different from the content type of the File Submodel Element '{}'.", contentType, fileSmElement.getContentType());
+		}
+
 		if (fileHandlingBackend.exists(fileSmElement.getValue()))
 			fileHandlingBackend.delete(fileSmElement.getValue());
 
 		String uniqueFileName = createUniqueFileName(submodelId, idShortPath, fileName);
 
-		FileMetadata fileMetadata = new FileMetadata(uniqueFileName, contentType, inputStream);
+		FileMetadata fileMetadata = new FileMetadata(uniqueFileName, fileSmElement.getContentType(), inputStream);
 
 		String filePath = fileHandlingBackend.save(fileMetadata);
 
@@ -313,7 +317,6 @@ public class CrudSubmodelRepository implements SubmodelRepository {
 		try {
 			deleteFileValue(submodelId, idShortPath);
 		} catch (Exception e) {
-			return;
 		}
 	}
 
