@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
+import org.springframework.data.mongodb.core.aggregation.SortOperation;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.mapping.MongoPersistentEntity;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -150,11 +151,18 @@ public class AasMongoRepository implements BaSyxCrudRepository<AssetAdministrati
 			return;
 		}
 		if (paginationInfo.hasCursor()) {
+			applySorting(allAggregations); // only sort if cursor is used
 			allAggregations.add(Aggregation.match(Criteria.where(MONGO_ID).gt(paginationInfo.getCursor())));
+
 		}
 		if (paginationInfo.hasLimit()) {
 			allAggregations.add(Aggregation.limit(paginationInfo.getLimit()));
 		}
+	}
+
+	private void applySorting(List<AggregationOperation> allAggregations) {
+		SortOperation sortOp = Aggregation.sort(Direction.ASC, MONGO_ID);
+		allAggregations.add(sortOp);
 	}
 
 	private <T> String resolveCursor(PaginationInfo pRequest, List<T> foundDescriptors, Function<T, String> idResolver) {
