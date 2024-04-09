@@ -150,8 +150,10 @@ public class AasMongoRepository implements BaSyxCrudRepository<AssetAdministrati
 		if (paginationInfo == null) {
 			return;
 		}
+
+		applySorting(allAggregations); // only sort for pagination
+
 		if (paginationInfo.hasCursor()) {
-			applySorting(allAggregations); // only sort if cursor is used
 			allAggregations.add(Aggregation.match(Criteria.where(MONGO_ID).gt(paginationInfo.getCursor())));
 
 		}
