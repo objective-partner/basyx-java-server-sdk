@@ -279,16 +279,12 @@ public class CrudSubmodelRepository implements SubmodelRepository {
 
 		File fileSmElement = (File) submodelElement;
 
-		if (!StringUtils.equals(fileSmElement.getContentType(), contentType)) {
-			logger.warn("The content type of the file attachment '{}' is different from the content type of the File Submodel Element '{}'.", contentType, fileSmElement.getContentType());
-		}
-
 		if (fileHandlingBackend.exists(fileSmElement.getValue()))
 			fileHandlingBackend.delete(fileSmElement.getValue());
 
 		String uniqueFileName = createUniqueFileName(submodelId, idShortPath, fileName);
 
-		FileMetadata fileMetadata = new FileMetadata(uniqueFileName, fileSmElement.getContentType(), inputStream);
+		FileMetadata fileMetadata = new FileMetadata(uniqueFileName, contentType, inputStream);
 
 		String filePath = fileHandlingBackend.save(fileMetadata);
 
