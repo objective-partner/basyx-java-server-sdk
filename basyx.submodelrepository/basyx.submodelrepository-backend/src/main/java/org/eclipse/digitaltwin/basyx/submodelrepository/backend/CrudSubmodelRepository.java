@@ -304,7 +304,7 @@ public class CrudSubmodelRepository implements SubmodelRepository {
 
 		fileHandlingBackend.delete(filePath);
 
-		FileBlobValue fileValue = new FileBlobValue(null, null);
+		FileBlobValue fileValue = new FileBlobValue(fileSubmodelElement.getContentType(), null);
 
 		setSubmodelElementValue(submodelId, idShortPath, fileValue);
 	}
