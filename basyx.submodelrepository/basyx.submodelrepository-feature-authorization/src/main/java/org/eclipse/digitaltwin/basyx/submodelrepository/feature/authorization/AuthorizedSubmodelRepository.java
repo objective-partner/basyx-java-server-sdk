@@ -25,7 +25,6 @@
 
 package org.eclipse.digitaltwin.basyx.submodelrepository.feature.authorization;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
@@ -49,6 +48,7 @@ import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelFilterParams;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepository;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelElementValue;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelValueOnly;
+import org.springframework.core.io.Resource;
 import org.springframework.util.CollectionUtils;
 
 /**
@@ -233,7 +233,7 @@ public class AuthorizedSubmodelRepository implements SubmodelRepository {
 	}
 
 	@Override
-	public File getFileByPathSubmodel(String submodelId, String idShortPath) throws ElementDoesNotExistException, ElementNotAFileException, FileDoesNotExistException {
+	public Resource getFileByPathSubmodel(String submodelId, String idShortPath) throws ElementDoesNotExistException, ElementNotAFileException, FileDoesNotExistException {
 		boolean isAuthorized = permissionResolver.hasPermission(Action.READ, new SubmodelTargetInformation(submodelId, idShortPath));
 
 		throwExceptionIfInsufficientPermission(isAuthorized);

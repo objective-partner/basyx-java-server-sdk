@@ -25,7 +25,6 @@
 
 package org.eclipse.digitaltwin.basyx.submodelrepository.feature.operation.delegation;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
@@ -45,6 +44,7 @@ import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelFilterParams;
 import org.eclipse.digitaltwin.basyx.submodelrepository.SubmodelRepository;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelElementValue;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelValueOnly;
+import org.springframework.core.io.Resource;
 
 /**
  * Decorator for {@link SubmodelRepository} to delegate the operation request
@@ -155,7 +155,7 @@ public class OperationDelegationSubmodelRepository implements SubmodelRepository
 	}
 
 	@Override
-	public File getFileByPathSubmodel(String submodelId, String idShortPath) throws ElementDoesNotExistException, ElementNotAFileException, FileDoesNotExistException {
+	public Resource getFileByPathSubmodel(String submodelId, String idShortPath) throws ElementDoesNotExistException, ElementNotAFileException, FileDoesNotExistException {
 		return decorated.getFileByPathSubmodel(submodelId, idShortPath);
 	}
 

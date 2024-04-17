@@ -24,7 +24,6 @@
  ******************************************************************************/
 package org.eclipse.digitaltwin.basyx.submodelrepository.feature.registry.integration;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 
@@ -48,6 +47,7 @@ import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelElementValue;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelValueOnly;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
 
 /**
  * Decorator for linking {@link SubmodelRepository} with SubmodelRegistry
@@ -129,7 +129,7 @@ public class RegistryIntegrationSubmodelRepository implements SubmodelRepository
 
 	@Override
 	public void createSubmodelElement(String submodelId, String idShortPath, SubmodelElement submodelElement) throws ElementDoesNotExistException {
-		decorated.createSubmodelElement(submodelId,idShortPath,  submodelElement);
+		decorated.createSubmodelElement(submodelId, idShortPath, submodelElement);
 	}
 
 	@Override
@@ -158,7 +158,7 @@ public class RegistryIntegrationSubmodelRepository implements SubmodelRepository
 	}
 
 	@Override
-	public File getFileByPathSubmodel(String submodelId, String idShortPath) throws ElementDoesNotExistException, ElementNotAFileException, FileDoesNotExistException {
+	public Resource getFileByPathSubmodel(String submodelId, String idShortPath) throws ElementDoesNotExistException, ElementNotAFileException, FileDoesNotExistException {
 		return decorated.getFileByPathSubmodel(submodelId, idShortPath);
 	}
 

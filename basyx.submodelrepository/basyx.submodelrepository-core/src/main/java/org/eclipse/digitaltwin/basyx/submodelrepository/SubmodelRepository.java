@@ -40,6 +40,7 @@ import org.eclipse.digitaltwin.basyx.core.pagination.CursorResult;
 import org.eclipse.digitaltwin.basyx.core.pagination.PaginationInfo;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelElementValue;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelValueOnly;
+import org.springframework.core.io.Resource;
 
 /**
  * Specifies the overall SubmodelRepository API
@@ -231,18 +232,17 @@ public interface SubmodelRepository {
 
 	/**
 	 * Retrieves the file of a file submodelelement
-	 * 
+	 *
 	 * @param submodelId
 	 *            the Submodel id
 	 * @param idShortPath
 	 *            the IdShort path of the file element
 	 * @return
-	 * 
 	 * @throws ElementDoesNotExistException
 	 * @throws ElementNotAFileException
 	 * @throws FileDoesNotExistException
 	 */
-	java.io.File getFileByPathSubmodel(String submodelId, String idShortPath) throws ElementDoesNotExistException, ElementNotAFileException, FileDoesNotExistException;
+	Resource getFileByPathSubmodel(String submodelId, String idShortPath) throws ElementDoesNotExistException, ElementNotAFileException, FileDoesNotExistException;
 
 	/**
 	 * Uploads a file to a file submodelelement

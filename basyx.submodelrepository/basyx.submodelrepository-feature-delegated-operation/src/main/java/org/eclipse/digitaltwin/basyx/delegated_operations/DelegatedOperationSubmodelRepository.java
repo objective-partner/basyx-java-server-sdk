@@ -26,7 +26,6 @@ package org.eclipse.digitaltwin.basyx.delegated_operations;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -74,6 +73,7 @@ import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelElementValue;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelValueOnly;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -320,7 +320,7 @@ public class DelegatedOperationSubmodelRepository implements SubmodelRepository 
 	}
 
 	@Override
-	public File getFileByPathSubmodel(String submodelId, String idShortPath) throws ElementDoesNotExistException, ElementNotAFileException, FileDoesNotExistException {
+	public Resource getFileByPathSubmodel(String submodelId, String idShortPath) throws ElementDoesNotExistException, ElementNotAFileException, FileDoesNotExistException {
 		return decorated.getFileByPathSubmodel(submodelId, idShortPath);
 	}
 

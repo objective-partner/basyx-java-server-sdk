@@ -33,6 +33,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -52,6 +55,7 @@ import org.junit.Test;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -188,10 +192,12 @@ public class TestPreconfiguration {
 
 	@Test
 	public void aasxPDFFileIntegrationInSubmodelRepository() throws FileNotFoundException, IOException {
-		InputStream expectedFile = getInputStreamOfFileFromClasspath("testFiles/OperatingManual.pdf");
+		String fileName = "OperatingManual.pdf";
+		InputStream expectedFile = getInputStreamOfFileFromClasspath("testFiles/" + fileName);
 		String expectedFileExtension = "pdf";
 
-		File actualFile = submodelRepo.getFileByPathSubmodel("http://i40.customer.com/type/1/1/1A7B62B529F19152", "OperatingManual.DigitalFile_PDF");
+		Resource resource = submodelRepo.getFileByPathSubmodel("http://i40.customer.com/type/1/1/1A7B62B529F19152", "OperatingManual.DigitalFile_PDF");
+		File actualFile = writeBytesIntoFile(resource, fileName);
 
 		assertEquals(expectedFileExtension, getExtension(actualFile.getName()));
 		assertTrue(IOUtils.contentEquals(expectedFile, FileUtils.openInputStream(actualFile)));
@@ -199,11 +205,14 @@ public class TestPreconfiguration {
 
 	@Test
 	public void aasxPNGFileIntegrationInSubmodelRepository() throws FileNotFoundException, IOException {
-		String expectedFilePath = "testFiles/verwaltungsschale-detail-part1.png";
+		String fileName = "verwaltungsschale-detail-part1.png";
+		String expectedFilePath = "testFiles/" + fileName;
 		String expectedFileExtension = "png";
 
-		File actualFile1 = submodelRepo.getFileByPathSubmodel("7A7104BDAB57E184aasx", "FileData");
-		File actualFile2 = submodelRepo.getFileByPathSubmodel("7A7104BDAB57E184aasx", "SubmodelElementCollection.FileData");
+		Resource resource1 = submodelRepo.getFileByPathSubmodel("7A7104BDAB57E184aasx", "FileData");
+		File actualFile1 = writeBytesIntoFile(resource1, "1-" + fileName);
+		Resource resource2 = submodelRepo.getFileByPathSubmodel("7A7104BDAB57E184aasx", "SubmodelElementCollection.FileData");
+		File actualFile2 = writeBytesIntoFile(resource2, "2-" + fileName);
 
 		assertFileContents(expectedFilePath, expectedFileExtension, actualFile1, actualFile2);
 	}
@@ -211,6 +220,14 @@ public class TestPreconfiguration {
 	@AfterClass
 	public static void shutdownAASEnvironment() {
 		appContext.close();
+	}
+
+	private static File writeBytesIntoFile(Resource resource, String fileName) throws IOException {
+		Path targetDirectory = Paths.get("target", "files-download");
+		Files.createDirectories(targetDirectory); // Ensure the directory exists
+		Path filePath = targetDirectory.resolve(fileName);
+		Files.write(filePath, resource.getContentAsByteArray());
+		return filePath.toFile();
 	}
 
 	private void assertFileContents(String expectedFilePath, String expectedFileExtension, File actualFile1, File actualFile2) throws IOException {

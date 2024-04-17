@@ -25,7 +25,6 @@
 
 package org.eclipse.digitaltwin.basyx.submodelrepository.client;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 
@@ -49,6 +48,7 @@ import org.eclipse.digitaltwin.basyx.submodelrepository.client.internal.Submodel
 import org.eclipse.digitaltwin.basyx.submodelservice.client.ConnectedSubmodelService;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelElementValue;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelValueOnly;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -210,7 +210,7 @@ public class ConnectedSubmodelRepository implements SubmodelRepository {
 	 * Not Implemented
 	 */
 	@Override
-	public File getFileByPathSubmodel(String submodelId, String idShortPath) throws ElementDoesNotExistException, ElementNotAFileException, FileDoesNotExistException {
+	public Resource getFileByPathSubmodel(String submodelId, String idShortPath) throws ElementDoesNotExistException, ElementNotAFileException, FileDoesNotExistException {
 		throw ExceptionBuilderFactory.getInstance().featureNotImplementedException().build();
 	}
 

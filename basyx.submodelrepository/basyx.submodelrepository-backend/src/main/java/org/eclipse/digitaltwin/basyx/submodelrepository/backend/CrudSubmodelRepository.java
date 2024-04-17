@@ -25,10 +25,8 @@
 
 package org.eclipse.digitaltwin.basyx.submodelrepository.backend;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -66,6 +64,8 @@ import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelElementValue;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelValueOnly;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.repository.CrudRepository;
 
 /**
@@ -257,18 +257,22 @@ public class CrudSubmodelRepository implements SubmodelRepository {
 	}
 
 	@Override
-	public java.io.File getFileByPathSubmodel(String submodelId, String idShortPath) throws ElementDoesNotExistException, ElementNotAFileException, FileDoesNotExistException {
+	public Resource getFileByPathSubmodel(String submodelId, String idShortPath) throws ElementDoesNotExistException, ElementNotAFileException, FileDoesNotExistException {
 
 		SubmodelElement submodelElement = getSubmodelElement(submodelId, idShortPath);
 
 		throwIfSmElementIsNotAFile(submodelElement);
 
 		File fileSmElement = (File) submodelElement;
-		String filePath = getFilePath(fileSmElement);
+		String fileName = fileSmElement.getValue();
 
-		InputStream fileContent = getFileInputStream(submodelId, filePath);
-
-		return createFile(filePath, fileContent);
+		try (InputStream fileIs = getFileInputStream(submodelId, fileName)) {
+			return new ByteArrayResource(fileIs.readAllBytes());
+		} catch (IOException e) {
+			FileHandlingException exception = ExceptionBuilderFactory.getInstance().fileHandlingException().filename(fileName).build();
+			logger.error("[{}] Exception occurred while creating file from the InputStream.", exception.getCorrelationId(), e);
+			throw exception;
+		}
 	}
 
 	@Override
@@ -286,9 +290,9 @@ public class CrudSubmodelRepository implements SubmodelRepository {
 
 		FileMetadata fileMetadata = new FileMetadata(uniqueFileName, contentType, inputStream);
 
-		String filePath = fileHandlingBackend.save(fileMetadata);
+		fileHandlingBackend.save(fileMetadata);
 
-		FileBlobValue fileValue = new FileBlobValue(fileMetadata.getContentType(), filePath);
+		FileBlobValue fileValue = new FileBlobValue(fileMetadata.getContentType(), fileMetadata.getFileName());
 
 		setSubmodelElementValue(submodelId, idShortPath, fileValue);
 	}
@@ -332,35 +336,6 @@ public class CrudSubmodelRepository implements SubmodelRepository {
 		return fileContent;
 	}
 
-	private java.io.File createFile(String filePath, InputStream fileIs) {
-
-		try {
-			byte[] content = fileIs.readAllBytes();
-			fileIs.close();
-
-			createOutputStream(filePath, content);
-
-			return new java.io.File(filePath);
-		} catch (IOException e) {
-			FileHandlingException exception = ExceptionBuilderFactory.getInstance().fileHandlingException().filename(filePath).build();
-			logger.error("[{}] Exception occurred while creating file from the InputStream. {}", exception.getCorrelationId(), e.getMessage());
-			throw exception;
-		}
-
-	}
-
-	private void createOutputStream(String filePath, byte[] content) throws IOException {
-
-		try (OutputStream outputStream = new FileOutputStream(filePath)) {
-			outputStream.write(content);
-		} catch (IOException e) {
-			FileHandlingException exception = ExceptionBuilderFactory.getInstance().fileHandlingException().filename(filePath).build();
-			logger.error("[{}] Exception occurred while creating OutputStream from byte[]. {}", exception.getCorrelationId(), e.getMessage());
-			throw exception;
-		}
-
-	}
-
 	private void initializeRemoteCollection(Collection<Submodel> submodels) {
 		if (submodels == null || submodels.isEmpty())
 			return;
@@ -401,10 +376,6 @@ public class CrudSubmodelRepository implements SubmodelRepository {
 
 		if (!isFileSubmodelElement(submodelElement))
 			throw ExceptionBuilderFactory.getInstance().elementNotAFileException().submodelElementId(submodelElement.getIdShort()).build();
-	}
-
-	private String getFilePath(File fileSubmodelElement) {
-		return fileSubmodelElement.getValue();
 	}
 
 	private String createUniqueFileName(String submodelId, String idShortPath, String fileName) {

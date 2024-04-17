@@ -27,19 +27,12 @@ package org.eclipse.digitaltwin.basyx.submodelrepository;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
-import org.apache.commons.lang3.StringUtils;
-import org.bson.types.ObjectId;
 import org.eclipse.digitaltwin.basyx.core.exceptions.ExceptionBuilderFactory;
 import org.eclipse.digitaltwin.basyx.core.exceptions.FileDoesNotExistException;
 import org.eclipse.digitaltwin.basyx.core.exceptions.FileHandlingException;
 import org.eclipse.digitaltwin.basyx.core.file.FileMetadata;
 import org.eclipse.digitaltwin.basyx.core.file.FileRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
@@ -53,11 +46,7 @@ import com.mongodb.client.gridfs.model.GridFSFile;
  */
 public class MongoDBSubmodelFileRepository implements FileRepository {
 
-	private static final Logger logger = LoggerFactory.getLogger(MongoDBSubmodelFileRepository.class);
-
-	private static final String MONGO_ID = "_id";
-	private static final String GRIDFS_ID_DELIMITER = "#";
-	private static final String TEMP_DIR_PREFIX = "basyx-temp";
+	private String MONGO_FILENAME = "filename";
 
 	private GridFsTemplate gridFsTemplate;
 
@@ -67,100 +56,38 @@ public class MongoDBSubmodelFileRepository implements FileRepository {
 
 	@Override
 	public String save(FileMetadata fileMetadata) throws FileHandlingException {
-		ObjectId id = gridFsTemplate.store(fileMetadata.getFileContent(), fileMetadata.getFileName(), fileMetadata.getContentType());
-
-		String updatedFileName = createFilePath(id.toString(), fileMetadata.getFileName());
-
-		fileMetadata.setFileName(updatedFileName);
-
-		return updatedFileName;
+		gridFsTemplate.store(fileMetadata.getFileContent(), fileMetadata.getFileName(), fileMetadata.getContentType());
+		return fileMetadata.getFileName();
 	}
 
 	@Override
 	public InputStream find(String fileId) throws FileDoesNotExistException {
-
 		if (!exists(fileId))
 			throw ExceptionBuilderFactory.getInstance().fileDoesNotExistException().elementPath(fileId).build();
 
-		String mongoDBfileId = getFileId(fileId);
-
-		GridFSFile file = getFile(mongoDBfileId);
+		GridFSFile file = gridFsTemplate.findOne(new Query(Criteria.where(MONGO_FILENAME).is(fileId)));
 
 		return getGridFsFileAsInputStream(file);
 	}
 
 	@Override
 	public void delete(String fileId) throws FileDoesNotExistException {
-
 		if (!exists(fileId))
 			throw ExceptionBuilderFactory.getInstance().fileDoesNotExistException().elementPath(fileId).build();
 
-		String mongoDBfileId = getFileId(fileId);
-
-		gridFsTemplate.delete(new Query(Criteria.where(MONGO_ID).is(mongoDBfileId)));
+		gridFsTemplate.delete(new Query(Criteria.where(MONGO_FILENAME).is(fileId)));
 	}
 
 	@Override
 	public boolean exists(String fileId) {
-
-		String mongoDBfileId = getFileId(fileId);
-
-		if (mongoDBfileId.isBlank())
-			return false;
-
-		GridFSFile gridFSFile = getFile(mongoDBfileId);
-
-		return gridFSFile != null;
-	}
-
-	private String getFileId(String value) {
-
-		if (StringUtils.isBlank(value))
-			return "";
-
-		String fileName = Paths.get(value).getFileName().toString();
-
-		try {
-			return fileName.substring(0, fileName.indexOf(GRIDFS_ID_DELIMITER));
-		} catch (IndexOutOfBoundsException e) {
-			return "";
-		}
-
-	}
-
-	private GridFSFile getFile(String mongoDBfileId) {
-		return gridFsTemplate.findOne(new Query(Criteria.where(MONGO_ID).is(mongoDBfileId)));
+		return gridFsTemplate.findOne(new Query(Criteria.where(MONGO_FILENAME).is(fileId))) != null;
 	}
 
 	private InputStream getGridFsFileAsInputStream(GridFSFile file) {
-
 		try {
 			return gridFsTemplate.getResource(file).getInputStream();
-		} catch (IllegalStateException | IOException e1) {
-			throw new IllegalStateException("Unable to get the file resource as input stream." + e1.getStackTrace());
+		} catch (IllegalStateException | IOException e) {
+			throw new IllegalStateException("Unable to get the file resource as input stream. " + e.getMessage());
 		}
-
 	}
-
-	private String createFilePath(String id, String fileName) {
-
-		Path tempDir = createTempDirectory(TEMP_DIR_PREFIX);
-
-		String temporaryDirectoryPath = tempDir.toAbsolutePath().toString();
-
-		return temporaryDirectoryPath + "/" + id + GRIDFS_ID_DELIMITER + fileName;
-	}
-
-	private Path createTempDirectory(String prefix) {
-
-		try {
-			return Files.createTempDirectory(prefix);
-		} catch (IOException e) {
-			FileHandlingException exception = ExceptionBuilderFactory.getInstance().fileHandlingException().filename(prefix).build();
-			logger.error("[{}] Exception occurred while creating temporary directory with prefix '{}'. {}", exception.getCorrelationId(), TEMP_DIR_PREFIX, e.getMessage());
-			throw exception;
-		}
-
-	}
-
 }

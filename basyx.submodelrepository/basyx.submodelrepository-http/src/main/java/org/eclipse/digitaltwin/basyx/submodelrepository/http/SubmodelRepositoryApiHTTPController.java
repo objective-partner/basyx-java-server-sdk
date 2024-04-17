@@ -59,7 +59,6 @@ import org.eclipse.digitaltwin.basyx.submodelrepository.http.pagination.GetSubmo
 import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelElementValue;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.SubmodelValueOnly;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -250,7 +249,7 @@ public class SubmodelRepositoryApiHTTPController implements SubmodelRepositoryHT
 
 	@Override
 	public ResponseEntity<Resource> getFileByPath(Base64UrlEncodedIdentifier submodelIdentifier, String idShortPath) {
-		Resource resource = new FileSystemResource(repository.getFileByPathSubmodel(submodelIdentifier.getIdentifier(), idShortPath));
+		Resource resource = repository.getFileByPathSubmodel(submodelIdentifier.getIdentifier(), idShortPath);
 
 		return new ResponseEntity<Resource>(resource, HttpStatus.OK);
 	}

@@ -34,12 +34,14 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.entity.ContentType;
@@ -66,6 +68,7 @@ import org.eclipse.digitaltwin.basyx.submodelservice.SubmodelServiceHelper;
 import org.eclipse.digitaltwin.basyx.submodelservice.value.PropertyValue;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 
 /**
  * Testsuite for implementations of the SubmodelRepository interface
@@ -244,7 +247,8 @@ public abstract class SubmodelRepositorySuite {
 
 		repo.setFileValue(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol, fileName, getInputStreamOfFileFromClasspath(fileName), ContentType.APPLICATION_JSON.getMimeType());
 
-		File file = repo.getFileByPathSubmodel(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol);
+		Resource resource = repo.getFileByPathSubmodel(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol);
+		File file = writeBytesIntoFile(resource, fileName);
 
 		assertFileExistsOnPath(file);
 
@@ -267,7 +271,8 @@ public abstract class SubmodelRepositorySuite {
 
 		repo.setFileValue(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol, fileName, getInputStreamOfFileFromClasspath(fileName), ContentType.APPLICATION_JSON.getMimeType());
 
-		File file = repo.getFileByPathSubmodel(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol);
+		Resource resource = repo.getFileByPathSubmodel(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, idShortPathPropertyInSmeCol);
+		File file = writeBytesIntoFile(resource, fileName);
 
 		assertFileExistsOnPath(file);
 
@@ -401,10 +406,10 @@ public abstract class SubmodelRepositorySuite {
 		}
 
 		// Get the file from the file submodel element
-		File retrievedValue = repo.getFileByPathSubmodel(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_FILE_ID_SHORT);
+		Resource resource = repo.getFileByPathSubmodel(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_FILE_ID_SHORT);
 
 		try {
-			String actual = new String(FileUtils.openInputStream(retrievedValue).readAllBytes());
+			String actual = new String(resource.getContentAsByteArray());
 			assertEquals(DUMMY_FILE_CONTENT, actual);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -431,12 +436,10 @@ public abstract class SubmodelRepositorySuite {
 			e.printStackTrace();
 		}
 
-		File retrievedValue = repo.getFileByPathSubmodel(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_FILE_ID_SHORT);
-
-		assertEquals(expectedFileExtension, getExtension(retrievedValue.getName()));
+		Resource resource = repo.getFileByPathSubmodel(DummySubmodelFactory.SUBMODEL_TECHNICAL_DATA_ID, SubmodelServiceHelper.SUBMODEL_TECHNICAL_DATA_FILE_ID_SHORT);
 
 		try {
-			assertTrue(IOUtils.contentEquals(expectedFile, FileUtils.openInputStream(retrievedValue)));
+			assertTrue(IOUtils.contentEquals(expectedFile, resource.getInputStream()));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -693,4 +696,11 @@ public abstract class SubmodelRepositorySuite {
 		return FilenameUtils.getExtension(filename);
 	}
 
+	private static File writeBytesIntoFile(Resource resource, String fileName) throws IOException {
+		Path targetDirectory = Paths.get("target", "files-download");
+		Files.createDirectories(targetDirectory); // Ensure the directory exists
+		Path filePath = targetDirectory.resolve(fileName);
+		Files.write(filePath, resource.getContentAsByteArray());
+		return filePath.toFile();
+	}
 }

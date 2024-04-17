@@ -22,6 +22,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
 
 /**
  * Repository decorator for the MQTT eventing on the submodel level.
@@ -199,7 +200,7 @@ public class MqttSubmodelRepository implements SubmodelRepository {
 	}
 
 	@Override
-	public java.io.File getFileByPathSubmodel(String submodelId, String idShortPath) {
+	public Resource getFileByPathSubmodel(String submodelId, String idShortPath) {
 		return decorated.getFileByPathSubmodel(submodelId, idShortPath);
 	}
 
